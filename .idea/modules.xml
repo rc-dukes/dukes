@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/bo/bo.iml" filepath="$PROJECT_DIR$/bo/bo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/boars-nest/boars-nest.iml" filepath="$PROJECT_DIR$/boars-nest/boars-nest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/boss-hogg/boss-hogg.iml" filepath="$PROJECT_DIR$/boss-hogg/boss-hogg.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cletus/cletus.iml" filepath="$PROJECT_DIR$/cletus/cletus.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cooter/cooter.iml" filepath="$PROJECT_DIR$/cooter/cooter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/daisy/daisy.iml" filepath="$PROJECT_DIR$/daisy/daisy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/duke-farm/duke-farm.iml" filepath="$PROJECT_DIR$/duke-farm/duke-farm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dukes.iml" filepath="$PROJECT_DIR$/dukes.iml" />
+      <module fileurl="file://$PROJECT_DIR$/enos/enos.iml" filepath="$PROJECT_DIR$/enos/enos.iml" />
+      <module fileurl="file://$PROJECT_DIR$/flash/flash.iml" filepath="$PROJECT_DIR$/flash/flash.iml" />
+      <module fileurl="file://$PROJECT_DIR$/general-lee/general-lee.iml" filepath="$PROJECT_DIR$/general-lee/general-lee.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hazard-county/hazard-county.iml" filepath="$PROJECT_DIR$/hazard-county/hazard-county.iml" />
+      <module fileurl="file://$PROJECT_DIR$/luke/luke.iml" filepath="$PROJECT_DIR$/luke/luke.iml" />
+      <module fileurl="file://$PROJECT_DIR$/roscoe/roscoe.iml" filepath="$PROJECT_DIR$/roscoe/roscoe.iml" />
+      <module fileurl="file://$PROJECT_DIR$/uncle-jesse/uncle-jesse.iml" filepath="$PROJECT_DIR$/uncle-jesse/uncle-jesse.iml" />
+    </modules>
+  </component>
+</project>
