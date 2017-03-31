@@ -12,7 +12,7 @@ public class ImageFetcher {
     }
 
     public Mat fetch() {
-        if (this.capture.isOpened()) {
+        if (!this.capture.isOpened()) {
             throw new IllegalStateException("Trying to fetch image from unopened VideoCapture");
         }
 

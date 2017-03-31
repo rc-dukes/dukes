@@ -50,7 +50,7 @@ public class StraightLaneNavigator {
                         // Convert No Lines Detected situation into stop command.
                         if (throwable instanceof NoLinesDetected) {
                             emergencyStopActivated = true;
-                            return "speed:stop";
+                            return new JsonObject().put("speed","stop").encode();
                         } else {
                             propagate(throwable);
                             return null;
@@ -99,7 +99,7 @@ public class StraightLaneNavigator {
                 lastRudderPercentageSent = rudderPercentage;
                 previousAngle = angle;
 
-                return just("setwheel:" + rudderPercentage);
+                return just(new JsonObject().put("setwheel", rudderPercentage).encode());
     //            eventBusSendAfterMS(0, "setwheel:" + rudderPercentage);
 
 

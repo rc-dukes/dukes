@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.cooter;
+package nl.vaneijndhoven.dukes.car;
 
 public interface EngineMap {
 

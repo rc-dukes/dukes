@@ -1,6 +1,6 @@
 package nl.vaneijndhoven.dukes.generallee;
 
-public class EngineMap implements nl.vaneijndhoven.dukes.cooter.EngineMap {
+public class EngineMap implements nl.vaneijndhoven.dukes.car.EngineMap {
 
     public static final int SPEED_ZERO = 130;
     public static final int SPEED_STEP_SIZE = 1;

@@ -9,10 +9,10 @@ import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
 import nl.vaneijndhoven.daisy.Daisy;
 import nl.vaneijndhoven.dukes.bo.Bo;
-import nl.vaneijndhoven.dukes.cooter.Command;
-import nl.vaneijndhoven.dukes.cooter.Engine;
-import nl.vaneijndhoven.dukes.cooter.Steering;
-import nl.vaneijndhoven.dukes.cooter.car.Car;
+import nl.vaneijndhoven.dukes.car.Command;
+import nl.vaneijndhoven.dukes.car.Engine;
+import nl.vaneijndhoven.dukes.car.Steering;
+import nl.vaneijndhoven.dukes.car.Car;
 import nl.vaneijndhoven.dukes.flash.Flash;
 import nl.vaneijndhoven.dukes.generallee.EngineMap;
 import nl.vaneijndhoven.dukes.generallee.SteeringMap;
@@ -56,15 +56,15 @@ public class DukeFarm {
             Vertx vertx = resultHandler.result();
             DeploymentOptions deploymentOptions = new DeploymentOptions();
             deploymentOptions.setWorker(true);
-            vertx.deployVerticle(new Flash(), deploymentOptions);
-            vertx.deployVerticle(new Bo(), deploymentOptions);
-            vertx.deployVerticle(new Daisy(), deploymentOptions);
-            vertx.deployVerticle(new Luke(), deploymentOptions);
-            vertx.deployVerticle(new UncleJesse(), deploymentOptions);
+            vertx.deployVerticle(new Flash());
+            vertx.deployVerticle(new Bo());
+            vertx.deployVerticle(new Daisy("file://Users/jpoint/Repositories/dukes/daisy/src/main/resources/videos/full_run.mp4"), deploymentOptions);
+            vertx.deployVerticle(new Luke());
+            vertx.deployVerticle(new UncleJesse());
         });
     }
 
-    public static void configureShutdownHook(Car car) {
+    private static void configureShutdownHook(Car car) {
         Runtime.getRuntime().addShutdownHook(new Thread(){
             public void run() {
                 LOG.info("Activating shutdown hook.");
@@ -74,7 +74,7 @@ public class DukeFarm {
         });
     }
 
-    public static void configureLogging() {
+    private static void configureLogging() {
         System.setProperty(io.vertx.core.logging.LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_NAME, SLF4JLogDelegateFactory.class.getName());
 
 //        LoggerContext logConfig = (LoggerContext) LoggerFactory.getILoggerFactory();
@@ -88,7 +88,7 @@ public class DukeFarm {
     }
 
 
-    public static ClusterManager createHazelcastConfig() {
+    private static ClusterManager createHazelcastConfig() {
         Config hazelcastConfig = new Config();
         hazelcastConfig.setProperty("hazelcast.logging.type", "slf4j");
         ClusterManager mgr = new HazelcastClusterManager(hazelcastConfig);

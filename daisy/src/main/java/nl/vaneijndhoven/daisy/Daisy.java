@@ -1,5 +1,7 @@
 package nl.vaneijndhoven.daisy;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.TimeoutStream;
@@ -9,27 +11,48 @@ import nl.vaneijndhoven.dukes.hazardcounty.Events;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
+import org.opencv.core.Core;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Daisy extends AbstractVerticle {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Daisy.class);
 
     private final static long LANE_DETECTION_INTERVAL = 50;
     private final static long START_LIGHT_DETECTION_INTERVAL = 50;
 
     CannyEdgeDetector.Config canny = new CannyEdgeDetector.Config();
 
+    String source = null;
+
+    public Daisy() {
+
+    }
+
+    public Daisy(String source) {
+        this.source = source;
+    }
 
     @Override
     public void start() throws Exception {
-//        vertx.eventBus().consumer(Events.STREAMADDED.name(), this::streamAdded);
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        LOG.info("Starting Daisy (image processing)");
+        vertx.eventBus().consumer(Events.STREAMADDED.name(), this::streamAdded);
 //        vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ".lane.start", this::startLaneDetection);
 //        vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ".startlight.start", this::startStartLightDetection);
+        if (source != null) {
+            vertx.eventBus().publish(Events.STREAMADDED.name(), new JsonObject().put("source", source).put("config", new JsonObject().put("interval", 1000)));
+        }
+        LOG.info("Daisy started");
     }
 
-//    private void streamAdded(Message<JsonObject> message) {
-//        startLaneDetection(message);
-//    }
+    private void streamAdded(Message<JsonObject> message) {
+        startLaneDetection(message);
+    }
 //
-//    private TimeoutStream startLaneDetection(Message<String> msg) {
+//    private TimeoutStream startLaneDetection(Message<JsonObject> msg) {
+//        String inputLocation = msg.body();
 //
 //    }
 
@@ -45,7 +68,6 @@ public class Daisy extends AbstractVerticle {
         Long interval = (Long)vertx.sharedData().getLocalMap(Characters.DAISY.name()).get("interval");
         return interval != null ? interval : LANE_DETECTION_INTERVAL;
     }
-
 
     private CannyEdgeDetector.Config createCanny() {
         CannyEdgeDetector.Config canny = new CannyEdgeDetector.Config();
@@ -75,7 +97,7 @@ public class Daisy extends AbstractVerticle {
         return hough;
     }
 
-    private TimeoutStream startLaneDetection(Message<Object> msg) {
+    private TimeoutStream startLaneDetection(Message<JsonObject> msg) {
         JsonObject jo = (JsonObject) msg.body();
         JsonObject config = jo.getJsonObject("config");
 
@@ -118,8 +140,18 @@ public class Daisy extends AbstractVerticle {
         detectionStream.toObservable()
                 .map(x -> fetcher.fetch())
                 .map(laneDetector::detect)
+                .map(map -> {
+                    try {
+                        String rs = new ObjectMapper().writeValueAsString(map);
+                        return rs;
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .doOnNext(detection -> LOG.trace("Image processing result: " + detection))
                 .subscribe(lane -> vertx.eventBus().publish(Events.LANEDETECTION.name(),lane));
 
+        LOG.info("Started image processing for source: " + source);
         return detectionStream;
     }
 

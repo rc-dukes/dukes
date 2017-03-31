@@ -4,7 +4,7 @@ import static java.util.Arrays.asList;
 
 public enum Characters {
 
-    BO("Lost sheep", asList("","")),
+    BO("Lost sheep"),
     LUKE("Lost sheep"),
     DAISY("Bo Peep"),
     UNCLE_JESSE("Shepherd"),

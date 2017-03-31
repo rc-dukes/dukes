@@ -1,9 +1,7 @@
-package nl.vaneijndhoven.dukes.cooter;
+package nl.vaneijndhoven.dukes.car;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static nl.vaneijndhoven.dukes.cooter.Command.servoBlaster;
 
 public class Engine {
 
@@ -28,7 +26,7 @@ public class Engine {
         }
 
         LOG.debug("Setting motor to value " + speed);
-        servoBlaster(SERVOBLASTER_ID_MOTOR, speed);
+        Command.servoBlaster(SERVOBLASTER_ID_MOTOR, speed);
     }
 
     public void setMapping(EngineMap mapping) {

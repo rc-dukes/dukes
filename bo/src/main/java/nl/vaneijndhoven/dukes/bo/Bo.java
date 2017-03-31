@@ -2,9 +2,10 @@ package nl.vaneijndhoven.dukes.bo;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.AbstractVerticle;
-import nl.vaneijndhoven.dukes.cooter.Engine;
-import nl.vaneijndhoven.dukes.cooter.Steering;
-import nl.vaneijndhoven.dukes.cooter.car.Car;
+import io.vertx.rxjava.core.eventbus.Message;
+import nl.vaneijndhoven.dukes.car.Engine;
+import nl.vaneijndhoven.dukes.car.Steering;
+import nl.vaneijndhoven.dukes.car.Car;
 import nl.vaneijndhoven.dukes.generallee.EngineMap;
 import nl.vaneijndhoven.dukes.generallee.SteeringMap;
 import nl.vaneijndhoven.dukes.hazardcounty.Characters;
@@ -25,30 +26,35 @@ public class Bo extends AbstractVerticle {
         LOG.info("Starting Bo (motor and steering output)");
 
         Subscription subscription = vertx.eventBus().consumer(Characters.BO.getCallsign()).toObservable()
+                .doOnNext(x -> LOG.trace("Received instruction"))
+                .map(Message::body)
+                .cast(String.class)
+                .map(JsonObject::new)
+//                .map(msg -> new JsonObject(msg))
                 .subscribe(message -> {
-                    JsonObject messageBody = (JsonObject)message.body();
-
-                    String type = messageBody.getString("type");
-                    switch (type) {
-                        case "motor":
-                            speedHandler.handleMotor(messageBody);
-                            break;
-                        case "servo":
-                            steeringHandler.handleServo(messageBody);
-                            break;
-                        case "servoDirect":
-                            steeringHandler.handleServoDirect(messageBody);
-                            break;
-                        case "speedDirect":
-                            speedHandler.handleSpeedDirect(messageBody);
-                            break;
-                        case "log":
-                            String logMessage = messageBody.getString("message");
-                            LOG.debug("Received log message: "  + logMessage);
-                            break;
-                        default:
-                            LOG.error("Unknown message type {}", type);
-                    }
+//                    JsonObject message = (JsonObject)message.body();
+                        LOG.trace("Instruction: {}", message);
+//                    String type = message.getString("type");
+//                    switch (type) {
+//                        case "motor":
+//                            speedHandler.handleMotor(message);
+//                            break;
+//                        case "servo":
+//                            steeringHandler.handleServo(message);
+//                            break;
+//                        case "servoDirect":
+//                            steeringHandler.handleServoDirect(message);
+//                            break;
+//                        case "speedDirect":
+//                            speedHandler.handleSpeedDirect(message);
+//                            break;
+//                        case "log":
+//                            String logMessage = message.getString("message");
+//                            LOG.debug("Received log message: "  + logMessage);
+//                            break;
+//                        default:
+//                            LOG.error("Unknown message type {}", type);
+//                    }
         });
 
         LOG.info("Bo started");

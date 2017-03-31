@@ -3,6 +3,8 @@ package nl.vaneijndhoven.dukes.luke.drag;
 import io.vertx.core.json.JsonObject;
 import rx.Observable;
 
+import java.util.concurrent.TimeUnit;
+
 import static rx.Observable.just;
 
 public class StoppingZoneDetector {
@@ -32,7 +34,7 @@ public class StoppingZoneDetector {
                     if (!stoppingZoneDetected) {
                         System.out.println("--- stop ---");
                         stoppingZoneDetected = true;
-                        return just("speed:brake");
+                        return just(new JsonObject().put("speed", "brake").encode()).delay(1000, TimeUnit.MILLISECONDS);
 //                        eventBusSendAfterMS(1000,"speed:brake");
                     }
                 }

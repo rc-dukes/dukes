@@ -1,9 +1,4 @@
-package nl.vaneijndhoven.dukes.cooter.car;
-
-import nl.vaneijndhoven.dukes.cooter.Command;
-import nl.vaneijndhoven.dukes.cooter.Engine;
-import nl.vaneijndhoven.dukes.cooter.EngineMap;
-import nl.vaneijndhoven.dukes.cooter.Steering;
+package nl.vaneijndhoven.dukes.car;
 
 public class Car {
 

@@ -1,8 +1,8 @@
 package nl.vaneijndhoven.dukes.bo;
 
 import io.vertx.core.json.JsonObject;
-import nl.vaneijndhoven.dukes.cooter.EngineMap;
-import nl.vaneijndhoven.dukes.cooter.car.Car;
+import nl.vaneijndhoven.dukes.car.EngineMap;
+import nl.vaneijndhoven.dukes.car.Car;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

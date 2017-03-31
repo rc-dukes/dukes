@@ -1,6 +1,6 @@
 package nl.vaneijndhoven.dukes.generallee;
 
-public class SteeringMap implements nl.vaneijndhoven.dukes.cooter.SteeringMap {
+public class SteeringMap implements nl.vaneijndhoven.dukes.car.SteeringMap {
 
     public static final int WHEEL_CENTER = 163;
     public static final int WHEEL_STEP_SIZE = 5;

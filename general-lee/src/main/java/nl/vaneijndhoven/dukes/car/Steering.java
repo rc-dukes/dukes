@@ -1,9 +1,7 @@
-package nl.vaneijndhoven.dukes.cooter;
+package nl.vaneijndhoven.dukes.car;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static nl.vaneijndhoven.dukes.cooter.Command.servoBlaster;
 
 public class Steering {
 
@@ -28,7 +26,7 @@ public class Steering {
         }
 
         LOG.debug("Setting servo to value " + position);
-        servoBlaster(SERVOBLASTER_ID_WHEEL, position);
+        Command.servoBlaster(SERVOBLASTER_ID_WHEEL, position);
     }
 
     public SteeringMap getSteeringMap() {
