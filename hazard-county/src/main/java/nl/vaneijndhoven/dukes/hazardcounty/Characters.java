@@ -4,8 +4,8 @@ import static java.util.Arrays.asList;
 
 public enum Characters {
 
-    BO("Lost sheep"),
-    LUKE("Lost sheep"),
+    BO("Lost sheep Bo"),
+    LUKE("Lost sheep Luke"),
     DAISY("Bo Peep"),
     UNCLE_JESSE("Shepherd"),
     ROSCOE("Red Dog"),

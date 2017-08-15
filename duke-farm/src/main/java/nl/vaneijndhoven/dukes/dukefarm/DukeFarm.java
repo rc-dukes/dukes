@@ -56,9 +56,16 @@ public class DukeFarm {
             Vertx vertx = resultHandler.result();
             DeploymentOptions deploymentOptions = new DeploymentOptions();
             deploymentOptions.setWorker(true);
-            vertx.deployVerticle(new Flash());
+//            vertx.deployVerticle(new Flash());
             vertx.deployVerticle(new Bo());
-            vertx.deployVerticle(new Daisy("file://Users/jpoint/Repositories/dukes/daisy/src/main/resources/videos/full_run.mp4"), deploymentOptions);
+            vertx.deployVerticle(new Daisy(), deploymentOptions, async -> {
+
+//                if (async.failed()) {
+//                    return;
+//                }
+//
+//                vertx.eventBus().send(Events.STREAMADDED.name(), new JsonObject().put("source", "file://Users/jpoint/Repositories/dukes/daisy/src/main/resources/videos/full_run.mp4"));
+            });
             vertx.deployVerticle(new Luke());
             vertx.deployVerticle(new UncleJesse());
         });

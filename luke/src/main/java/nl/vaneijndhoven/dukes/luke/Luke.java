@@ -29,7 +29,7 @@ public class Luke extends AbstractVerticle {
                 .cast(String.class)
                 .map(JsonObject::new)
                 .flatMap(straighLaneNavigator::navigate)
-                .subscribe(instruction -> vertx.eventBus().send(Characters.BO.getCallsign(), instruction));
+                .subscribe(instruction -> vertx.eventBus().publish(Characters.BO.getCallsign(), instruction));
 
         vertx.eventBus().consumer(Events.LANEDETECTION.name()).toObservable()
                 .doOnNext(evt -> LOG.trace("Received lane detection event (stopping zone detector): {}", evt))
@@ -37,7 +37,7 @@ public class Luke extends AbstractVerticle {
                 .cast(String.class)
                 .map(JsonObject::new)
                 .flatMap(stoppingZoneDetector::detect)
-                .subscribe(instruction -> vertx.eventBus().send(Characters.BO.getCallsign(), instruction));
+                .subscribe(instruction -> vertx.eventBus().publish(Characters.BO.getCallsign(), instruction));
 
         vertx.eventBus().consumer(Events.STARTLIGHTDETECTION.name()).toObservable()
                 .doOnNext(evt -> LOG.trace("Received start light detection event: {}", evt))
@@ -45,7 +45,7 @@ public class Luke extends AbstractVerticle {
                 .cast(String.class)
                 .map(JsonObject::new)
                 .flatMap(startLightObserver::observe)
-                .subscribe(instruction -> vertx.eventBus().send(Characters.BO.getCallsign(), instruction));
+                .subscribe(instruction -> vertx.eventBus().publish(Characters.BO.getCallsign(), instruction));
 
         LOG.info("Luke started");
     }

@@ -15,6 +15,8 @@ import org.opencv.core.Core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
+
 public class Daisy extends AbstractVerticle {
 
     private static final Logger LOG = LoggerFactory.getLogger(Daisy.class);
@@ -30,10 +32,6 @@ public class Daisy extends AbstractVerticle {
 
     }
 
-    public Daisy(String source) {
-        this.source = source;
-    }
-
     @Override
     public void start() throws Exception {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -41,9 +39,7 @@ public class Daisy extends AbstractVerticle {
         vertx.eventBus().consumer(Events.STREAMADDED.name(), this::streamAdded);
 //        vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ".lane.start", this::startLaneDetection);
 //        vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ".startlight.start", this::startStartLightDetection);
-        if (source != null) {
-            vertx.eventBus().publish(Events.STREAMADDED.name(), new JsonObject().put("source", source).put("config", new JsonObject().put("interval", 1000)));
-        }
+
         LOG.info("Daisy started");
     }
 
@@ -139,6 +135,7 @@ public class Daisy extends AbstractVerticle {
 
         detectionStream.toObservable()
                 .map(x -> fetcher.fetch())
+                .takeWhile(Objects::nonNull)
                 .map(laneDetector::detect)
                 .map(map -> {
                     try {
@@ -149,7 +146,12 @@ public class Daisy extends AbstractVerticle {
                     }
                 })
                 .doOnNext(detection -> LOG.trace("Image processing result: " + detection))
-                .subscribe(lane -> vertx.eventBus().publish(Events.LANEDETECTION.name(),lane));
+                .subscribe(lane -> vertx.eventBus().publish(Events.LANEDETECTION.name(),lane),
+                        error -> LOG.error("Error during image processing:", error),
+                        () -> {
+                            LOG.info("Image processing ended");
+                            detectionStream.cancel();
+                        });
 
         LOG.info("Started image processing for source: " + source);
         return detectionStream;
