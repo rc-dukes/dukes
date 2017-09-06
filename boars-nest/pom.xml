@@ -68,7 +68,7 @@
         </dependency>
         <dependency>
             <groupId>nl.vaneijndhoven.dukes</groupId>
-            <artifactId>daisy</artifactId>
+            <artifactId>roscoe</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

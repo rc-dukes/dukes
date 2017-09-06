@@ -58,6 +58,7 @@ public class DukeFarm {
             deploymentOptions.setWorker(true);
             vertx.deployVerticle(new Flash(), deploymentOptions);
             vertx.deployVerticle(new Bo(), deploymentOptions);
+/*
             vertx.deployVerticle(new Daisy(), deploymentOptions);
             vertx.deployVerticle(new Daisy(), deploymentOptions, async -> {
 
@@ -65,16 +66,16 @@ public class DukeFarm {
                     return;
                 }
 
-                vertx.eventBus().send(Events.STREAMADDED.name(), new JsonObject().put("source", "file://Users/jpoint/Repositories/dukes/daisy/src/main/resources/videos/full_run.mp4"));
+//                vertx.eventBus().send(Events.STREAMADDED.name(), new JsonObject().put("source", "file://Users/jpoint/Repositories/dukes/daisy/src/main/resources/videos/full_run.mp4"));
             });
             vertx.deployVerticle(new Luke(), async -> {
                 if (async.failed()) {
                     return;
                 }
 
-                vertx.eventBus().send(Characters.LUKE.getCallsign() + ":" + Luke.START_DRAG_NAVIGATION,null);
-            });
-            vertx.deployVerticle(new UncleJesse());
+//                vertx.eventBus().send(Characters.LUKE.getCallsign() + ":" + Luke.START_DRAG_NAVIGATION,null);
+            });*/
+//            vertx.deployVerticle(new UncleJesse());
         });
     }
 

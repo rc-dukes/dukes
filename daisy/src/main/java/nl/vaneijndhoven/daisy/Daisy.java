@@ -12,6 +12,7 @@ import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
 import org.opencv.core.Core;
+import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
@@ -28,6 +29,9 @@ public class Daisy extends AbstractVerticle {
 
     private final static String START_LANE_DETECTION = "START_LANE_DETECTION";
     private final static String START_STARTLIGHT_DETECTION = "START_STARTLIGHT_DETECTION";
+
+
+    public static Mat MAT = null;
 
     public Daisy() {
 
@@ -155,9 +159,10 @@ public class Daisy extends AbstractVerticle {
         LOG.info("Started image processing for source: " + source);
         return fetcher.toObservable()
                 .sample(interval, TimeUnit.MILLISECONDS)
+                .doOnNext(frame -> Daisy.MAT = frame)
                 .map(frame -> {
                     Map<String, Object> detection = new LaneDetector(createCanny(), createHoughLines(), new ImageCollector()).detect(frame);
-                    detection.put("mat", frame.getNativeObjAddr());
+                    // detection.put("mat", frame.getNativeObjAddr());
                     return detection;
                 });
     }
