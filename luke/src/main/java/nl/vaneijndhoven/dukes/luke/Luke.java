@@ -30,7 +30,7 @@ public class Luke extends AbstractVerticle {
                 .map(JsonObject::new)
                 .flatMap(straighLaneNavigator::navigate)
                 // failsafe ?
-                .switchIfEmpty(Observable.just(new JsonObject().put("speed","stop").encode()))
+                .switchIfEmpty(Observable.just(new JsonObject().put("speed","stop")))
                 .subscribe(
                         instruction -> vertx.eventBus().publish(Characters.BO.getCallsign(), instruction),
                         error -> LOG.error("Error navigating", error),

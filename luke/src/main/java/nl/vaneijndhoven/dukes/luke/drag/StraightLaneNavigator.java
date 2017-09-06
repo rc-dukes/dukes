@@ -36,7 +36,7 @@ public class StraightLaneNavigator {
         lastRudderPercentageSent = 0d;
     }
 
-    public Observable<String> navigate(JsonObject laneDetectResult) {
+    public Observable<JsonObject> navigate(JsonObject laneDetectResult) {
         if (!laneDetectResult.containsKey("angle")) {
             return Observable.empty();
         }
@@ -58,7 +58,7 @@ public class StraightLaneNavigator {
     }
 
 
-    private Observable<String> processLane(double angle) throws NoLinesDetected {
+    private Observable<JsonObject> processLane(double angle) throws NoLinesDetected {
         long currentTime = System.currentTimeMillis();
 
             verifyAngleFound(angle, currentTime);
@@ -90,7 +90,9 @@ public class StraightLaneNavigator {
                 lastRudderPercentageSent = rudderPercentage;
                 previousAngle = angle;
 
-                return just(new JsonObject().put("setwheel", rudderPercentage).encode());
+                JsonObject message = new JsonObject().put("type", "servoDirect").put("position", String.valueOf(rudderPercentage));
+
+                return just(message);
             }
 
             return Observable.empty();

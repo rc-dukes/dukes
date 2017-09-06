@@ -26,9 +26,23 @@
         <script type="text/javascript">
             var eb = new EventBus("http://localhost:8080/eventbus");
 
+            var NUM_LOG_LINES_VISIBLE = 30;
+            var logLines = [];
+
             var display = function(err, msg) {
                 var elem = document.getElementById("events");
-                elem.innerText = elem.innerText + '\n' + new Date() + ' ' + JSON.stringify(msg.body)
+                var logLine = new Date() + ' ' + JSON.stringify(msg.body);
+                logLines.push(logLine);
+
+                if (logLines.length > NUM_LOG_LINES_VISIBLE) {
+                    logLines = logLines.splice(-NUM_LOG_LINES_VISIBLE);
+                }
+
+                var allLogs = '';
+                for (i = 0; i < logLines.length; i++) {
+                    allLogs += '\n' + logLines[i];
+                }
+                elem.innerText = allLogs;
             };
 
             eb.onopen = function () {
