@@ -13,6 +13,7 @@ import nl.vaneijndhoven.dukes.car.Car;
 import nl.vaneijndhoven.dukes.flash.Flash;
 import nl.vaneijndhoven.dukes.generallee.EngineMap;
 import nl.vaneijndhoven.dukes.generallee.SteeringMap;
+import nl.vaneijndhoven.dukes.hazardcounty.Characters;
 import nl.vaneijndhoven.dukes.hazardcounty.Config;
 import nl.vaneijndhoven.dukes.hazardcounty.Environment;
 import nl.vaneijndhoven.dukes.hazardcounty.Events;
@@ -60,13 +61,19 @@ public class DukeFarm {
             vertx.deployVerticle(new Daisy(), deploymentOptions);
             vertx.deployVerticle(new Daisy(), deploymentOptions, async -> {
 
-//                if (async.failed()) {
-//                    return;
-//                }
-//
-//                vertx.eventBus().send(Events.STREAMADDED.name(), new JsonObject().put("source", "file://Users/jpoint/Repositories/dukes/daisy/src/main/resources/videos/full_run.mp4"));
+                if (async.failed()) {
+                    return;
+                }
+
+                vertx.eventBus().send(Events.STREAMADDED.name(), new JsonObject().put("source", "file://Users/jpoint/Repositories/dukes/daisy/src/main/resources/videos/full_run.mp4"));
             });
-            vertx.deployVerticle(new Luke());
+            vertx.deployVerticle(new Luke(), async -> {
+                if (async.failed()) {
+                    return;
+                }
+
+                vertx.eventBus().send(Characters.LUKE.getCallsign() + ":" + Luke.START_DRAG_NAVIGATION,null);
+            });
             vertx.deployVerticle(new UncleJesse());
         });
     }
