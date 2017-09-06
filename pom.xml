@@ -11,14 +11,12 @@
 
     <properties>
         <vertx.version>3.2.1</vertx.version>
-        <log4j.version>2.7</log4j.version>
-        <slf4j.version>1.7.21</slf4j.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
         </dependency>
     </dependencies>
 
@@ -45,18 +43,12 @@
                 <version>${vertx.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-bom</artifactId>
-                <version>${log4j.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.1.5</version>
             </dependency>
         </dependencies>
+
 
     </dependencyManagement>
 

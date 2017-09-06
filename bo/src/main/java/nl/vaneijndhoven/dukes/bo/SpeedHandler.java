@@ -1,10 +1,10 @@
 package nl.vaneijndhoven.dukes.bo;
 
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import nl.vaneijndhoven.dukes.car.EngineMap;
 import nl.vaneijndhoven.dukes.car.Car;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class SpeedHandler {
 

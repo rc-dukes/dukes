@@ -1,6 +1,8 @@
 package nl.vaneijndhoven.dukes.bo;
 
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.Message;
 import nl.vaneijndhoven.dukes.car.Engine;
@@ -9,8 +11,6 @@ import nl.vaneijndhoven.dukes.car.Car;
 import nl.vaneijndhoven.dukes.generallee.EngineMap;
 import nl.vaneijndhoven.dukes.generallee.SteeringMap;
 import nl.vaneijndhoven.dukes.hazardcounty.Characters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import rx.Subscription;
 
 public class Bo extends AbstractVerticle {
