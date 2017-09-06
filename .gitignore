@@ -1,4 +1,10 @@
 # Created by .ignore support plugin (hsz.mobi)
+
+*/target/*
+*.iml
+.idea/*
+.vertx/*
+
 ### macOS template
 *.DS_Store
 .AppleDouble
