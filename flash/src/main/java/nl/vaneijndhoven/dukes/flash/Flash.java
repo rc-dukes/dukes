@@ -49,9 +49,18 @@ public class Flash extends AbstractVerticle {
                 LOG.trace("Missed at least 2 heartbeats.");
                 LOG.error("Client connection lost, stopping car and turning off led");
                 vertx.eventBus().send(Characters.BO.getCallsign(), new JsonObject().put("type", "motor").put("speed", "stop"));
+
+                // failsafe: send stop command again after 200ms
+                vertx.setTimer(200, fired -> sendStopCommand());
+
                 Command.setPowerOff();
             }
         }
+    }
+
+
+    private void sendStopCommand() {
+        vertx.eventBus().send(Characters.BO.getCallsign(), new JsonObject().put("type", "motor").put("speed", "stop"));
     }
 
 }

@@ -1,13 +1,8 @@
 package nl.vaneijndhoven.dukes.dukefarm;
 
-import com.hazelcast.config.Config;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
-import io.vertx.core.logging.SLF4JLogDelegateFactory;
-import io.vertx.core.spi.cluster.ClusterManager;
-import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
-import nl.vaneijndhoven.daisy.Daisy;
 import nl.vaneijndhoven.dukes.bo.Bo;
 import nl.vaneijndhoven.dukes.car.Command;
 import nl.vaneijndhoven.dukes.car.Engine;
@@ -16,6 +11,7 @@ import nl.vaneijndhoven.dukes.car.Car;
 import nl.vaneijndhoven.dukes.flash.Flash;
 import nl.vaneijndhoven.dukes.generallee.EngineMap;
 import nl.vaneijndhoven.dukes.generallee.SteeringMap;
+import nl.vaneijndhoven.dukes.hazardcounty.Config;
 import nl.vaneijndhoven.dukes.hazardcounty.Environment;
 import nl.vaneijndhoven.dukes.luke.Luke;
 import nl.vaneijndhoven.dukes.unclejesse.UncleJesse;
@@ -31,7 +27,7 @@ public class DukeFarm {
     public static void main(String... args) throws Exception {
         Car car = new Car(new Engine(new EngineMap()), new Steering(new SteeringMap()));
 
-        configureLogging();
+        Config.configureLogging();
         configureShutdownHook(car);
 
         // Set wheel and speed to neutral.
@@ -42,7 +38,7 @@ public class DukeFarm {
 
         VertxOptions options = new VertxOptions()
                 .setClustered(true)
-                .setClusterManager(createHazelcastConfig());
+                .setClusterManager(Config.createHazelcastConfig());
 
         if (Environment.getInstance().runningOnRaspberryPi()) {
             LOG.info("Running on the Raspberry Pi, activating Vert.x clustering over the network.");
@@ -79,28 +75,6 @@ public class DukeFarm {
                 Command.statusLedOff();
             }
         });
-    }
-
-    private static void configureLogging() {
-        System.setProperty(io.vertx.core.logging.LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_NAME, SLF4JLogDelegateFactory.class.getName());
-
-//        LoggerContext logConfig = (LoggerContext) LoggerFactory.getILoggerFactory();
-//        logConfig.getLogger("io.vertx").setLevel(Level.INFO);
-//        logConfig.getLogger("com.hazelcast").setLevel(Level.ERROR);
-//        logConfig.getLogger("io.netty").setLevel(Level.ERROR);
-//
-//        logConfig.getLogger("ROOT").setLevel(Level.INFO);
-//        logConfig.getLogger("nl.revolution.dukes").setLevel(Level.DEBUG);
-
-    }
-
-
-    private static ClusterManager createHazelcastConfig() {
-        Config hazelcastConfig = new Config();
-        hazelcastConfig.setProperty("hazelcast.logging.type", "slf4j");
-        ClusterManager mgr = new HazelcastClusterManager(hazelcastConfig);
-        return mgr;
-
     }
 
 }

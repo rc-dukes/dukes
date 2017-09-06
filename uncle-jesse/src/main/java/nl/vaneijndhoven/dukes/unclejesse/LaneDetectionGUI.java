@@ -54,7 +54,7 @@
 //    private boolean configured = false;
 //
 //    public LaneDetectionGUI() {
-//        LoggingUtils.configureLogging();
+//        Config.configureLogging();
 //        initVertx();
 //    }
 //

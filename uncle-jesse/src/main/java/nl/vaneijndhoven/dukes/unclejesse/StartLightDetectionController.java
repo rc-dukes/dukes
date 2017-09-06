@@ -35,7 +35,7 @@
 //    private StartLightDetector detector = new DefaultStartLightDetector();
 //
 //    public StartLightDetectionController() {
-//        LoggingUtils.configureLogging();
+//        Config.configureLogging();
 //        VertxOptions options = new VertxOptions()
 //                .setClustered(true)
 //                .setClusterManager(createHazelcastConfig());

@@ -16,12 +16,29 @@ public class Engine {
     }
 
     public void neutral() {
-        setSpeed(mapping.neutral());
+        boolean force = false;
+        neutral(force);
     }
 
+    public void forceInNeutral() {
+        boolean force = true;
+        neutral(force);
+    }
+
+
+    public void neutral(boolean force) {
+        setSpeed(mapping.neutral(), force);
+    }
+
+
     public static void setSpeed(int speed) {
-        if (!Command.powerIsOn()) {
-            LOG.debug("Not setting motor value; power is off.");
+        boolean force = false;
+        setSpeed(speed, force);
+    }
+
+    private static void setSpeed(int speed, boolean force) {
+        if (!Command.powerIsOn() && !force) {
+            LOG.debug("Not setting motor value; power is off and force is false.");
             return;
         }
 

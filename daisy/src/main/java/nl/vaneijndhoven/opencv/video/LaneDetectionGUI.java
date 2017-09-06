@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import nl.vaneijndhoven.dukes.hazardcounty.Config;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
@@ -21,7 +22,6 @@ import java.util.concurrent.*;
 
 import static nl.vaneijndhoven.opencv.tools.MemoryManagement.closable;
 import static nl.vaneijndhoven.opencv.video.LaneDetectionController.*;
-import static nl.vaneijndhoven.opencv.video.LoggingUtils.createHazelcastConfig;
 
 public class LaneDetectionGUI {
     @FXML private Button cameraButton;
@@ -50,7 +50,7 @@ public class LaneDetectionGUI {
     private boolean configured = false;
 
     public LaneDetectionGUI() {
-        LoggingUtils.configureLogging();
+        Config.configureLogging();
         initVertx();
     }
 
@@ -208,7 +208,7 @@ public class LaneDetectionGUI {
     private void initVertx() {
         VertxOptions options = new VertxOptions()
                 .setClustered(true)
-                .setClusterManager(createHazelcastConfig());
+                .setClusterManager(Config.createHazelcastConfig());
 
         Vertx.clusteredVertx(options, resultHandler -> {
             Vertx vertx = resultHandler.result();

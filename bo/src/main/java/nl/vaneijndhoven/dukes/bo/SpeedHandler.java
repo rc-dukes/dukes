@@ -62,8 +62,7 @@ class SpeedHandler {
 
         } else if ("stop".equals(speed)) {
             currentSpeed = engineMap.neutral();
-
-            setMotorSpeedWrapper(currentSpeed);
+            car.stop();
         } else if ("brake".equals(speed)) {
             performBrake();
         }

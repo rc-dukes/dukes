@@ -27,25 +27,25 @@ public class Command {
         // don't instantiate, use static access
     }
 
-    public static void setMotorSpeed(int speed) {
-        if (!Command.powerIsOn()) {
-            LOG.debug("Not setting motor value; power is off.");
-            return;
-        }
-
-        LOG.debug("Setting motor to value " + speed);
-        servoBlaster(SERVOBLASTER_ID_MOTOR, speed);
-    }
-
-    public static void setWheelPosition(int position) {
-        if (!Command.powerIsOn()) {
-            LOG.debug("Not setting servo value; power is off.");
-            return;
-        }
-
-        LOG.debug("Setting servo to value " + position);
-        servoBlaster(SERVOBLASTER_ID_WHEEL, position);
-    }
+//    public static void setMotorSpeed(int speed, boolean force) {
+//        if (!Command.powerIsOn() && force == false) {
+//            LOG.debug("Not setting motor value; power is off.");
+//            return;
+//        }
+//
+//        LOG.debug("Setting motor to value " + speed);
+//        servoBlaster(SERVOBLASTER_ID_MOTOR, speed);
+//    }
+//
+//    public static void setWheelPosition(int position, boolean force) {
+//        if (!Command.powerIsOn() && force == false) {
+//            LOG.debug("Not setting servo value; power is off.");
+//            return;
+//        }
+//
+//        LOG.debug("Setting servo to value " + position);
+//        servoBlaster(SERVOBLASTER_ID_WHEEL, position);
+//    }
 
 //    public static void stop() {
 //        servoBlaster(SERVOBLASTER_ID_MOTOR, EngineMap.SPEED_ZERO);

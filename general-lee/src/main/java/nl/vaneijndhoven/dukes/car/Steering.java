@@ -16,12 +16,23 @@ public class Steering {
     }
 
     public void center() {
-        setWheelPosition(steeringMap.center());
+        boolean force = false;
+        setWheelPosition(steeringMap.center(), force);
+    }
+
+    public void forceCenter() {
+        boolean force = true;
+        setWheelPosition(steeringMap.center(), force);
     }
 
     public static void setWheelPosition(int position) {
-        if (!Command.powerIsOn()) {
-            LOG.debug("Not setting servo value; power is off.");
+        boolean force = false;
+        setWheelPosition(position, force);
+    }
+
+    private static void setWheelPosition(int position, boolean force) {
+        if (!Command.powerIsOn() && !force) {
+            LOG.debug("Not setting servo value; power is off and force is false.");
             return;
         }
 
@@ -32,4 +43,5 @@ public class Steering {
     public SteeringMap getSteeringMap() {
         return steeringMap;
     }
+
 }

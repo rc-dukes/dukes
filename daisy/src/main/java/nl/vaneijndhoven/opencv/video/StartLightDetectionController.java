@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import nl.vaneijndhoven.dukes.hazardcounty.Config;
 import nl.vaneijndhoven.objects.StartLight;
 import nl.vaneijndhoven.opencv.startlightdetection.DefaultStartLightDetector;
 import nl.vaneijndhoven.opencv.startlightdetection.StartLightDetector;
@@ -23,8 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
-import static nl.vaneijndhoven.opencv.video.LoggingUtils.createHazelcastConfig;
-
 public class StartLightDetectionController {
 
     private Vertx vertx;
@@ -32,10 +31,10 @@ public class StartLightDetectionController {
     private StartLightDetector detector = new DefaultStartLightDetector();
 
     public StartLightDetectionController() {
-        LoggingUtils.configureLogging();
+        Config.configureLogging();
         VertxOptions options = new VertxOptions()
                 .setClustered(true)
-                .setClusterManager(createHazelcastConfig());
+                .setClusterManager(Config.createHazelcastConfig());
 
         Vertx.clusteredVertx(options, resultHandler -> {
             Vertx vertx = resultHandler.result();

@@ -11,16 +11,16 @@ public class Car {
     }
 
     public void stop() {
-        engine.neutral();
-        steering.center();
+        engine.forceInNeutral();
+        steering.forceCenter();
     }
 
-    public void turn(double amount) {
-        Command.setWheelPosition((int)amount);
+    public void turn(double position) {
+        steering.setWheelPosition((int)position);
     }
 
-    public void drive(double amount) {
-        Command.setMotorSpeed((int)amount);
+    public void drive(double speed) {
+        engine.setSpeed((int)speed);
     }
 
     public Engine getEngine() {

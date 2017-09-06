@@ -23,5 +23,7 @@ The self driving car consists of modules with the following responsibilities:
 
 
  
-- 
-- 
+Getting started
+===
+- run 'deploy.sh' in module 'duke-form'
+- start 'boars nest' in IDE
