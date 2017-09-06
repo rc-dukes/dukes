@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class Daisy extends AbstractVerticle {
@@ -24,10 +25,6 @@ public class Daisy extends AbstractVerticle {
 
     private final static long LANE_DETECTION_INTERVAL = 50;
     private final static long START_LIGHT_DETECTION_INTERVAL = 50;
-
-    CannyEdgeDetector.Config canny = new CannyEdgeDetector.Config();
-
-    String source = null;
 
     public Daisy() {
 
@@ -134,14 +131,16 @@ public class Daisy extends AbstractVerticle {
     }
 
     private Observable<Object> startLaneDetection(String source, long interval) {
-        LaneDetector laneDetector = new LaneDetector(createCanny(), createHoughLines(), new ImageCollector());
-
         ImageFetcher fetcher = new ImageFetcher(source);
 
         LOG.info("Started image processing for source: " + source);
         return fetcher.toObservable()
                 .sample(interval, TimeUnit.MILLISECONDS)
-                .map(laneDetector::detect);
+                .map(frame -> {
+                    Map<String, Object> detection = new LaneDetector(createCanny(), createHoughLines(), new ImageCollector()).detect(frame);
+                    detection.put("mat", frame.getNativeObjAddr());
+                    return detection;
+                });
     }
 
     private TimeoutStream startStartLightDetection(Message<Object> msg) {
