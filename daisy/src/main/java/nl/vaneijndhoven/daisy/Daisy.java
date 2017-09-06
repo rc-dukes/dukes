@@ -12,12 +12,11 @@ import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
 import org.opencv.core.Core;
-//import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rx.functions.Action0;
+import rx.Observable;
 
-import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class Daisy extends AbstractVerticle {
 
@@ -46,13 +45,13 @@ public class Daisy extends AbstractVerticle {
     }
 
     private void streamAdded(Message<JsonObject> message) {
-        startLaneDetection(message);
+        startLaneDetection(message)
+                .doOnNext(detection -> LOG.trace("Image processing result: " + detection))
+                .subscribe(
+                    lane -> vertx.eventBus().publish(Events.LANEDETECTION.name(),lane),
+                    error -> LOG.error("Error during image processing:", error),
+                    () -> LOG.info("Image processing ended"));
     }
-//
-//    private TimeoutStream startLaneDetection(Message<JsonObject> msg) {
-//        String inputLocation = msg.body();
-//
-//    }
 
     private void cannyConfig(Message<JsonObject> message) {
         vertx.sharedData().getLocalMap(Characters.DAISY.name()).put("canny", message.body());
@@ -95,8 +94,8 @@ public class Daisy extends AbstractVerticle {
         return hough;
     }
 
-    private TimeoutStream startLaneDetection(Message<JsonObject> msg) {
-        JsonObject jo = (JsonObject) msg.body();
+    private Observable<String> startLaneDetection(Message<JsonObject> msg) {
+        JsonObject jo = msg.body();
         JsonObject config = jo.getJsonObject("config");
 
         CannyEdgeDetector.Config canny = new CannyEdgeDetector.Config();
@@ -125,48 +124,25 @@ public class Daisy extends AbstractVerticle {
             }
         }
 
-        return startLaneDetection(jo.getString("source"), interval);
+        return startLaneDetection(jo.getString("source"), interval).map(map -> {
+            try {
+                return new ObjectMapper().writeValueAsString(map);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
-    private TimeoutStream startLaneDetection(String source, long interval) {
+    private Observable<Object> startLaneDetection(String source, long interval) {
         LaneDetector laneDetector = new LaneDetector(createCanny(), createHoughLines(), new ImageCollector());
 
         ImageFetcher fetcher = new ImageFetcher(source);
 
-        TimeoutStream detectionStream = vertx.periodicStream(interval);
-
-        fetcher.toObservable()
-//                .sample(detectionStream.toObservable())
-//                .map(x -> fetcher.fetch())
-//                .takeWhile(this::imagePresent)
-                .map(laneDetector::detect)
-                .map(map -> {
-                    try {
-                        return new ObjectMapper().writeValueAsString(map);
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .doOnNext(detection -> LOG.trace("Image processing result: " + detection))
-                .subscribe(
-                        lane -> vertx.eventBus().publish(Events.LANEDETECTION.name(),lane),
-                        error -> LOG.error("Error during image processing:", error),
-                        detectionEnded(detectionStream));
-
         LOG.info("Started image processing for source: " + source);
-        return detectionStream;
+        return fetcher.toObservable()
+                .sample(interval, TimeUnit.MILLISECONDS)
+                .map(laneDetector::detect);
     }
-
-    private Action0 detectionEnded(TimeoutStream detectionStream) {
-        return () -> {
-            LOG.info("Image processing ended");
-            detectionStream.cancel();
-        };
-    }
-
-//    private Boolean imagePresent(Mat image) {
-//        return Objects.nonNull(image);
-//    }
 
     private TimeoutStream startStartLightDetection(Message<Object> msg) {
         JsonObject jo = (JsonObject)msg.body();

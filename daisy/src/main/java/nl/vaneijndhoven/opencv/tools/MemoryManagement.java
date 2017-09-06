@@ -1,6 +1,7 @@
 package nl.vaneijndhoven.opencv.tools;
 
 import org.opencv.core.Mat;
+import rx.Observable;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -48,5 +49,9 @@ public class MemoryManagement {
         public S get() {
             return mat;
         }
+    }
+
+    public static Observable<Mat> disposable(Mat mat) {
+        return Observable.using(() -> mat, Observable::just, Mat::release);
     }
 }

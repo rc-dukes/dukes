@@ -1,5 +1,6 @@
 package nl.vaneijndhoven.daisy;
 
+import nl.vaneijndhoven.opencv.tools.MemoryManagement;
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 import rx.Observable;
@@ -44,7 +45,7 @@ public class ImageFetcher {
 
         // Convert to observable.
         Func1<VideoCapture, Observable<Mat>> observableFactory =
-                capture -> Observable.create(subscription -> {
+                capture -> Observable.<Mat>create(subscription -> {
                     boolean hasNext = true;
                     while (hasNext) {
                         final Mat frame = new Mat();
@@ -55,8 +56,7 @@ public class ImageFetcher {
                     }
 
                     subscription.onCompleted();
-                });
-
+                }).switchMap(MemoryManagement::disposable);
 
         // Disposal function.
         Action1<VideoCapture> dispose = VideoCapture::release;

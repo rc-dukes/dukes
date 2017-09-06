@@ -78,15 +78,23 @@ public class ImageLaneDetection {
 
             Map result = new HashMap<>();
             result.put("lane", lane);
-            result.put("angle", angle);
-            result.put("distanceMiddle", distanceMiddle);
-            result.put("distanceLeft", distanceLeft);
-            result.put("distanceRight", distanceRight);
-            result.put("distanceToStoppingZone", distanceToStoppingZone);
-            result.put("distanceToStoppingZoneEnd", distanceToStoppingZoneEnd);
+            putIfNumber("angle", angle, result);
+            putIfNumber("distanceMiddle", distanceMiddle, result);
+            putIfNumber("distanceLeft", distanceLeft, result);
+            putIfNumber("distanceRight", distanceRight, result);
+            putIfNumber("distanceToStoppingZone", distanceToStoppingZone, result);
+            putIfNumber("distanceToStoppingZoneEnd", distanceToStoppingZoneEnd, result);
 
             return result;
         }
+    }
+
+    private void putIfNumber(String key, double angle, Map result) {
+        if (Double.isNaN(angle)) {
+            return;
+        }
+
+        result.put(key, angle);
     }
 
     private void drawLinesToImage(Mat image, Collection<Line> lines, Scalar color) {
