@@ -13,14 +13,17 @@ public class StoppingZoneDetector {
     private double minDistanceToStoppingZone = Double.MAX_VALUE;
 
     public Observable<String> detect(JsonObject laneDetectResult) {
+        if (!laneDetectResult.containsKey("distanceToStoppingZone")) {
+            return Observable.empty();
+        }
+
         double distanceToStoppingZoneStart = laneDetectResult.getDouble("distanceToStoppingZone");
-        double distanceToStoppingZoneEnd = laneDetectResult.getDouble("distanceToStoppingZoneEnd");
+//        double distanceToStoppingZoneEnd = laneDetectResult.getDouble("distanceToStoppingZoneEnd");
 
         return detectStoppingZone(distanceToStoppingZoneStart);
     }
 
     private Observable<String> detectStoppingZone(double distanceToStoppingZoneStart) {
-        // System.out.println("distanceToStoppingZoneStart: " + distanceToStoppingZoneStart);
 
         if (distanceToStoppingZoneStart > 0) {
 
@@ -35,7 +38,6 @@ public class StoppingZoneDetector {
                         System.out.println("--- stop ---");
                         stoppingZoneDetected = true;
                         return just(new JsonObject().put("speed", "brake").encode()).delay(1000, TimeUnit.MILLISECONDS);
-//                        eventBusSendAfterMS(1000,"speed:brake");
                     }
                 }
             }

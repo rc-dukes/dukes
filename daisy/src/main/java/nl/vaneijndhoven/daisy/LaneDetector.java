@@ -36,9 +36,8 @@ public class LaneDetector {
     }
 
     public Map<String, Object> detect(Mat frame) {
-        try (MemoryManagement.ClosableMat closableFrame = closable(frame)) {
-            return performLaneDetection(closableFrame.get());
-        }
+        return performLaneDetection(frame);
+
     }
 
     public Map<String, Object> performLaneDetection(Mat originalImage) {
