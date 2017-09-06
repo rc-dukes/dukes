@@ -56,7 +56,7 @@ public class ImageFetcher {
                     }
 
                     subscription.onCompleted();
-                }).switchMap(MemoryManagement::disposable);
+                });//.switchMap(MemoryManagement::disposable);
 
         // Disposal function.
         Action1<VideoCapture> dispose = VideoCapture::release;
