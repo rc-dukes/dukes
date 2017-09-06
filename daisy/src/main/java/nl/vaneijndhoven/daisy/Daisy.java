@@ -12,8 +12,10 @@ import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
 import org.opencv.core.Core;
+//import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rx.functions.Action0;
 
 import java.util.Objects;
 
@@ -133,29 +135,38 @@ public class Daisy extends AbstractVerticle {
 
         TimeoutStream detectionStream = vertx.periodicStream(interval);
 
-        detectionStream.toObservable()
-                .map(x -> fetcher.fetch())
-                .takeWhile(Objects::nonNull)
+        fetcher.toObservable()
+//                .sample(detectionStream.toObservable())
+//                .map(x -> fetcher.fetch())
+//                .takeWhile(this::imagePresent)
                 .map(laneDetector::detect)
                 .map(map -> {
                     try {
-                        String rs = new ObjectMapper().writeValueAsString(map);
-                        return rs;
+                        return new ObjectMapper().writeValueAsString(map);
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
                 })
                 .doOnNext(detection -> LOG.trace("Image processing result: " + detection))
-                .subscribe(lane -> vertx.eventBus().publish(Events.LANEDETECTION.name(),lane),
+                .subscribe(
+                        lane -> vertx.eventBus().publish(Events.LANEDETECTION.name(),lane),
                         error -> LOG.error("Error during image processing:", error),
-                        () -> {
-                            LOG.info("Image processing ended");
-                            detectionStream.cancel();
-                        });
+                        detectionEnded(detectionStream));
 
         LOG.info("Started image processing for source: " + source);
         return detectionStream;
     }
+
+    private Action0 detectionEnded(TimeoutStream detectionStream) {
+        return () -> {
+            LOG.info("Image processing ended");
+            detectionStream.cancel();
+        };
+    }
+
+//    private Boolean imagePresent(Mat image) {
+//        return Objects.nonNull(image);
+//    }
 
     private TimeoutStream startStartLightDetection(Message<Object> msg) {
         JsonObject jo = (JsonObject)msg.body();
