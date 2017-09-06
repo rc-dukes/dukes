@@ -56,7 +56,7 @@ public class Daisy extends AbstractVerticle {
 
     private void startLD(Message<JsonObject> message) {
         startLaneDetection(message)
-                .doOnNext(detection -> LOG.trace("Image lane detection processing result: " + detection))
+//                .doOnNext(detection -> LOG.trace("Image lane detection processing result: " + detection))
                 .subscribe(
                         lane -> vertx.eventBus().publish(Events.LANEDETECTION.name(), lane),
                         error -> LOG.error("Error during lane detection image processing:", error),

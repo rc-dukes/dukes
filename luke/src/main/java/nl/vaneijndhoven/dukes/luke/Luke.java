@@ -47,7 +47,7 @@ public class Luke extends AbstractVerticle {
 
         // failsafe ?
         laneDetection = vertx.eventBus().consumer(Events.LANEDETECTION.name()).toObservable()
-                .doOnNext(evt -> LOG.trace("Received lane detection event (straight lane navigator): {}", evt.body()))
+//                .doOnNext(evt -> LOG.trace("Received lane detection event (straight lane navigator): {}", evt.body()))
                 .map(Message::body)
                 .cast(String.class)
                 .map(JsonObject::new)
