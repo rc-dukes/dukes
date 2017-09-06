@@ -3,6 +3,8 @@ package nl.vaneijndhoven.dukes.dukefarm;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.json.JsonObject;
+import nl.vaneijndhoven.daisy.Daisy;
 import nl.vaneijndhoven.dukes.bo.Bo;
 import nl.vaneijndhoven.dukes.car.Command;
 import nl.vaneijndhoven.dukes.car.Engine;
@@ -13,6 +15,7 @@ import nl.vaneijndhoven.dukes.generallee.EngineMap;
 import nl.vaneijndhoven.dukes.generallee.SteeringMap;
 import nl.vaneijndhoven.dukes.hazardcounty.Config;
 import nl.vaneijndhoven.dukes.hazardcounty.Environment;
+import nl.vaneijndhoven.dukes.hazardcounty.Events;
 import nl.vaneijndhoven.dukes.luke.Luke;
 import nl.vaneijndhoven.dukes.unclejesse.UncleJesse;
 import org.slf4j.Logger;
@@ -54,16 +57,17 @@ public class DukeFarm {
             deploymentOptions.setWorker(true);
             vertx.deployVerticle(new Flash(), deploymentOptions);
             vertx.deployVerticle(new Bo(), deploymentOptions);
-//            vertx.deployVerticle(new Daisy(), deploymentOptions, async -> {
+            vertx.deployVerticle(new Daisy(), deploymentOptions);
+            vertx.deployVerticle(new Daisy(), deploymentOptions, async -> {
 
 //                if (async.failed()) {
 //                    return;
 //                }
 //
 //                vertx.eventBus().send(Events.STREAMADDED.name(), new JsonObject().put("source", "file://Users/jpoint/Repositories/dukes/daisy/src/main/resources/videos/full_run.mp4"));
-//            });
-//            vertx.deployVerticle(new Luke());
-//            vertx.deployVerticle(new UncleJesse());
+            });
+            vertx.deployVerticle(new Luke());
+            vertx.deployVerticle(new UncleJesse());
         });
     }
 
