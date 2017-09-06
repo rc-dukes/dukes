@@ -32,7 +32,7 @@ public class Flash extends AbstractVerticle {
         JsonObject messageBody = (JsonObject)message.body();
         if ("heartbeat".equals(messageBody.getString("type"))) {
             lastHeartbeat = System.currentTimeMillis();
-            LOG.trace("Heartbeat received, set last heartbeat to {}", lastHeartbeat);
+//            LOG.trace("Heartbeat received, set last heartbeat to {}", lastHeartbeat);
             if (!Command.powerIsOn()) {
                 LOG.info("First heartbeat received, power on");
                 Command.setPowerOn();
@@ -42,13 +42,13 @@ public class Flash extends AbstractVerticle {
 
     private void checkHeartbeat() {
         long currentTime = System.currentTimeMillis();
-        LOG.trace("Check heartbeat, current time: {}", currentTime);
+//        LOG.trace("Check heartbeat, current time: {}", currentTime);
         if (currentTime - lastHeartbeat > (3 * HEARTBEAT_INTERVAL_MS)) {
-            // missed 2 heartbeats
-            LOG.trace("Missed at least 2 heartbeats.");
             if (Command.powerIsOn()) {
+                // missed 2 heartbeats
+                LOG.trace("Missed at least 2 heartbeats.");
                 LOG.error("Client connection lost, stopping car and turning off led");
-                vertx.eventBus().send(Characters.BO.getCallsign(), new JsonObject().put("type", "speedDirect").put("speed", 0));
+                vertx.eventBus().send(Characters.BO.getCallsign(), new JsonObject().put("type", "motor").put("speed", "stop"));
                 Command.setPowerOff();
             }
         }

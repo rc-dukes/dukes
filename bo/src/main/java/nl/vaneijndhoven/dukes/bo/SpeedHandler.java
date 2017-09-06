@@ -42,6 +42,8 @@ class SpeedHandler {
                 currentSpeed = engineMap.maxForward();
             }
 
+            setMotorSpeedWrapper(currentSpeed);
+
         } else if ("down".equals(speed)) {
             currentSpeed = currentSpeed - engineMap.stepSize();
 
@@ -56,11 +58,56 @@ class SpeedHandler {
                 currentSpeed = engineMap.maxReverse();
             }
 
+            setMotorSpeedWrapper(currentSpeed);
+
         } else if ("stop".equals(speed)) {
             currentSpeed = engineMap.neutral();
+
+            setMotorSpeedWrapper(currentSpeed);
+        } else if ("brake".equals(speed)) {
+            performBrake();
         }
 
-        setMotorSpeedWrapper(currentSpeed);
+
+    }
+
+
+    private void performBrake() {
+        LOG.debug("engaging braking sequence");
+
+        try {
+
+            setSpeedDirect("-1");
+
+            Thread.sleep(100);
+            setSpeedDirect("-2");
+
+            Thread.sleep(300);
+            changeSpeed("-1");
+
+            Thread.sleep(500);
+            changeSpeed("stop");
+
+            Thread.sleep(1000);
+            changeSpeed("stop");
+
+        } catch (InterruptedException e) {
+            LOG.error("Error in brake sequence", e);
+        }
+
+    }
+
+
+    private void setSpeedDirect(String speed) {
+        JsonObject message = new JsonObject();
+        message.put("speed", speed);
+        handleSpeedDirect(message);
+    }
+
+    private void changeSpeed(String speed) {
+        JsonObject message = new JsonObject();
+        message.put("speed", speed);
+        handleMotor(message);
     }
 
     void handleSpeedDirect(JsonObject messageBody) {

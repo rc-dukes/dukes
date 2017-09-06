@@ -1,0 +1,202 @@
+<html>
+    <head>
+        <script src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
+        <script src="vertx-eventbus.js"></script>
+
+
+    </head>
+
+    <body>
+
+    <div id="up">up</div>
+    <div><span id="left">left</span> | <span id="right">right</span></div>
+    <div id="down">down</div>
+    <div id="space">space</div> (emergency stop, center steering)
+    <div id="z">z</div> (center steering)
+    <div id="s">s</div> (brake)
+
+
+        <div id="message"></div>
+        <input type="file" accept="video/*"/>
+        <video controls autoplay></video>
+
+        <h1>Events</h1>
+        <pre id="events"></pre>
+
+        <script type="text/javascript">
+            var eb = new EventBus("http://localhost:8080/eventbus");
+
+            var display = function(err, msg) {
+                var elem = document.getElementById("events");
+                elem.innerText = elem.innerText + '\n' + new Date() + ' ' + JSON.stringify(msg.body)
+            };
+
+            eb.onopen = function () {
+                eb.registerHandler("Lost sheep Bo", display);
+                eb.registerHandler("Lost sheep Luke", display);
+                eb.registerHandler("Bo Peep", display);
+                eb.registerHandler("Shepherd", display);
+                eb.registerHandler("Red Dog", display);
+                // eb.registerHandler("Velvet ears", display);
+                eb.registerHandler("Little fat buddy", display);
+                eb.registerHandler("Crazy Cooter", display);
+                eb.registerHandler("Dipstick", display);
+                eb.registerHandler("Cletus", display);
+                eb.registerHandler("STREAMADDED", function(err, msg) {
+                    var videoNode = document.querySelector('video');
+                    videoNode.src = "blob:" + msg.body.source;
+                });
+                eb.registerHandler("CANNYCONFIG", display);
+                eb.registerHandler("HOUGHLINESCONFIG", display);
+                eb.registerHandler("LANEDETECTION", display);
+                eb.registerHandler("STARTLIGHTDETECTION", display);
+
+                registerHeartBeat();
+                registerControls();
+            }
+
+            //            function localFileVideoPlayer() {
+            //                'use strict'
+            var URL = window.URL || window.webkitURL
+            var displayMessage = function (message, isError) {
+                var element = document.querySelector('#message')
+                element.innerHTML = message;
+                element.className = isError ? 'error' : 'info'
+            };
+
+            var playSelectedFile = function (event) {
+                var file = this.files[0]
+                var type = file.type
+                var videoNode = document.querySelector('video')
+                var canPlay = videoNode.canPlayType(type)
+                if (canPlay === '') canPlay = 'no'
+                var message = 'Can play type "' + type + '": ' + canPlay
+                var isError = canPlay === 'no'
+                displayMessage(message, isError)
+
+                if (isError) {
+                    return
+                }
+
+                var fReader = new FileReader();
+                fReader.readAsDataURL(file);
+                fReader.onloadend = function(event){
+
+                var fileURL = URL.createObjectURL(file)
+                eb.publish("STREAMADDED", {"source": fileURL.replace(/blob:/,''), "config": {"interval": 100}});
+            };
+
+            var inputNode = document.querySelector('input')
+
+            inputNode.addEventListener('change', playSelectedFile, false)
+                        }
+
+
+            function registerHeartBeat() {
+                window.setInterval(sendHeartBeat, 150);
+            }
+
+
+            function registerControls() {
+                function keyPressed(id) {
+                    console.log(id);
+                    var element = document.getElementById(id);
+                    element.style.fontWeight = 'bold';
+                    setTimeout(function(){
+                        element.style.fontWeight = 'normal';
+                    }, 200);
+                }
+
+                document.onkeypress = function (e) {
+                    e = e || window.event;
+
+                    var code = e.charCode;
+                    if (code == 0) {
+                        code = e.keyCode;
+                    }
+
+
+
+                    console.log('keycode: ', code);
+                    if (code == 37 ) {
+                        // key left: wheel left
+                        keyPressed("left");
+                        sendWheelCommand('left');
+                    } else if (code == 39) {
+                        // key right: wheel right
+                        keyPressed("right");
+                        sendWheelCommand('right');
+                    } else if (code == 38) {
+                        // key up: speed up
+                        keyPressed("up");
+                        sendSpeedCommand('up');
+                    } else if (code == 40) {
+                        // key down: speed down
+                        keyPressed("down");
+                        sendSpeedCommand('down');
+                    } else if (code == 32) {
+                        // space: stop
+                        keyPressed("space");
+                        sendSpeedCommand('stop');
+                        sendWheelCommand('center');
+                    } else if (code == 115 || code == 98) {
+                        // b / s: stop (with brake)
+                        sendSpeedCommand('brake');
+                    } else if (code == 103) {
+                        // g: go
+                        sendSpeedDirectCommand("1");
+                    } else if (code == 122) {
+                        // z: center wheel
+                        keyPressed("z");
+                        sendWheelCommand('center');
+                    } else if (code >= 48 && code <= 58) {
+                        // 48: 1 key
+                        // 49: 2 key
+                        // set speed direct.
+                        speed = code - 48;
+                        sendSpeedDirectCommand(speed);
+                    }
+                };
+            }
+
+
+            var CALLSIGN_BO = 'Lost sheep Bo';
+
+            function sendWheelCommand(position) {
+
+                data = {
+                    type: 'servo',
+                    position: position
+                };
+                eb.publish(CALLSIGN_BO, data);
+            }
+
+
+            function sendSpeedCommand(speed) {
+                data = {
+                    type: 'motor',
+                    speed: speed
+                };
+                eb.publish(CALLSIGN_BO, data);
+            }
+
+            function sendSpeedDirectCommand(speed) {
+                data = {
+                    type: 'speedDirect',
+                    speed: ''+speed
+                };
+                eb.publish(CALLSIGN_BO, data);
+            }
+
+            var CALLSIGN_FLASH = "Velvet ears";
+            function sendHeartBeat() {
+                data = {
+                    type: 'heartbeat'
+                };
+                eb.publish(CALLSIGN_FLASH, data);
+
+            }
+
+        </script>
+    </body>
+</html>
