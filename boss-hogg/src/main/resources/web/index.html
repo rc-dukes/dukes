@@ -21,7 +21,10 @@
                 <div id="-">- (disable autopilot)</div>
             </td>
             <td>
-                <img id="debugImage">
+                <img id="edgesImage">
+            </td>
+            <td>
+                <img id="linesImage">
             </td>
         </tr>
     </table>
@@ -78,7 +81,7 @@
 
                 registerHeartBeat();
                 registerControls();
-                registerDebugImage();
+                registerDebugImages();
             }
 
             //            function localFileVideoPlayer() {
@@ -243,13 +246,13 @@
                 eb.publish(CALLSIGN_LUKE + ':STOP_NAVIGATION', undefined);
             }
 
-            function registerDebugImage() {
-                window.setInterval(updateDebugImage, 150);
+            function registerDebugImages() {
+                window.setInterval(updateDebugImages, 200);
             }
 
-            function updateDebugImage() {
-                var elem = document.getElementById("debugImage");
-                elem.src = 'http://localhost:8081?' + Math.random();
+            function updateDebugImages() {
+                document.getElementById("edgesImage").src = 'http://localhost:8081?type=edges&' + Math.random();
+                document.getElementById("linesImage").src = 'http://localhost:8081?type=lines' + Math.random();
             }
         </script>
     </body>

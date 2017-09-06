@@ -32,6 +32,7 @@ public class Daisy extends AbstractVerticle {
 
 
     public static Mat MAT = null;
+    public static byte[] CANNY_IMG = null;
 
     public Daisy() {
 
@@ -161,7 +162,9 @@ public class Daisy extends AbstractVerticle {
                 .sample(interval, TimeUnit.MILLISECONDS)
                 .doOnNext(frame -> Daisy.MAT = frame)
                 .map(frame -> {
-                    Map<String, Object> detection = new LaneDetector(createCanny(), createHoughLines(), new ImageCollector()).detect(frame);
+                    ImageCollector collector = new ImageCollector();
+                    Map<String, Object> detection = new LaneDetector(createCanny(), createHoughLines(), collector).detect(frame);
+                    Daisy.CANNY_IMG = collector.edges();
                     // detection.put("mat", frame.getNativeObjAddr());
                     return detection;
                 });

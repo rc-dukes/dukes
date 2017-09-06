@@ -20,14 +20,22 @@ public class Roscoe extends AbstractVerticle {
         vertx.createHttpServer().requestHandler(this::sendImage).listen(8081);
     }
 
+
     private void sendImage(HttpServerRequest request) {
-        MatOfByte matOfByte = new MatOfByte();
-        Imgcodecs.imencode(".png", Daisy.MAT, matOfByte);
-        byte[] bytes = matOfByte.toArray();
+        String type = request.getParam("type");
+        byte[] bytes;
+        if ("edges".equals(type)) {
+            bytes = Daisy.CANNY_IMG;
+        } else {
+            MatOfByte matOfByte = new MatOfByte();
+            Imgcodecs.imencode(".png", Daisy.MAT, matOfByte);
+            bytes = matOfByte.toArray();
+        }
 
         request.response().putHeader("content-type", "image/png");
         request.response().putHeader("content-length", ""+bytes.length);
         request.response().write(Buffer.buffer().appendBytes(bytes));
+
     }
 
 
