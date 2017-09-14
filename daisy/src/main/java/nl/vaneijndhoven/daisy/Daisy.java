@@ -33,6 +33,7 @@ public class Daisy extends AbstractVerticle {
 
 
     public static Mat MAT = null;
+    public static Mat BIRDS_EYE = null;
     public static byte[] CANNY_IMG = null;
 
     public Daisy() {

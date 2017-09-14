@@ -1,13 +1,16 @@
 package nl.vaneijndhoven.opencv.lanedetection;
 
+import nl.vaneijndhoven.daisy.Daisy;
 import nl.vaneijndhoven.geometry.Line;
 import nl.vaneijndhoven.geometry.Point;
+import nl.vaneijndhoven.geometry.Polygon;
 import nl.vaneijndhoven.navigation.plot.LaneOrientation;
 import nl.vaneijndhoven.navigation.plot.StoppingZoneOrientation;
 import nl.vaneijndhoven.objects.*;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.objectdetection.LineExtractor;
+import nl.vaneijndhoven.opencv.perspective.TransformToBirdsEye;
 import nl.vaneijndhoven.opencv.roi.RegionOfInterest;
 import nl.vaneijndhoven.opencv.stopzonedetection.DefaultStoppingZoneDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
@@ -37,6 +40,20 @@ public class ImageLaneDetection {
         Mat image = new RegionOfInterest(0, 0.45, 1, 0.55).region(original);
         Size imageSize = image.size();
         ViewPort viewPort = new ViewPort(new Point(0, 0), imageSize.width, imageSize.height);
+
+        Polygon imagePolygon = new Polygon(
+                new Point(0.45 * imageSize.width, 0.1 * imageSize.height),
+                new Point(0.55 * imageSize.width, 0.1 * imageSize.height),
+                new Point(0.9 * imageSize.width, imageSize.height),
+                new Point(0.1 * imageSize.width, imageSize.height));
+
+        Polygon worldPolygon = new Polygon(
+                new Point(0.3 * imageSize.width, 0),
+                new Point(0.7 * imageSize.width, 0),
+                new Point(0.7 * imageSize.width, imageSize.height),
+                new Point(0.3 * imageSize.width, imageSize.height));
+
+        Daisy.BIRDS_EYE = new TransformToBirdsEye(imagePolygon, worldPolygon).transform(image);
 
         LineExtractor lineExtractor = new LineExtractor(
                 new CannyEdgeDetector(cannyConfig).withImageCollector(imageCollector),

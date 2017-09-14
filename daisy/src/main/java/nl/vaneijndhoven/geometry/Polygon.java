@@ -20,6 +20,26 @@ public class Polygon {
         return points;
     }
 
+    public List<Point2D> getPointsClockwise() {
+        List<Point2D> copy = new ArrayList<>(points);
+
+        if (shoelace() < 0) {
+            Collections.reverse(copy);
+        }
+
+        return copy;
+    }
+
+    public List<Point2D> getPointsCounterClockwise() {
+        List<Point2D> copy = new ArrayList<>(points);
+
+        if (shoelace() >= 0) {
+            Collections.reverse(copy);
+        }
+
+        return copy;
+    }
+
     public static Polygon square(Point2D origin, Point2D opposite) {
         Point2D point1 = origin;
         Point2D point2 = new Point(opposite.getX(), origin.getY());
@@ -59,5 +79,21 @@ public class Polygon {
 
     public void setPointInPlaneStrategy(PointInPlane pointInPlaneStrategy) {
         this.pointInPlaneStrategy = pointInPlaneStrategy;
+    }
+
+    /**
+     * Calculate polygon surface using shoelace method.
+     * @return
+     */
+    private double shoelace() {
+        Point2D previous = points.get(points.size() - 1);
+
+        double size = 0;
+        for (Point2D current : points) {
+            size += (previous.getX() - current.getX()) * (previous.getY() + current.getY());
+            previous = current;
+        }
+
+        return size;
     }
 }

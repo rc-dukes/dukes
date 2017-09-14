@@ -26,6 +26,10 @@ public class Roscoe extends AbstractVerticle {
         byte[] bytes;
         if ("edges".equals(type)) {
             bytes = Daisy.CANNY_IMG;
+        } else if ("birdseye".equals(type)) {
+            MatOfByte matOfByte = new MatOfByte();
+            Imgcodecs.imencode(".png", Daisy.BIRDS_EYE, matOfByte);
+            bytes = matOfByte.toArray();
         } else {
             MatOfByte matOfByte = new MatOfByte();
             Imgcodecs.imencode(".png", Daisy.MAT, matOfByte);

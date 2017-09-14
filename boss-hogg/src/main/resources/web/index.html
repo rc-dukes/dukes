@@ -21,6 +21,9 @@
                 <div id="-">- (disable autopilot)</div>
             </td>
             <td>
+                <img id="birdseyeImage">
+            </td>
+            <td>
                 <img id="edgesImage">
             </td>
             <td>
@@ -251,6 +254,7 @@
             }
 
             function updateDebugImages() {
+                document.getElementById("birdseyeImage").src = 'http://localhost:8081?type=birdseye&' + Math.random();
                 document.getElementById("edgesImage").src = 'http://localhost:8081?type=edges&' + Math.random();
                 document.getElementById("linesImage").src = 'http://localhost:8081?type=lines' + Math.random();
             }
