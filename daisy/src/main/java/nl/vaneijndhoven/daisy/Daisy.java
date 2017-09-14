@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.TimeoutStream;
 import io.vertx.rxjava.core.eventbus.Message;
 import nl.vaneijndhoven.dukes.hazardcounty.Characters;
 import nl.vaneijndhoven.dukes.hazardcounty.Events;
@@ -29,6 +28,8 @@ public class Daisy extends AbstractVerticle {
 
     private final static String START_LANE_DETECTION = "START_LANE_DETECTION";
     private final static String START_STARTLIGHT_DETECTION = "START_STARTLIGHT_DETECTION";
+    private final static String CANNY_CONFIG_UPDATE = "CANNY_CONFIG_UPDATE";
+    private final static String HOUGH_CONFIG_UPDATE = "HOUGH_CONFIG_UPDATE";
 
 
     public static Mat MAT = null;
@@ -46,6 +47,9 @@ public class Daisy extends AbstractVerticle {
 
         vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ":" + START_LANE_DETECTION, this::startLD);
         vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ":" + START_STARTLIGHT_DETECTION, this::startSLD);
+
+        vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ":" + CANNY_CONFIG_UPDATE, this::cannyConfig);
+        vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ":" + HOUGH_CONFIG_UPDATE, this::houghConfig);
 
         LOG.info("Daisy started");
     }
@@ -196,14 +200,6 @@ public class Daisy extends AbstractVerticle {
                         throw new RuntimeException(e);
                     }
                 });
-//        TimeoutStream detectionStream = vertx.periodicStream(interval);
-
-//        detectionStream.toObservable()
-//                .map(x -> fetcher.fetch())
-//                .map(startLightDetector::detect)
-//                .subscribe(lane -> vertx.eventBus().publish(Events.STARTLIGHTDETECTION.name(),lane));
-//
-//        return detectionStream;
     }
 
 }
