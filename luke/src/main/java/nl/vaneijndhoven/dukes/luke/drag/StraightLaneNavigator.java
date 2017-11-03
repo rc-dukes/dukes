@@ -37,19 +37,18 @@ public class StraightLaneNavigator {
     }
 
     public Observable<JsonObject> navigate(JsonObject laneDetectResult) {
-        if (!laneDetectResult.containsKey("angle")) {
-            return Observable.empty();
+        Double angle = null;
+        if (laneDetectResult.containsKey("angle")) {
+            angle = laneDetectResult.getDouble("angle");
         }
-
-        double angle = laneDetectResult.getDouble("angle");
-
 
         return processLane(angle)
                 .onErrorResumeNext(throwable -> {
                     // Convert No Lines Detected situation into stop command.
                     if (throwable instanceof NoLinesDetected) {
                         emergencyStopActivated = true;
-                        return Observable.empty();
+                        JsonObject message = new JsonObject().put("type", "motor").put("speed", "stop");
+                        return just(message);
                     } else {
                         return Observable.error(propagate(throwable));
                     }
@@ -58,10 +57,14 @@ public class StraightLaneNavigator {
     }
 
 
-    private Observable<JsonObject> processLane(double angle) throws NoLinesDetected {
+    private Observable<JsonObject> processLane(Double angle) throws NoLinesDetected {
         long currentTime = System.currentTimeMillis();
 
             verifyAngleFound(angle, currentTime);
+
+            if (angle == null) {
+                return Observable.empty();
+            }
 
             double rudderPercentage = 100 * (Math.abs(angle) / 60) * 0.45; // 0.5 voor rechtdoor rijden
 
@@ -99,8 +102,8 @@ public class StraightLaneNavigator {
     }
 
     /// TODO rewrite to throw exception so calling class can act on specific error to send stop command.
-    private void verifyAngleFound(double angle, long currentTime) throws NoLinesDetected {
-        if (!(angle > 0) && !(angle < 0)) {
+    private void verifyAngleFound(Double angle, long currentTime) throws NoLinesDetected {
+        if (angle == null) {
             // no angle detected
             if ((currentTime - tsLastLinesDetected > MAX_DURATION_NO_LINES_DETECTED) && !emergencyStopActivated) {
                 System.out.println("no angle found for " + MAX_DURATION_NO_LINES_DETECTED + "ms, emergency stop");

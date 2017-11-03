@@ -56,11 +56,14 @@ public class Luke extends AbstractVerticle {
                 .switchIfEmpty(Observable.just(new JsonObject().put("speed", "stop")))
                 .subscribe(
                         instruction -> vertx.eventBus().publish(Characters.BO.getCallsign(), instruction),
-                        error -> LOG.error("Error navigating", error),
+                        error -> {
+                            LOG.error("Error navigating, stopping", error);
+                            vertx.eventBus().publish(Characters.BO.getCallsign(), new JsonObject().put("type", "motor").put("speed", "stop"));
+                        },
                         () -> LOG.info("Completed navigating"));
 
         stoppingZoneDetection = vertx.eventBus().consumer(Events.LANEDETECTION.name()).toObservable()
-                .doOnNext(evt -> LOG.trace("Received lane detection event (stopping zone detector): {}", evt.body()))
+//                .doOnNext(evt -> LOG.trace("Received lane detection event (stopping zone detector): {}", evt.body()))
                 .map(Message::body)
                 .cast(String.class)
                 .map(JsonObject::new)

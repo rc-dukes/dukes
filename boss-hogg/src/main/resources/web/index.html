@@ -1,16 +1,46 @@
 <html>
     <head>
-        <script src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
+        <script src="sockjs.0.3.4.min.js"></script>
         <script src="vertx-eventbus.js"></script>
 
+        <style>
+            body {
+                width: 95%;
+                height: 95%;
+            }
+
+            #events {
+                width: 90%;
+                white-space: pre-wrap;
+            }
+
+            table.images {
+                height: 300px;
+                display: block;
+            }
+
+            img#cameraImage, img#linesImage {
+                height: 300px;
+            }
+
+            img#edgesImage, img#birdseyeImage {
+                height: 150px;
+            }
+
+            td.controls {
+                display: block;
+                width: 300px;
+            }
+
+        </style>
 
     </head>
 
     <body>
 
-    <table>
+    <table class="images">
         <tr>
-            <td>
+            <td class="controls">
                 <div id="up">up</div>
                 <div><span id="left">left</span> | <span id="right">right</span></div>
                 <div id="down">down</div>
@@ -19,23 +49,29 @@
                 <div id="s">s (brake)</div>
                 <div id="+">+ (enable autopilot)</div>
                 <div id="-">- (disable autopilot)</div>
+
+                Canny threshold 1: <input id="cannyConfigThreshold1" type="text" value="60">
+                Canny threshold 2: <input id="cannyConfigThreshold2" type="text" value="150">
+                <button onclick="updateConfig()">Apply config</button>
             </td>
-            <td>
+            <td class="previewImage">
+                <img id="cameraImage" src="http://10.9.8.7/html/cam_pic_new.php">
+            </td>
+            <td class="previewImage">
+                <img id="edgesImage">
+                <br/>
                 <img id="birdseyeImage">
             </td>
-            <td>
-                <img id="edgesImage">
-            </td>
-            <td>
+            <td class="previewImage">
                 <img id="linesImage">
             </td>
         </tr>
     </table>
 
 
-        <div id="message"></div>
-        <input type="file" accept="video/*"/>
-        <video controls autoplay></video>
+        <!--<div id="message"></div>-->
+        <!--<input type="file" accept="video/*"/>-->
+        <!--<video controls autoplay></video>-->
 
         <h1>Events</h1>
         <pre id="events"></pre>
@@ -43,7 +79,7 @@
         <script type="text/javascript">
             var eb = new EventBus("http://localhost:8080/eventbus");
 
-            var NUM_LOG_LINES_VISIBLE = 30;
+            var NUM_LOG_LINES_VISIBLE = 15;
             var logLines = [];
 
             var display = function(err, msg) {
@@ -204,6 +240,7 @@
 
 
             var CALLSIGN_BO = 'Lost sheep Bo';
+            var CALLSIGN_DAISY = 'Bo Peep';
 
             function sendWheelCommand(position) {
 
@@ -257,6 +294,17 @@
                 document.getElementById("birdseyeImage").src = 'http://localhost:8081?type=birdseye&' + Math.random();
                 document.getElementById("edgesImage").src = 'http://localhost:8081?type=edges&' + Math.random();
                 document.getElementById("linesImage").src = 'http://localhost:8081?type=lines' + Math.random();
+            }
+
+            function updateConfig() {
+                var cannyConfigThreshold1 = document.getElementById('cannyConfigThreshold1').value;
+                var cannyConfigThreshold2 = document.getElementById('cannyConfigThreshold2').value;
+
+                cannyConfig = {};
+                cannyConfig.threshold1 = Number(cannyConfigThreshold1);
+                cannyConfig.threshold2 = Number(cannyConfigThreshold2);
+
+                eb.publish(CALLSIGN_DAISY + ':CANNY_CONFIG_UPDATE', cannyConfig);
             }
         </script>
     </body>
