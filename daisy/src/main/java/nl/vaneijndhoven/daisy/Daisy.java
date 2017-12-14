@@ -23,7 +23,7 @@ public class Daisy extends AbstractVerticle {
 
     private static final Logger LOG = LoggerFactory.getLogger(Daisy.class);
 
-    private final static long LANE_DETECTION_INTERVAL = 50;
+    private final static long LANE_DETECTION_INTERVAL = 200;
     private final static long START_LIGHT_DETECTION_INTERVAL = 50;
 
     private final static String START_LANE_DETECTION = "START_LANE_DETECTION";
@@ -47,7 +47,7 @@ public class Daisy extends AbstractVerticle {
         vertx.eventBus().consumer(Events.STREAMADDED.name(), this::streamAdded);
 
         vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ":" + START_LANE_DETECTION, this::startLD);
-        vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ":" + START_STARTLIGHT_DETECTION, this::startSLD);
+//        vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ":" + START_STARTLIGHT_DETECTION, this::startSLD);
 
         vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ":" + CANNY_CONFIG_UPDATE, this::cannyConfig);
         vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ":" + HOUGH_CONFIG_UPDATE, this::houghConfig);
@@ -71,7 +71,7 @@ public class Daisy extends AbstractVerticle {
 
     private void startSLD(Message<JsonObject> message) {
         startStartLightDetection(message)
-                .doOnNext(detection -> LOG.trace("Image start light processing result: " + detection))
+//                .doOnNext(detection -> LOG.trace("Image start light processing result: " + detection))
 //                .takeWhile()
                 .subscribe(
                         light -> vertx.eventBus().publish(Events.STARTLIGHTDETECTION.name(), light),

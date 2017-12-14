@@ -48,7 +48,7 @@ public class BossHogg extends AbstractVerticle {
         options.addOutboundPermitted(new PermittedOptions().setAddressRegex(".*"));
         options.addInboundPermitted(new PermittedOptions().setAddressRegex(".*"));
         router.route("/eventbus/*").handler(SockJSHandler.create(vertx).bridge(options));
-        router.route().handler(StaticHandler.create("web"));
+        router.route().handler(StaticHandler.create("web").setCachingEnabled(false));
         vertx.createHttpServer().requestHandler(router::accept).listen(8080);
 
 //        vertx.eventBus().sendObservable(Characters.DAISY.getCallsign() + "lane.start", new JsonObject().put("source", "file://Users/jpoint/Repositories/opencv-playground/src/main/resources/videos/full_run.mp4"));

@@ -94,6 +94,8 @@ public class ImageLaneDetection {
         double distanceLeft = laneOrientation.distanceFromLeftBoundary();
         double distanceRight = laneOrientation.distanceFromRightBoundary();
 
+        double courseRelativeToHorizon = laneOrientation.determineCourseRelativeToHorizon();
+
         Map result = new HashMap<>();
         result.put("lane", lane);
         putIfNumber("angle", angle, result);
@@ -102,6 +104,7 @@ public class ImageLaneDetection {
         putIfNumber("distanceRight", distanceRight, result);
         putIfNumber("distanceToStoppingZone", distanceToStoppingZone, result);
         putIfNumber("distanceToStoppingZoneEnd", distanceToStoppingZoneEnd, result);
+        putIfNumber("courseRelativeToHorizon", courseRelativeToHorizon, result);
 
         return result;
     }

@@ -91,6 +91,50 @@ public class LaneOrientation {
         }).orElse(Double.NaN);
     }
 
+    public double determineCourseRelativeToHorizon() {
+        Optional<Line> middle = determineLaneMiddle();
+
+        if (!middle.isPresent()) {
+            return Double.NaN;
+        }
+
+        Line middleLine = middle.get();
+        Point2D middleAtHorizon = middleLine.topMost();
+        double middleAtHorizonX = middleAtHorizon.getX();
+
+
+        double maxX = 600; // width of image;
+
+        double courseAbs = (middleAtHorizonX / maxX);
+
+        double courseMaxLeft = 0.7; // 0.7 = auto rijdt max links tov horizon
+        double courseMiddle = 0.5; // 0.5 = midden
+        double courseMaxRight = 0.2; // 0.2 = auto rijdt max rechts tov horizon
+
+
+        double course = 0;
+
+        if (courseAbs > courseMiddle) {
+            // course left
+            double rangeLeft = courseMaxLeft - courseMiddle;
+            double courseLeftPercentage = 100 * (courseAbs - courseMiddle) / rangeLeft;
+            if (courseLeftPercentage > 100) {
+                courseLeftPercentage = 100;
+            }
+            course = -courseLeftPercentage;
+        }
+
+        if (courseAbs < courseMiddle) {
+            // course right
+            double rangeRight = courseMiddle - courseMaxRight;
+            double courseRightPercentage = 100 * (courseMiddle - courseAbs) / rangeRight;
+            course = courseRightPercentage;
+        }
+
+        return course;
+
+    }
+
     public Optional<Line> determineLaneMiddle() {
         if (!lane.getLeftBoundary().isPresent() || !lane.getRightBoundary().isPresent()) {
             return Optional.empty();

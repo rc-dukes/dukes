@@ -33,9 +33,18 @@ public class Luke extends AbstractVerticle {
     private void stopNavigator() {
         LOG.info("Stopping navigator");
 
-        laneDetection.unsubscribe();
-        startLightDetection.unsubscribe();
-        stoppingZoneDetection.unsubscribe();
+        if (laneDetection != null) {
+            laneDetection.unsubscribe();
+        }
+
+        if (startLightDetection != null) {
+            startLightDetection.unsubscribe();
+        }
+
+        if (stoppingZoneDetection != null) {
+            stoppingZoneDetection.unsubscribe();
+        }
+
     }
 
     private void startDragNavigator() {
@@ -62,6 +71,7 @@ public class Luke extends AbstractVerticle {
                         },
                         () -> LOG.info("Completed navigating"));
 
+        /*
         stoppingZoneDetection = vertx.eventBus().consumer(Events.LANEDETECTION.name()).toObservable()
 //                .doOnNext(evt -> LOG.trace("Received lane detection event (stopping zone detector): {}", evt.body()))
                 .map(Message::body)
@@ -72,7 +82,7 @@ public class Luke extends AbstractVerticle {
                         instruction -> vertx.eventBus().publish(Characters.BO.getCallsign(), instruction),
                         error -> LOG.error("Error stopping zone detection", error),
                         () -> LOG.info("Completed stopping zone detection"));
-
+        */
         startLightDetection = vertx.eventBus().consumer(Events.STARTLIGHTDETECTION.name()).toObservable()
                 .doOnNext(evt -> LOG.trace("Received start light detection event: {}", evt))
                 .map(Message::body)

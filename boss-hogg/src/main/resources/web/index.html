@@ -12,10 +12,11 @@
             #events {
                 width: 90%;
                 white-space: pre-wrap;
+                height: 400px;
             }
 
             table.images {
-                height: 300px;
+                height: 550px;
                 display: block;
             }
 
@@ -29,7 +30,7 @@
 
             td.controls {
                 display: block;
-                width: 300px;
+                width: 450px;
             }
 
         </style>
@@ -50,12 +51,78 @@
                 <div id="+">+ (enable autopilot)</div>
                 <div id="-">- (disable autopilot)</div>
 
-                Canny threshold 1: <input id="cannyConfigThreshold1" type="text" value="60">
-                Canny threshold 2: <input id="cannyConfigThreshold2" type="text" value="150">
-                <button onclick="updateConfig()">Apply config</button>
+                <br/>
+                <b>Canny config</b><br/>
+                Threshold 1: <input id="cannyConfigThreshold1Slider" value="60" type="range" min="0" max="500" step="1"
+                                          oninput="onSlide('cannyConfigThreshold1Slider', 'cannyConfigThreshold1Textbox')"/>
+                <input id="cannyConfigThreshold1Textbox" size="2" /><br/>
+
+                Threshold 2: <input id="cannyConfigThreshold2Slider" value="150" type="range" min="0" max="500" step="1"
+                                          oninput="onSlide('cannyConfigThreshold2Slider', 'cannyConfigThreshold2Textbox')"/>
+                <input id="cannyConfigThreshold2Textbox" size="2" /><br/>
+
+
+                <br/>
+                <b>Hough config</b><br/>
+
+
+                Rho: <input id="houghConfigRhoSlider" value="1" type="range" min="0.01" max="10" step="0.01"
+                                    oninput="onSlide('houghConfigRhoSlider', 'houghConfigRhoTextbox')"/>
+                <input id="houghConfigRhoTextbox" size="2" /><br/>
+
+                Theta: <input id="houghConfigThetaSlider" value="0.01745329251" type="range" min="0.01" max="0.2" step="0.00001"
+                            oninput="onSlide('houghConfigThetaSlider', 'houghConfigThetaTextbox')"/>
+                <input id="houghConfigThetaTextbox" size="8" /><br/>
+
+
+                Threshold: <input id="houghConfigThresholdSlider" value="70" type="range" min="0" max="200" step="1"
+                              oninput="onSlide('houghConfigThresholdSlider', 'houghConfigThresholdTextbox')"/>
+                <input id="houghConfigThresholdTextbox" size="2" /><br/>
+
+
+                MinLineLength: <input id="houghConfigMinLineLengthSlider" value="20" type="range" min="0" max="200" step="1"
+                                  oninput="onSlide('houghConfigMinLineLengthSlider', 'houghConfigMinLineLengthTextbox')"/>
+                <input id="houghConfigMinLineLengthTextbox" size="2" /><br/>
+
+
+                MaxLineGap: <input id="houghConfigMaxLineGapSlider" value="10" type="range" min="0" max="200" step="1"
+                                      oninput="onSlide('houghConfigMaxLineGapSlider', 'houghConfigMaxLineGapTextbox')"/>
+                <input id="houghConfigMaxLineGapTextbox" size="2" /><br/>
+
+
+
+                <br/>
+                <b>Camera config</b><br/>
+
+                Exposure Comp. (-10...10), default 0: <input id="camEcSlider" value="0" type="range" min="-10" max="10" step="1"
+                                   oninput="onSlideCam('camEcSlider', 'camEcTextbox', 'ec')"/>
+                <input id="camEcTextbox" size="2" /><br/>
+
+
+
+                Brightness (0...100), default 50: <input id="camBrSlider" value="50" type="range" min="0" max="100" step="1"
+                                                                    oninput="onSlideCam('camBrSlider', 'camBrTextbox', 'br')"/>
+                <input id="camBrTextbox" size="2" /><br/>
+
+
+                Saturation (-100...100), default 0: <input id="camSaSlider" value="0" type="range" min="-100" max="100" step="1"
+                                                         oninput="onSlideCam('camSaSlider', 'camSaTextbox', 'sa')"/>
+                <input id="camSaTextbox" size="2" /><br/>
+
+
+
+
+
+                <!--private double rho = 1;-->
+                <!--private double theta = Math.PI/180; // By choosing this value lines sloping left to right will be < 0 radian, while lines sloping right to left will be > 0 radian.-->
+                <!--private int threshold = 70;-->
+                <!--private double minLineLength = 20;-->
+                <!--private double maxLineGap = 10;-->
+
+
             </td>
             <td class="previewImage">
-                <img id="cameraImage" src="http://10.9.8.7/html/cam_pic_new.php">
+                <img id="cameraImage">
             </td>
             <td class="previewImage">
                 <img id="edgesImage">
@@ -287,7 +354,7 @@
             }
 
             function registerDebugImages() {
-                window.setInterval(updateDebugImages, 200);
+                window.setInterval(updateDebugImages, 100);
             }
 
             function updateDebugImages() {
@@ -297,15 +364,81 @@
             }
 
             function updateConfig() {
-                var cannyConfigThreshold1 = document.getElementById('cannyConfigThreshold1').value;
-                var cannyConfigThreshold2 = document.getElementById('cannyConfigThreshold2').value;
+                var cannyConfigThreshold1 = document.getElementById('cannyConfigThreshold1Slider').value;
+                var cannyConfigThreshold2 = document.getElementById('cannyConfigThreshold2Slider').value;
 
                 cannyConfig = {};
                 cannyConfig.threshold1 = Number(cannyConfigThreshold1);
                 cannyConfig.threshold2 = Number(cannyConfigThreshold2);
 
+                console.log('update canny config: ', cannyConfig);
+
                 eb.publish(CALLSIGN_DAISY + ':CANNY_CONFIG_UPDATE', cannyConfig);
+
+                var houghConfigRho = document.getElementById('houghConfigRhoSlider').value;
+                var houghConfigTheta = document.getElementById('houghConfigThetaSlider').value;
+                var houghConfigThreshold = document.getElementById('houghConfigThresholdSlider').value;
+                var houghConfigMaxLineGap = document.getElementById('houghConfigMaxLineGapSlider').value;
+                var houghConfigMinLineLength = document.getElementById('houghConfigMinLineLengthSlider').value;
+
+                houghConfig = {};
+                houghConfig.rho = Number(houghConfigRho);
+                houghConfig.theta = Number(houghConfigTheta);
+                houghConfig.threshold = Number(houghConfigThreshold);
+                houghConfig.maxLineGap = Number(houghConfigMaxLineGap);
+                houghConfig.minLineLength = Number(houghConfigMinLineLength);
+
+                console.log('update hough config: ', houghConfig);
+                eb.publish(CALLSIGN_DAISY + ':HOUGH_CONFIG_UPDATE', houghConfig);
             }
+
+            function updateSliderValue(sliderId, textbox) {
+                var x = document.getElementById(textbox);
+                var y = document.getElementById(sliderId);
+                x.value = y.value;
+            }
+
+            function onSlide(sliderId, textbox) {
+                updateSliderValue(sliderId, textbox);
+                updateConfig();
+            }
+
+
+            // set initial values for config
+            updateSliderValue('cannyConfigThreshold1Slider', 'cannyConfigThreshold1Textbox');
+            updateSliderValue('cannyConfigThreshold2Slider', 'cannyConfigThreshold2Textbox');
+            updateSliderValue('houghConfigRhoSlider', 'houghConfigRhoTextbox');
+            updateSliderValue('houghConfigThetaSlider', 'houghConfigThetaTextbox');
+            updateSliderValue('houghConfigThresholdSlider', 'houghConfigThresholdTextbox');
+            updateSliderValue('houghConfigMinLineLengthSlider', 'houghConfigMinLineLengthTextbox');
+            updateSliderValue('houghConfigMaxLineGapSlider', 'houghConfigMaxLineGapTextbox');
+            updateSliderValue('houghConfigMaxLineGapSlider', 'houghConfigMaxLineGapTextbox');
+
+            // set initial values for cam config
+            updateSliderValue('camEcSlider', 'camEcTextbox');
+            updateSliderValue('camBrSlider', 'camBrTextbox');
+            updateSliderValue('camSaSlider', 'camSaTextbox');
+
+            function onSlideCam(sliderId, textbox, configKey) {
+                updateSliderValue(sliderId, textbox);
+                updateCamConfig(sliderId, configKey);
+            }
+
+            function updateCamConfig(elementId, configKey) {
+                var configValue = document.getElementById(elementId).value;
+                var url = 'http://10.9.8.7/html/cmd_pipe.php?cmd=' + configKey + '%20' + configValue;
+
+                var ajax_cmd = new XMLHttpRequest();
+                ajax_cmd.open("GET",url,true);
+                ajax_cmd.send();
+            }
+
+
+
+//            setInterval(function() {
+//                document.getElementById("cameraImage").src='http://10.9.8.7/html/cam_get.php?timestamp=' + new Date();
+//            }, 50);
+
         </script>
     </body>
 </html>

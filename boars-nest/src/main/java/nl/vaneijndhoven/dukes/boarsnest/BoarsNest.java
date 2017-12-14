@@ -25,12 +25,14 @@ public class BoarsNest extends AbstractVerticle {
 
         VertxOptions options = new VertxOptions()
                 .setClustered(true)
-                .setClusterManager(Config.createHazelcastConfig());
+                .setClusterManager(Config.createHazelcastConfig())
+                .setBlockedThreadCheckInterval(1000*60*60);
 
         Vertx.clusteredVertx(options, resultHandler -> {
             Vertx vertx = resultHandler.result();
             DeploymentOptions deploymentOptions = new DeploymentOptions();
             deploymentOptions.setWorker(true);
+            deploymentOptions.setMultiThreaded(true);
             vertx.deployVerticle(new BossHogg());
             vertx.deployVerticle(new Roscoe());
 
@@ -39,19 +41,20 @@ public class BoarsNest extends AbstractVerticle {
             if (enableAutoPilot) {
                 vertx.deployVerticle(new Luke());
                 vertx.deployVerticle(new Daisy(), deploymentOptions, async -> {
-                    if (async.failed()) {
-                        LOG.error("Deploying Daisy 1 failed...");
-                        return;
-                    }
+                    vertx.eventBus().send(Events.STREAMADDED.name(), new JsonObject().put("source", "http://10.9.8.7/html/cam_pic_new.php?time=1472218786342&pDelay=66666"));
 
-                    vertx.deployVerticle(new Daisy(), deploymentOptions, result -> {
-                        if (result.failed()) {
-                            LOG.error("Deploying Daisy 2 failed...");
-                            return;
-                        }
+//                    if (async.failed()) {
+//                        LOG.error("Deploying Daisy 1 failed...");
+//                        return;
+//                    }
+//
+//                    vertx.deployVerticle(new Daisy(), deploymentOptions, result -> {
+//                        if (result.failed()) {
+//                            LOG.error("Deploying Daisy 2 failed...");
+//                            return;
+//                        }
 
-                        vertx.eventBus().send(Events.STREAMADDED.name(), new JsonObject().put("source", "http://10.9.8.7/html/cam_pic_new.php?time=1472218786342&pDelay=66666"));
-                    });
+//                    });
 
                 });
             }

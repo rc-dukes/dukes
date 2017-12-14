@@ -37,12 +37,7 @@ public class StraightLaneNavigator {
     }
 
     public Observable<JsonObject> navigate(JsonObject laneDetectResult) {
-        Double angle = null;
-        if (laneDetectResult.containsKey("angle")) {
-            angle = laneDetectResult.getDouble("angle");
-        }
-
-        return processLane(angle)
+        return processLane(laneDetectResult)
                 .onErrorResumeNext(throwable -> {
                     // Convert No Lines Detected situation into stop command.
                     if (throwable instanceof NoLinesDetected) {
@@ -57,38 +52,34 @@ public class StraightLaneNavigator {
     }
 
 
-    private Observable<JsonObject> processLane(Double angle) throws NoLinesDetected {
+    private Observable<JsonObject> processLane(JsonObject laneDetectResult) throws NoLinesDetected {
         long currentTime = System.currentTimeMillis();
 
-            verifyAngleFound(angle, currentTime);
+        Double angle = null;
+        if (laneDetectResult.containsKey("angle")) {
+            angle = laneDetectResult.getDouble("angle");
+        }
 
-            if (angle == null) {
-                return Observable.empty();
-            }
+        Double courseRelativeToHorizon = null;
+        if (laneDetectResult.containsKey("courseRelativeToHorizon")) {
+            courseRelativeToHorizon = laneDetectResult.getDouble("courseRelativeToHorizon");
+        }
 
-            double rudderPercentage = 100 * (Math.abs(angle) / 60) * 0.45; // 0.5 voor rechtdoor rijden
+        verifyAngleFound(angle, currentTime);
 
+        if (angle == null) {
+            return Observable.empty();
+        }
+
+
+
+        // steer on courseRelativeToHorizon
+        if (courseRelativeToHorizon != null) {
             if (currentTime - tsLastCommand > COMMAND_LOOP_INTERVAL) {
-                if (
-                        (previousAngle != 0) &&
-                                (!((previousAngle < 0 && angle > 0) || (previousAngle > 0 && angle < 0)))
-                                && (Math.abs(angle) < Math.abs(previousAngle))) {
-                    System.out.println("center");
-                    rudderPercentage = 0;
-                } else {
-                    if (rudderPercentage > 0) {
-                        String direction;
-                        if (angle > 0) {
-                            direction = "left";
-                            rudderPercentage = -rudderPercentage * 1;
-                        } else {
-                            direction = "right";
-                            rudderPercentage = rudderPercentage * 1.3;
-                        }
-                    }
 
+                System.out.println("steering based on courseRelativeToHorizon: " + courseRelativeToHorizon);
+                double rudderPercentage = courseRelativeToHorizon * -1.0;
 
-                }
                 tsLastCommand = currentTime;
                 lastRudderPercentageSent = rudderPercentage;
                 previousAngle = angle;
@@ -97,8 +88,45 @@ public class StraightLaneNavigator {
 
                 return just(message);
             }
+        }
 
-            return Observable.empty();
+
+
+
+        // fallback: steer on angle
+        double rudderPercentage = 100 * (Math.abs(angle) / 60) * 0.45; // 0.5 voor rechtdoor rijden
+
+        if (currentTime - tsLastCommand > COMMAND_LOOP_INTERVAL) {
+            if (
+                    (previousAngle != 0) &&
+                            (!((previousAngle < 0 && angle > 0) || (previousAngle > 0 && angle < 0)))
+                            && (Math.abs(angle) < Math.abs(previousAngle))) {
+                System.out.println("center");
+                rudderPercentage = 0;
+            } else {
+                if (rudderPercentage > 0) {
+                    String direction;
+                    if (angle > 0) {
+                        direction = "left";
+                        rudderPercentage = -rudderPercentage * 1;
+                    } else {
+                        direction = "right";
+                        rudderPercentage = rudderPercentage * 1.3;
+                    }
+                }
+
+
+            }
+            tsLastCommand = currentTime;
+            lastRudderPercentageSent = rudderPercentage;
+            previousAngle = angle;
+
+            JsonObject message = new JsonObject().put("type", "servoDirect").put("position", String.valueOf(rudderPercentage));
+
+            return just(message);
+        }
+
+        return Observable.empty();
     }
 
     /// TODO rewrite to throw exception so calling class can act on specific error to send stop command.
