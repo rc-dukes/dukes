@@ -26,34 +26,58 @@ public class LaneOrientation {
         Optional<Line> left = lane.getLeftBoundary();
         Optional<Line> right = lane.getRightBoundary();
 
+        Double angLeft = null;
+        Double angMiddle = null;
+        Double angRight = null;
 
-        double angDeg = 0;
-        // if left and right are visible, use the line that's longest
         if (middle.isPresent()) {
-            angDeg = middle.get().angleDeg();
-            return angDeg + 90;
-        } else
-        if (left.isPresent() && right.isPresent() && left.get().length() > 0 && right.get().length() > 0) {
-            if (left.get().length() < right.get().length()) {
-                 angDeg = left.get().angleDeg();
-            } else {
-                 angDeg = right.get().angleDeg();
-            }
-        // if only left visible, use left
-        } else if (left.isPresent() && left.get().length() > 0) {
-                angDeg = left.get().angleDeg();
-        // if only right visible, use left
-        } else if (right.isPresent() && right.get().length() > 0) {
-                angDeg = right.get().angleDeg();
+            angMiddle = middle.get().angleDeg() + 90;
+        }
+        if (left.isPresent() && left.get().length() > 0) {
+            angLeft = left.get().angleDeg() + 90 - 40;
+            angLeft = angLeft * 1.2;
+        }
+        if (right.isPresent() && right.get().length() > 0) {
+            angRight = right.get().angleDeg() + 90 + 50;
+            angRight = angRight * 1.2;
         }
 
 
 
-        if (angDeg == 0) {
-            return Double.NaN;
+        // debug code
+        /*
+        int l, m, r;
+        l = -1;
+        m = -1;
+        r = -1;
+
+        if (angLeft != null) {
+            l = angLeft.intValue();
+        }
+        if (angMiddle != null) {
+            m = angMiddle.intValue();
+        }
+        if (angRight != null) {
+            r = angRight.intValue();
+        }
+        // System.out.println("l:" + l +", m:"+m + ", r:" + r);
+        */
+
+        Double result = null;
+        if (angMiddle != null) {
+            result = angMiddle;
+        }
+        else if (angRight != null) {
+            result = angRight;
+        } else if (angLeft != null) {
+            result = angLeft;
+        } else {
+            result = Double.NaN;
         }
 
-        return -1 * angDeg - 90;
+        // System.out.println("result: " + result);
+        return result;
+
     }
 
     public double distanceFromLeftBoundary() {

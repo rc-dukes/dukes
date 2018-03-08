@@ -15,7 +15,8 @@ public class StraightLaneNavigator {
 
     private static final long MAX_DURATION_NO_LINES_DETECTED = 1000;
 
-    private long COMMAND_LOOP_INTERVAL = 100L;
+//    private long COMMAND_LOOP_INTERVAL = 100L;
+    private long COMMAND_LOOP_INTERVAL = 50L;
 
     private long tsLastLinesDetected = System.currentTimeMillis();
 
@@ -72,57 +73,39 @@ public class StraightLaneNavigator {
         }
 
 
+        Double rudderPercentage = null;
 
-        // steer on courseRelativeToHorizon
         if (courseRelativeToHorizon != null) {
-            if (currentTime - tsLastCommand > COMMAND_LOOP_INTERVAL) {
+            // pass 1: steer on courseRelativeToHorizon
+            rudderPercentage = courseRelativeToHorizon * -1.0;
+            System.out.println("steering based on courseRelativeToHorizon: rudderPercentage = " + rudderPercentage);
+        } else {
+            // pass 2: steer on angle
 
-                System.out.println("steering based on courseRelativeToHorizon: " + courseRelativeToHorizon);
-                double rudderPercentage = courseRelativeToHorizon * -1.0;
+            // rudderPercentage = 100 * (Math.abs(angle) / 60) * 0.45;
+            rudderPercentage = 4 * angle;
 
-                tsLastCommand = currentTime;
-                lastRudderPercentageSent = rudderPercentage;
-                previousAngle = angle;
-
-                JsonObject message = new JsonObject().put("type", "servoDirect").put("position", String.valueOf(rudderPercentage));
-
-                return just(message);
+            if (rudderPercentage < 0) {
+                rudderPercentage = rudderPercentage * 0.8;
+            } else if (rudderPercentage > 0) {
+                rudderPercentage = rudderPercentage * 1.2;
             }
+
+            if (rudderPercentage > 100) {
+                rudderPercentage = 100d;
+            } else if (rudderPercentage < -100) {
+                rudderPercentage = -100d;
+            }
+
+            System.out.println("steering based on angle: rudderPercentage = " + rudderPercentage);
         }
 
 
-
-
-        // fallback: steer on angle
-        double rudderPercentage = 100 * (Math.abs(angle) / 60) * 0.45; // 0.5 voor rechtdoor rijden
-
         if (currentTime - tsLastCommand > COMMAND_LOOP_INTERVAL) {
-            if (
-                    (previousAngle != 0) &&
-                            (!((previousAngle < 0 && angle > 0) || (previousAngle > 0 && angle < 0)))
-                            && (Math.abs(angle) < Math.abs(previousAngle))) {
-                System.out.println("center");
-                rudderPercentage = 0;
-            } else {
-                if (rudderPercentage > 0) {
-                    String direction;
-                    if (angle > 0) {
-                        direction = "left";
-                        rudderPercentage = -rudderPercentage * 1;
-                    } else {
-                        direction = "right";
-                        rudderPercentage = rudderPercentage * 1.3;
-                    }
-                }
-
-
-            }
             tsLastCommand = currentTime;
             lastRudderPercentageSent = rudderPercentage;
             previousAngle = angle;
-
             JsonObject message = new JsonObject().put("type", "servoDirect").put("position", String.valueOf(rudderPercentage));
-
             return just(message);
         }
 
