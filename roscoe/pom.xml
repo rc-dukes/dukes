@@ -27,7 +27,7 @@
             <artifactId>opencv</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/lib/osx-bj/opencv-330.jar</systemPath>
+            <systemPath>${project.basedir}/src/main/resources/lib/osx-tim/opencv-330.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>

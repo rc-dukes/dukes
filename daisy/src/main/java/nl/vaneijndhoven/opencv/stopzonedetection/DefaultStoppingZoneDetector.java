@@ -1,6 +1,6 @@
 package nl.vaneijndhoven.opencv.stopzonedetection;
 
-import nl.vaneijndhoven.geometry.Line;
+import nl.vaneijndhoven.dukes.enos.geometry.Line;
 import nl.vaneijndhoven.objects.StoppingZone;
 import nl.vaneijndhoven.objects.stoppingzone.ZoneEndBoundary;
 import nl.vaneijndhoven.objects.stoppingzone.ZoneStartBoundary;

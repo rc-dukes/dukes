@@ -1,8 +1,6 @@
 package nl.vaneijndhoven.opencv.tools;
 
-import nl.vaneijndhoven.geometry.Line;
-import nl.vaneijndhoven.objects.Lane;
-import nl.vaneijndhoven.objects.StoppingZone;
+import nl.vaneijndhoven.dukes.enos.geometry.Line;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;

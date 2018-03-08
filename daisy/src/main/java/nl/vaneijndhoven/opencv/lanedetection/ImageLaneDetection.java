@@ -1,17 +1,18 @@
 package nl.vaneijndhoven.opencv.lanedetection;
 
 import nl.vaneijndhoven.daisy.Daisy;
-import nl.vaneijndhoven.geometry.Line;
-import nl.vaneijndhoven.geometry.Point;
-import nl.vaneijndhoven.geometry.Polygon;
+import nl.vaneijndhoven.dukes.cooter.CameraMatrix;
+import nl.vaneijndhoven.dukes.cooter.PerspectiveShift;
+import nl.vaneijndhoven.dukes.enos.geometry.Line;
+import nl.vaneijndhoven.dukes.enos.geometry.Point;
+import nl.vaneijndhoven.dukes.enos.geometry.Polygon;
 import nl.vaneijndhoven.navigation.plot.LaneOrientation;
 import nl.vaneijndhoven.navigation.plot.StoppingZoneOrientation;
 import nl.vaneijndhoven.objects.*;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.objectdetection.LineExtractor;
-import nl.vaneijndhoven.opencv.perspective.TransformToBirdsEye;
-import nl.vaneijndhoven.opencv.roi.RegionOfInterest;
+import nl.vaneijndhoven.dukes.cletus.roi.RegionOfInterest;
 import nl.vaneijndhoven.opencv.stopzonedetection.DefaultStoppingZoneDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
 import org.opencv.core.*;
@@ -26,10 +27,12 @@ public class ImageLaneDetection {
 
     private final CannyEdgeDetector.Config cannyConfig;
     private final ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig;
+    private CameraMatrix matrix;
 
-    public ImageLaneDetection(CannyEdgeDetector.Config cannyConfig, ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig) {
+    public ImageLaneDetection(CannyEdgeDetector.Config cannyConfig, ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig, CameraMatrix matrix) {
         this.cannyConfig = cannyConfig;
         this.lineDetectorConfig = lineDetectorConfig;
+        this.matrix = matrix;
     }
 
     public Map<String, Object> detectLane(Mat original, ImageCollector imageCollector) {
@@ -37,23 +40,27 @@ public class ImageLaneDetection {
             System.err.println("detectLane: empty mat?");
         }
 
-        Mat image = new RegionOfInterest(0, 0.45, 1, 0.55).region(original);
+        Mat undistorted = matrix.apply(original);
+        Mat image = new RegionOfInterest(0, 0.55, 1, 0.45).region(undistorted);
         Size imageSize = image.size();
         ViewPort viewPort = new ViewPort(new Point(0, 0), imageSize.width, imageSize.height);
 
         Polygon imagePolygon = new Polygon(
-                new Point(0.45 * imageSize.width, 0.1 * imageSize.height),
-                new Point(0.55 * imageSize.width, 0.1 * imageSize.height),
-                new Point(0.9 * imageSize.width, imageSize.height),
-                new Point(0.1 * imageSize.width, imageSize.height));
+                new Point(0 * imageSize.width, imageSize.height),
+                new Point(1 * imageSize.width, imageSize.height),
+                new Point(0 * imageSize.width, 0 * imageSize.height),
+                new Point(1 * imageSize.width, 0 * imageSize.height)
+        );
 
         Polygon worldPolygon = new Polygon(
-                new Point(0.3 * imageSize.width, 0),
-                new Point(0.7 * imageSize.width, 0),
-                new Point(0.7 * imageSize.width, imageSize.height),
-                new Point(0.3 * imageSize.width, imageSize.height));
+                new Point(0.45 * imageSize.width, imageSize.height),
+                new Point(0.55 * imageSize.width, imageSize.height),
+                new Point(0 * imageSize.width, 0 * imageSize.height),
+                new Point(1 * imageSize.width, 0 * imageSize.height)
+        );
 
-        Daisy.BIRDS_EYE = new TransformToBirdsEye(imagePolygon, worldPolygon).transform(image);
+        PerspectiveShift perspectiveShift = new PerspectiveShift(imagePolygon, worldPolygon);
+        Daisy.BIRDS_EYE = perspectiveShift.apply(image);
 
         LineExtractor lineExtractor = new LineExtractor(
                 new CannyEdgeDetector(cannyConfig).withImageCollector(imageCollector),

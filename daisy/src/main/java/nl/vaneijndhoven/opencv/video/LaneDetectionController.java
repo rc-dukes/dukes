@@ -53,14 +53,14 @@ public class LaneDetectionController {
     }
 
     public void performLaneDetection(Mat originalImage, CannyEdgeDetector.Config cannyConfig, ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig, ImageCollector collector) {
-        ImageLaneDetection laneDetect = new ImageLaneDetection(cannyConfig, lineDetectorConfig);
-        Map<String, Object> laneDetectResult = laneDetect.detectLane(originalImage, collector);
-
-        double distanceToStoppingZoneStart = (double) laneDetectResult.get("distanceToStoppingZone");
-        double distanceToStoppingZoneEnd = (double) laneDetectResult.get("distanceToStoppingZoneEnd");
-        double angle = (double) laneDetectResult.get("angle");
-
-        processLane(angle, distanceToStoppingZoneStart, distanceToStoppingZoneEnd);
+//        ImageLaneDetection laneDetect = new ImageLaneDetection(cannyConfig, lineDetectorConfig, matrix);
+//        Map<String, Object> laneDetectResult = laneDetect.detectLane(originalImage, collector);
+//
+//        double distanceToStoppingZoneStart = (double) laneDetectResult.get("distanceToStoppingZone");
+//        double distanceToStoppingZoneEnd = (double) laneDetectResult.get("distanceToStoppingZoneEnd");
+//        double angle = (double) laneDetectResult.get("angle");
+//
+//        processLane(angle, distanceToStoppingZoneStart, distanceToStoppingZoneEnd);
     }
 
     private void processLane(double angle, double distanceToStoppingZoneStart, double distanceToStoppingZoneEnd) {

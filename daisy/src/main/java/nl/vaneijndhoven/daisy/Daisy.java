@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.Message;
+import nl.vaneijndhoven.dukes.cooter.CameraMatrix;
 import nl.vaneijndhoven.dukes.hazardcounty.Characters;
 import nl.vaneijndhoven.dukes.hazardcounty.Events;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
@@ -30,6 +31,7 @@ public class Daisy extends AbstractVerticle {
     private final static String START_STARTLIGHT_DETECTION = "START_STARTLIGHT_DETECTION";
     private final static String CANNY_CONFIG_UPDATE = "CANNY_CONFIG_UPDATE";
     private final static String HOUGH_CONFIG_UPDATE = "HOUGH_CONFIG_UPDATE";
+    private final static String CAMERA_MATRIX_UPDATE = "CAMERA_MATRIX_UPDATE";
 
 
     public static Mat MAT = null;
@@ -51,6 +53,7 @@ public class Daisy extends AbstractVerticle {
 
         vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ":" + CANNY_CONFIG_UPDATE, this::cannyConfig);
         vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ":" + HOUGH_CONFIG_UPDATE, this::houghConfig);
+        vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ":" + CAMERA_MATRIX_UPDATE, this::cameraMatrix);
 
         LOG.info("Daisy started");
     }
@@ -87,6 +90,10 @@ public class Daisy extends AbstractVerticle {
         vertx.sharedData().getLocalMap(Characters.DAISY.name()).put("hough", message.body());
     }
 
+    private void cameraMatrix(Message<JsonObject> message) {
+        vertx.sharedData().getLocalMap(Characters.DAISY.name()).put("matrix", message.body());
+    }
+
     private long getInterval() {
         Long interval = (Long)vertx.sharedData().getLocalMap(Characters.DAISY.name()).get("interval");
         return interval != null ? interval : LANE_DETECTION_INTERVAL;
@@ -118,6 +125,12 @@ public class Daisy extends AbstractVerticle {
         }
 
         return hough;
+    }
+
+    private CameraMatrix createMatrix() {
+        String matrix = (String)vertx.sharedData().getLocalMap(Characters.DAISY.name()).get("matrix");
+
+        return matrix != null ? CameraMatrix.deserizalize((String)vertx.sharedData().getLocalMap(Characters.DAISY.name()).get("matrix")) : CameraMatrix.DEFAULT;
     }
 
     private Observable<String> startLaneDetection(Message<JsonObject> msg) {
@@ -164,11 +177,11 @@ public class Daisy extends AbstractVerticle {
 
         LOG.info("Started image processing for source: " + source);
         return fetcher.toObservable()
-                .sample(interval, TimeUnit.MILLISECONDS)
+//                .sample(interval, TimeUnit.MILLISECONDS)
                 .doOnNext(frame -> Daisy.MAT = frame)
                 .map(frame -> {
                     ImageCollector collector = new ImageCollector();
-                    Map<String, Object> detection = new LaneDetector(createCanny(), createHoughLines(), collector).detect(frame);
+                    Map<String, Object> detection = new LaneDetector(createCanny(), createHoughLines(), createMatrix(), collector).detect(frame);
                     Daisy.CANNY_IMG = collector.edges();
                     // detection.put("mat", frame.getNativeObjAddr());
                     return detection;

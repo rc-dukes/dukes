@@ -1,7 +1,7 @@
 package nl.vaneijndhoven.objects;
 
 import nl.vaneijndhoven.opencv.linedetection.LineFilter;
-import nl.vaneijndhoven.geometry.Line;
+import nl.vaneijndhoven.dukes.enos.geometry.Line;
 
 import java.util.Collection;
 import java.util.Optional;

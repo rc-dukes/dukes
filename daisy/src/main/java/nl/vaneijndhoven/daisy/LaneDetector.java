@@ -1,5 +1,6 @@
 package nl.vaneijndhoven.daisy;
 
+import nl.vaneijndhoven.dukes.cooter.CameraMatrix;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.lanedetection.ImageLaneDetection;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
@@ -26,12 +27,14 @@ public class LaneDetector {
 
     private CannyEdgeDetector.Config cannyConfig;
     private ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig;
+    private CameraMatrix matrix;
     private ImageCollector collector;
 
 
-    public LaneDetector(CannyEdgeDetector.Config cannyConfig, ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig, ImageCollector collector) {
+    public LaneDetector(CannyEdgeDetector.Config cannyConfig, ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig, CameraMatrix matrix, ImageCollector collector) {
         this.cannyConfig = cannyConfig;
         this.lineDetectorConfig = lineDetectorConfig;
+        this.matrix = matrix;
         this.collector = collector;
     }
 
@@ -41,7 +44,7 @@ public class LaneDetector {
     }
 
     public Map<String, Object> performLaneDetection(Mat originalImage) {
-        ImageLaneDetection laneDetect = new ImageLaneDetection(cannyConfig, lineDetectorConfig);
+        ImageLaneDetection laneDetect = new ImageLaneDetection(cannyConfig, lineDetectorConfig, matrix);
         return laneDetect.detectLane(originalImage, collector);
     }
 

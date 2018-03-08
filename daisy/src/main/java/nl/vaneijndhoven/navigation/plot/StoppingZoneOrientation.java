@@ -1,8 +1,8 @@
 package nl.vaneijndhoven.navigation.plot;
 
-import nl.vaneijndhoven.geometry.Line;
-import nl.vaneijndhoven.geometry.Point;
-import nl.vaneijndhoven.geometry.Point2D;
+import nl.vaneijndhoven.dukes.enos.geometry.Line;
+import nl.vaneijndhoven.dukes.enos.geometry.Point;
+import nl.vaneijndhoven.dukes.enos.geometry.Point2D;
 import nl.vaneijndhoven.objects.Lane;
 import nl.vaneijndhoven.objects.StoppingZone;
 import nl.vaneijndhoven.objects.ViewPort;
