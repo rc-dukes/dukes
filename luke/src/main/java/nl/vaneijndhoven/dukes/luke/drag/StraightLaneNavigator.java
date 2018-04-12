@@ -5,6 +5,7 @@ import io.vertx.rxjava.core.AbstractVerticle;
 import nl.vaneijndhoven.dukes.hazardcounty.Characters;
 import rx.Observable;
 import rx.exceptions.Exceptions;
+import stormbots.MiniPID;
 
 import java.util.Map;
 
@@ -15,7 +16,7 @@ public class StraightLaneNavigator {
 
     private static final long MAX_DURATION_NO_LINES_DETECTED = 1000;
 
-//    private long COMMAND_LOOP_INTERVAL = 100L;
+    // private long COMMAND_LOOP_INTERVAL = 250L;
     private long COMMAND_LOOP_INTERVAL = 50L;
 
     private long tsLastLinesDetected = System.currentTimeMillis();
@@ -32,9 +33,12 @@ public class StraightLaneNavigator {
         initDefaults();
     }
 
+    MiniPID pid;
+
     private void initDefaults() {
         tsLastCommand = System.currentTimeMillis();
         lastRudderPercentageSent = 0d;
+        pid = new MiniPID(1,0,0);
     }
 
     public Observable<JsonObject> navigate(JsonObject laneDetectResult) {
@@ -73,35 +77,50 @@ public class StraightLaneNavigator {
         }
 
 
-        Double rudderPercentage = null;
+        Double rudderPercentage;
 
         if (courseRelativeToHorizon != null) {
             // pass 1: steer on courseRelativeToHorizon
             rudderPercentage = courseRelativeToHorizon * -1.0;
-            System.out.println("steering based on courseRelativeToHorizon: rudderPercentage = " + rudderPercentage);
+            // System.out.println("rudder on horizon: " + rudderPercentage);
         } else {
             // pass 2: steer on angle
-
-            // rudderPercentage = 100 * (Math.abs(angle) / 60) * 0.45;
-            rudderPercentage = 4 * angle;
-
-            if (rudderPercentage < 0) {
-                rudderPercentage = rudderPercentage * 0.8;
-            } else if (rudderPercentage > 0) {
-                rudderPercentage = rudderPercentage * 1.2;
+            if (angle < 0) {
+                // left
+                rudderPercentage = 4 * angle;
+            } else {
+                // right
+                rudderPercentage = 6 * angle;
             }
+            // System.out.println("rudder on angle:   " + rudderPercentage);
 
-            if (rudderPercentage > 100) {
-                rudderPercentage = 100d;
-            } else if (rudderPercentage < -100) {
-                rudderPercentage = -100d;
-            }
-
-            System.out.println("steering based on angle: rudderPercentage = " + rudderPercentage);
         }
 
 
+
+
+
+
+        if (rudderPercentage > 100) {
+            rudderPercentage = 100d;
+        } else if (rudderPercentage < -100) {
+            rudderPercentage = -100d;
+        }
+
+
+
+
+
+
         if (currentTime - tsLastCommand > COMMAND_LOOP_INTERVAL) {
+
+
+            // double pidRudderPercentage = pid.getOutput(angle * 5, rudderPercentage);
+             // System.out.println("rudderPercentage: " + rudderPercentage + ", pid rudder percentage: " + pidRudderPercentage);
+            // rudderPercentage = pidRudderPercentage;
+
+
+
             tsLastCommand = currentTime;
             lastRudderPercentageSent = rudderPercentage;
             previousAngle = angle;

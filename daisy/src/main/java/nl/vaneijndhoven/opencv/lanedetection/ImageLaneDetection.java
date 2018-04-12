@@ -41,7 +41,8 @@ public class ImageLaneDetection {
         }
 
         Mat undistorted = matrix.apply(original);
-        Mat image = new RegionOfInterest(0, 0.55, 1, 0.45).region(undistorted);
+        // Mat image = new RegionOfInterest(0, 0.55, 1, 0.45).region(undistorted);
+        Mat image = new RegionOfInterest(0, 0.2, 1, 0.5).region(undistorted);
         Size imageSize = image.size();
         ViewPort viewPort = new ViewPort(new Point(0, 0), imageSize.width, imageSize.height);
 
@@ -59,8 +60,8 @@ public class ImageLaneDetection {
                 new Point(1 * imageSize.width, 0 * imageSize.height)
         );
 
-        PerspectiveShift perspectiveShift = new PerspectiveShift(imagePolygon, worldPolygon);
-        Daisy.BIRDS_EYE = perspectiveShift.apply(image);
+//        PerspectiveShift perspectiveShift = new PerspectiveShift(imagePolygon, worldPolygon);
+//        Daisy.BIRDS_EYE = perspectiveShift.apply(image);
 
         LineExtractor lineExtractor = new LineExtractor(
                 new CannyEdgeDetector(cannyConfig).withImageCollector(imageCollector),

@@ -1,6 +1,7 @@
 package nl.vaneijndhoven.dukes.cooter;
 
 import nl.vaneijndhoven.dukes.cooter.CameraMatrix;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -13,9 +14,7 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by jpoint on 04/02/2018.
- */
+@Ignore
 public class CameraMatrixTest {
     @Test
     public void calc() throws Exception {

@@ -2,6 +2,7 @@ package nl.vaneijndhoven.dukes.cooter;
 
 import nl.vaneijndhoven.dukes.enos.geometry.Point;
 import nl.vaneijndhoven.dukes.enos.geometry.Polygon;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -9,6 +10,7 @@ import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import nl.vaneijndhoven.dukes.cletus.roi.RegionOfInterest;
 
+@Ignore
 public class PerspectiveShiftTest {
 
     @Test

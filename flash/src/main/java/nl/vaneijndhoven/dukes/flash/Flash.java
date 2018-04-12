@@ -43,7 +43,7 @@ public class Flash extends AbstractVerticle {
     private void checkHeartbeat() {
         long currentTime = System.currentTimeMillis();
 //        LOG.trace("Check heartbeat, current time: {}", currentTime);
-        if (currentTime - lastHeartbeat > (3 * HEARTBEAT_INTERVAL_MS)) {
+        if (currentTime - lastHeartbeat > (6 * HEARTBEAT_INTERVAL_MS)) {
             if (Command.powerIsOn()) {
                 // missed 2 heartbeats
                 LOG.trace("Missed at least 2 heartbeats.");
