@@ -22,6 +22,9 @@ The self driving car consists of modules with the following responsibilities:
 | Uncle Jesse   | JavaFX   | laptop  | JavaFX app to monitor the car
 
 
+Preparation
+==
+Get an opencv.jar for your platform
  
 Getting started
 ===

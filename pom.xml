@@ -11,6 +11,8 @@
 
     <properties>
         <vertx.version>3.5.4</vertx.version>
+        <hazelcast.version>3.9</hazelcast.version>
+        <logback-classic.version>1.1.5</logback-classic.version>
     </properties>
 
     <dependencies>
@@ -22,6 +24,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.hazelcast</groupId>
+                <artifactId>hazelcast</artifactId>
+                <version>${hazelcast.version}</version>
+            </dependency>
             <dependency>
                 <groupId>io.vertx</groupId>
                 <artifactId>vertx-core</artifactId>
@@ -45,7 +52,7 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.1.5</version>
+                  <version>${logback-classic.version}</version>
             </dependency>
         </dependencies>
 
@@ -72,8 +79,10 @@
     <build>
         <plugins>
             <plugin>
+                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
