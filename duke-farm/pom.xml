@@ -44,11 +44,6 @@
         </dependency>
         <dependency>
             <groupId>nl.vaneijndhoven.dukes</groupId>
-            <artifactId>general-lee</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>nl.vaneijndhoven.dukes</groupId>
             <artifactId>flash</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
@@ -64,22 +59,12 @@
         </dependency>
         <dependency>
             <groupId>nl.vaneijndhoven.dukes</groupId>
-            <artifactId>daisy</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>nl.vaneijndhoven.dukes</groupId>
             <artifactId>luke</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>nl.vaneijndhoven.dukes</groupId>
             <artifactId>uncle-jesse</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>nl.vaneijndhoven.dukes</groupId>
-            <artifactId>hazard-county</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
