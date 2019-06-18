@@ -33,6 +33,8 @@ checkopencv() {
   done
 }
 
-checkopencv
+# old style opencv jar handling
+#checkopencv
+# now pom.xml has a workaround for this
 mvn clean install
 

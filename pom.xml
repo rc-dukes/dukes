@@ -1,94 +1,129 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>nl.vaneijndhoven</groupId>
-    <artifactId>dukes</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+  <groupId>nl.vaneijndhoven</groupId>
+  <artifactId>dukes</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-    <properties>
-        <vertx.version>3.5.4</vertx.version>
-        <hazelcast.version>3.9</hazelcast.version>
-        <logback-classic.version>1.1.5</logback-classic.version>
-    </properties>
+  <properties>
+    <vertx.version>3.5.4</vertx.version>
+    <hazelcast.version>3.9</hazelcast.version>
+    <logback-classic.version>1.1.5</logback-classic.version>
+    <!--
+      open cv version 2019-06: 2.4.6.1
+      which would be available in maven central
+      3.3.0 has to be installed e.g. from lib directory (see below)
+    -->
+    <opencv.version>3.3.0</opencv.version>
+  </properties>
 
+  <dependencies>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+    </dependency>
+  </dependencies>
+
+  <dependencyManagement>
     <dependencies>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-        </dependency>
+      <!-- https://mvnrepository.com/artifact/org.opencv/opencv-jar -->
+      <dependency>
+        <groupId>org.opencv</groupId>
+        <artifactId>opencv-jar</artifactId>
+        <version>${opencv.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.hazelcast</groupId>
+        <artifactId>hazelcast</artifactId>
+        <version>${hazelcast.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-core</artifactId>
+        <version>${vertx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-rx-java</artifactId>
+        <version>${vertx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-hazelcast</artifactId>
+        <version>${vertx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-web</artifactId>
+        <version>${vertx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback-classic.version}</version>
+      </dependency>
     </dependencies>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.hazelcast</groupId>
-                <artifactId>hazelcast</artifactId>
-                <version>${hazelcast.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.vertx</groupId>
-                <artifactId>vertx-core</artifactId>
-                <version>${vertx.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.vertx</groupId>
-                <artifactId>vertx-rx-java</artifactId>
-                <version>${vertx.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.vertx</groupId>
-                <artifactId>vertx-hazelcast</artifactId>
-                <version>${vertx.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.vertx</groupId>
-                <artifactId>vertx-web</artifactId>
-                <version>${vertx.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                  <version>${logback-classic.version}</version>
-            </dependency>
-        </dependencies>
+  </dependencyManagement>
 
+  <modules>
+    <module>bo</module>
+    <module>boars-nest</module>
+    <module>boss-hogg</module>
+    <module>cletus</module>
+    <module>cooter</module>
+    <module>daisy</module>
+    <module>duke-farm</module>
+    <module>enos</module>
+    <module>flash</module>
+    <module>luke</module>
+    <module>roscoe</module>
+    <module>uncle-jesse</module>
+    <module>hazard-county</module>
+    <module>general-lee</module>
+  </modules>
 
-    </dependencyManagement>
-
-    <modules>
-        <module>bo</module>
-        <module>boars-nest</module>
-        <module>boss-hogg</module>
-        <module>cletus</module>
-        <module>cooter</module>
-        <module>daisy</module>
-        <module>duke-farm</module>
-        <module>enos</module>
-        <module>flash</module>
-        <module>luke</module>
-        <module>roscoe</module>
-        <module>uncle-jesse</module>
-        <module>hazard-county</module>
-        <module>general-lee</module>
-    </modules>
-
-    <build>
-        <plugins>
-            <plugin>
-                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+    <plugins>
+      <plugin>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <!-- how to fake a maven dependency to be resolved locally
+      https://stackoverflow.com/a/31023523/1497139 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>2.5.2</version>
+        <executions>
+          <execution>
+            <id>install-external</id>
+            <phase>clean</phase>
+            <configuration>
+              <file>${basedir}/lib/opencv-330.jar</file>
+              <repositoryLayout>default</repositoryLayout>
+              <groupId>org.opencv</groupId>
+              <artifactId>opencv-jar</artifactId>
+              <version>${opencv.version}</version>
+              <packaging>jar</packaging>
+              <generatePom>true</generatePom>
+            </configuration>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

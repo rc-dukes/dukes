@@ -1,5 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
 
+# opencv.jar not in git
+/lib
+
 */target/*
 *.iml
 .idea/*
