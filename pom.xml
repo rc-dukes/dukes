@@ -18,6 +18,9 @@
     -->
     <opencv.version>3.3.0</opencv.version>
     <main_dir>${project.parent.relativePath}/..</main_dir>
+    <!-- fix encoding -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
   <dependencies>
