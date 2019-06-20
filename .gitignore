@@ -5,9 +5,6 @@
 .classpath
 .settings
 
-# opencv.jar not in git
-/lib
-
 */target/*
 *.iml
 .idea/*
