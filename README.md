@@ -31,6 +31,9 @@ The self driving car consists of modules with the following responsibilities:
 | Roscoe        |          |         | lane detection debug image web server
 | Uncle Jesse   | JavaFX   | laptop  | JavaFX app to monitor the car
 
+### Inspiration for naming
+* [Dukes of Hazzard](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard)
+
 
 ## Getting started
 - run 'install.sh'
