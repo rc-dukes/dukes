@@ -37,6 +37,14 @@ The self driving car consists of modules with the following responsibilities:
 
 ## Getting started
 - run 'install.sh'
-- modify deploy.sh in duke-farm to correct address of your Raspberry PI
-- run 'deploy.sh' in module 'duke-farm'
+- create a "~/dukes/dukes.ini" file with your settings, example:
+```
+#
+# rc-dukes configuration file
+# see https://github.com/rc-dukes/dukes
+#
+targetHost=10.9.8.7
+targetUser=pi
+``` 
+- run './deploy.sh -m -s' in module 'duke-farm'
 - start 'boars nest' in IDE
