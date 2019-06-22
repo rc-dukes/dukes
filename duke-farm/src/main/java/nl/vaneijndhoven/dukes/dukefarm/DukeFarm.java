@@ -25,6 +25,11 @@ public class DukeFarm {
 
     private static final Logger LOG = LoggerFactory.getLogger(DukeFarm.class);
 
+    /**
+     * start me with given command line parameters
+     * @param args - the command line parameters to use
+     * @throws Exception
+     */
     public static void main(String... args) throws Exception {
         Car car = new Car(new Engine(new EngineMap()), new Steering(new SteeringMap()));
 

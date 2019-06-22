@@ -1,0 +1,166 @@
+#!/bin/bash
+# WF 2019-06-22
+# see also https://stackoverflow.com/a/52004387/1497139
+
+#ansi colors
+#http://www.csc.uvic.ca/~sae/seng265/fall04/tips/s265s047-tips/bash-using-colors.html
+blue='\033[0;34m'
+red='\033[0;31m'
+green='\033[0;32m' # '\e[1;32m' is too bright for white bg.
+endColor='\033[0m'
+
+#
+# a colored message
+#   params:
+#     1: l_color - the color of the message
+#     2: l_msg - the message to display
+#
+color_msg() {
+  local l_color="$1"
+  local l_msg="$2"
+  echo -e "${l_color}$l_msg${endColor}"
+}
+
+# error
+#
+#   show an error message and exit
+#
+#   params:
+#     1: l_msg - the message to display
+error() {
+  local l_msg="$1"
+  # use ansi red for error
+  color_msg $red "Error: $l_msg" 1>&2
+}
+
+#
+# createSite
+#   ws: global variable pointing to workspace
+#   param 1: l_project - project name/directory
+#   param 2: l_ghpages - directory where gh-pages branch has been git cloned/pulled
+#   param 3: l_modules - non-empty for a multi-module project (e.g. containing the list of modules)
+#
+createMavenSite() {
+  local l_project="$1"
+  local l_ghpages="$2"
+  local l_modules="$3"
+
+  color_msg $green "creating site for $l_project $l_modules"
+  cd $ws/$l_project
+  stage=/tmp/stage$$
+  sitelog=/tmp/sitelog$$.txt
+  rm -rf $stage
+  # the stagingDirectory needs to be subdirectory
+  mkdir -p $stage/$l_project
+
+  # run the staging of the site against this directory and log the results
+  mvn -U clean install site site:stage -DstagingDirectory=$stage/$l_project | tee $sitelog
+
+  # rsync the result into the github-pages folder
+  rsync -avz --del $stage/* $l_ghpages/$l_project/
+
+  # is this a multi module project?
+  if [ "$l_modules" != "" ]
+  then
+    cd $l_ghpages/$l_project/
+    if [ ! -f index.html ]
+    then
+      cat << EOF > index.html
+<!DOCTYPE html>
+<html>
+<head>
+   <!-- HTML meta refresh URL redirection -->
+   <meta http-equiv="refresh"
+   content="0; url=./$l_project/$l_project/index.html">
+</head>
+<body>
+   <p>This is a multimodule mvn site click below to get to the index.html of
+   <a href="./$l_project/$l_project/index.html">$l_project</a></p>
+</body>
+</html>
+EOF
+    fi
+    # add potentially new files
+    git add *
+    # commit results
+    git commit -m "checked in by checksite script"
+    # push results
+    git push
+  fi
+  if [ "$debug" = "false" ]
+  then
+    rm -rf $stage
+    rm $sitelog
+  fi
+}
+
+#
+# check the github pages for the given project
+#
+# param 1: base url in github
+# param 2: project name/directory
+#
+checkghpages() {
+  local l_baseurl="$1"
+  local l_project="$2"
+  cd $ws/$l_project
+  git ls-remote --heads | grep gh-pages > /dev/null
+  if [ $? -ne 0 ]
+  then
+    color_msg $red "github pages branch gh-pages missing for $l_project"
+    color_msg $blue "shall i create the branch gh-pages for $l_project?"
+    read answer
+    case $answer in
+      y|Y|yes|Yes|j|Ja)
+        color_msg $blue "creating gh-pages branch for $l_project ..."
+        cd /tmp
+        # https://gist.github.com/ramnathv/2227408
+        git clone $l_baseurl/$l_project
+        cd $l_project
+        git symbolic-ref HEAD refs/heads/gh-pages
+        rm .git/index
+        git clean -fdx
+        echo "<a href='$l_baseurl/$l_project'>Initial GitHub Page for $l_project</a>" > index.html
+        git add .
+        git commit -a -m "First pages commit by checkos script"
+        git push origin gh-pages
+        cd $ws/$l_project
+        git pull
+      ;;
+    esac
+  else
+    color_msg $green "github pages branch gh-pages for $l_project exists✓"
+  fi
+}
+
+
+# global workspace
+ws=$HOME/source/java
+gp=$HOME/source/gh-pages
+case $(uname -a) in
+  Darwin*)
+    ws=$HOME/Documents/workspace
+    gp=$HOME/Documents/gh-pages
+  ;;
+esac
+if [ ! -d $gp ]
+then
+  mkdir -p $gp
+fi
+
+baseurl=https://github.com/rc-dukes
+project=dukes
+checkghpages $baseurl dukes
+
+cd $gp
+if [ ! -d $project ]
+then
+  color_msg $green "cloning github pages"
+  git clone $baseurl/$project --branch gh-pages --single-branch
+else
+  cd $project
+  color_msg $green "pulling github pages"
+  git pull
+fi
+
+# createMavenSite $project $gp yes

@@ -53,8 +53,13 @@ usage() {
 
 #
 # copy the fat java file to the target machine
+# 
+#  param 1: the ini file to use
+#  param 2: the iniPath to use
 #
 copyToTarget() {
+  local l_ini="$1"
+  local l_iniPath="$2"
   jar="duke-farm-1.0-SNAPSHOT-fat.jar"
   color_msg $blue "copying $jar to $target"
   if [ ! -f target/$jar ]
@@ -62,9 +67,16 @@ copyToTarget() {
     error "$jar is missing - you might want to run $0 -m"
     exit 1
   else
+     # create the properties path on the remote computer
+     rinipath=$(dirname $l_ini)
+     ssh $target mkdir -p "$rinipath" 
+     # copy the properties file
+     scp "$l_iniPath" "$target:$l_ini"
+     # sync the fat file
      rsync -avz --progress target/$jar $target:~
      color_msg $blue "starting duke-farm"
-     ssh $target -t "killall -9 java; screen sh -c \"/usr/bin/java -jar $jar\""
+     #ssh $target -t "killall -9 java; screen sh -c \"/usr/bin/java -jar $jar\""
+     ssh $target -t "killall -9 java;/usr/bin/java -jar $jar"
   fi
 }
 
@@ -84,14 +96,15 @@ getValue() {
 # start the farm
 #
 startFarm() {
-  ini=$HOME/.dukes/dukes.ini
-  if [ -f $ini  ]
+  ini=.dukes/dukes.ini
+  inipath=$HOME/$ini 
+  if [ -f $inipath  ]
   then
-    targetUser=$(getValue $ini targetUser)
-    targetHost=$(getValue $ini targetHost)
+    targetUser=$(getValue $inipath targetUser)
+    targetHost=$(getValue $inipath targetHost)
     target=$targetUser@$targetHost
   else
-    color_msg $red "configuration file $ini is missing - will use $target as target"
+    color_msg $red "configuration file $inipath is missing - will use $target as target"
   fi
 
   # ping intranet assuming 500 msecs max response time
@@ -102,7 +115,7 @@ startFarm() {
     error "target host $targetHost is not reachable\nYou might want to create $ini or modify the deploy.sh script"
     exit 1
   else
-    copyToTarget
+    copyToTarget "$ini" "$inipath"
   fi
 }
 
@@ -125,7 +138,7 @@ do
 
     -m|--maven)
        color_msg $blue "starting maven install"
-       ../install.sh
+       ../scripts/install.sh
        ;;
 
     -s|--start)
