@@ -1,29 +1,26 @@
 package nl.vaneijndhoven.dukes.dukefarm;
 
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
-import io.vertx.core.json.JsonObject;
-import nl.vaneijndhoven.daisy.Daisy;
-import nl.vaneijndhoven.dukes.bo.Bo;
-import nl.vaneijndhoven.dukes.car.Command;
-import nl.vaneijndhoven.dukes.car.Engine;
-import nl.vaneijndhoven.dukes.car.Steering;
-import nl.vaneijndhoven.dukes.car.Car;
-import nl.vaneijndhoven.dukes.flash.Flash;
-import nl.vaneijndhoven.dukes.generallee.EngineMap;
-import nl.vaneijndhoven.dukes.generallee.SteeringMap;
-import nl.vaneijndhoven.dukes.hazardcounty.Characters;
-import nl.vaneijndhoven.dukes.hazardcounty.Config;
-import nl.vaneijndhoven.dukes.hazardcounty.Environment;
-import nl.vaneijndhoven.dukes.hazardcounty.Events;
-import nl.vaneijndhoven.dukes.luke.Luke;
-import nl.vaneijndhoven.dukes.unclejesse.UncleJesse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static nl.vaneijndhoven.dukes.hazardcounty.Environment.RASPBERRY_PI_IP;
+import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
+import nl.vaneijndhoven.dukes.bo.Bo;
+import nl.vaneijndhoven.dukes.car.Car;
+import nl.vaneijndhoven.dukes.car.Command;
+import nl.vaneijndhoven.dukes.car.Engine;
+import nl.vaneijndhoven.dukes.car.Steering;
+import nl.vaneijndhoven.dukes.flash.Flash;
+import nl.vaneijndhoven.dukes.generallee.EngineMap;
+import nl.vaneijndhoven.dukes.generallee.SteeringMap;
+import nl.vaneijndhoven.dukes.hazardcounty.Config;
+import nl.vaneijndhoven.dukes.hazardcounty.Environment;
 
+/**
+ * Runner to start the cluster on the car
+ *
+ */
 public class DukeFarm {
 
     private static final Logger LOG = LoggerFactory.getLogger(DukeFarm.class);
@@ -47,7 +44,7 @@ public class DukeFarm {
         if (Environment.getInstance().runningOnRaspberryPi()) {
             LOG.info("Running on the Raspberry Pi, activating Vert.x clustering over the network.");
             // activate clustering over the network on the right interface.
-            options.setClusterHost(RASPBERRY_PI_IP);
+            options.setClusterHost(Environment.getInstance().getPiAddress());
         } else {
             LOG.info("Not running on the Raspberry Pi, not activating Vert.x clustering over the network.");
         }

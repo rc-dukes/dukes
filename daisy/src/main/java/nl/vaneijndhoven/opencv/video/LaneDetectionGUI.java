@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import nl.vaneijndhoven.dukes.hazardcounty.Config;
+import nl.vaneijndhoven.dukes.hazardcounty.Environment;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
@@ -55,7 +56,7 @@ public class LaneDetectionGUI {
     }
 
     @FXML
-    public void startCamera() {
+    public void startCamera() throws Exception {
         configureGUI();
 
         // on start, reset default values in controller
@@ -70,7 +71,8 @@ public class LaneDetectionGUI {
             // this.capture.open(0);
 
             // stream from pi
-//            this.capture.open("http://10.9.8.7/html/cam_pic_new.php?time=1472218786342&pDelay=66666");
+            // String cameraUrl=Environment.getInstance().getCameraUrl();
+            // this.capture.open(cameraUrl);
 
             if (this.capture.isOpened()) {
                 this.cameraActive = true;

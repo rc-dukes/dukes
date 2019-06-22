@@ -8,6 +8,7 @@ import io.vertx.rxjava.core.AbstractVerticle;
 import nl.vaneijndhoven.daisy.Daisy;
 import nl.vaneijndhoven.dukes.bosshogg.BossHogg;
 import nl.vaneijndhoven.dukes.hazardcounty.Config;
+import nl.vaneijndhoven.dukes.hazardcounty.Environment;
 import nl.vaneijndhoven.dukes.hazardcounty.Events;
 import nl.vaneijndhoven.dukes.luke.Luke;
 import nl.vaneijndhoven.dukes.roscoe.Roscoe;
@@ -18,10 +19,16 @@ public class BoarsNest extends AbstractVerticle {
 
     private static final Logger LOG = LoggerFactory.getLogger(BoarsNest.class);
 
+    /**
+     * start the the cluser
+     * @param args
+     * @throws Exception
+     */
     public static void main(String... args) throws Exception {
         Config.configureLogging();
-
-        LOG.info("Firing up Boars Nest (UI runner)");
+        String cameraUrl=Environment.getInstance().getCameraUrl();
+        
+        LOG.info("Firing up Boars Nest (UI runner) using cameraUrl "+cameraUrl);
 
         VertxOptions options = new VertxOptions()
                 .setClustered(true)
@@ -41,7 +48,7 @@ public class BoarsNest extends AbstractVerticle {
             if (enableAutoPilot) {
                 vertx.deployVerticle(new Luke());
                 vertx.deployVerticle(new Daisy(), deploymentOptions, async -> {
-                    vertx.eventBus().send(Events.STREAMADDED.name(), new JsonObject().put("source", "http://10.9.8.7/html/cam_pic_new.php?time=1472218786342&pDelay=66666"));
+                    vertx.eventBus().send(Events.STREAMADDED.name(), new JsonObject().put("source", cameraUrl));
 
 //                    if (async.failed()) {
 //                        LOG.error("Deploying Daisy 1 failed...");
