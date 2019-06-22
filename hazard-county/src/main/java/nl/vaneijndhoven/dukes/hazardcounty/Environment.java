@@ -41,7 +41,7 @@ public class Environment {
   /**
    * read the first line from the given file
    * 
-   * @param file
+   * @param file - the file to read 
    * @return the first line
    */
   public static String readFirstLine(File file) {
@@ -94,7 +94,7 @@ public class Environment {
   /**
    * singleton
    * 
-   * @return
+   * @return the singleton
    */
   public static Environment getInstance() {
     if (instance == null) {
@@ -114,8 +114,8 @@ public class Environment {
 
   /**
    * get the properties
-   * @return - the propertie
-   * @throws Exception
+   * @return - the properties
+   * @throws Exception if propfile can't be read
    */
   public Properties getProperties() throws Exception {
     if (props == null) {
@@ -135,7 +135,7 @@ public class Environment {
    * get the address of the raspberry PI
    * 
    * @return the address as configured in the property file @see propfileName
-   * @throws Exception
+   * @throws Exception if getting the address fails
    */
   public String getPiAddress() throws Exception {
     String piAddress = getProperties().getProperty("targetHost", "10.9.8.7");
@@ -145,7 +145,7 @@ public class Environment {
   /**
    * get the camera Url
    * @return the camera URL
-   * @throws Exception 
+   * @throws Exception if getting the camera url fails
    */
   public String getCameraUrl() throws Exception {
     String defaultCameraUrl=String.format("http://%s/html/cam_pic_new.php",getPiAddress());

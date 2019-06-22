@@ -109,3 +109,4 @@ fabric.properties
 *.iml
 .idea
 /bin/
+/target

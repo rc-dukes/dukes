@@ -138,6 +138,34 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<excludePackageNames>stormbots</excludePackageNames>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<doclet>nl.talsmasoftware.umldoclet.UMLDoclet</doclet>
+							<docletArtifact>
+								<groupId>nl.talsmasoftware</groupId>
+								<artifactId>umldoclet</artifactId>
+								<!-- Java8 compatible version -->
+								<version>1.1.4</version>
+							</docletArtifact>
+							<!-- <additionalOptions> <additionalOption>...</additionalOption> 
+								</additionalOptions> -->
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 

@@ -15,14 +15,18 @@ import nl.vaneijndhoven.dukes.roscoe.Roscoe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * main entry point to start cluster
+ *
+ */
 public class BoarsNest extends AbstractVerticle {
 
     private static final Logger LOG = LoggerFactory.getLogger(BoarsNest.class);
 
     /**
-     * start the the cluser
-     * @param args
-     * @throws Exception
+     * start the the cluster
+     * @param args - command line arguments
+     * @throws Exception on failure
      */
     public static void main(String... args) throws Exception {
         Config.configureLogging();
