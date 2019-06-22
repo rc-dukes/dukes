@@ -12,6 +12,7 @@
 
     <groupId>nl.vaneijndhoven.dukes</groupId>
     <artifactId>general-lee</artifactId>
+	  <description>Car/Engine/Steering</description>
 
     <dependencies>
         <dependency>

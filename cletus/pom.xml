@@ -12,6 +12,7 @@
 
     <groupId>nl.vaneijndhoven.dukes</groupId>
     <artifactId>cletus</artifactId>
+    <description>Region of Interest</description>
 
     <dependencies>
       <dependency>

@@ -12,6 +12,7 @@
 
     <groupId>nl.vaneijndhoven.dukes</groupId>
     <artifactId>duke-farm</artifactId>
+    <description>Runner to start the cluster on the car</description>
 
     <dependencies>
         <dependency>
