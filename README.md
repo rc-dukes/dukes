@@ -9,6 +9,7 @@
 
 ## Documentation
 * [Wiki](http://wiki.bitplan.com/index.php/Self_Driving_RC_Car)
+* [dukes Project pages](https://rc-dukes.github.io/dukes)
 
 ## Modules
 The self driving car consists of modules with the following responsibilities:
@@ -45,6 +46,6 @@ The self driving car consists of modules with the following responsibilities:
 #
 targetHost=10.9.8.7
 targetUser=pi
-``` 
+```
 - run './deploy.sh -m -s' in module 'duke-farm'
 - start 'boars nest' in IDE
