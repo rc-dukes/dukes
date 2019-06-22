@@ -1,0 +1,52 @@
+@startuml
+
+    namespace nl.vaneijndhoven.opencv.video {
+
+        class ImageUtils [[ImageUtils.html]] {
+            {static} +mat2Image(Mat): Image
+            {static} +releaseImages(Mat[]): void
+        }
+
+        class LaneDetectionApp [[LaneDetectionApp.html]] {
+            +start(Stage): void
+            {static} +main(String[]): void
+        }
+
+        class LaneDetectionGUI [[LaneDetectionGUI.html]] {
+            +startCamera(): void
+        }
+
+        class StartLightDetectionController [[StartLightDetectionController.html]] {
+        }
+
+        class LaneDetectionController [[LaneDetectionController.html]] {
+            {static} +DEFAULT_LANE_BOUNDARY_ANGLE: double
+            {static} +DEFAULT_LANE_BOUNDARY_TOLERANCE: double
+            {static} +DEFAULT_CANNY_THRESHOLD_1: double
+            {static} +DEFAULT_CANNY_THRESHOLD_2: double
+            {static} +DEFAULT_LINE_DETECT_RHO: int
+            {static} +DEFAULT_LINE_DETECT_THETA: double
+            {static} +DEFAULT_LINE_DETECT_THRESHOLD: double
+            {static} +DEFAULT_LINE_DETECT_MIN_LINE_LENGTH: double
+            {static} +DEFAULT_LINE_DETECT_MAX_LINE_GAP: double
+            +LaneDetectionController(Vertx)
+            +performLaneDetection(Mat, CannyEdgeDetector.Config, ProbabilisticHoughLinesLineDetector.Config, ImageCollector): void
+        }
+
+        class StartLightDetectionApp [[StartLightDetectionApp.html]] {
+            +start(Stage): void
+            {static} +main(String[]): void
+        }
+
+        abstract class javafx.application.Application {
+            {abstract} +start(Stage): void
+        }
+        javafx.application.Application <|-- LaneDetectionApp
+
+        javafx.application.Application <|-- StartLightDetectionApp
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

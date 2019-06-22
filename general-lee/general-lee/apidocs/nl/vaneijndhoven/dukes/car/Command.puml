@@ -1,0 +1,14 @@
+@startuml
+
+    class Command [[Command.html]] {
+        {static} +statusLedOn(): void
+        {static} +statusLedOff(): void
+        {static} +setPowerOn(): void
+        {static} +setPowerOff(): void
+        {static} +powerIsOn(): boolean
+        {static} +servoBlaster(int, int): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

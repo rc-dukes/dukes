@@ -1,0 +1,29 @@
+@startuml
+
+    namespace nl.vaneijndhoven.objects.stoppingzone {
+
+        class ZoneStartBoundary [[ZoneStartBoundary.html]] {
+            {static} +DEFAULT_ANGLE: double
+            {static} +DEFAULT_TOLERANCE: double
+            +ZoneStartBoundary()
+            +ZoneStartBoundary(double, double, boolean)
+            +boundary(Collection<Line>): Optional<Line>
+        }
+
+        class ZoneEndBoundary [[ZoneEndBoundary.html]] {
+            {static} +DEFAULT_ANGLE: double
+            {static} +DEFAULT_TOLERANCE: double
+            +ZoneEndBoundary()
+            +ZoneEndBoundary(double, double, boolean)
+        }
+
+        class nl.vaneijndhoven.objects.Boundary
+        nl.vaneijndhoven.objects.Boundary <|-- ZoneStartBoundary
+
+        nl.vaneijndhoven.objects.Boundary <|-- ZoneEndBoundary
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

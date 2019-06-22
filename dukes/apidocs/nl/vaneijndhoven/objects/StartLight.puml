@@ -1,0 +1,16 @@
+@startuml
+
+    enum StartLight [[StartLight.html]] {
+        {static} +OFF
+        {static} +LIT
+        {static} +DIMMED
+        #nrOfOffs: int
+        {static} +init(): StartLight
+        +on(): StartLight
+        +off(): StartLight
+        +started(): boolean
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

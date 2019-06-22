@@ -1,0 +1,20 @@
+@startuml
+
+    class ImageCollector [[ImageCollector.html]] {
+        +edges(Mat): void
+        +lines(Mat): void
+        +startLight(Mat): void
+        +mask(Mat): void
+        +morph(Mat): void
+        +originalFrame(Mat): void
+        +edges(): byte[]
+        +lines(): byte[]
+        +startLight(): byte[]
+        +mask(): byte[]
+        +morph(): byte[]
+        +originalFrame(): byte[]
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+
+    class Lane [[Lane.html]] {
+        +Lane(Optional<Line>, Optional<Line>)
+        +getLeftBoundary(): Optional<Line>
+        +getRightBoundary(): Optional<Line>
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

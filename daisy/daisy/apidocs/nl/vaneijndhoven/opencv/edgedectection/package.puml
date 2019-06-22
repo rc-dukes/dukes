@@ -1,0 +1,50 @@
+@startuml
+
+    namespace nl.vaneijndhoven.opencv.edgedectection {
+
+        class CannyEdgeDetector [[CannyEdgeDetector.html]] {
+            +CannyEdgeDetector()
+            +CannyEdgeDetector(double, double, int, boolean)
+            +CannyEdgeDetector(CannyEdgeDetector.Config)
+            +withImageCollector(ImageCollector): CannyEdgeDetector
+            +detect(Mat): Mat
+        }
+
+        class nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector.Config [[CannyEdgeDetector.Config.html]] {
+            +setThreshold1(double): void
+            +setThreshold2(double): void
+            +getThreshold1(): double
+            +getThreshold2(): double
+            +getApertureSize(): int
+            +getL2gradient(): boolean
+        }
+
+        class SobelEdgeDetector [[SobelEdgeDetector.html]] {
+            +SobelEdgeDetector()
+            +SobelEdgeDetector(int, int, int)
+            +detect(Mat): Mat
+        }
+
+        class WatershedEdgeDetector [[WatershedEdgeDetector.html]] {
+            +WatershedEdgeDetector()
+            +WatershedEdgeDetector(double, double, int, double, double)
+            +detect(Mat): Mat
+        }
+
+        interface EdgeDetector [[EdgeDetector.html]] {
+            {abstract} +detect(Mat): Mat
+        }
+
+        EdgeDetector <|.. CannyEdgeDetector
+
+        CannyEdgeDetector +-- nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector.Config
+
+        EdgeDetector <|.. SobelEdgeDetector
+
+        EdgeDetector <|.. WatershedEdgeDetector
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

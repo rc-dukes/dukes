@@ -1,0 +1,38 @@
+@startuml
+
+    namespace nl.vaneijndhoven.dukes.unclejesse {
+
+        class LaneDetectionApp [[LaneDetectionApp.html]] {
+            +start(Stage): void
+            {static} +main(String[]): void
+        }
+
+        class LaneDetectionGUI [[LaneDetectionGUI.html]] {
+        }
+
+        class UncleJesse [[UncleJesse.html]] {
+            +start(): void
+        }
+
+        class StartLightDetectionController [[StartLightDetectionController.html]] {
+        }
+
+        class LaneDetectionController [[LaneDetectionController.html]] {
+        }
+
+        class StartLightDetectionApp [[StartLightDetectionApp.html]] {
+        }
+
+        abstract class javafx.application.Application {
+            {abstract} +start(Stage): void
+        }
+        javafx.application.Application <|-- LaneDetectionApp
+
+        class io.vertx.rxjava.core.AbstractVerticle
+        io.vertx.rxjava.core.AbstractVerticle <|-- UncleJesse
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

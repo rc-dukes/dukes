@@ -1,0 +1,43 @@
+@startuml
+
+    namespace nl.vaneijndhoven.opencv.startlightdetection {
+
+        interface StartLightDetector [[StartLightDetector.html]] {
+            {abstract} +detect(Mat): StartLight
+            {abstract} +withImageCollector(ImageCollector): StartLightDetector
+        }
+
+        class DefaultStartLightDetector [[DefaultStartLightDetector.html]] {
+            +DefaultStartLightDetector()
+            +DefaultStartLightDetector(int, int, int, int, int, int)
+            +DefaultStartLightDetector(DefaultStartLightDetector.Config)
+            +detect(Mat): StartLight
+            +withDebug(DebugTools): DefaultStartLightDetector
+            +getFrame(): Mat
+            +withImageCollector(ImageCollector): DefaultStartLightDetector
+        }
+
+        class nl.vaneijndhoven.opencv.startlightdetection.DefaultStartLightDetector.Config [[DefaultStartLightDetector.Config.html]] {
+            +getHueStart(): double
+            +setHueStart(double): void
+            +getHueStop(): double
+            +setHueStop(double): void
+            +getSaturationStart(): double
+            +setSaturationStart(double): void
+            +getSaturationStop(): double
+            +setSaturationStop(double): void
+            +getValueStart(): double
+            +setValueStart(double): void
+            +getValueStop(): double
+            +setValueStop(double): void
+        }
+
+        StartLightDetector <|.. DefaultStartLightDetector
+
+        DefaultStartLightDetector +-- nl.vaneijndhoven.opencv.startlightdetection.DefaultStartLightDetector.Config
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

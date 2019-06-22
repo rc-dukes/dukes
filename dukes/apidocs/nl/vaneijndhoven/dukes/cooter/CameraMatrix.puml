@@ -1,0 +1,14 @@
+@startuml
+
+    class CameraMatrix [[CameraMatrix.html]] {
+        {static} +DEFAULT: CameraMatrix
+        +CameraMatrix(int, int)
+        +calibrate(Mat[]): void
+        +apply(Mat): Mat
+        +serialize(): String
+        {static} +deserizalize(String): CameraMatrix
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

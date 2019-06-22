@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>CrossingNumber xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../../apidocs/nl/vaneijndhoven/dukes/enos/geometry/pointinplane/CrossingNumber.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> nl.vaneijndhoven.dukes.enos.geometry.pointinplane;
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <strong class="jxr_keyword">import</strong> nl.vaneijndhoven.dukes.enos.geometry.Point2D;
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <strong class="jxr_keyword">import</strong> nl.vaneijndhoven.dukes.enos.geometry.Polygon;
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> * Created by jpoint on 16/08/16.</em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../nl/vaneijndhoven/dukes/enos/geometry/pointinplane/CrossingNumber.html">CrossingNumber</a> <strong class="jxr_keyword">implements</strong> <a href="../../../../../../nl/vaneijndhoven/dukes/enos/geometry/pointinplane/PointInPlane.html">PointInPlane</a> {
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>      @Override
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> isPointInPlane(<a href="../../../../../../nl/vaneijndhoven/dukes/enos/geometry/Point2D.html">Point2D</a> point, <a href="../../../../../../nl/vaneijndhoven/dukes/enos/geometry/Polygon.html">Polygon</a> polygon) {
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>          <strong class="jxr_keyword">return</strong> crossingNumber(point, polygon.getPoints().toArray(<strong class="jxr_keyword">new</strong> Point2D[]{})) != 0;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>      }
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>      <em class="jxr_comment">// Copyright 2000 softSurfer, 2012 Dan Sunday</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>      <em class="jxr_comment">// This code may be freely used and modified for any purpose</em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>      <em class="jxr_comment">// providing that this copyright notice is included with it.</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>      <em class="jxr_comment">// SoftSurfer makes no warranty for this code, and cannot be held</em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>      <em class="jxr_comment">// liable for any real or imagined damage resulting from its use.</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>      <em class="jxr_comment">// Users of this code must verify correctness for their application.</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment">     * crossingNumber(): crossing number test for a point in a polygon</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment">     *      Input:   P = a point,</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment">     *               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment">     *      Return:  0 = outside, 1 = inside</em>
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment">     * This code is patterned after [Franklin, 2000]</em>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>      <strong class="jxr_keyword">int</strong> crossingNumber(<a href="../../../../../../nl/vaneijndhoven/dukes/enos/geometry/Point2D.html">Point2D</a> P, <a href="../../../../../../nl/vaneijndhoven/dukes/enos/geometry/Point2D.html">Point2D</a>[] V) {
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>          <strong class="jxr_keyword">int</strong>    cn = 0;    <em class="jxr_comment">// the  crossing number counter</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>          <em class="jxr_comment">// loop through all edges of the polygon</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>          <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i=0; i&lt;V.length; i++) {                            <em class="jxr_comment">// edge from V[i]  to V[i+1]</em>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>              <strong class="jxr_keyword">if</strong> (((V[i].getY() &lt;= P.getY()) &amp;&amp; (V[i+1].getY() &gt; P.getY()))               <em class="jxr_comment">// an upward crossing</em>
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>                      || ((V[i].getY() &gt; P.getY()) &amp;&amp; (V[i+1].getY() &lt;=  P.getY()))) {    <em class="jxr_comment">// a downward crossing</em>
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>                  <em class="jxr_comment">// compute  the actual edge-ray intersect x-coordinate</em>
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>                  <strong class="jxr_keyword">double</strong> vt = (P.getY()  - V[i].getY()) / (V[i+1].getY() - V[i].getY());
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>                  <strong class="jxr_keyword">if</strong> (P.getX() &lt;  V[i].getX() + vt * (V[i+1].getX() - V[i].getX()))       <em class="jxr_comment">// P.getX() &lt; intersect</em>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>                      ++cn;                                           <em class="jxr_comment">// a valid crossing of y=P.getY() right of P.getX()</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>              }
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>          }
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>          <strong class="jxr_keyword">return</strong> (cn&amp;1);    <em class="jxr_comment">// 0 if even (out), and 1 if  odd (in)</em>
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>      }
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2019. All rights reserved.</div>
+</body>
+</html>

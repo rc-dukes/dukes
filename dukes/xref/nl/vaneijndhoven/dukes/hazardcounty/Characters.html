@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>Characters xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../apidocs/nl/vaneijndhoven/dukes/hazardcounty/Characters.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> nl.vaneijndhoven.dukes.hazardcounty;
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> java.util.Arrays.asList;
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <strong class="jxr_keyword">public</strong> enum <a href="../../../../nl/vaneijndhoven/dukes/hazardcounty/Characters.html">Characters</a> {
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>       BO(<span class="jxr_string">"Lost sheep Bo"</span>),
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>       LUKE(<span class="jxr_string">"Lost sheep Luke"</span>),
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>       DAISY(<span class="jxr_string">"Bo Peep"</span>),
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>      UNCLE_JESSE(<span class="jxr_string">"Shepherd"</span>),
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>      ROSCOE(<span class="jxr_string">"Red Dog"</span>),
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>      FLASH(<span class="jxr_string">"Velvet ears"</span>),
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>      BOSS_HOGG(<span class="jxr_string">"Little fat buddy"</span>),
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>      COOTER(<span class="jxr_string">"Crazy Cooter"</span>),
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>      ENOS(<span class="jxr_string">"Dipstick"</span>),
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>      CLETUS(<span class="jxr_string">"Cletus"</span>);
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>      <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_comment">    Bo “Lost sheep"-&gt; main character, driver, act first think later</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_comment">Luke “Lost sheep” -&gt; main character, sidekick, planner</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_comment">Daisy “Bo Peep” -&gt; sister of main characters, pretty, gathers intel</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_comment">Uncle Jesse “Shepherd"-&gt; guardian of main characters, wise man</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_comment">Roscoe P Coltrane “Red Dog” -&gt; comical sheriff, chasing, illegal speed traps, “hot pursuit"</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_comment">Flash “Velvet ears” -&gt; Roscoes dog</em>
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_comment">Boss “J.D.” Hogg “little fat buddy” -&gt; villain, rich, fat, food lover “get them duke boys"</em>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_comment">Cooter Davenport “Crazy Cooter” -&gt; Mechanic, supports main characters, "Breaker one, Breaker one, I might be crazy but I ain't dumb, Craaaazy Cooter comin' atcha, come on.”</em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_comment">Enos Strate “dipstick" -&gt; roscoes sidekick, loves daisy, helps the dukes</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_comment">Cletus Hogg -&gt; roscoes sidekick, loves daisy,</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_comment">     */</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>      <strong class="jxr_keyword">private</strong> String callsign;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <a href="../../../../nl/vaneijndhoven/dukes/hazardcounty/Characters.html">Characters</a>(String callsign) {
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>          <strong class="jxr_keyword">this</strong>.callsign = callsign;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      }
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>      <strong class="jxr_keyword">public</strong> String getCallsign() {
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>          <strong class="jxr_keyword">return</strong> callsign;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      }
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2019. All rights reserved.</div>
+</body>
+</html>

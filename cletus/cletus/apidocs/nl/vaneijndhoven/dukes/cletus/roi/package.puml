@@ -1,0 +1,39 @@
+@startuml
+
+    namespace nl.vaneijndhoven.dukes.cletus.roi {
+
+        class NearField [[NearField.html]] {
+            +NearField(double)
+        }
+
+        class FarField [[FarField.html]] {
+            +FarField(double)
+        }
+
+        class RegionOfInterest [[RegionOfInterest.html]] {
+            +RegionOfInterest(double, double, double, double)
+            +roi(Size): Rect
+            +region(Mat): Mat
+        }
+
+        class LeftField [[LeftField.html]] {
+            +LeftField(double)
+        }
+
+        class RightField [[RightField.html]] {
+            +RightField(double)
+        }
+
+        RegionOfInterest <|-- NearField
+
+        RegionOfInterest <|-- FarField
+
+        RegionOfInterest <|-- LeftField
+
+        RegionOfInterest <|-- RightField
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

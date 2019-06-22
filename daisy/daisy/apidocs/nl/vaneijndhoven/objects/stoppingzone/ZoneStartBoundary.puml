@@ -1,0 +1,13 @@
+@startuml
+
+    class ZoneStartBoundary [[ZoneStartBoundary.html]] {
+        {static} +DEFAULT_ANGLE: double
+        {static} +DEFAULT_TOLERANCE: double
+        +ZoneStartBoundary()
+        +ZoneStartBoundary(double, double, boolean)
+        +boundary(Collection<Line>): Optional<Line>
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

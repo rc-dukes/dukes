@@ -1,0 +1,15 @@
+@startuml
+
+    namespace com.bitplan.rccar.api {
+
+        class TestEnvironment [[TestEnvironment.html]] {
+            +setProperties(String[]): File
+            +testEnvironment(): void
+            +testCameraUrl(): void
+        }
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

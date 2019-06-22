@@ -1,0 +1,18 @@
+@startuml
+
+    class Point [[Point.html]] {
+        {static} +X: int
+        {static} +Y: int
+        {static} +Z: int
+        +Point(double[])
+        +distance(double[]): double
+        +distance(Point2D): double
+        +distance(Point3D): double
+        +getX(): double
+        +getY(): double
+        +getZ(): double
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

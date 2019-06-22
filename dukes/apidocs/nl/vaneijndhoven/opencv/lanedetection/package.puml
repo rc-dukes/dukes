@@ -1,0 +1,24 @@
+@startuml
+
+    namespace nl.vaneijndhoven.opencv.lanedetection {
+
+        class DefaultLaneDetector [[DefaultLaneDetector.html]] {
+            +detect(Collection<Line>, ViewPort): Lane
+        }
+
+        class ImageLaneDetection [[ImageLaneDetection.html]] {
+            +ImageLaneDetection(CannyEdgeDetector.Config, ProbabilisticHoughLinesLineDetector.Config, CameraMatrix)
+            +detectLane(Mat, ImageCollector): Map<String, Object>
+        }
+
+        interface LaneDetector [[LaneDetector.html]] {
+            {abstract} +detect(Collection<Line>, ViewPort): Lane
+        }
+
+        LaneDetector <|.. DefaultLaneDetector
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

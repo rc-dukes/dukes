@@ -1,0 +1,14 @@
+@startuml
+
+    class MemoryManagement [[MemoryManagement.html]] {
+        {static} +closable(S): MemoryManagement.ClosableMat<S>
+        {static} +scoped(Supplier<S>, Function<S, T>): T
+        {static} +scoped(String, Supplier<S>, Function<S, T>): T
+        {static} +scoped(Supplier<S>, Consumer<S>): void
+        {static} +scoped(String, Supplier<S>, Consumer<S>): void
+        {static} +disposable(Mat): Observable<Mat>
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

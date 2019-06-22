@@ -1,0 +1,64 @@
+@startuml
+
+    namespace nl.vaneijndhoven.dukes.car {
+
+        class Car [[Car.html]] {
+            +Car(Engine, Steering)
+            +stop(): void
+            +turn(double): void
+            +drive(double): void
+        }
+
+        interface EngineMap [[EngineMap.html]] {
+            {abstract} +neutral(): int
+            {abstract} +stepSize(): int
+            {abstract} +minReverse(): int
+            {abstract} +maxReverse(): int
+            {abstract} +minForward(): int
+            {abstract} +maxForward(): int
+        }
+
+        class Engine [[Engine.html]] {
+            +Engine(EngineMap)
+            +neutral(): void
+            +forceInNeutral(): void
+            +neutral(boolean): void
+            {static} +setSpeed(int): void
+        }
+
+        class Command [[Command.html]] {
+            {static} +statusLedOn(): void
+            {static} +statusLedOff(): void
+            {static} +setPowerOn(): void
+            {static} +setPowerOff(): void
+            {static} +powerIsOn(): boolean
+            {static} +servoBlaster(int, int): void
+        }
+
+        interface SteeringMap [[SteeringMap.html]] {
+            {abstract} +center(): int
+            {abstract} +stepSize(): int
+            {abstract} +maxLeft(): int
+            {abstract} +maxRight(): int
+        }
+
+        class Steering [[Steering.html]] {
+            +Steering(SteeringMap)
+            +center(): void
+            +forceCenter(): void
+            {static} +setWheelPosition(int): void
+        }
+
+        Car --> Engine: engine
+
+        Car --> Steering: steering
+
+        Engine --> EngineMap: mapping\nengineMap
+
+        Steering --> SteeringMap: steeringMap
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

@@ -1,0 +1,34 @@
+@startuml
+
+    namespace nl.vaneijndhoven.navigation.plot {
+
+        class LaneOrientation [[LaneOrientation.html]] {
+            +LaneOrientation(Lane, ViewPort)
+            +determineCurrentAngle(): double
+            +distanceFromLeftBoundary(): double
+            +distanceFromRightBoundary(): double
+            +determineDistanceToMiddle(): double
+            +determineCourseRelativeToHorizon(): double
+            +determineLaneMiddle(): Optional<Line>
+            +determineBase(): Optional<Line>
+        }
+
+        class PathPlanner [[PathPlanner.html]] {
+            +PathPlanner(LaneOrientation)
+            +determineDeviation(): double
+        }
+
+        class ShortestPath [[ShortestPath.html]] {
+        }
+
+        class StoppingZoneOrientation [[StoppingZoneOrientation.html]] {
+            +StoppingZoneOrientation(StoppingZone, Lane, ViewPort)
+            +determineDistanceToStoppingZone(): double
+            +determineDistanceToStoppingZoneEnd(): double
+        }
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

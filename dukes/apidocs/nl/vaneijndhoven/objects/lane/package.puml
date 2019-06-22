@@ -1,0 +1,30 @@
+@startuml
+
+    namespace nl.vaneijndhoven.objects.lane {
+
+        class LaneRightBoundary [[LaneRightBoundary.html]] {
+            {static} +DEFAULT_ANGLE: double
+            {static} +DEFAULT_TOLERANCE: double
+            +LaneRightBoundary()
+            +LaneRightBoundary(double, double, boolean)
+            +boundary(Collection<Line>): Optional<Line>
+        }
+
+        class LaneLeftBoundary [[LaneLeftBoundary.html]] {
+            {static} +DEFAULT_ANGLE: double
+            {static} +DEFAULT_TOLERANCE: double
+            +LaneLeftBoundary()
+            +LaneLeftBoundary(double, double, boolean)
+            +boundary(Collection<Line>): Optional<Line>
+        }
+
+        class nl.vaneijndhoven.objects.Boundary
+        nl.vaneijndhoven.objects.Boundary <|-- LaneRightBoundary
+
+        nl.vaneijndhoven.objects.Boundary <|-- LaneLeftBoundary
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

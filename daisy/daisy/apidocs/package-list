@@ -1,0 +1,16 @@
+nl.vaneijndhoven.daisy
+nl.vaneijndhoven.navigation.plot
+nl.vaneijndhoven.objects
+nl.vaneijndhoven.objects.lane
+nl.vaneijndhoven.objects.stoppingzone
+nl.vaneijndhoven.opencv.denoise
+nl.vaneijndhoven.opencv.edgedectection
+nl.vaneijndhoven.opencv.lanedetection
+nl.vaneijndhoven.opencv.linedetection
+nl.vaneijndhoven.opencv.mapper
+nl.vaneijndhoven.opencv.objectdetection
+nl.vaneijndhoven.opencv.perspective
+nl.vaneijndhoven.opencv.startlightdetection
+nl.vaneijndhoven.opencv.stopzonedetection
+nl.vaneijndhoven.opencv.tools
+nl.vaneijndhoven.opencv.video

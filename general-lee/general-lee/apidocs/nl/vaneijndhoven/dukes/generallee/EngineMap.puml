@@ -1,0 +1,20 @@
+@startuml
+
+    class EngineMap [[EngineMap.html]] {
+        {static} +SPEED_ZERO: int
+        {static} +SPEED_STEP_SIZE: int
+        {static} +MIN_SPEED_REVERSE: int
+        {static} +MIN_SPEED_FORWARD: int
+        {static} +MAX_SPEED_REVERSE: int
+        {static} +MAX_SPEED_FORWARD: int
+        +neutral(): int
+        +stepSize(): int
+        +minReverse(): int
+        +maxReverse(): int
+        +minForward(): int
+        +maxForward(): int
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

@@ -1,0 +1,28 @@
+@startuml
+
+    class MiniPID [[MiniPID.html]] {
+        +MiniPID(double, double, double)
+        +MiniPID(double, double, double, double)
+        +setP(double): void
+        +setI(double): void
+        +setD(double): void
+        +setF(double): void
+        +setPID(double, double, double): void
+        +setPID(double, double, double, double): void
+        +setMaxIOutput(double): void
+        +setOutputLimits(double): void
+        +setOutputLimits(double, double): void
+        +setDirection(boolean): void
+        +setSetpoint(double): void
+        +getOutput(double, double): double
+        +getOutput(): double
+        +getOutput(double): double
+        +reset(): void
+        +setOutputRampRate(double): void
+        +setSetpointRange(double): void
+        +setOutputFilter(double): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

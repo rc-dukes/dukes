@@ -1,0 +1,38 @@
+@startuml
+
+    namespace nl.vaneijndhoven.dukes.cooter {
+
+        class PerspectiveShiftTest [[PerspectiveShiftTest.html]] {
+            +transform(): void
+        }
+
+        class CameraMatrixTest [[CameraMatrixTest.html]] {
+            +calc(): void
+        }
+
+        class CameraMatrix [[CameraMatrix.html]] {
+            {static} +DEFAULT: CameraMatrix
+            +CameraMatrix(int, int)
+            +calibrate(Mat[]): void
+            +apply(Mat): Mat
+            +serialize(): String
+            {static} +deserizalize(String): CameraMatrix
+            +apply(Object): Object
+        }
+
+        class PerspectiveShift [[PerspectiveShift.html]] {
+            +PerspectiveShift(Polygon, Polygon)
+            +apply(Mat): Mat
+            +apply(Object): Object
+        }
+
+        interface java.util.function.UnaryOperator<T>
+        java.util.function.UnaryOperator <|.. CameraMatrix
+
+        java.util.function.UnaryOperator <|.. PerspectiveShift
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

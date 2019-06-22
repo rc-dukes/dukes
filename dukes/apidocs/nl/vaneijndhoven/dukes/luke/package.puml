@@ -1,0 +1,18 @@
+@startuml
+
+    namespace nl.vaneijndhoven.dukes.luke {
+
+        class Luke [[Luke.html]] {
+            {static} +START_DRAG_NAVIGATION: String
+            {static} +STOP_NAVIGATION: String
+            +start(): void
+        }
+
+        class io.vertx.rxjava.core.AbstractVerticle
+        io.vertx.rxjava.core.AbstractVerticle <|-- Luke
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

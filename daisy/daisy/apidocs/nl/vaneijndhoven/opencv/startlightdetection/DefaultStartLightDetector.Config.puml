@@ -1,0 +1,20 @@
+@startuml
+
+    class DefaultStartLightDetector.Config [[DefaultStartLightDetector.Config.html]] {
+        +getHueStart(): double
+        +setHueStart(double): void
+        +getHueStop(): double
+        +setHueStop(double): void
+        +getSaturationStart(): double
+        +setSaturationStart(double): void
+        +getSaturationStop(): double
+        +setSaturationStop(double): void
+        +getValueStart(): double
+        +setValueStart(double): void
+        +getValueStop(): double
+        +setValueStop(double): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

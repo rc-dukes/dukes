@@ -1,0 +1,83 @@
+@startuml
+
+    namespace nl.vaneijndhoven.dukes.enos.geometry {
+
+        interface Point3D [[Point3D.html]] {
+            {abstract} +getZ(): double
+            {abstract} +distance(Point3D): double
+        }
+
+        class Polygon [[Polygon.html]] {
+            +Polygon(Point2D[])
+            {static} +square(Point2D, Point2D): Polygon
+            +intersect(Line): Set<Point2D>
+            +edges(): List<Line>
+            +setPointInPlaneStrategy(PointInPlane): void
+        }
+
+        class Line [[Line.html]] {
+            +Line(double[])
+            +Line(Point2D, Point2D)
+            +length(): double
+            +angleRad(): double
+            +angleDeg(): double
+            {static} +average(Collection<Line>): Line
+            +isLeftOfLine(Point2D): boolean
+            +isRightOfLine(Point2D): boolean
+            +existsOnLine(Point2D): boolean
+            +bottomMost(): Point2D
+            +leftMost(): Point2D
+            +rightMost(): Point2D
+            +topMost(): Point2D
+            +pointAt(double): Point2D
+            +width(): double
+            +height(): double
+            +intersect(Line): Optional<Point2D>
+            +distance(Point2D): double
+        }
+
+        class nl.vaneijndhoven.dukes.enos.geometry.Line.Vector [[Line.Vector.html]] {
+            +Vector(double, double)
+            +calculate(Point2D, double): Point2D
+            +calculateX(double): double
+            +calculateY(double): double
+            {static} +forY(double): Line.Vector
+            {static} +forX(double): Line.Vector
+        }
+
+        class Point [[Point.html]] {
+            {static} +X: int
+            {static} +Y: int
+            {static} +Z: int
+            +Point(double[])
+            +distance(double[]): double
+            +distance(Point2D): double
+            +distance(Point3D): double
+            +getX(): double
+            +getY(): double
+            +getZ(): double
+        }
+
+        interface Point2D [[Point2D.html]] {
+            {abstract} +getX(): double
+            {abstract} +getY(): double
+            {abstract} +distance(Point2D): double
+        }
+
+        Point2D <|.. Point3D
+
+        Line +-- nl.vaneijndhoven.dukes.enos.geometry.Line.Vector
+
+        Point2D <|.. Point
+
+        Point3D <|.. Point
+
+        Polygon --> "*" Point2D: points\npointsClockwise\npointsCounterClockwise
+
+        Line --> Point2D: point1\npoint2
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

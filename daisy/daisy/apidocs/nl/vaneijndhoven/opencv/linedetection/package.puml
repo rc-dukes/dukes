@@ -1,0 +1,45 @@
+@startuml
+
+    namespace nl.vaneijndhoven.opencv.linedetection {
+
+        class ProbabilisticHoughLinesLineDetector [[ProbabilisticHoughLinesLineDetector.html]] {
+            +ProbabilisticHoughLinesLineDetector()
+            +ProbabilisticHoughLinesLineDetector(double, double, int, double, double)
+            +ProbabilisticHoughLinesLineDetector(ProbabilisticHoughLinesLineDetector.Config)
+            +detect(Mat): Collection<Line>
+            +withImageCollector(ImageCollector): ProbabilisticHoughLinesLineDetector
+        }
+
+        class nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector.Config [[ProbabilisticHoughLinesLineDetector.Config.html]] {
+            +getRho(): double
+            +setRho(double): void
+            +getTheta(): double
+            +setTheta(double): void
+            +getThreshold(): int
+            +setThreshold(int): void
+            +getMinLineLength(): double
+            +setMinLineLength(double): void
+            +getMaxLineGap(): double
+            +setMaxLineGap(double): void
+        }
+
+        interface LineDetector [[LineDetector.html]] {
+            {abstract} +detect(Mat): Collection<Line>
+        }
+
+        class LineFilter [[LineFilter.html]] {
+            +LineFilter(double, double, boolean)
+            +filter(Mat): Collection<Line>
+            +filter(Collection<Line>): Collection<Line>
+            +debug(Mat): void
+        }
+
+        LineDetector <|.. ProbabilisticHoughLinesLineDetector
+
+        ProbabilisticHoughLinesLineDetector +-- nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector.Config
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml
