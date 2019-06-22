@@ -80,12 +80,18 @@ createMavenSite() {
 </html>
 EOF
     fi
-    # add potentially new files
-    git add *
-    # commit results
-    git commit -m "checked in by checksite script"
-    # push results
-    git push
+    color_msg $blue "shall i commit the gh-pages for $l_project?"
+    read answer
+    case $answer in
+      y|Y|yes|Yes|j|Ja)
+        color_msg $blue "commiting gh-pages branch for $l_project ..."
+        # add potentially new files
+        git add *
+        # commit results
+        git commit -m "checked in by checksite script"
+        # push results
+        git push
+    esac
   fi
   if [ "$debug" = "false" ]
   then
@@ -126,7 +132,7 @@ checkghpages() {
         git push origin gh-pages
         cd $ws/$l_project
         git pull
-      ;;
+        ;;
     esac
   else
     color_msg $green "github pages branch gh-pages for $l_project exists✓"
@@ -141,7 +147,7 @@ case $(uname -a) in
   Darwin*)
     ws=$HOME/Documents/workspace
     gp=$HOME/Documents/gh-pages
-  ;;
+    ;;
 esac
 if [ ! -d $gp ]
 then
@@ -163,4 +169,4 @@ else
   git pull
 fi
 
-# createMavenSite $project $gp yes
+createMavenSite $project $gp yes

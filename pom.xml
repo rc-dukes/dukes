@@ -9,10 +9,39 @@
 	<name>rc-dukes parent pom</name>
 	<description>definition of common generic maven aspects of the modules of the dukes projects</description>
 	<url>https://github.com/${github.owner}/${github.project}</url>
+	<developers>
+		<developer>
+			<id>timve</id>
+			<name>Tim van Eijndhoven</name>
+			<organization>JPoint B.V.</organization>
+			<organizationUrl>https://www.jpoint.nl/</organizationUrl>
+		</developer>
+		<developer>
+			<id>bertjan</id>
+			<name>Bert Jan Schrijver</name>
+			<organization>Open Value</organization>
+			<organizationUrl>https://openvalue.group/</organizationUrl>
+		</developer>
+		<developer>
+			<id>wf</id>
+			<name>Wolfgang Fahl</name>
+			<organization>BITPlan GmbH</organization>
+			<organizationUrl>http://www.bitplan.com</organizationUrl>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git:https://github.com/${github.owner}</connection>
+		<developerConnection>scm:git:https://github.com/${github.owner}</developerConnection>
+		<url>https://github.com/${github.owner}</url>
+	</scm>
+	<issueManagement>
+		<url>https://github.com/${github.owner}/${github.project}/issues</url>
+		<system>GitHub</system>
+	</issueManagement>
 	<properties>
 		<!-- standard Java Version -->
 		<java.version>1.8</java.version>
-		
+
 		<!-- also used by README generator script -->
 		<github.project>dukes</github.project>
 		<github.owner>rc-dukes</github.owner>
@@ -361,5 +390,47 @@
 			</extension>
 		</extensions>
 	</build>
-
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>${maven-project-info-reports-plugin.version}</version>
+				<configuration>
+					<dependencyDetailsEnabled>true</dependencyDetailsEnabled>
+					<dependencyLocationsEnabled>true</dependencyLocationsEnabled>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin.version}</version>
+				<configuration>
+					<overview>${basedir}\src\main\java\overview.html</overview>
+					<!--<verbose>true</verbose> -->
+					<quiet>true</quiet>
+					<additionalJOption>${javadoc.opts}</additionalJOption>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>${maven-surefire-report-plugin.version}</version>
+				<!-- https://stackoverflow.com/questions/1274523/maven-surefire-reporting-plugin-configuration -->
+				<configuration>
+					<aggregate>true</aggregate>
+					<!--also set this to link to generated source reports -->
+					<linkXRef>true</linkXRef>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>${maven-jxr-plugin.version}</version>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
