@@ -6,6 +6,7 @@
 targetUser=pi
 targetHost=10.9.8.7
 target=$targetUser@$targetHost
+version=0.0.2
 
 #ansi colors
 #http://www.csc.uvic.ca/~sae/seng265/fall04/tips/s265s047-tips/bash-using-colors.html
@@ -60,7 +61,7 @@ usage() {
 copyToTarget() {
   local l_ini="$1"
   local l_iniPath="$2"
-  jar="duke-farm-1.0-SNAPSHOT-fat.jar"
+  jar="duke-farm-$version-fat.jar"
   color_msg $blue "copying $jar to $target"
   if [ ! -f target/$jar ]
   then

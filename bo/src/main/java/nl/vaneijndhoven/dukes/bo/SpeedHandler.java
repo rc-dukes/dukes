@@ -6,6 +6,10 @@ import io.vertx.core.logging.LoggerFactory;
 import nl.vaneijndhoven.dukes.car.EngineMap;
 import nl.vaneijndhoven.dukes.car.Car;
 
+/**
+ * Car speed handling
+ *
+ */
 class SpeedHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(SpeedHandler.class);
