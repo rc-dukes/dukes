@@ -8,7 +8,7 @@
 */target/*
 *.iml
 .idea/*
-.vertx/*
+*/.vertx/*
 
 ### macOS template
 *.DS_Store
