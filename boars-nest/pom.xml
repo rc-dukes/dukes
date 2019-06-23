@@ -5,7 +5,7 @@
   <parent>
     <groupId>nl.vaneijndhoven</groupId>
     <artifactId>dukes</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.0.2</version>
   </parent>
 
   <groupId>nl.vaneijndhoven.dukes</groupId>
@@ -18,12 +18,12 @@
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
       <artifactId>boss-hogg</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.0.2</version>
     </dependency>
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
       <artifactId>general-lee</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.0.2</version>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
@@ -36,7 +36,7 @@
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
       <artifactId>hazard-county</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.0.2</version>
     </dependency>
     <dependency>
       <groupId>com.hazelcast</groupId>
@@ -49,32 +49,32 @@
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
       <artifactId>flash</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.0.2</version>
     </dependency>
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
       <artifactId>bo</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.0.2</version>
     </dependency>
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
       <artifactId>daisy</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.0.2</version>
     </dependency>
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
       <artifactId>roscoe</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.0.2</version>
     </dependency>
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
       <artifactId>luke</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.0.2</version>
     </dependency>
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
       <artifactId>uncle-jesse</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.0.2</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>

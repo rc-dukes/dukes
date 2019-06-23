@@ -5,7 +5,7 @@
   <parent>
     <groupId>nl.vaneijndhoven</groupId>
     <artifactId>dukes</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.0.2</version>
   </parent>
 
   <groupId>nl.vaneijndhoven.dukes</groupId>
@@ -27,17 +27,17 @@
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
       <artifactId>hazard-county</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.0.2</version>
     </dependency>
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
       <artifactId>cooter</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.0.2</version>
     </dependency>
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
       <artifactId>general-lee</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.0.2</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
