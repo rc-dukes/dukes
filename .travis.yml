@@ -1,4 +1,5 @@
 # this is a java project using maven
 language: java
 # switch off gpg handling
-install: mvn install -Dgpg.skip=true
+# clean is mandatory to get opencv jar integrated
+install: mvn clean install -Dgpg.skip=true
