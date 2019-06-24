@@ -10,80 +10,87 @@
 <script src="sockjs.0.3.4.min.js"></script>
 <script src="vertx-eventbus.js"></script>
 <!--  Material Design Lite -->
-<script src="/md/material.min.js"></script>
-<link rel="stylesheet" href="/md/material.min.css">
+<script src="md/material.min.js"></script>
+<link rel="stylesheet" href="md/material.min.css">
+<!--  Material design icons see https://materialdesignicons.com/getting-started -->
+<link href="css/materialdesignicons.min.css" media="all"
+	rel="stylesheet" type="text/css" />
 
 <style>
-<style type="text/css">
-body {
-  background-attachment: scroll;
-  background-clip: border-box;
-  background-image: none;
-  background-origin: padding-box;
-  background-position: 0% 0%;
-  background-repeat: repeat;
-  background-size: auto auto;
-  color: #212121;
-  font-family: Arial,sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  margin-bottom: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-top: 10px;
-  padding-bottom: 0px;
-  padding-left: 0px;
-  padding-right: 0px;
-  padding-top: 0px;
+<
+style type ="text /css">body {
+	background-attachment: scroll;
+	background-clip: border-box;
+	background-image: none;
+	background-origin: padding-box;
+	background-position: 0% 0%;
+	background-repeat: repeat;
+	background-size: auto auto;
+	color: #212121;
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	line-height: 20px;
+	margin-bottom: 10px;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-top: 10px;
+	padding-bottom: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 0px;
 }
+
 table {
-  border-collapse: collapse;
-  color: #FFFFFF;
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  margin-bottom: 0px;
-  margin-left: 0px;
-  margin-right: 0px;
-  margin-top: 0px;
-  overflow-x: auto;
+	border-collapse: collapse;
+	color: #FFFFFF;
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	line-height: 20px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	overflow-x: auto;
 }
+
 tbody {
-  border-collapse: collapse;
-  color: #FFFFFF;
-  font-family: Arial,sans-serif;
-  font-size: 14px;
-  line-height: 20px;
+	border-collapse: collapse;
+	color: #FFFFFF;
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	line-height: 20px;
 }
+
 th {
-  background-color: #3F51B5; /* PRIMARY COLOR */
-  border-color: #303F9F;
-  border-style: solid;
-  border-width: 1px;
-  border-collapse: collapse;
-  color: #FFFFFF;
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 20px;
-  padding-bottom: 7px;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 7px;
+	background-color: #3F51B5; /* PRIMARY COLOR */
+	border-color: #303F9F;
+	border-style: solid;
+	border-width: 1px;
+	border-collapse: collapse;
+	color: #FFFFFF;
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 20px;
+	padding-bottom: 7px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 7px;
 }
+
 td {
-  border-color: #303F9F;
-  border-style: solid;
-  border-width: 1px;
-  border-collapse: collapse;
-  color: black;
-  font-family: Arial,sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  padding-bottom: 7px;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 7px;
+	border-color: #303F9F;
+	border-style: solid;
+	border-width: 1px;
+	border-collapse: collapse;
+	color: black;
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	line-height: 20px;
+	padding-bottom: 7px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 7px;
 }
 
 #events {
@@ -162,6 +169,16 @@ td.controls {
 	color: #FFFFFF;
 	font-size: 24px;
 }
+
+.icon {
+	color: #0000FF;
+	font-size: 24px;
+}
+
+.bigicon {
+	color: #0000FF;
+	font-size: 64px;
+}
 </style>
 </head>
 <body>
@@ -169,22 +186,35 @@ td.controls {
 		<a href='https://github.com/rc-dukes/dukes' title='Home'><i
 			class='mdi mdi-home headerboxicon'></i> <!-- home --></a>
 	</div>
-	<div id='navigationbox' title='Home'>Home</div>
+	<div id='navigationbox' title='Self Driving RC Car WebControl'>Self
+		Driving RC Car WebControl</div>
 	<div id='contentbox'>
+	  <table id="navigationcontrols">
+	    <tr>
+	      <td></td>
+	      <td><i id="up"   class='mdi mdi-arrow-up-bold bigicon' title="up/u"        onclick="up();"></i></td>
+	      <td></td>
+	      <td><i id="autopilot"     class='mdi mdi-car bigicon' title="autopilot/+"        onclick="autopilot();"></i></td>
+	    </tr>
+	    <tr>   
+	      <td><i id="left" class='mdi mdi-arrow-left-bold bigicon'   title="left/l"  onclick="left();"></i></td>
+        <td><i id="stop" class='mdi mdi-stop bigicon'              title="stop/space"   onclick="stop();"></i></td>
+        <td><i id="right" class='mdi mdi-arrow-right-bold bigicon' title="right/r" onclick="right();"></i></td>
+	    </tr>
+	    <tr>
+        <td></td>
+        <td><i id="down" class='mdi mdi-arrow-down-bold bigicon' title="down/d"    onclick="down();"></i></td>
+        <td></td>
+        <td><i id="manual"     class='mdi mdi-account bigicon' title="manual/-"        onclick="manual();"></i></td>
+      </tr>
+	  </table>
 		<table class="images">
 			<tr>
 				<td class="controls">
-					<div id="up">up</div>
-					<div>
-						<span id="left">left</span> | <span id="right">right</span>
-					</div>
-					<div id="down">down</div>
-					<div id="space">space (emergency stop, center steering)</div>
-					<div id="z">z(center steering)</div>
-					<div id="s">s (brake)</div>
-					<div id="+">+ (enable autopilot)</div>
-					<div id="-">- (disable autopilot)</div> <br /> <b>Canny config</b><br />
-					Threshold 1: <input id="cannyConfigThreshold1Slider" value="60"
+						<div id="z">z(center steering)</div>
+						<div id="s">s (brake)</div>
+						<br /> <b>Canny config</b><br />
+					</div> Threshold 1: <input id="cannyConfigThreshold1Slider" value="60"
 					type="range" min="0" max="500" step="1"
 					oninput="onSlide('cannyConfigThreshold1Slider', 'cannyConfigThreshold1Textbox')" />
 					<input id="cannyConfigThreshold1Textbox" size="2" /><br />
@@ -244,7 +274,7 @@ td.controls {
 		<!--<input type="file" accept="video/*"/>-->
 		<!--<video controls autoplay></video>-->
 
-		<h1>Events</h1>
+		<h3>Events</h3>
 		<pre id="events"></pre>
 	</div>
 	<!--  end of maincontentbox -->
@@ -319,36 +349,6 @@ td.controls {
 			if (isError) {
 				return
 
-				
-
-								
-
-				
-
-												
-
-				
-
-								
-
-				
-
-																
-
-				
-
-								
-
-				
-
-												
-
-				
-
-								
-
-				
-
 			}
 
 			var fReader = new FileReader();
@@ -374,14 +374,6 @@ td.controls {
 		}
 
 		function registerControls() {
-			function keyPressed(id) {
-				console.log(id);
-				var element = document.getElementById(id);
-				element.style.fontWeight = 'bold';
-				setTimeout(function() {
-					element.style.fontWeight = 'normal';
-				}, 200);
-			}
 
 			document.onkeypress = function(e) {
 				e = e || window.event;
@@ -393,25 +385,19 @@ td.controls {
 				console.log('keycode: ', code);
 				if (code == 37 || code == 108) {
 					// key left/"l": wheel left
-					keyPressed("left");
-					sendWheelCommand('left');
+					left();
 				} else if (code == 39 || code == 114) {
 					// key right/"r": wheel right
-					keyPressed("right");
-					sendWheelCommand('right');
+					right();
 				} else if (code == 38 || code == 117) {
 					// key up/"u": speed up
-					keyPressed("up");
-					sendSpeedCommand('up');
+					up();
 				} else if (code == 40 || code == 100) {
 					// key down/"d": speed down
-					keyPressed("down");
-					sendSpeedCommand('down');
+					down();
 				} else if (code == 32) {
 					// space: stop
-					keyPressed("space");
-					sendSpeedCommand('stop');
-					sendWheelCommand('center');
+					stop();
 				} else if (code == 115 || code == 98) {
 					// b / s: stop (with brake)
 					keyPressed("s");
@@ -425,12 +411,10 @@ td.controls {
 					sendWheelCommand('center');
 				} else if (code == 61 || code == 43) {
 					// +: enable autopilot
-					keyPressed("+");
-					startAutoPilot();
+					autopilot()
 				} else if (code == 45) {
 					// -: disable autopilot
-					keyPressed("-");
-					stopAutoPilot();
+					manual();
 				} else if (code >= 48 && code <= 58) {
 					// 48: 1 key
 					// 49: 2 key
@@ -443,6 +427,51 @@ td.controls {
 
 		var CALLSIGN_BO = 'Lost sheep Bo';
 		var CALLSIGN_DAISY = 'Bo Peep';
+
+		function up() {
+			keyPressed("up");
+			sendSpeedCommand('up');
+		}
+
+		function down() {
+			keyPressed("down");
+			sendSpeedCommand('down');
+		}
+
+		function left() {
+			keyPressed("left");
+			sendWheelCommand('left');
+		}
+
+		function right() {
+			keyPressed("right");
+			sendWheelCommand('right');
+		}
+		
+		function stop() {
+		  keyPressed("stop");
+      sendSpeedCommand('stop');
+      sendWheelCommand('center');
+		}
+		
+		function autopilot() {
+			keyPressed("autopilot");
+	    startAutoPilot();}
+		}
+		
+		function manual() {
+			keyPressed("manual");
+	    stopAutoPilot();
+		}
+
+		function keyPressed(id) {
+			console.log(id);
+			var element = document.getElementById(id);
+			element.style.fontWeight = 'bold';
+			setTimeout(function() {
+				element.style.fontWeight = 'normal';
+			}, 200);
+		}
 
 		function sendWheelCommand(position) {
 
