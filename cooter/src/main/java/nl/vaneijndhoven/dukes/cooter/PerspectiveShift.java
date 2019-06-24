@@ -1,10 +1,11 @@
 package nl.vaneijndhoven.dukes.cooter;
 
-import nl.vaneijndhoven.dukes.enos.geometry.Polygon;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
+
+import nl.vaneijndhoven.dukes.geometry.Polygon;
 
 import java.util.List;
 import java.util.function.UnaryOperator;

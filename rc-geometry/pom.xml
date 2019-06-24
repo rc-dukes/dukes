@@ -11,7 +11,13 @@
 	</parent>
 
 	<groupId>nl.vaneijndhoven.dukes</groupId>
-	<artifactId>enos</artifactId>
+	<artifactId>rc-geometry</artifactId>
 	<description>Geometry</description>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+	</dependencies>
 
 </project>

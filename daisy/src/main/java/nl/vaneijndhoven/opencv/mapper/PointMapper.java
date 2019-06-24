@@ -1,7 +1,8 @@
 package nl.vaneijndhoven.opencv.mapper;
 
-import nl.vaneijndhoven.dukes.enos.geometry.Point2D;
 import org.opencv.core.Point;
+
+import nl.vaneijndhoven.dukes.geometry.Point2D;
 
 public class PointMapper {
 

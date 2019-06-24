@@ -1,10 +1,11 @@
 package nl.vaneijndhoven.opencv.tools;
 
-import nl.vaneijndhoven.dukes.enos.geometry.Line;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+
+import nl.vaneijndhoven.dukes.geometry.Line;
 
 import java.util.Collection;
 import java.util.Objects;

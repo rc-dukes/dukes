@@ -18,22 +18,22 @@
 The self driving car consists of modules with the following responsibilities:
 
 
-| module        | type     | runs on | responsibility                    |  
-|---------------|----------|---------|-----------------------------------|  
-| Boars Nest    | Runner   | laptop  | Runner to start the cluster on the laptop |
-| Bo            | Verticle | car     | Processing Car control inputs
-| Boss Hogg     | Web      | laptop  | Application to provide manual inputs
-| Cletus        | Library  |         | Region of Interest
-| Cooter        | Library  |         | CameraMatrix and PerspectiveShift
-| Daisy         | Verticle |         | Detectors - e.g. Lane and StartLight
-| Duke Farm     | Runner   | car     | Runner to start the cluster on the car
-| Enos          | Library  |         | Geometry
-| Flash         | Verticle | car     | Heartbeat controller watchdog     
-| General Lee   | Library  |         | Car/Engine/Steering
-| Hazard County | Library  |         | Lib containing common API classes
-| Luke          | Verticle |         | Processing image analysis results into actions
-| Roscoe        | Runner   |         | lane detection debug image web server
-| Uncle Jesse   | JavaFX   | laptop  | JavaFX app to monitor the car
+| module        | nickname      | type     | runs on | responsibility                            |  
+|---------------|---------------|----------|---------|-------------------------------------------|  
+|               | Boars Nest    | Runner   | laptop  | Runner to start the cluster on the laptop |
+|               | Bo            | Verticle | car     | Processing Car control inputs
+|               | Boss Hogg     | Web      | laptop  | Application to provide manual inputs
+| roi           | Cletus        | Library  |         | Region of Interest
+|               | Cooter        | Library  |         | CameraMatrix and PerspectiveShift
+| detect        | Daisy         | Verticle |         | Detectors - e.g. Lane and StartLight
+|               | Duke Farm     | Runner   | car     | Runner to start the cluster on the car
+| geometry      | Enos          | Library  |         | Geometry
+| watchdog      | Flash         | Verticle | car     | Heartbeat controller watchdog     
+|               | General Lee   | Library  |         | Car/Engine/Steering
+| common        | Hazard County | Library  |         | Lib containing common API classes
+|               | Luke          | Verticle |         | Proc Image analysis results into actions
+|               | Roscoe        | Runner   |         | lane detection debug image web server
+|               | Uncle Jesse   | JavaFX   | laptop  | JavaFX app to monitor the car
 
 ### Inspiration for naming
 * [Dukes of Hazzard](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard)

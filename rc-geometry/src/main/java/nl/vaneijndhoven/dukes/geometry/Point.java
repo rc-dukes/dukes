@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.enos.geometry;
+package nl.vaneijndhoven.dukes.geometry;
 
 import java.util.stream.Collectors;
 

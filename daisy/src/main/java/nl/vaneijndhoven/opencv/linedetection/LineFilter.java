@@ -1,8 +1,9 @@
 package nl.vaneijndhoven.opencv.linedetection;
 
-import nl.vaneijndhoven.dukes.enos.geometry.Line;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+
+import nl.vaneijndhoven.dukes.geometry.Line;
 
 import java.util.*;
 

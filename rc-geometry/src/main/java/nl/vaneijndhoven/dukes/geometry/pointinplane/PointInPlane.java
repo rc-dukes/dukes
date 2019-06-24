@@ -1,7 +1,7 @@
-package nl.vaneijndhoven.dukes.enos.geometry.pointinplane;
+package nl.vaneijndhoven.dukes.geometry.pointinplane;
 
-import nl.vaneijndhoven.dukes.enos.geometry.Point2D;
-import nl.vaneijndhoven.dukes.enos.geometry.Polygon;
+import nl.vaneijndhoven.dukes.geometry.Point2D;
+import nl.vaneijndhoven.dukes.geometry.Polygon;
 
 /**
  * Created by jpoint on 16/08/16.

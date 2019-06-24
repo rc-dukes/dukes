@@ -1,10 +1,9 @@
-package nl.vaneijndhoven.dukes.enos.geometry;
-
-import nl.vaneijndhoven.dukes.enos.geometry.pointinplane.CrossingNumber;
-import nl.vaneijndhoven.dukes.enos.geometry.pointinplane.PointInPlane;
-//import org.opencv.core.Point2D;
+package nl.vaneijndhoven.dukes.geometry;
 
 import java.util.*;
+
+import nl.vaneijndhoven.dukes.geometry.pointinplane.CrossingNumber;
+import nl.vaneijndhoven.dukes.geometry.pointinplane.PointInPlane;
 
 public class Polygon {
 

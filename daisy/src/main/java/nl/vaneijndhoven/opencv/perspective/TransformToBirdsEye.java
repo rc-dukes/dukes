@@ -1,6 +1,6 @@
 package nl.vaneijndhoven.opencv.perspective;
 
-import nl.vaneijndhoven.dukes.enos.geometry.Polygon;
+import nl.vaneijndhoven.dukes.geometry.Polygon;
 import nl.vaneijndhoven.opencv.mapper.PointMapper;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint2f;

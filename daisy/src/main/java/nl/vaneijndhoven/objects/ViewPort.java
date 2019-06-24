@@ -1,6 +1,6 @@
 package nl.vaneijndhoven.objects;
 
-import nl.vaneijndhoven.dukes.enos.geometry.Point2D;
+import nl.vaneijndhoven.dukes.geometry.Point2D;
 
 public class ViewPort {
 

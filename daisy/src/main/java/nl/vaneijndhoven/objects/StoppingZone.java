@@ -1,8 +1,8 @@
 package nl.vaneijndhoven.objects;
 
-import nl.vaneijndhoven.dukes.enos.geometry.Line;
-
 import java.util.Optional;
+
+import nl.vaneijndhoven.dukes.geometry.Line;
 
 public class StoppingZone {
 

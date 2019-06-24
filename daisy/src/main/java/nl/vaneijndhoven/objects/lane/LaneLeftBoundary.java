@@ -1,6 +1,6 @@
 package nl.vaneijndhoven.objects.lane;
 
-import nl.vaneijndhoven.dukes.enos.geometry.Line;
+import nl.vaneijndhoven.dukes.geometry.Line;
 import nl.vaneijndhoven.objects.Boundary;
 import nl.vaneijndhoven.opencv.linedetection.LineFilter;
 import nl.vaneijndhoven.opencv.video.LaneDetectionController;

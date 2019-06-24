@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>nl.vaneijndhoven.dukes</groupId>
-            <artifactId>enos</artifactId>
+            <artifactId>rc-geometry</artifactId>
             <version>0.0.2</version>
         </dependency>
         <dependency>

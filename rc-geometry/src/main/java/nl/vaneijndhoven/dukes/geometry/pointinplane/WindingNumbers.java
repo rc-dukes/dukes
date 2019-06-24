@@ -1,10 +1,10 @@
-package nl.vaneijndhoven.dukes.enos.geometry.pointinplane;
-
-import nl.vaneijndhoven.dukes.enos.geometry.Line;
-import nl.vaneijndhoven.dukes.enos.geometry.Point2D;
-import nl.vaneijndhoven.dukes.enos.geometry.Polygon;
+package nl.vaneijndhoven.dukes.geometry.pointinplane;
 
 import java.util.ArrayList;
+
+import nl.vaneijndhoven.dukes.geometry.Line;
+import nl.vaneijndhoven.dukes.geometry.Point2D;
+import nl.vaneijndhoven.dukes.geometry.Polygon;
 
 /**
  * Created by jpoint on 16/08/16.

@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.enos.geometry;
+package nl.vaneijndhoven.dukes.geometry;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import static java.lang.Math.*;
 import static java.util.Optional.of;
+
+import java.util.Arrays;
 
 /**
  * 
@@ -22,7 +24,7 @@ public class Line {
    * @param coordinates
    *          - the 4 coordinates to construct me from
    */
-  public Line(double[] coordinates) {
+  public Line(double ... coordinates) {
     this(new Point(coordinates[0], coordinates[1]),
         new Point(coordinates[2], coordinates[3]));
   }
@@ -83,6 +85,15 @@ public class Line {
    */
   public Point2D getPoint2() {
     return point2;
+  }
+  
+  /**
+   * calculate the average lines for the given lines
+   * @param lines
+   * @return - the average line
+   */
+  public static Line average(Line ...lines) {
+    return average(Arrays.asList(lines));
   }
 
   /**
