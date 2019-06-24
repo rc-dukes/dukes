@@ -2,7 +2,7 @@ package nl.vaneijndhoven.dukes.luke.drag;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.AbstractVerticle;
-import nl.vaneijndhoven.dukes.hazardcounty.Characters;
+import nl.vaneijndhoven.dukes.common.Characters;
 import rx.Observable;
 import rx.exceptions.Exceptions;
 import stormbots.MiniPID;

@@ -10,8 +10,9 @@ import io.vertx.rxjava.ext.web.handler.StaticHandler;
 import io.vertx.rxjava.core.AbstractVerticle;
 //import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 import io.vertx.rxjava.ext.web.handler.sockjs.SockJSHandler;
-import nl.vaneijndhoven.dukes.hazardcounty.Characters;
-import nl.vaneijndhoven.dukes.hazardcounty.Events;
+import nl.vaneijndhoven.dukes.common.Characters;
+import nl.vaneijndhoven.dukes.common.Events;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

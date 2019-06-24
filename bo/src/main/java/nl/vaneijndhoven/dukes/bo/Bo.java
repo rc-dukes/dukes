@@ -7,12 +7,15 @@ import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.Message;
 import nl.vaneijndhoven.dukes.car.Engine;
 import nl.vaneijndhoven.dukes.car.Steering;
+import nl.vaneijndhoven.dukes.common.Characters;
 import nl.vaneijndhoven.dukes.car.Car;
 import nl.vaneijndhoven.dukes.generallee.EngineMap;
 import nl.vaneijndhoven.dukes.generallee.SteeringMap;
-import nl.vaneijndhoven.dukes.hazardcounty.Characters;
 import rx.Subscription;
 
+/**
+ * Motor and steering output
+ */
 public class Bo extends AbstractVerticle {
 
     private static final Logger LOG = LoggerFactory.getLogger(Bo.class);

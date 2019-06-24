@@ -15,7 +15,7 @@ import io.vertx.rxjava.ext.web.Router;
 import io.vertx.rxjava.ext.web.handler.StaticHandler;
 import io.vertx.rxjava.ext.web.handler.sockjs.SockJSHandler;
 import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
-import nl.vaneijndhoven.dukes.hazardcounty.Characters;
+import nl.vaneijndhoven.dukes.common.Characters;
 import nl.vaneijndhoven.dukes.unclejesse.UncleJesse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

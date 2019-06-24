@@ -19,7 +19,7 @@
 		</dependency>
 		<dependency>
 			<groupId>nl.vaneijndhoven.dukes</groupId>
-			<artifactId>hazard-county</artifactId>
+			<artifactId>rc-common</artifactId>
 			<version>0.0.2</version>
 		</dependency>
 		<dependency>

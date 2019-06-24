@@ -35,7 +35,7 @@
     </dependency>
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
-      <artifactId>hazard-county</artifactId>
+      <artifactId>rc-common</artifactId>
       <version>0.0.2</version>
     </dependency>
     <dependency>
@@ -48,7 +48,7 @@
     </dependency>
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
-      <artifactId>flash</artifactId>
+      <artifactId>rc-watchdog</artifactId>
       <version>0.0.2</version>
     </dependency>
     <dependency>

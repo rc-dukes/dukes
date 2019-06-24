@@ -28,9 +28,9 @@ The self driving car consists of modules with the following responsibilities:
 | detect        | Daisy         | Verticle |         | Detectors - e.g. Lane and StartLight
 |               | Duke Farm     | Runner   | car     | Runner to start the cluster on the car
 | geometry      | [Enos](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Enos) | Library  |         | Geometry
-| watchdog      | Flash         | Verticle | car     | Heartbeat controller watchdog     
+| watchdog      | [Flash](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Flash)         | Verticle | car     | Heartbeat controller watchdog     
 |               | General Lee   | Library  |         | Car/Engine/Steering
-| common        | Hazard County | Library  |         | Lib containing common API classes
+| common        | [Hazard County](https://en.wikipedia.org/wiki/Hazzard_County,_Georgia) | Library  |         | Lib containing common API classes
 |               | Luke          | Verticle |         | Proc Image analysis results into actions
 |               | Roscoe        | Runner   |         | lane detection debug image web server
 |               | Uncle Jesse   | JavaFX   | laptop  | JavaFX app to monitor the car

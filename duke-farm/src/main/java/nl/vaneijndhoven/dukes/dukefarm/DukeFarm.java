@@ -11,11 +11,11 @@ import nl.vaneijndhoven.dukes.car.Car;
 import nl.vaneijndhoven.dukes.car.Command;
 import nl.vaneijndhoven.dukes.car.Engine;
 import nl.vaneijndhoven.dukes.car.Steering;
-import nl.vaneijndhoven.dukes.flash.Flash;
+import nl.vaneijndhoven.dukes.common.Config;
+import nl.vaneijndhoven.dukes.common.Environment;
 import nl.vaneijndhoven.dukes.generallee.EngineMap;
 import nl.vaneijndhoven.dukes.generallee.SteeringMap;
-import nl.vaneijndhoven.dukes.hazardcounty.Config;
-import nl.vaneijndhoven.dukes.hazardcounty.Environment;
+import nl.vaneijndhoven.dukes.watchdog.WatchDog;
 
 /**
  * Runner to start the cluster on the car
@@ -58,7 +58,7 @@ public class DukeFarm {
             Vertx vertx = resultHandler.result();
             DeploymentOptions deploymentOptions = new DeploymentOptions();
             deploymentOptions.setWorker(true);
-            vertx.deployVerticle(new Flash(), deploymentOptions);
+            vertx.deployVerticle(new WatchDog(), deploymentOptions);
             vertx.deployVerticle(new Bo(), deploymentOptions);
 /*
             vertx.deployVerticle(new Daisy(), deploymentOptions);

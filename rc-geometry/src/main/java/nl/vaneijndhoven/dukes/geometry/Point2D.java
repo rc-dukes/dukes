@@ -22,7 +22,7 @@ public interface Point2D {
   /**
    * calculate the distance to another point
    * @param other
-   * @return
+   * @return the distance
    */
   double distance(Point2D other);
 

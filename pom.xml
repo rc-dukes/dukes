@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>nl.vaneijndhoven</groupId>
@@ -52,7 +54,8 @@
 		<javadoc.opts>-Xdoclint:none</javadoc.opts>
 
 		<!-- Version numbers -->
-		<!-- https://mvnrepository.com/artifact/com.mycila/license-maven-plugin (latest: 3.0 Aug 2016) we purposely use an older version -->
+		<!-- https://mvnrepository.com/artifact/com.mycila/license-maven-plugin 
+			(latest: 3.0 Aug 2016) we purposely use an older version -->
 		<com.mycila.maven-license-plugin.version>1.9.0</com.mycila.maven-license-plugin.version>
 		<!-- https://mvnrepository.com/artifact/org.sonatype.plugins/nexus-staging-maven-plugin -->
 		<nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
@@ -96,7 +99,8 @@
 		<vertx.version>3.5.4</vertx.version>
 		<hazelcast.version>3.9</hazelcast.version>
 		<logback-classic.version>1.1.5</logback-classic.version>
-		<!-- open cv version 2019-06: 2.4.6.1 which would be available in maven central 3.3.0 has to be installed e.g. from lib directory (see below) -->
+		<!-- open cv version 2019-06: 2.4.6.1 which would be available in maven 
+			central 3.3.0 has to be installed e.g. from lib directory (see below) -->
 		<opencv.version>3.3.0</opencv.version>
 		<junit.version>4.12</junit.version>
 		<commons-io.version>2.6</commons-io.version>
@@ -147,6 +151,14 @@
 				<artifactId>vertx-web</artifactId>
 				<version>${vertx.version}</version>
 			</dependency>
+			<!-- https://mvnrepository.com/artifact/io.vertx/vertx-unit -->
+			<dependency>
+				<groupId>io.vertx</groupId>
+				<artifactId>vertx-unit</artifactId>
+				<version>${vertx.version}</version>
+				<scope>test</scope>
+			</dependency>
+
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
@@ -176,17 +188,18 @@
 		<module>daisy</module>
 		<module>duke-farm</module>
 		<module>rc-geometry</module>
-		<module>flash</module>
+		<module>rc-watchdog</module>
 		<module>luke</module>
 		<module>roscoe</module>
 		<module>uncle-jesse</module>
-		<module>hazard-county</module>
+		<module>rc-common</module>
 		<module>general-lee</module>
 	</modules>
 	<!-- see http://wiki.bitplan.com/index.php/Multi-Module_Maven_with_github_pages -->
 	<distributionManagement>
 		<site>
-			<!-- Do mvn site site:stage -DstagingDirectory=/tmp/path first, then manually add/push to the gh-pages branch on GitHub) -->
+			<!-- Do mvn site site:stage -DstagingDirectory=/tmp/path first, then manually 
+				add/push to the gh-pages branch on GitHub) -->
 			<id>${project.artifactId}-site</id>
 			<name>${github.owner} ${project.artifactId} ${project.version} GitHub Pages</name>
 			<url>https://${github.owner}.github.io/${project.artifactId}</url>
@@ -195,16 +208,19 @@
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
-		<!-- see https://stackoverflow.com/questions/10483180/maven-what-is-pluginmanagement plugins that child poms might use -->
+		<!-- see https://stackoverflow.com/questions/10483180/maven-what-is-pluginmanagement 
+			plugins that child poms might use -->
 		<pluginManagement>
 			<plugins>
-				<!-- git hub site plugin https://github.com/github/maven-plugins configured for fixing the multi-module issue https://github.com/github/maven-plugins/issues/22 -->
+				<!-- git hub site plugin https://github.com/github/maven-plugins configured 
+					for fixing the multi-module issue https://github.com/github/maven-plugins/issues/22 -->
 				<plugin>
 					<groupId>com.github.github</groupId>
 					<artifactId>site-maven-plugin</artifactId>
 					<version>${site-maven-plugin.version}</version>
 					<configuration>
-						<message>Creating site for ${github.owner} ${github.project} ${project.version} with url ${project.url}</message>
+						<message>Creating site for ${github.owner} ${github.project}
+							${project.version} with url ${project.url}</message>
 						<repositoryName>${github.project}</repositoryName>
 						<!-- github repo name -->
 						<repositoryOwner>${github.owner}</repositoryOwner>
@@ -263,7 +279,9 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<!-- see http://central.sonatype.org/pages/apache-maven.html Javadoc and Sources Attachments To get Javadoc and Source jar files generated, you have to configure the javadoc and source Maven plugins. -->
+				<!-- see http://central.sonatype.org/pages/apache-maven.html Javadoc 
+					and Sources Attachments To get Javadoc and Source jar files generated, you 
+					have to configure the javadoc and source Maven plugins. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>${maven-source-plugin.version}</version>
@@ -293,7 +311,8 @@
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>${maven-project-info-reports-plugin.version}</version>
 			</plugin>
-			<!-- GPG Signed Components The Maven GPG plugin is used to sign the components with the following configuration. -->
+			<!-- GPG Signed Components The Maven GPG plugin is used to sign the components 
+				with the following configuration. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
@@ -308,8 +327,11 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- according to : http://central.sonatype.org/pages/apache-maven.html Nexus Staging Maven Plugin for Deployment and Release The Nexus Staging Maven Plugin is the recommended way to deploy your components to OSSRH and release them to the Central
-			Repository. To configure it simply add the plugin to your Maven pom.xml. -->
+			<!-- according to : http://central.sonatype.org/pages/apache-maven.html 
+				Nexus Staging Maven Plugin for Deployment and Release The Nexus Staging Maven 
+				Plugin is the recommended way to deploy your components to OSSRH and release 
+				them to the Central Repository. To configure it simply add the plugin to 
+				your Maven pom.xml. -->
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
