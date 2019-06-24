@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.dukefarm;
+package nl.vaneijndhoven.dukes.remotecar;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +19,12 @@ import nl.vaneijndhoven.dukes.generallee.SteeringMap;
 import nl.vaneijndhoven.dukes.watchdog.WatchDog;
 
 /**
- * Runner to start the cluster on the car
+ * Runner to start the remote cluster on the car
  *
  */
-public class DukeFarm {
+public class RemoteCar {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DukeFarm.class);
+  private static final Logger LOG = LoggerFactory.getLogger(RemoteCar.class);
 
   /**
    * start me with given command line parameters
@@ -48,8 +48,7 @@ public class DukeFarm {
     LOG.info(
         "Firing up General Lee vert.x and core controller, tutu tu tu tu tutututu tututu...");
 
-    VertxOptions options = new VertxOptions().setClustered(true)
-        .setClusterManager(Config.createHazelcastConfig());
+    VertxOptions options = starter.getOptions();
 
     if (Environment.getInstance().runningOnRaspberryPi()) {
       LOG.info(

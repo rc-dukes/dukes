@@ -61,7 +61,7 @@ usage() {
 copyToTarget() {
   local l_ini="$1"
   local l_iniPath="$2"
-  jar="duke-farm-$version-fat.jar"
+  jar="rc-remote-car-$version-fat.jar"
   color_msg $blue "copying $jar to $target"
   if [ ! -f target/$jar ]
   then
@@ -75,7 +75,7 @@ copyToTarget() {
      scp "$l_iniPath" "$target:$l_ini"
      # sync the fat file
      rsync -avz --progress target/$jar $target:~
-     color_msg $blue "starting duke-farm"
+     color_msg $blue "starting rc-remote-car aka duke-farm"
      #ssh $target -t "killall -9 java; screen sh -c \"/usr/bin/java -jar $jar\""
      ssh $target -t "killall -9 java;/usr/bin/java -jar $jar"
   fi
@@ -113,7 +113,7 @@ startFarm() {
   ping -i 0.5 -c 1 -W 500 $targetHost > /dev/null
   if [ $? -ne 0 ]
   then
-    error "target host $targetHost is not reachable\nYou might want to create $ini or modify the deploy.sh script"
+    error "target host $targetHost is not reachable\nYou might want to check $ini or modify the deploy.sh script"
     exit 1
   else
     copyToTarget "$ini" "$inipath"

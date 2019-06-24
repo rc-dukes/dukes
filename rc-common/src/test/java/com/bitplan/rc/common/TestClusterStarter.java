@@ -16,6 +16,7 @@ public class TestClusterStarter {
   @Test
   public void testClusterStarter() {
     ClusterStarter starter = new ClusterStarter();
+    starter.prepare();
   }
 
 }

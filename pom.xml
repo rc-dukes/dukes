@@ -187,7 +187,7 @@
 		<module>rc-roi</module>
 		<module>rc-camera-matrix</module>
 		<module>daisy</module>
-		<module>duke-farm</module>
+		<module>rc-remotecar</module>
 		<module>rc-geometry</module>
 		<module>rc-watchdog</module>
 		<module>luke</module>
