@@ -3,9 +3,9 @@ package nl.vaneijndhoven.dukes.geometry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * implements a polygon as a list of Point2D
@@ -13,6 +13,7 @@ import java.util.Set;
  */
 public class Polygon {
 
+    public static boolean debug=false;
     private final List<Point2D> points;
 
     // private PointInPlane pointInPlaneStrategy = new CrossingNumber();
@@ -82,7 +83,7 @@ public class Polygon {
      * @return - the intersection point
      */
     public Set<Point2D> intersect(Line line) {
-        Set<Point2D> intersections = new HashSet<>();
+        Set<Point2D> intersections = new TreeSet<>();
 
         for (int i = 0; i < points.size(); i++) {
             Point2D point1 = points.get(i);
@@ -93,7 +94,8 @@ public class Polygon {
                     .ifPresent(intersections::add);
         }
 
-        System.out.println("Intersections found at: " + intersections);
+        if (debug)
+          System.out.println("Intersections found at: " + intersections);
         return intersections;
     }
 

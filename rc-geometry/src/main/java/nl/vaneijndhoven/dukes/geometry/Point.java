@@ -9,7 +9,7 @@ import static java.util.Arrays.stream;
  * with 2D and 3D interfaces
  *
  */
-public class Point implements Point2D, Point3D {
+public class Point implements Point2D, Point3D, Comparable<Point> {
 
     public static final int X = 0;
     public static final int Y = 1;
@@ -87,5 +87,22 @@ public class Point implements Point2D, Point3D {
     public double getZ() {
         return dimensions[Z];
     }
+    
+    private Double getMax() {
+     Double max=Double.MIN_VALUE;
+     for (double val:dimensions) {
+       if (val>max)
+         max=val;
+     }
+     return max;
+    }
+
+    @Override
+    public int compareTo(Point o) {
+      Double max=getMax();
+      Double omax=o.getMax();
+      return max.compareTo(omax);
+    }
+
 
 }

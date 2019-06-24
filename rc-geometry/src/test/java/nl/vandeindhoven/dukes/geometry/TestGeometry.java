@@ -14,6 +14,9 @@ import nl.vaneijndhoven.dukes.geometry.Point;
 import nl.vaneijndhoven.dukes.geometry.Point2D;
 import nl.vaneijndhoven.dukes.geometry.Point3D;
 import nl.vaneijndhoven.dukes.geometry.Polygon;
+import nl.vaneijndhoven.dukes.geometry.pointinplane.CrossingNumber;
+import nl.vaneijndhoven.dukes.geometry.pointinplane.WindingNumbers;
+import nl.vaneijndhoven.dukes.geometry.pointinplane.PointInPlane;
 import nl.vaneijndhoven.dukes.geometry.Line.Vector;
 
 /**
@@ -102,17 +105,19 @@ public class TestGeometry {
 
   @Test
   public void testPolygon() {
-    Polygon squares[] = { Polygon.square(new Point(0, 0), new Point(100, 100)),
+    Polygon polygons[] = { Polygon.square(new Point(0, 0), new Point(100, 100)),
         new Polygon(new Point(0, 0), new Point(100, 100), new Point(100, 0),
             new Point(0, 100)) };
     double expectedShoelace[] = { 20000, 0 };
+    String expectedIntersects[] = { "[{0.0,25.0}, {100.0,25.0}]",
+        "[{25.0,25.0}, {75.0,25.0}, {100.0,25.0}]" };
     int index = 0;
     Line line = new Line(0, 25, 100, 25);
-    for (Polygon square : squares) {
-      List<Point2D> points = square.getPoints();
-      List<Line> edges = square.edges();
-      List<Point2D> cpoints = square.getPointsClockwise();
-      List<Point2D> ccpoints = square.getPointsCounterClockwise();
+    for (Polygon polygon : polygons) {
+      List<Point2D> points = polygon.getPoints();
+      List<Line> edges = polygon.edges();
+      List<Point2D> cpoints = polygon.getPointsClockwise();
+      List<Point2D> ccpoints = polygon.getPointsCounterClockwise();
       assertEquals(4, points.size());
       assertEquals(4, edges.size());
       assertEquals(4, cpoints.size());
@@ -121,10 +126,18 @@ public class TestGeometry {
         assertEquals(points.get(i), cpoints.get(i));
         assertEquals(points.get(i), ccpoints.get(3 - i));
       }
-      assertEquals(expectedShoelace[index++], square.shoelace(), 0.01);
-      System.out.println(square.intersect(line));
+      assertEquals(expectedShoelace[index], polygon.shoelace(), 0.01);
+      assertEquals(expectedIntersects[index],
+          polygon.intersect(line).toString());
+      index++;
     }
-
+    Point point = new Point(0.0, 12.5);
+    PointInPlane pips[] = { new WindingNumbers(), 
+        //new CrossingNumber() 
+        };
+    for (PointInPlane pip : pips) {
+      assertTrue(pip.isPointInPlane(point, polygons[0]));
+    }
   }
 
 }
