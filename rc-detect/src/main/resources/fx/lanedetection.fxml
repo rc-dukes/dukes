@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+	
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="nl.vaneijndhoven.opencv.video.LaneDetectionGUI">
+	<right>
+		<VBox alignment="CENTER" spacing="10">
+			<padding>
+				<Insets right="10" left="10"/>
+			</padding>
+			<Label text="Canny threshold 1"/>
+			<Slider fx:id="cannyThreshold1" min="0" max="2000" value="20" blockIncrement="1"/>
+			<Label text="Canny threshold 2"/>
+			<Slider fx:id="cannyThreshold2" min="0" max="2000" value="50" blockIncrement="1"/>
+
+			<Label text="LineDetect rho"/>
+			<Slider fx:id="lineDetectRho" min="0" max="20" value="0.5" blockIncrement="0.01"/>
+			<Label text="LineDetect theta"/>
+			<Slider fx:id="lineDetectTheta" min="-5" max="5" value="0.5" blockIncrement="0.01"/>
+
+			<Label text="LineDetect threshold"/>
+			<Slider fx:id="lineDetectThreshold" min="0" max="200" value="20" blockIncrement="1"/>
+			<Label text="LineDetect minLineLength"/>
+			<Slider fx:id="lineDetectMinLineLength" min="0" max="200" value="50" blockIncrement="1"/>
+			<Label text="LineDetect maxLineGap"/>
+			<Slider fx:id="lineDetectMaxLineGap" min="0" max="500" value="50" blockIncrement="1"/>
+
+		</VBox>
+	</right>
+
+	<center>
+		<HBox alignment="CENTER" spacing="5">
+			<padding>
+				<Insets right="10" left="10" />
+			</padding>
+			<ImageView fx:id="originalFrame" />
+			<VBox alignment="CENTER" spacing="5">
+				<ImageView fx:id="processedImage1" />
+				<ImageView fx:id="processedImage2" />
+			</VBox>
+		</HBox>
+	</center>
+	<bottom>
+		<VBox alignment="CENTER" spacing="15">
+			<padding>
+				<Insets top="25" right="25" bottom="25" left="25"/>
+			</padding>
+			<Button fx:id="cameraButton" alignment="center" text="Start camera" onAction="#startCamera"/>
+			<Separator/>
+			<Label fx:id="sliderCurrentValues"/>
+		</VBox>
+	</bottom>
+
+</BorderPane>
