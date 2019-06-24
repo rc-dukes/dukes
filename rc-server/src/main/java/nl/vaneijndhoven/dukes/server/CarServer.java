@@ -7,7 +7,7 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
-import nl.vaneijndhoven.daisy.Daisy;
+import nl.vaneijndhoven.detect.Detector;
 import nl.vaneijndhoven.dukes.webcontrol.WebControl;
 import nl.vaneijndhoven.dukes.common.ClusterStarter;
 import nl.vaneijndhoven.dukes.common.Environment;
@@ -54,7 +54,7 @@ public class CarServer {
 
       if (enableAutoPilot) {
         vertx.deployVerticle(new Luke());
-        vertx.deployVerticle(new Daisy(), deploymentOptions, async -> {
+        vertx.deployVerticle(new Detector(), deploymentOptions, async -> {
           vertx.eventBus().send(Events.STREAMADDED.name(),
               new JsonObject().put("source", cameraUrl));
 

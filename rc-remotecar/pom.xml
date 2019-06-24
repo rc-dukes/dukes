@@ -54,7 +54,7 @@
         </dependency>
         <dependency>
             <groupId>nl.vaneijndhoven.dukes</groupId>
-            <artifactId>daisy</artifactId>
+            <artifactId>rc-detect</artifactId>
             <version>0.0.2</version>
         </dependency>
         <dependency>

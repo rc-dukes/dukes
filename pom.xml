@@ -186,7 +186,7 @@
 		<module>rc-webcontrol</module>
 		<module>rc-roi</module>
 		<module>rc-camera-matrix</module>
-		<module>daisy</module>
+		<module>rc-detect</module>
 		<module>rc-remotecar</module>
 		<module>rc-geometry</module>
 		<module>rc-watchdog</module>

@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>nl.vaneijndhoven.dukes</groupId>
-    <artifactId>daisy</artifactId>
+    <artifactId>rc-detect</artifactId>
     <description>Detectors - e.g. Lane and StartLight</description>
 
     <dependencies>

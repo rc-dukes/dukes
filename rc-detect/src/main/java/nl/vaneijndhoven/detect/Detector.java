@@ -20,7 +20,10 @@ import rx.Observable;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class Daisy extends AbstractVerticle {
+/**
+ * Detector aka Daisy)
+ */
+public class Detector extends AbstractVerticle {
 
     private static final Logger LOG = LoggerFactory.getLogger(Daisy.class);
 
@@ -38,7 +41,10 @@ public class Daisy extends AbstractVerticle {
     public static Mat BIRDS_EYE = null;
     public static byte[] CANNY_IMG = null;
 
-    public Daisy() {
+    /**
+     * default constructor
+     */
+    public Detector() {
 
     }
 
