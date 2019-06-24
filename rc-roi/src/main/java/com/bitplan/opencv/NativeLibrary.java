@@ -11,6 +11,7 @@ import org.opencv.core.Core;
  */
 public class NativeLibrary {
   protected static File nativeLibPath = new File("../lib");
+  protected static String[] currentLibraryPath=System.getProperty("java.library.path").split(File.pathSeparator);
 
   /**
    * get the native library path
@@ -34,10 +35,10 @@ public class NativeLibrary {
   /**
    * get the current library path
    * 
-   * @return the current library path
+   * @return the current library path as an array of strings
    */
-  public static String getCurrentLibraryPath() {
-    return System.getProperty("java.library.path");
+  public static String[] getCurrentLibraryPath() {
+    return currentLibraryPath;
   }
 
   /**
@@ -69,11 +70,32 @@ public class NativeLibrary {
     final String[] newPaths = Arrays.copyOf(paths, paths.length + 1);
     newPaths[newPaths.length - 1] = pathToAdd;
     usrPathsField.set(null, newPaths);
+    currentLibraryPath=newPaths;
   }
 
+  /**
+   * get the library Filename
+   * 
+   * @return the library file name
+   */
+  public static String getLibraryFileName() {
+    String libraryFileName = Core.NATIVE_LIBRARY_NAME;
+    switch (OsCheck.getOperatingSystemType()) {
+    case MacOS:
+      libraryFileName = "lib" + Core.NATIVE_LIBRARY_NAME + ".dylib";
+    default:
+
+    }
+    return libraryFileName;
+  }
+
+  /**
+   * get the native library file
+   * 
+   * @return - the file
+   */
   public static File getNativeLib() {
-    File nativeLib = new File(getNativeLibPath(),
-        "lib" + Core.NATIVE_LIBRARY_NAME + ".dylib");
+    File nativeLib = new File(getNativeLibPath(), getLibraryFileName());
     return nativeLib;
   }
 

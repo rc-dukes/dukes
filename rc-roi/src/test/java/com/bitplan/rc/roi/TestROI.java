@@ -25,7 +25,7 @@ import nl.vaneijndhoven.dukes.roi.RightField;
  * @author wf
  */
 public class TestROI {
-  public static boolean debug = false;
+  public static boolean debug = true;
   String basePath = "./";
   String testPath = basePath + "target/test-classes/roi/";
 
@@ -38,11 +38,27 @@ public class TestROI {
   @Test
   public void testNativeLibrary() throws Exception {
     if (debug)
-      System.out.println(String.format("trying to load native library %s",
+      System.out.println(String.format("trying to load native library %s from path",
           Core.NATIVE_LIBRARY_NAME));
     assertTrue(NativeLibrary.getNativeLibPath().isDirectory());
     assertTrue(NativeLibrary.getNativeLib().isFile());
     NativeLibrary.load();
+    for (String pathelement:NativeLibrary.getCurrentLibraryPath()) {
+      File path=new File(pathelement);
+      if (debug)
+        System.out.print("\t"+pathelement);
+      if (path.isDirectory()) {
+        if (debug)
+          System.out.println("✓");
+        File libFile=new File(path,NativeLibrary.getLibraryFileName());
+        if (libFile.isFile() && debug) {
+          System.out.println(String.format("found at %s ",libFile.getCanonicalPath()));
+        }
+      } else {
+        if (debug)
+          System.out.println();
+      }
+    }
   }
 
   @Test
