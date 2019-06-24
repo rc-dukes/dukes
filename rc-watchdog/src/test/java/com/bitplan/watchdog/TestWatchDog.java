@@ -42,6 +42,7 @@ public class TestWatchDog {
    */
   @Before
   public void setUp(TestContext context) throws IOException {
+    // ClusterStarter starter=new ClusterStarter();
    ClusterManager mgr = new HazelcastClusterManager();
    VertxOptions options = new VertxOptions().setClusterManager(mgr);
    Vertx.clusteredVertx(options, new Handler<AsyncResult<Vertx>>() {
