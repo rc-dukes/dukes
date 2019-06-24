@@ -70,10 +70,7 @@ class SpeedHandler {
         } else if ("brake".equals(speed)) {
             performBrake();
         }
-
-
     }
-
 
     private void performBrake() {
         LOG.debug("engaging braking sequence");

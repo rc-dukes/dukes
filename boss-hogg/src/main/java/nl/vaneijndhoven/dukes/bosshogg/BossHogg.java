@@ -1,25 +1,14 @@
 package nl.vaneijndhoven.dukes.bosshogg;
 
-import com.hazelcast.config.Config;
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
-import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.SLF4JLogDelegateFactory;
-import io.vertx.core.spi.cluster.ClusterManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.vertx.ext.web.handler.sockjs.BridgeOptions;
-import io.vertx.ext.web.handler.sockjs.PermittedOptions;
+import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.ext.web.Router;
 import io.vertx.rxjava.ext.web.handler.StaticHandler;
 import io.vertx.rxjava.ext.web.handler.sockjs.SockJSHandler;
-import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
-import nl.vaneijndhoven.dukes.common.Characters;
-import nl.vaneijndhoven.dukes.unclejesse.UncleJesse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import rx.Subscription;
 
 public class BossHogg extends AbstractVerticle {
 
