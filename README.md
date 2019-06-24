@@ -27,8 +27,7 @@ The self driving car consists of modules with the following responsibilities:
 |               | Cooter        | Library  |         | CameraMatrix and PerspectiveShift
 | detect        | Daisy         | Verticle |         | Detectors - e.g. Lane and StartLight
 |               | Duke Farm     | Runner   | car     | Runner to start the cluster on the car
-| geometry      | [Enos](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Enos)
-                                | Library  |         | Geometry
+| geometry      | [Enos](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Enos) | Library  |         | Geometry
 | watchdog      | Flash         | Verticle | car     | Heartbeat controller watchdog     
 |               | General Lee   | Library  |         | Car/Engine/Steering
 | common        | Hazard County | Library  |         | Lib containing common API classes
