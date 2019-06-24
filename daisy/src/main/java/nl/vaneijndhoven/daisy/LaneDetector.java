@@ -1,6 +1,6 @@
 package nl.vaneijndhoven.daisy;
 
-import nl.vaneijndhoven.dukes.cooter.CameraMatrix;
+import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.lanedetection.ImageLaneDetection;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;

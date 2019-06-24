@@ -21,10 +21,10 @@ The self driving car consists of modules with the following responsibilities:
 | module        | nickname      | type     | runs on | responsibility                            |  
 |---------------|---------------|----------|---------|-------------------------------------------|  
 |               | Boars Nest    | Runner   | laptop  | Runner to start the cluster on the laptop |
-|               | Bo            | Verticle | car     | Processing Car control inputs
+| car           | [Bo](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Bo)            | Verticle | car     | Processing Car control inputs
 |               | Boss Hogg     | Web      | laptop  | Application to provide manual inputs
-| roi           | Cletus        | Library  |         | Region of Interest
-|               | Cooter        | Library  |         | CameraMatrix and PerspectiveShift
+| roi           | [Cletus](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Cletus)        | Library  |         | Region of Interest
+| camera-matrix | [Cooter](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Cooter)        | Library  |         | CameraMatrix and PerspectiveShift
 | detect        | Daisy         | Verticle |         | Detectors - e.g. Lane and StartLight
 |               | Duke Farm     | Runner   | car     | Runner to start the cluster on the car
 | geometry      | [Enos](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Enos) | Library  |         | Geometry

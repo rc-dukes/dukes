@@ -7,4 +7,11 @@ package nl.vaneijndhoven.dukes.common;
  */
 public class ClusterStarter {
 
+  /**
+   * prepare the starter
+   */
+  public void prepare() {
+    Config.configureLogging();
+  }
+
 }

@@ -100,8 +100,9 @@
 		<hazelcast.version>3.9</hazelcast.version>
 		<logback-classic.version>1.1.5</logback-classic.version>
 		<!-- open cv version 2019-06: 2.4.6.1 which would be available in maven 
-			central 3.3.0 has to be installed e.g. from lib directory (see below) -->
-		<opencv.version>3.3.0</opencv.version>
+			central 3.3.0 / 3.4.3 has to be installed e.g. from lib directory (see below) -->
+		<opencv.version>3.4.3</opencv.version>
+		<opencv.lib>343</opencv.lib>
 		<junit.version>4.12</junit.version>
 		<commons-io.version>2.6</commons-io.version>
 		<main_dir>${project.parent.relativePath}/..</main_dir>
@@ -180,11 +181,11 @@
 	</dependencyManagement>
 
 	<modules>
-		<module>bo</module>
+		<module>rc-car</module>
 		<module>boars-nest</module>
 		<module>boss-hogg</module>
-		<module>cletus</module>
-		<module>cooter</module>
+		<module>rc-roi</module>
+		<module>rc-camera-matrix</module>
 		<module>daisy</module>
 		<module>duke-farm</module>
 		<module>rc-geometry</module>
@@ -355,7 +356,7 @@
 						<id>install-external</id>
 						<phase>clean</phase>
 						<configuration>
-							<file>${main_dir}/lib/opencv-330.jar</file>
+							<file>${main_dir}/lib/opencv-${opencv.lib}.jar</file>
 							<repositoryLayout>default</repositoryLayout>
 							<groupId>org.opencv</groupId>
 							<artifactId>opencv-jar</artifactId>

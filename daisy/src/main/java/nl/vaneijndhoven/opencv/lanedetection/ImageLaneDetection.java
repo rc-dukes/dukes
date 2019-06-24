@@ -1,18 +1,18 @@
 package nl.vaneijndhoven.opencv.lanedetection;
 
 import nl.vaneijndhoven.daisy.Daisy;
-import nl.vaneijndhoven.dukes.cooter.CameraMatrix;
-import nl.vaneijndhoven.dukes.cooter.PerspectiveShift;
+import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
+import nl.vaneijndhoven.dukes.camera.matrix.PerspectiveShift;
 import nl.vaneijndhoven.dukes.geometry.Line;
 import nl.vaneijndhoven.dukes.geometry.Point;
 import nl.vaneijndhoven.dukes.geometry.Polygon;
+import nl.vaneijndhoven.dukes.roi.RegionOfInterest;
 import nl.vaneijndhoven.navigation.plot.LaneOrientation;
 import nl.vaneijndhoven.navigation.plot.StoppingZoneOrientation;
 import nl.vaneijndhoven.objects.*;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.objectdetection.LineExtractor;
-import nl.vaneijndhoven.dukes.cletus.roi.RegionOfInterest;
 import nl.vaneijndhoven.opencv.stopzonedetection.DefaultStoppingZoneDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
 import org.opencv.core.*;

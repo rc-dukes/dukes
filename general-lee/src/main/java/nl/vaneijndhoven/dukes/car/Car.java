@@ -1,10 +1,18 @@
 package nl.vaneijndhoven.dukes.car;
 
+/**
+ * The car to be remotely controlled
+ */
 public class Car {
 
     Engine engine;
     Steering steering;
 
+    /**
+     * construct me from an engine and a steering
+     * @param engine - the engine
+     * @param steering - the steering
+     */
     public Car(Engine engine, Steering steering) {
         this.engine = engine;
         this.steering = steering;

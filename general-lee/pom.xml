@@ -29,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>nl.vaneijndhoven.dukes</groupId>
-            <artifactId>cooter</artifactId>
+            <artifactId>rc-camera-matrix</artifactId>
             <version>0.0.2</version>
         </dependency>
         <dependency>
