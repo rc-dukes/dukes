@@ -5,7 +5,6 @@
 [![GitHub issues](https://img.shields.io/github/issues-closed/rc-dukes/dukes.svg)](https://github.com/rc-dukes/dukes/issues/?q=is%3Aissue+is%3Aclosed)
 [![GitHub](https://img.shields.io/github/license/rc-dukes/dukes.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
-
 ## Videos
 [![Build a self driving RC car](http://img.youtube.com/vi/OL0vg1WmI6I/0.jpg)](http://www.youtube.com/watch?v=OL0vg1WmI6I "Building a self driving RC car")
 [![Build a self driving RC car](http://img.youtube.com/vi/YeUMtQyvZKM/0.jpg)](http://www.youtube.com/watch?v=YeUMtQyvZKM "Building a self driving RC car")
@@ -15,6 +14,8 @@
 * [dukes Project pages](https://rc-dukes.github.io/dukes)
 
 ## Modules
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/General_lee.jpg/420px-General_lee.jpg)
+
 The self driving car consists of modules with the following responsibilities:
 
 
@@ -29,7 +30,7 @@ The self driving car consists of modules with the following responsibilities:
 | remotecar     | [Duke Farm](https://www.thedukesofhazzard.nl/georgia-filming-locations/loganville-area/duke-farm/)     | Runner   | car     | Runner to start the cluster on the car
 | geometry      | [Enos](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Enos) | Library  |         | Geometry
 | watchdog      | [Flash](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Flash)         | Verticle | car     | Heartbeat controller watchdog     
-|               | General Lee   | Library  |         | Car/Engine/Steering
+| drivecontrol  | [General Lee](https://en.wikipedia.org/wiki/General_Lee_(car))   | Library  |         | RC Car/Engine/Steering
 | common        | [Hazard County](https://en.wikipedia.org/wiki/Hazzard_County,_Georgia) | Library  |         | Lib containing common API classes
 |               | Luke          | Verticle |         | Proc Image analysis results into actions
 |               | Roscoe        | Runner   |         | lane detection debug image web server
