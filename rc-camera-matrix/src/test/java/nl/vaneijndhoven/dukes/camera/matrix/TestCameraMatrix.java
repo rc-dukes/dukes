@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.cooter;
+package nl.vaneijndhoven.dukes.camera.matrix;
 
 import static org.junit.Assert.assertEquals;
 

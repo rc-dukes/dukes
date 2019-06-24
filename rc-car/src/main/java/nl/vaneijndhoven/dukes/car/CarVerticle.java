@@ -9,8 +9,8 @@ import nl.vaneijndhoven.dukes.car.Engine;
 import nl.vaneijndhoven.dukes.car.Steering;
 import nl.vaneijndhoven.dukes.common.Characters;
 import nl.vaneijndhoven.dukes.car.Car;
-import nl.vaneijndhoven.dukes.generallee.EngineMap;
-import nl.vaneijndhoven.dukes.generallee.SteeringMap;
+import nl.vaneijndhoven.dukes.drivecontrol.EngineMap;
+import nl.vaneijndhoven.dukes.drivecontrol.SteeringMap;
 import rx.Subscription;
 
 /**

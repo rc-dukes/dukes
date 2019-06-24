@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.cooter;
+package nl.vaneijndhoven.dukes.camera.matrix;
 
 
 import org.junit.runner.RunWith;

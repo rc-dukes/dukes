@@ -1,5 +1,9 @@
-package nl.vaneijndhoven.dukes.generallee;
+package nl.vaneijndhoven.dukes.drivecontrol;
 
+/**
+ * steering map which is vehicle dependent
+ *
+ */
 public class SteeringMap implements nl.vaneijndhoven.dukes.car.SteeringMap {
 
     public static final int WHEEL_CENTER = 163;

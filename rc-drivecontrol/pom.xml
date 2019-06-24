@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>nl.vaneijndhoven.dukes</groupId>
-    <artifactId>general-lee</artifactId>
+    <artifactId>rc-drivecontrol</artifactId>
 	  <description>Car/Engine/Steering</description>
 
     <dependencies>

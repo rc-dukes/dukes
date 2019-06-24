@@ -14,8 +14,8 @@ import nl.vaneijndhoven.dukes.car.Steering;
 import nl.vaneijndhoven.dukes.common.ClusterStarter;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.dukes.common.Environment;
-import nl.vaneijndhoven.dukes.generallee.EngineMap;
-import nl.vaneijndhoven.dukes.generallee.SteeringMap;
+import nl.vaneijndhoven.dukes.drivecontrol.EngineMap;
+import nl.vaneijndhoven.dukes.drivecontrol.SteeringMap;
 import nl.vaneijndhoven.dukes.watchdog.WatchDog;
 
 /**

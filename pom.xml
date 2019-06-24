@@ -194,7 +194,7 @@
 		<module>roscoe</module>
 		<module>uncle-jesse</module>
 		<module>rc-common</module>
-		<module>general-lee</module>
+		<module>rc-drivecontrol</module>
 	</modules>
 	<!-- see http://wiki.bitplan.com/index.php/Multi-Module_Maven_with_github_pages -->
 	<distributionManagement>

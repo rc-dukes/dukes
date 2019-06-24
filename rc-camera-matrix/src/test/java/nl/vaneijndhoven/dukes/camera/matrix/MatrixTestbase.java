@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.cooter;
+package nl.vaneijndhoven.dukes.camera.matrix;
 
 /**
  * common parts of opencv Matrix based tests

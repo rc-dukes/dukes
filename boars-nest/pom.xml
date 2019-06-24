@@ -22,7 +22,7 @@
     </dependency>
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
-      <artifactId>general-lee</artifactId>
+      <artifactId>rc-drivecontrol</artifactId>
       <version>0.0.2</version>
     </dependency>
     <dependency>

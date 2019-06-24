@@ -1,21 +1,28 @@
 package nl.vaneijndhoven.dukes.camera.matrix;
 
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-import org.opencv.core.*;
-import org.opencv.imgproc.Imgproc;
-
-import org.opencv.calib3d.Calib3d;
+import static org.opencv.imgproc.Imgproc.COLOR_BGR2GRAY;
+import static org.opencv.imgproc.Imgproc.undistort;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.UnaryOperator;
 
-import static org.opencv.imgproc.Imgproc.COLOR_BGR2GRAY;
-import static org.opencv.imgproc.Imgproc.undistort;
+import org.opencv.calib3d.Calib3d;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.MatOfPoint3f;
+import org.opencv.core.Point3;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+
+/**
+ * camera matrix operations
+ *
+ */
 public class CameraMatrix implements UnaryOperator<Mat> {
 
     public static final CameraMatrix DEFAULT = new CameraMatrix(0, 0);
@@ -31,17 +38,38 @@ public class CameraMatrix implements UnaryOperator<Mat> {
     private int columns;
     private int rows;
 
+    public List<Mat> getRvecs() {
+      return rvecs;
+    }
+
+    public List<Mat> getTvecs() {
+      return tvecs;
+    }
+
+    /**
+     * create me with the given number of columsn and rows
+     * @param columns
+     * @param rows
+     */
     public CameraMatrix(int columns, int rows) {
         this.columns = columns;
         this.rows = rows;
     }
 
+    /**
+     * calibrate me with the given images
+     * @param images
+     */
     public void calibrate(Mat... images) {
         for (Mat image : images) {
             addCalibrationImage(image);
         }
     }
 
+    /**
+     * calculate me with the given size
+     * @param size
+     */
     private void calculate(Size size) {
         if (imagePoints.isEmpty()) {
             System.err.println("Could not find chessboard corners");
@@ -61,6 +89,10 @@ public class CameraMatrix implements UnaryOperator<Mat> {
         this.tvecs = tvecs;
     }
 
+    /**
+     * add the given calibration image
+     * @param image
+     */
     private void addCalibrationImage(Mat image) {
         Mat grey = new Mat();
         Imgproc.cvtColor(image, grey, COLOR_BGR2GRAY);
@@ -91,6 +123,14 @@ public class CameraMatrix implements UnaryOperator<Mat> {
     }
 
 
+    /**
+     * find the corners
+     * @param image - the image
+     * @param columns - the columns
+     * @param rows - rows
+     * @param corners - corners
+     * @return - true if found
+     */
     private boolean findCorners(Mat image, int columns, int rows, MatOfPoint2f corners) {
         return Calib3d.findChessboardCorners(image, new Size(columns, rows), corners);
     }

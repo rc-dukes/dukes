@@ -1,5 +1,9 @@
-package nl.vaneijndhoven.dukes.generallee;
+package nl.vaneijndhoven.dukes.drivecontrol;
 
+/**
+ * engine parameters which are vehicle dependent
+ *
+ */
 public class EngineMap implements nl.vaneijndhoven.dukes.car.EngineMap {
 
     public static final int SPEED_ZERO = 130;
