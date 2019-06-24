@@ -13,7 +13,7 @@ import nl.vaneijndhoven.dukes.common.ClusterStarter;
 import nl.vaneijndhoven.dukes.common.Environment;
 import nl.vaneijndhoven.dukes.common.Events;
 import nl.vaneijndhoven.dukes.luke.Luke;
-import nl.vaneijndhoven.dukes.roscoe.Roscoe;
+import nl.vaneijndhoven.dukes.imageview.ImageView;
 
 /**
  * main entry point to start cluster
@@ -49,7 +49,7 @@ public class CarServer {
       deploymentOptions.setWorker(true);
       deploymentOptions.setMultiThreaded(true);
       vertx.deployVerticle(new WebControl());
-      vertx.deployVerticle(new Roscoe());
+      vertx.deployVerticle(new ImageView());
 
       boolean enableAutoPilot = true;
 

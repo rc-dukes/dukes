@@ -1,7 +1,7 @@
-<!-- 
-  
- -->
 <html>
+<!--
+  WebControl
+ -->
     <head>
         <script src="sockjs.0.3.4.min.js"></script>
         <script src="vertx-eventbus.js"></script>
@@ -23,7 +23,7 @@
                 display: block;
             }
 
-            img#cameraImage, img#linesImage {
+            img#cameraImage, img#linesImage, img#originalImage {
                 height: 300px;
             }
 
@@ -35,11 +35,8 @@
                 display: block;
                 width: 450px;
             }
-
         </style>
-
     </head>
-
     <body>
 
     <table class="images">
@@ -111,18 +108,14 @@
                 Saturation (-100...100), default 0: <input id="camSaSlider" value="0" type="range" min="-100" max="100" step="1"
                                                          oninput="onSlideCam('camSaSlider', 'camSaTextbox', 'sa')"/>
                 <input id="camSaTextbox" size="2" /><br/>
-
-
-
-
-
                 <!--private double rho = 1;-->
                 <!--private double theta = Math.PI/180; // By choosing this value lines sloping left to right will be < 0 radian, while lines sloping right to left will be > 0 radian.-->
                 <!--private int threshold = 70;-->
                 <!--private double minLineLength = 20;-->
                 <!--private double maxLineGap = 10;-->
-
-
+            </td>
+            <td class="previewImage">
+                <img id="originalImage">
             </td>
             <td class="previewImage">
                 <img id="cameraImage">
@@ -137,8 +130,6 @@
             </td>
         </tr>
     </table>
-
-
         <!--<div id="message"></div>-->
         <!--<input type="file" accept="video/*"/>-->
         <!--<video controls autoplay></video>-->
@@ -252,9 +243,6 @@
                     if (code == 0) {
                         code = e.keyCode;
                     }
-
-
-
                     console.log('keycode: ', code);
                     if (code == 37 ) {
                         // key left: wheel left
@@ -264,8 +252,8 @@
                         // key right: wheel right
                         keyPressed("right");
                         sendWheelCommand('right');
-                    } else if (code == 38) {
-                        // key up: speed up
+                    } else if (code == 38 || code==117) {
+                        // key up/"u": speed up
                         keyPressed("up");
                         sendSpeedCommand('up');
                     } else if (code == 40) {
@@ -361,6 +349,7 @@
             }
 
             function updateDebugImages() {
+                document.getElementById("originalImage").src = 'http://pibeewifi/html/cam_pic.php'; // 'http://localhost:8081?type=original&' + Math.random();
                 document.getElementById("birdseyeImage").src = 'http://localhost:8081?type=birdseye&' + Math.random();
                 document.getElementById("edgesImage").src = 'http://localhost:8081?type=edges&' + Math.random();
                 document.getElementById("linesImage").src = 'http://localhost:8081?type=lines' + Math.random();
@@ -435,8 +424,6 @@
                 ajax_cmd.open("GET",url,true);
                 ajax_cmd.send();
             }
-
-
 
 //            setInterval(function() {
 //                document.getElementById("cameraImage").src='http://10.9.8.7/html/cam_get.php?timestamp=' + new Date();
