@@ -1,14 +1,12 @@
 package nl.vaneijndhoven.dukes.cooter;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import org.junit.Test;
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
@@ -22,7 +20,8 @@ import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
  */
 public class TestCameraMatrix extends MatrixTestbase {
   
-
+  String testPath=basePath+ "target/test-classes/cameramatrix/";
+  
   @Test
   public void testCalculation() throws Exception {
     NativeLibrary.load();
@@ -32,7 +31,7 @@ public class TestCameraMatrix extends MatrixTestbase {
     ArrayList<Mat> images = new ArrayList<>();
     Files
         .newDirectoryStream(
-            Paths.get(basePath + "target/test-classes/cameramatrix"),
+            Paths.get(testPath),
             path -> path.getFileName().toString().startsWith("GOPR"))
         .forEach(path -> {
           System.out.println("reading: " + path);
@@ -49,7 +48,7 @@ public class TestCameraMatrix extends MatrixTestbase {
         .deserizalize(matrix.serialize());
 
     Mat image = Imgcodecs
-        .imread(basePath + "target/test-classes/cameramatrix/test_image.jpg");
+        .imread(testPath+"/test_image.jpg");
 
     assertEquals(matrix.serialize(), deserializedMatrix.serialize());
 
@@ -58,7 +57,7 @@ public class TestCameraMatrix extends MatrixTestbase {
     System.out.println(deserializedMatrix.serialize());
 
     if (debug)
-      Imgcodecs.imwrite(basePath + "target/test-classes/cameramatrix/debug.jpg",
+      Imgcodecs.imwrite(testPath + "debug.jpg",
           undistorted);
 
   }

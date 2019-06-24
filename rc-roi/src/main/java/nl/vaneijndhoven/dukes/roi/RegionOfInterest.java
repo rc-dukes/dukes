@@ -16,6 +16,22 @@ public class RegionOfInterest {
     private final double widthFraction;
     private final double heightFraction;
 
+    public double getxFraction() {
+      return xFraction;
+    }
+
+    public double getyFraction() {
+      return yFraction;
+    }
+
+    public double getWidthFraction() {
+      return widthFraction;
+    }
+
+    public double getHeightFraction() {
+      return heightFraction;
+    }
+
     /**
      * construct me with the given fractions
      * @param xFraction x
