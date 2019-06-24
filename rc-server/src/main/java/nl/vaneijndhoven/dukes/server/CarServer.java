@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.boarsnest;
+package nl.vaneijndhoven.dukes.server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,9 +7,8 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.AbstractVerticle;
 import nl.vaneijndhoven.daisy.Daisy;
-import nl.vaneijndhoven.dukes.bosshogg.BossHogg;
+import nl.vaneijndhoven.dukes.webcontrol.WebControl;
 import nl.vaneijndhoven.dukes.common.ClusterStarter;
 import nl.vaneijndhoven.dukes.common.Environment;
 import nl.vaneijndhoven.dukes.common.Events;
@@ -20,9 +19,9 @@ import nl.vaneijndhoven.dukes.roscoe.Roscoe;
  * main entry point to start cluster
  *
  */
-public class BoarsNest extends AbstractVerticle {
+public class CarServer {
 
-  private static final Logger LOG = LoggerFactory.getLogger(BoarsNest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(CarServer.class);
 
   /**
    * start the the cluster
@@ -38,7 +37,7 @@ public class BoarsNest extends AbstractVerticle {
 
     String cameraUrl = Environment.getInstance().getCameraUrl();
 
-    LOG.info("Firing up Boars Nest (UI runner) using cameraUrl " + cameraUrl);
+    LOG.info("Firing up Car Server Boars Nest (UI runner) using cameraUrl " + cameraUrl);
 
     VertxOptions options = starter.getOptions()
         .setBlockedThreadCheckInterval(1000 * 60 * 60);
@@ -48,7 +47,7 @@ public class BoarsNest extends AbstractVerticle {
       DeploymentOptions deploymentOptions = new DeploymentOptions();
       deploymentOptions.setWorker(true);
       deploymentOptions.setMultiThreaded(true);
-      vertx.deployVerticle(new BossHogg());
+      vertx.deployVerticle(new WebControl());
       vertx.deployVerticle(new Roscoe());
 
       boolean enableAutoPilot = true;

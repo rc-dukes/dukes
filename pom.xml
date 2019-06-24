@@ -182,8 +182,8 @@
 
 	<modules>
 		<module>rc-car</module>
-		<module>boars-nest</module>
-		<module>boss-hogg</module>
+		<module>rc-server</module>
+		<module>rc-webcontrol</module>
 		<module>rc-roi</module>
 		<module>rc-camera-matrix</module>
 		<module>daisy</module>

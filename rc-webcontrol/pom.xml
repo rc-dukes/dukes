@@ -9,15 +9,15 @@
   </parent>
 
   <groupId>nl.vaneijndhoven.dukes</groupId>
-  <artifactId>boars-nest</artifactId>
+  <artifactId>rc-webcontrol</artifactId>
   <description>
-    Runner to start the cluster on the laptop
+    Application to provide manual inputs
   </description>
 
   <dependencies>
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
-      <artifactId>boss-hogg</artifactId>
+      <artifactId>rc-camera-matrix</artifactId>
       <version>0.0.2</version>
     </dependency>
     <dependency>
@@ -59,11 +59,6 @@
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
       <artifactId>daisy</artifactId>
-      <version>0.0.2</version>
-    </dependency>
-    <dependency>
-      <groupId>nl.vaneijndhoven.dukes</groupId>
-      <artifactId>roscoe</artifactId>
       <version>0.0.2</version>
     </dependency>
     <dependency>

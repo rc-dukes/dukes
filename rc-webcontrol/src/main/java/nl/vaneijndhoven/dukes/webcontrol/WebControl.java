@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.bosshogg;
+package nl.vaneijndhoven.dukes.webcontrol;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,14 +10,18 @@ import io.vertx.rxjava.ext.web.Router;
 import io.vertx.rxjava.ext.web.handler.StaticHandler;
 import io.vertx.rxjava.ext.web.handler.sockjs.SockJSHandler;
 
-public class BossHogg extends AbstractVerticle {
+/**
+ * Manual UI web based control (Boss Hogg)
+ *
+ */
+public class WebControl extends AbstractVerticle {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BossHogg.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WebControl.class);
 
 
     @Override
     public void start() throws Exception {
-        LOG.info("Starting Boss Hogg (manual UI controller");
+        LOG.info("Starting WebControl Boss Hogg (manual UI controller");
 
         super.start();
 
@@ -43,7 +47,7 @@ public class BossHogg extends AbstractVerticle {
 //        vertx.eventBus().sendObservable(Characters.DAISY.getCallsign() + "lane.start", new JsonObject().put("source", "file://Users/jpoint/Repositories/opencv-playground/src/main/resources/videos/full_run.mp4"));
 
 
-        LOG.info("Boss Hogg started");
+        LOG.info("WebControl Boss Hogg started");
     }
 
 

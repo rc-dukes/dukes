@@ -21,9 +21,9 @@ The self driving car consists of modules with the following responsibilities:
 
 | module        | nickname      | type     | runs on | responsibility                            |  
 |---------------|---------------|----------|---------|-------------------------------------------|  
-|               | Boars Nest    | Runner   | laptop  | Runner to start the cluster on the laptop |
+| server        | [Boars Nest](https://www.thedukesofhazzard.nl/georgia-filming-locations/oxford-area/the-boars-nest/)    | Runner   | laptop  | Runner to start the cluster on the laptop |
 | car           | [Bo](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Bo)            | Verticle | car     | Processing Car control inputs
-|               | Boss Hogg     | Web      | laptop  | Application to provide manual inputs
+| webcontrol    | [Boss Hogg](https://en.wikipedia.org/wiki/Boss_Hogg)     | Web      | laptop  | Application to provide manual inputs
 | roi           | [Cletus](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Cletus)        | Library  |         | Region of Interest
 | camera-matrix | [Cooter](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Cooter)        | Library  |         | CameraMatrix and PerspectiveShift
 | detect        | Daisy         | Verticle |         | Detectors - e.g. Lane and StartLight
@@ -52,5 +52,5 @@ targetHost=10.9.8.7
 targetUser=pi
 ```
 - run './deploy.sh -m -s' in module 'rc-remotecar'
-- start 'boars nest' in IDE
+- start 'CarServer' in module 'rc-server' in IDE
 - point your browser to http://localhost:8080
