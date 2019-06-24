@@ -1,6 +1,7 @@
 package nl.vaneijndhoven.dukes.geometry;
 
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -104,21 +105,21 @@ public class Line {
    * @return the average line
    */
   public static Line average(Collection<Line> lines) {
-    double sumAngleRad = 0;
+    //double sumAngleRad = 0;
     double sumx = 0;
     double sumy = 0;
     double sumxlen = 0;
     double sumylen = 0;
 
     for (Line line : lines) {
-      sumAngleRad += line.angleRad();
+      // sumAngleRad += line.angleRad();
       sumx += line.point1.getX() + line.point2.getX();
       sumy += line.point1.getY() + line.point2.getY();
       sumxlen += line.point2.getX() - line.point1.getX();
       sumylen += line.point2.getY() - line.point1.getY();
     }
 
-    double avgAngleRad = sumAngleRad / lines.size();
+    // double avgAngleRad = sumAngleRad / lines.size();
     double avgx = sumx / (lines.size() * 2);
     double avgy = sumy / (lines.size() * 2);
     double avgxlen = sumxlen / lines.size();
@@ -173,6 +174,11 @@ public class Line {
     return howLeft(point) < 0;
   }
 
+  /**
+   * check whether the given point exists on the line
+   * @param point - the point to check
+   * @return - true if the point is on the line
+   */
   public boolean existsOnLine(Point2D point) {
     if (point.getY() > max(point1.getY(), point2.getY())) {
       // Point above line
@@ -241,6 +247,7 @@ public class Line {
     return abs(point1.getY() - point2.getY());
   }
 
+  /**
   private boolean isBelow(Point2D point, Point2D nextVertexPoint) {
     return nextVertexPoint.getY() > point.getY();
   }
@@ -248,6 +255,7 @@ public class Line {
   private boolean isAboveOrEqual(Point2D point, Point2D reference) {
     return reference.getY() <= point.getY();
   }
+  */
 
   @Override
   /**
@@ -317,6 +325,11 @@ public class Line {
     private double x;
     private double y;
 
+    /**
+     * create a vector from the given values
+     * @param x - x component of vector
+     * @param y - y component of vector
+     */
     public Vector(double x, double y) {
       this.x = x;
       this.y = y;
@@ -340,6 +353,13 @@ public class Line {
 
     public static Vector forX(double x) {
       return new Vector(x, 0);
+    }
+    
+    /**
+     * convert me to a String
+     */
+    public String toString() {
+      return String.format(Locale.ENGLISH,"{%f,%f}",x,y);
     }
   }
 }

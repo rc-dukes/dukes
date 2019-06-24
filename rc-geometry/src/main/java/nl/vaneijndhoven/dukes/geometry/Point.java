@@ -4,6 +4,11 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
 
+/**
+ * implementation of point with multiple dimensions
+ * with 2D and 3D interfaces
+ *
+ */
 public class Point implements Point2D, Point3D {
 
     public static final int X = 0;
@@ -12,10 +17,10 @@ public class Point implements Point2D, Point3D {
 
     double[] dimensions;
 
-    private Point(int dimensions) {
-        this.dimensions = new double[dimensions];
-    }
-
+    /**
+     * create a point with the given dimensions
+     * @param dimensions - the dimensions to use
+     */
     public Point(double... dimensions) {
         if (dimensions.length < 1) {
             throw new IllegalArgumentException("Point must have at least 1 dimension");
@@ -24,7 +29,12 @@ public class Point implements Point2D, Point3D {
         this.dimensions = dimensions;
     }
 
-    public double distance(double[] dimensions) {
+    /**
+     * calculate the distance to another point
+     * @param dimensions - the dimensions of the other point
+     * @return - the distance
+     */
+    public double distance(double ... dimensions) {
         if (this.dimensions.length != dimensions.length) {
             throw new IllegalArgumentException("Can only calculate distance between two points with similar dimensions.");
         }
@@ -78,40 +88,4 @@ public class Point implements Point2D, Point3D {
         return dimensions[Z];
     }
 
-//    public static class Point2D extends Point {
-//
-//        public static final int X = 0;
-//        public static final int Y = 1;
-//
-//        public Point2D(double x, double y) {
-//            this(x, y, 2);
-//        }
-//        public Point2D(double x, double y, int dimensions) {
-//            super(dimensions);
-//            this.dimensions[X] = x;
-//            this.dimensions[Y] = y;
-//        }
-//
-//        public double getX() {
-//            return dimensions[X];
-//        }
-//
-//        public double getY() {
-//            return dimensions[Y];
-//        }
-//    }
-//
-//    public static class Point3D extends Point2D {
-//
-//        public static final int Z = 2;
-//
-//        public Point3D(double x, double y, double z) {
-//            super(x, y, 3);
-//            this.dimensions[Z] = z;
-//        }
-//
-//        public double getZ() {
-//            return dimensions[Z];
-//        }
-//    }
 }
