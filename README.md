@@ -50,5 +50,6 @@ The self driving car consists of modules with the following responsibilities:
 targetHost=10.9.8.7
 targetUser=pi
 ```
-- run './deploy.sh -m -s' in module 'duke-farm'
+- run './deploy.sh -m -s' in module 'rc-remotecar'
 - start 'boars nest' in IDE
+- point your browser to http://localhost:8080
