@@ -10,14 +10,13 @@ import java.util.List;
 import org.junit.Test;
 
 import nl.vaneijndhoven.dukes.geometry.Line;
+import nl.vaneijndhoven.dukes.geometry.Line.Vector;
 import nl.vaneijndhoven.dukes.geometry.Point;
 import nl.vaneijndhoven.dukes.geometry.Point2D;
 import nl.vaneijndhoven.dukes.geometry.Point3D;
 import nl.vaneijndhoven.dukes.geometry.Polygon;
-import nl.vaneijndhoven.dukes.geometry.pointinplane.CrossingNumber;
-import nl.vaneijndhoven.dukes.geometry.pointinplane.WindingNumbers;
 import nl.vaneijndhoven.dukes.geometry.pointinplane.PointInPlane;
-import nl.vaneijndhoven.dukes.geometry.Line.Vector;
+import nl.vaneijndhoven.dukes.geometry.pointinplane.WindingNumbers;
 
 /**
  * test the Geometry functions

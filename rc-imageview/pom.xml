@@ -10,7 +10,7 @@
 	</parent>
 
 	<groupId>nl.vaneijndhoven.dukes</groupId>
-	<artifactId>roscoe</artifactId>
+	<artifactId>rc-imageview</artifactId>
 	<description>Lane detection debug image web server</description>
 	<dependencies>
 		<dependency>

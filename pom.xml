@@ -191,7 +191,7 @@
 		<module>rc-geometry</module>
 		<module>rc-watchdog</module>
 		<module>rc-action</module>
-		<module>roscoe</module>
+		<module>rc-imageview</module>
 		<module>rc-app</module>
 		<module>rc-common</module>
 		<module>rc-drivecontrol</module>

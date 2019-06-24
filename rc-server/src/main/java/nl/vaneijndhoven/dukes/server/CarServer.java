@@ -38,7 +38,8 @@ public class CarServer {
     String cameraUrl = Environment.getInstance().getCameraUrl();
 
     LOG.info("Firing up Car Server Boars Nest (UI runner) using cameraUrl " + cameraUrl);
-
+    // TODO check necessity of this workaround
+    // setting check interval to 1 h
     VertxOptions options = starter.getOptions()
         .setBlockedThreadCheckInterval(1000 * 60 * 60);
 

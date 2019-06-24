@@ -54,14 +54,14 @@ usage() {
 
 #
 # copy the fat java file to the target machine
-# 
+#
 #  param 1: the ini file to use
 #  param 2: the iniPath to use
 #
 copyToTarget() {
   local l_ini="$1"
   local l_iniPath="$2"
-  jar="rc-remote-car-$version-fat.jar"
+  jar="rc-remotecar-$version-fat.jar"
   color_msg $blue "copying $jar to $target"
   if [ ! -f target/$jar ]
   then
@@ -70,7 +70,7 @@ copyToTarget() {
   else
      # create the properties path on the remote computer
      rinipath=$(dirname $l_ini)
-     ssh $target mkdir -p "$rinipath" 
+     ssh $target mkdir -p "$rinipath"
      # copy the properties file
      scp "$l_iniPath" "$target:$l_ini"
      # sync the fat file
@@ -98,7 +98,7 @@ getValue() {
 #
 startFarm() {
   ini=.dukes/dukes.ini
-  inipath=$HOME/$ini 
+  inipath=$HOME/$ini
   if [ -f $inipath  ]
   then
     targetUser=$(getValue $inipath targetUser)
