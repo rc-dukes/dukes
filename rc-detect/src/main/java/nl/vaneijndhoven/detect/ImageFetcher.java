@@ -1,13 +1,17 @@
-package nl.vaneijndhoven.daisy;
+package nl.vaneijndhoven.detect;
 
-import nl.vaneijndhoven.opencv.tools.MemoryManagement;
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
+
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
 
+/**
+ * fetcher for Images
+ *
+ */
 public class ImageFetcher {
 
     private VideoCapture capture = new VideoCapture();

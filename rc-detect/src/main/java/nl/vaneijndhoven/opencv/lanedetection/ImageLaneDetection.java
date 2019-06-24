@@ -1,27 +1,34 @@
 package nl.vaneijndhoven.opencv.lanedetection;
 
-import nl.vaneijndhoven.daisy.Daisy;
+import static java.util.Arrays.asList;
+import static nl.vaneijndhoven.opencv.mapper.PointMapper.toPoint;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
+
 import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
-import nl.vaneijndhoven.dukes.camera.matrix.PerspectiveShift;
 import nl.vaneijndhoven.dukes.geometry.Line;
 import nl.vaneijndhoven.dukes.geometry.Point;
 import nl.vaneijndhoven.dukes.geometry.Polygon;
 import nl.vaneijndhoven.dukes.roi.RegionOfInterest;
 import nl.vaneijndhoven.navigation.plot.LaneOrientation;
 import nl.vaneijndhoven.navigation.plot.StoppingZoneOrientation;
-import nl.vaneijndhoven.objects.*;
+import nl.vaneijndhoven.objects.Lane;
+import nl.vaneijndhoven.objects.StoppingZone;
+import nl.vaneijndhoven.objects.ViewPort;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.objectdetection.LineExtractor;
 import nl.vaneijndhoven.opencv.stopzonedetection.DefaultStoppingZoneDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
-import org.opencv.core.*;
-import org.opencv.imgproc.Imgproc;
-
-import java.util.*;
-
-import static java.util.Arrays.asList;
-import static nl.vaneijndhoven.opencv.mapper.PointMapper.toPoint;
 
 public class ImageLaneDetection {
 

@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.daisy;
+package nl.vaneijndhoven.detect;
 
 import nl.vaneijndhoven.objects.StartLight;
 import nl.vaneijndhoven.opencv.tools.DebugTools;
@@ -12,6 +12,10 @@ import java.util.Optional;
 
 import static java.util.Optional.of;
 
+/**
+ * detector for  the start light
+ *
+ */
 public class StartLightDetector {
 
     private Config config = new Config();

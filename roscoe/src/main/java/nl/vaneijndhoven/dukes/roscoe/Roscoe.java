@@ -3,7 +3,7 @@ package nl.vaneijndhoven.dukes.roscoe;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerRequest;
-import nl.vaneijndhoven.daisy.Daisy;
+import nl.vaneijndhoven.detect.Detector;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.slf4j.Logger;
@@ -25,17 +25,17 @@ public class Roscoe extends AbstractVerticle {
         String type = request.getParam("type");
         byte[] bytes = new byte[]{};
         if ("edges".equals(type)) {
-            bytes = Daisy.CANNY_IMG;
+            bytes = Detector.CANNY_IMG;
         } else if ("birdseye".equals(type)) {
-            if (Daisy.BIRDS_EYE != null) {
+            if (Detector.BIRDS_EYE != null) {
                 MatOfByte matOfByte = new MatOfByte();
-                Imgcodecs.imencode(".png", Daisy.BIRDS_EYE, matOfByte);
+                Imgcodecs.imencode(".png", Detector.BIRDS_EYE, matOfByte);
                 bytes = matOfByte.toArray();
             }
         } else {
-            if (Daisy.MAT != null) {
+            if (Detector.MAT != null) {
                 MatOfByte matOfByte = new MatOfByte();
-                Imgcodecs.imencode(".png", Daisy.MAT, matOfByte);
+                Imgcodecs.imencode(".png", Detector.MAT, matOfByte);
                 bytes = matOfByte.toArray();
             }
         }

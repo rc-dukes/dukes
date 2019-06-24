@@ -1,17 +1,19 @@
-package nl.vaneijndhoven.daisy;
+package nl.vaneijndhoven.detect;
+
+import java.util.Map;
+
+import org.opencv.core.Mat;
 
 import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.lanedetection.ImageLaneDetection;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
-import nl.vaneijndhoven.opencv.tools.MemoryManagement;
-import org.opencv.core.Mat;
 
-import java.util.Map;
-
-import static nl.vaneijndhoven.opencv.tools.MemoryManagement.closable;
-
+/**
+ * detector for lanes
+ *
+ */
 public class LaneDetector {
 
     public static double DEFAULT_LANE_BOUNDARY_ANGLE = 45;
