@@ -59,7 +59,7 @@
         </dependency>
         <dependency>
             <groupId>nl.vaneijndhoven.dukes</groupId>
-            <artifactId>luke</artifactId>
+            <artifactId>rc-action</artifactId>
             <version>0.0.2</version>
         </dependency>
         <dependency>

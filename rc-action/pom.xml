@@ -10,7 +10,7 @@
 	</parent>
 
 	<groupId>nl.vaneijndhoven.dukes</groupId>
-	<artifactId>luke</artifactId>
+	<artifactId>rc-action</artifactId>
 	<description>Processing image analysis results into actions</description>
 	<dependencies>
 		<dependency>

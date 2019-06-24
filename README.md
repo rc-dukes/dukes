@@ -32,9 +32,9 @@ The self driving car consists of modules with the following responsibilities:
 | watchdog      | [Flash](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Flash)         | Verticle | car     | Heartbeat controller watchdog     
 | drivecontrol  | [General Lee](https://en.wikipedia.org/wiki/General_Lee_(car))   | Library  |         | RC Car/Engine/Steering
 | common        | [Hazard County](https://en.wikipedia.org/wiki/Hazzard_County,_Georgia) | Library  |         | Lib containing common API classes
-|               | Luke          | Verticle |         | Proc Image analysis results into actions
+| action        | [Luke ](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Luke)         | Verticle |         | Proc Image analysis results into actions
 |               | Roscoe        | Runner   |         | lane detection debug image web server
-|               | Uncle Jesse   | JavaFX   | laptop  | JavaFX app to monitor the car
+| app           | [Uncle Jesse](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Jesse)   | JavaFX   | laptop  | JavaFX app to monitor the car
 
 ### Inspiration for naming
 * [Dukes of Hazzard](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard)

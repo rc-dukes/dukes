@@ -30,12 +30,22 @@ import nl.vaneijndhoven.opencv.objectdetection.LineExtractor;
 import nl.vaneijndhoven.opencv.stopzonedetection.DefaultStoppingZoneDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
 
+/**
+ * image lane detection
+ *
+ */
 public class ImageLaneDetection {
 
     private final CannyEdgeDetector.Config cannyConfig;
     private final ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig;
     private CameraMatrix matrix;
 
+    /**
+     * construct me from the given parameters
+     * @param cannyConfig - configuration for CannyEdgeDetector
+     * @param lineDetectorConfig - configuration for lineDetector
+     * @param matrix - camera matrix
+     */
     public ImageLaneDetection(CannyEdgeDetector.Config cannyConfig, ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig, CameraMatrix matrix) {
         this.cannyConfig = cannyConfig;
         this.lineDetectorConfig = lineDetectorConfig;

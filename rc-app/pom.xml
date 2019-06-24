@@ -11,12 +11,17 @@
 	</parent>
 
 	<groupId>nl.vaneijndhoven.dukes</groupId>
-	<artifactId>uncle-jesse</artifactId>
+	<artifactId>rc-app</artifactId>
 	<description>JavaFX app to monitor the car</description>
 	<dependencies>
 		<dependency>
 			<groupId>nl.vaneijndhoven.dukes</groupId>
 			<artifactId>rc-common</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<artifactId>rc-detect</artifactId>
 			<version>0.0.2</version>
 		</dependency>
 		<dependency>
