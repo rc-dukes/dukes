@@ -1,3 +1,5 @@
+# use 16.04
+dist: xenial
 # this is a java project using maven
 language: java
 # switch off gpg handling
