@@ -19,46 +19,45 @@ import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
  *
  */
 public class TestCameraMatrix extends MatrixTestbase {
-  
-  String testPath=basePath+ "target/test-classes/cameramatrix/";
-  
+
+  String testPath = basePath + "target/test-classes/cameramatrix/";
+
   @Test
   public void testCalculation() throws Exception {
-    NativeLibrary.load();
-    
-    CameraMatrix matrix = new CameraMatrix(8, 6);
+    if (!isTravis()) {
+      NativeLibrary.load();
 
-    ArrayList<Mat> images = new ArrayList<>();
-    Files
-        .newDirectoryStream(
-            Paths.get(testPath),
-            path -> path.getFileName().toString().startsWith("GOPR"))
-        .forEach(path -> {
-          System.out.println("reading: " + path);
-          String substring = path.toString();
-          Mat image = Imgcodecs.imread(substring);
-          matrix.calibrate(image);
-        });
+      CameraMatrix matrix = new CameraMatrix(8, 6);
 
-    images.forEach(Mat::release);
+      ArrayList<Mat> images = new ArrayList<>();
+      Files
+          .newDirectoryStream(Paths.get(testPath),
+              path -> path.getFileName().toString().startsWith("GOPR"))
+          .forEach(path -> {
+            System.out.println("reading: " + path);
+            String substring = path.toString();
+            Mat image = Imgcodecs.imread(substring);
+            matrix.calibrate(image);
+          });
 
-    System.out.println(matrix.serialize());
+      images.forEach(Mat::release);
 
-    CameraMatrix deserializedMatrix = CameraMatrix
-        .deserizalize(matrix.serialize());
+      System.out.println(matrix.serialize());
 
-    Mat image = Imgcodecs
-        .imread(testPath+"/test_image.jpg");
+      CameraMatrix deserializedMatrix = CameraMatrix
+          .deserizalize(matrix.serialize());
 
-    assertEquals(matrix.serialize(), deserializedMatrix.serialize());
+      Mat image = Imgcodecs.imread(testPath + "/test_image.jpg");
 
-    Mat undistorted = deserializedMatrix.apply(image);
+      assertEquals(matrix.serialize(), deserializedMatrix.serialize());
 
-    System.out.println(deserializedMatrix.serialize());
+      Mat undistorted = deserializedMatrix.apply(image);
 
-    if (debug)
-      Imgcodecs.imwrite(testPath + "debug.jpg",
-          undistorted);
+      System.out.println(deserializedMatrix.serialize());
+
+      if (debug)
+        Imgcodecs.imwrite(testPath + "debug.jpg", undistorted);
+    }
 
   }
 
