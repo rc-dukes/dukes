@@ -167,10 +167,10 @@ install5() {
   fi
   if [ ! -d opencv-$version ]
   then
-    sudo unzip $zip
+    sudo unzip -q $zip
     #sudo git clone -b 3.4 https://github.com/opencv/opencv
   fi
-  chown -R $(id -u).$(id -g) opencv-$version
+  sudo chown -R $(id -u).$(id -g) opencv-$version
   lib=${src}/opencv-$version/build/lib/libopencv_java343.so
   if [ ! -f $lib ] 
   then
