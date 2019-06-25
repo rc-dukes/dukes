@@ -73,7 +73,7 @@
     </dependency>
     <dependency>
       <groupId>nl.vaneijndhoven.dukes</groupId>
-      <artifactId>uncle-jesse</artifactId>
+      <artifactId>rc-app</artifactId>
       <version>0.0.2</version>
     </dependency>
     <dependency>
