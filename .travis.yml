@@ -11,6 +11,8 @@ install: mvn clean install -Dgpg.skip=true
 # We need GraphViz to get uml diagrams with javadoc 
 before_install:
 - "sudo apt-get install graphviz"
-# we need to install opencv
-# do not do this yet - simply check the build first
-#- "scripts/opencvubuntu"
+# we need to install opencv 
+# by compiling from source (takes some 15 minutes ...)
+# if you comment this out some tests will fail 
+# so you might want to add -D skipTests above
+- "scripts/opencvubuntu"
