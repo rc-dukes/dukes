@@ -40,10 +40,10 @@ install1() {
 # see https://www.learnopencv.com/install-opencv3-on-ubuntu/
 
 #Remove any previous installations of x264</h3>
-apt-get remove x264 libx264-dev
+sudo apt-get remove x264 libx264-dev
  
 #We will Install dependencies now
-install="apt-get install -y" 
+install="sudo apt-get install -y" 
 $install build-essential checkinstall cmake pkg-config yasm
 $install git gfortran
 $install libjpeg8-dev libjasper-dev libpng12-dev
@@ -74,9 +74,9 @@ $install libgphoto2-dev libeigen3-dev libhdf5-dev doxygen
 # https://stackoverflow.com/a/48326450/1497139
 # https://github.com/opencv/opencv/issues/8622
 install2() {
-  add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
-  apt update
-  apt install -y libjasper1 libjasper-dev
+  sudo add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
+  sudo apt update
+  sudo apt install -y libjasper1 libjasper-dev
 }
 
 #
@@ -107,7 +107,7 @@ install3() {
   then
     color_msg $blue "installing pip"
     curl "https://bootstrap.pypa.io/get-pip.py" -o "/tmp/get-pip.py"
-    python /tmp/get-pip.py
+    sudo python /tmp/get-pip.py
   else
     color_msg $green "pip is already installed"
   fi
@@ -116,7 +116,7 @@ install3() {
   if [ $? -ne 0 ]
   then
     color_msg $blue "installing opencv-python"
-    pip install opencv-python
+    sudo pip install opencv-python
   else
     color_msg $greeno "opencv-python already installed"
   fi
@@ -130,7 +130,7 @@ EOF
   python /tmp/cvpath.py
 }
 install4() {
-  install="apt-get install -y" 
+  install="sudo apt-get install -y" 
   $install libpng-dev                                       
   $install libpng-dev                                     
   $install libpng12-dev                                     
@@ -163,21 +163,34 @@ install5() {
   zip=opencv-${version}.zip
   if [ ! -f $zip ]
   then
-    wget https://github.com/opencv/opencv/archive/$version.zip -O $zip 
+    sudo wget https://github.com/opencv/opencv/archive/$version.zip -O $zip 
   fi
   if [ ! -d opencv-$version ]
   then
-    unzip -q $zip
-    #git clone -b 3.4 https://github.com/opencv/opencv
+    sudo unzip -q $zip
+    #sudo git clone -b 3.4 https://github.com/opencv/opencv
   fi
-  chown -R $(id -u).$(id -g) opencv-$version
+  sudo chown -R $(id -u).$(id -g) opencv-$version
   lib=${src}/opencv-$version/build/lib/libopencv_java343.so
   if [ ! -f $lib ] 
   then
     cd opencv-$version/platforms/maven
-    export ANT_HOME=/usr/share/ant
-    export MAKEFLAGS=-j4
-    mvn clean install
+    # prepare a script e.g. for running maven
+    runmaven=/tmp/runmaven$$
+    # create the script with a here document 
+cat << EOF > $runmaven
+#!/bin/bash
+# run the maven clean with environment variables set
+export ANT_HOME=/usr/share/ant
+export MAKEFLAGS=-j4
+mvn clean install
+EOF
+    # make the script executable
+    chmod +x $runmaven
+    # run it
+    sudo $runmaven
+    # remove it or comment out to keep
+    rm $runmaven
   fi
   if [ ! -f $lib ] 
   then
@@ -194,13 +207,13 @@ install5() {
   fi
   #if [ ! -d build ]
   #then
-  #  mkdir build
+  #  sudo mkdir build
   #fi
   #cd build
   # see https://advancedweb.hu/2016/03/01/opencv_ubuntu/
-  #cmake -D BUILD_SHARED_LIBS=OFF ..
-  #make -j4
-  #make -j4 install
+  #sudo cmake -D BUILD_SHARED_LIBS=OFF ..
+  #sudo make -j4
+  #sudo make -j4 install
   #mvn install:install-file -Dfile=/usr/local/share/OpenCV/java/opencv-343.jar -DgroupId=opencv -DartifactId=opencv -Dversion=3.4.3 -Dpackaging=jar
 }
 
