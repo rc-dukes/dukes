@@ -26,6 +26,17 @@ import nl.vaneijndhoven.dukes.roi.RightField;
  */
 public class TestROI {
   public static boolean debug = true;
+
+  /**
+   * check if we are in the Travis-CI environment
+   * 
+   * @return true if Travis user was detected
+   */
+  public boolean isTravis() {
+    String user = System.getProperty("user.name");
+    return user.equals("travis");
+  }
+
   String basePath = "./";
   String testPath = basePath + "target/test-classes/roi/";
 
@@ -37,51 +48,57 @@ public class TestROI {
    */
   @Test
   public void testNativeLibrary() throws Exception {
-    if (debug)
-      System.out.println(String.format("trying to load native library %s from path",
-          Core.NATIVE_LIBRARY_NAME));
-    assertTrue(NativeLibrary.getNativeLibPath().isDirectory());
-    assertTrue(NativeLibrary.getNativeLib().isFile());
-    NativeLibrary.load();
-    for (String pathelement:NativeLibrary.getCurrentLibraryPath()) {
-      File path=new File(pathelement);
+    if (!isTravis()) {
       if (debug)
-        System.out.print("\t"+pathelement);
-      if (path.isDirectory()) {
+        System.out
+            .println(String.format("trying to load native library %s from path",
+                Core.NATIVE_LIBRARY_NAME));
+      assertTrue(NativeLibrary.getNativeLibPath().isDirectory());
+      assertTrue(NativeLibrary.getNativeLib().isFile());
+      NativeLibrary.load();
+      for (String pathelement : NativeLibrary.getCurrentLibraryPath()) {
+        File path = new File(pathelement);
         if (debug)
-          System.out.println("✓");
-        File libFile=new File(path,NativeLibrary.getLibraryFileName());
-        if (libFile.isFile() && debug) {
-          System.out.println(String.format("found at %s ",libFile.getCanonicalPath()));
+          System.out.print("\t" + pathelement);
+        if (path.isDirectory()) {
+          if (debug)
+            System.out.println("✓");
+          File libFile = new File(path, NativeLibrary.getLibraryFileName());
+          if (libFile.isFile() && debug) {
+            System.out.println(
+                String.format("found at %s ", libFile.getCanonicalPath()));
+          }
+        } else {
+          if (debug)
+            System.out.println();
         }
-      } else {
-        if (debug)
-          System.out.println();
       }
     }
   }
 
   @Test
   public void testROI() throws Exception {
-    NativeLibrary.load();
-    File imgRoot = new File(testPath);
-    assertTrue(imgRoot.isDirectory());
-    Mat image = Imgcodecs.imread(testPath + "/test_image.jpg");
-    assertNotNull(image);
-    assertEquals(960, image.height());
-    assertEquals(1280, image.width());
-    RegionOfInterest rois[] = { new FarField(0.5), new NearField(0.5),
-        new LeftField(0.5), new RightField(0.5) };
-    for (RegionOfInterest roi : rois) {
-      Mat roiImage = roi.region(image);
-      if (debug)
-        System.out.println(
-            String.format("%10s: %4d x %4d", roi.getClass().getSimpleName(),
-                roiImage.width(), roiImage.height()));
-      assertEquals(roiImage.width(), image.width() * roi.getWidthFraction(),
-          0.1);
-      assertEquals(roiImage.height(), image.height() * roi.getHeightFraction(),
-          0.1);
+    if (!isTravis()) {
+      NativeLibrary.load();
+      File imgRoot = new File(testPath);
+      assertTrue(imgRoot.isDirectory());
+      Mat image = Imgcodecs.imread(testPath + "/test_image.jpg");
+      assertNotNull(image);
+      assertEquals(960, image.height());
+      assertEquals(1280, image.width());
+      RegionOfInterest rois[] = { new FarField(0.5), new NearField(0.5),
+          new LeftField(0.5), new RightField(0.5) };
+      for (RegionOfInterest roi : rois) {
+        Mat roiImage = roi.region(image);
+        if (debug)
+          System.out.println(
+              String.format("%10s: %4d x %4d", roi.getClass().getSimpleName(),
+                  roiImage.width(), roiImage.height()));
+        assertEquals(roiImage.width(), image.width() * roi.getWidthFraction(),
+            0.1);
+        assertEquals(roiImage.height(),
+            image.height() * roi.getHeightFraction(), 0.1);
+      }
     }
   }
 
