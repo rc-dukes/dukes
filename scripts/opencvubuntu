@@ -2,6 +2,40 @@
 # WF 2019-06-25
 # Install needed libraries for OpenCV on ubuntu
 
+#ansi colors
+#http://www.csc.uvic.ca/~sae/seng265/fall04/tips/s265s047-tips/bash-using-colors.html
+blue='\033[0;34m'
+red='\033[0;31m'
+green='\033[0;32m' # '\e[1;32m' is too bright for white bg.
+endColor='\033[0m'
+
+#
+# a colored message
+#   params:
+#     1: l_color - the color of the message
+#     2: l_msg - the message to display
+#
+color_msg() {
+  local l_color="$1"
+  local l_msg="$2"
+  echo -e "${l_color}$l_msg${endColor}"
+}
+
+# error
+#
+#   show an error message and exit
+#
+#   params:
+#     1: l_msg - the message to display
+error() {
+  local l_msg="$1"
+  # use ansi red for error
+  color_msg $red "Error: $l_msg" 1>&2
+  exit 1
+}
+
+
+
 install1() {
 # see https://www.learnopencv.com/install-opencv3-on-ubuntu/
 
@@ -55,14 +89,117 @@ downloadLibrary() {
   lib="$mydir/../lib/libopencv_java343.so"
   if [ ! -f $lib ]
   then
-    echo "downloading $lib from JavaCameraApp github repository"
+    color_msg $blue "downloading $lib from JavaCameraApp github repository"
     curl -L https://github.com/chethan749/JavaCameraApp/blob/master/libopencv_java343.so?raw=true -o $lib
+  else
+    color_msg $green "$lib is already available"
   fi
+}
+
+#
+# Ubuntu 16 installation steps (python)
+# see e.g. https://stackoverflow.com/questions/42476717/how-to-install-opencv-on-ubuntu-16-04
+#
+install3() {
+  color_msg $blue "checking that pip is installed"
+  which pip > /dev/null
+  if [ $? -ne 0 ]
+  then
+    color_msg $blue "installing pip"
+    curl "https://bootstrap.pypa.io/get-pip.py" -o "/tmp/get-pip.py"
+    sudo python /tmp/get-pip.py
+  else
+    color_msg $green "pip is already installed"
+  fi
+  color_msg $blue "checking whether opencv-python is installed"
+  python -c "import cv2"
+  if [ $? -ne 0 ]
+  then
+    color_msg $blue "installing opencv-python"
+    sudo pip install opencv-python
+  else
+    color_msg $greeno "opencv-python already installed"
+  fi
+  # let's find out the path to opencv
+  # https://stackoverflow.com/questions/15227532/python-opencv-root-directory
+cat << EOF > /tmp/cvpath.py
+import cv2
+from os.path import realpath, normpath
+print(normpath(realpath(cv2.__file__)))
+EOF
+  python /tmp/cvpath.py
+}
+install4() {
+  install="sudo apt-get install -y" 
+  $install libpng-dev                                       
+  $install libpng-dev                                     
+  $install libpng12-dev                                     
+  $install libopenjp2-7-dev                                 
+  $install libjasper-dev                                    
+  $install python-dev                                       
+  $install python-numpy                                     
+  $install build-essential                                      
+  $install cmake                                                
+  $install git                                                  
+  $install libgtk2.0-dev                                        
+  $install pkg-config                                           
+  $install libavcodec-dev                                       
+  $install libavformat-dev                                      
+  $install libswscale-dev                                       
+  $install libtbb2                                              
+  $install libtbb-dev                                           
+  $install libjpeg-dev                                          
+  $install libtiff5-dev                                         
+  $install libdc1394-22-dev                                     
+  $install execstack                                            
+  $install ant     
+}
+# https://github.com/emchristiansen/Billy/blob/master/.travis.yml
+install5() {
+  cd /usr/local/src
+  version=3.4.3
+  zip=opencv-${version}.zip
+  if [ ! -f $zip ]
+  then
+    sudo wget https://github.com/opencv/opencv/archive/$version.zip -O $zip 
+  fi
+  if [ ! -d opencv-$version ]
+  then
+    sudo unzip $zip
+    #sudo git clone -b 3.4 https://github.com/opencv/opencv
+  fi
+  chown -R $(id -u).$(id -g) opencv-$version
+  cd opencv-$version/platforms/maven
+  export ANT_HOME=/usr/share/ant
+  export MAKEFLAGS=-j4
+  mvn clean install
+  #if [ ! -d build ]
+  #then
+  #  sudo mkdir build
+  #fi
+  #cd build
+  # see https://advancedweb.hu/2016/03/01/opencv_ubuntu/
+  #sudo cmake -D BUILD_SHARED_LIBS=OFF ..
+  #sudo make -j4
+  #sudo make -j4 install
+  #mvn install:install-file -Dfile=/usr/local/share/OpenCV/java/opencv-343.jar -DgroupId=opencv -DartifactId=opencv -Dversion=3.4.3 -Dpackaging=jar
 }
 
 # necessary step if you don't want to compile yourself
 downloadLibrary
-# necessary step on ubuntu 18
-install2
+version=$(lsb_release -a | grep Release | cut -f2 )
+case $version in
+  18*) color_msg $green "found Ubuntu Bionic Beaver $version"
+       # necessary step on ubuntu 18
+       install2;;
+  16*) color_msg $green "found Ubuntu Xenial Xerus $version"
+       # necessary step on ubuntu 16
+       #install1
+       install4
+       install5;;
+  14*) color_msg $blue "found Ubuntu Trusty Tahr $version"
+       error "do not know what to do - you might want to check the script yourself" ;;
+  *) error "found Ubuntu ${version} - i have no clue what to do";;
+esac
 # step might be necessary - try out yourself ...
 #install1
