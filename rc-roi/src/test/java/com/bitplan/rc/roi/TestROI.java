@@ -48,7 +48,7 @@ public class TestROI {
    */
   @Test
   public void testNativeLibrary() throws Exception {
-    if (!isTravis()) {
+    //if (!isTravis()) {
       if (debug)
         System.out
             .println(String.format("trying to load native library %s from path",
@@ -80,7 +80,7 @@ public class TestROI {
       }
       if (issue!=null)
     	  throw issue;
-    }
+    //} isTravis
   }
 
   @Test
