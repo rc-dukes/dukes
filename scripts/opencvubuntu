@@ -42,9 +42,12 @@ $install libgphoto2-dev libeigen3-dev libhdf5-dev doxygen
 install2() {
   sudo add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
   sudo apt update
-  sudo apt install libjasper1 libjasper-dev
+  sudo apt install -y libjasper1 libjasper-dev
 }
 
+#
+# download a precompiled opencv native library for ubuntu
+#
 downloadLibrary() {
   # in which directory is this script?
   mydir=$(dirname $0)
