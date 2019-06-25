@@ -156,7 +156,9 @@ install4() {
 }
 # https://github.com/emchristiansen/Billy/blob/master/.travis.yml
 install5() {
-  cd /usr/local/src
+  pwd=$(pwd)
+  src=/usr/local/src 
+  cd $src
   version=3.4.3
   zip=opencv-${version}.zip
   if [ ! -f $zip ]
@@ -169,10 +171,27 @@ install5() {
     #sudo git clone -b 3.4 https://github.com/opencv/opencv
   fi
   chown -R $(id -u).$(id -g) opencv-$version
-  cd opencv-$version/platforms/maven
-  export ANT_HOME=/usr/share/ant
-  export MAKEFLAGS=-j4
-  mvn clean install
+  lib=${src}/opencv-$version/build/lib/libopencv_java343.so
+  if [ ! -f $lib ] 
+  then
+    cd opencv-$version/platforms/maven
+    export ANT_HOME=/usr/share/ant
+    export MAKEFLAGS=-j4
+    mvn clean install
+  fi
+  if [ ! -f $lib ] 
+  then
+    error "maven install of opencv failed"
+  else
+    # in which directory is this script?
+    mydir=$(dirname $0)
+    # go there
+    cd $pwd/$mydir
+    # the library is in the neighbour directory ../lib
+    targetlib="../lib/libopencv_java343.so"
+    color_msg $blue "copying $lib to $targetlib"
+    cp -p $lib $targetlib
+  fi
   #if [ ! -d build ]
   #then
   #  sudo mkdir build
@@ -186,11 +205,11 @@ install5() {
 }
 
 # necessary step if you don't want to compile yourself
-downloadLibrary
 version=$(lsb_release -a | grep Release | cut -f2 )
 case $version in
   18*) color_msg $green "found Ubuntu Bionic Beaver $version"
        # necessary step on ubuntu 18
+       downloadLibrary
        install2;;
   16*) color_msg $green "found Ubuntu Xenial Xerus $version"
        # necessary step on ubuntu 16
