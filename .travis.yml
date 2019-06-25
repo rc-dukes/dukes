@@ -10,7 +10,7 @@ jdk:
 install: mvn clean install -Dgpg.skip=true
 # We need GraphViz to get uml diagrams with javadoc 
 before_install:
-- "sudo apt-get install graphviz"
+- "sudo apt-get install graphviz openjfx"
 # we need to install opencv 
 # by compiling from source (takes some 15 minutes ...)
 # if you comment this out some tests will fail 
