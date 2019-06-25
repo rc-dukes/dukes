@@ -54,8 +54,13 @@ public class TestROI {
             .println(String.format("trying to load native library %s from path",
                 Core.NATIVE_LIBRARY_NAME));
       assertTrue(NativeLibrary.getNativeLibPath().isDirectory());
-      assertTrue(NativeLibrary.getNativeLib().isFile());
-      NativeLibrary.load();
+      assertTrue(NativeLibrary.getNativeLib().getCanonicalPath(),NativeLibrary.getNativeLib().isFile());
+      Exception issue=null;
+      try {
+        NativeLibrary.load();
+      } catch (Exception le) {
+    	  issue=le;
+      }
       for (String pathelement : NativeLibrary.getCurrentLibraryPath()) {
         File path = new File(pathelement);
         if (debug)
@@ -73,6 +78,8 @@ public class TestROI {
             System.out.println();
         }
       }
+      if (issue!=null)
+    	  throw issue;
     }
   }
 

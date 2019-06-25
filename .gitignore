@@ -110,3 +110,4 @@ fabric.properties
 .idea
 /bin/
 /target
+/lib

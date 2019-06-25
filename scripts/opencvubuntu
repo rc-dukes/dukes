@@ -1,0 +1,65 @@
+#!/bin/bash
+# WF 2019-06-25
+# Install needed libraries for OpenCV on ubuntu
+
+install1() {
+# see https://www.learnopencv.com/install-opencv3-on-ubuntu/
+
+#Remove any previous installations of x264</h3>
+sudo apt-get remove x264 libx264-dev
+ 
+#We will Install dependencies now
+install="sudo apt-get install -y" 
+$install build-essential checkinstall cmake pkg-config yasm
+$install git gfortran
+$install libjpeg8-dev libjasper-dev libpng12-dev
+ 
+# If you are using Ubuntu 14.04
+#$install libtiff4-dev
+# If you are using Ubuntu 16.04
+#$install libtiff5-dev
+ 
+$install libavcodec-dev libavformat-dev libswscale-dev libdc1394-22-dev
+$install libxine2-dev libv4l-dev
+$install libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev
+$install qt5-default libgtk2.0-dev libtbb-dev
+$install libatlas-base-dev
+$install libfaac-dev libmp3lame-dev libtheora-dev
+$install libvorbis-dev libxvidcore-dev
+$install libopencore-amrnb-dev libopencore-amrwb-dev
+$install x264 v4l-utils
+ 
+# Optional dependencies
+$install libprotobuf-dev protobuf-compiler
+$install libgoogle-glog-dev libgflags-dev
+$install libgphoto2-dev libeigen3-dev libhdf5-dev doxygen
+}
+
+# https://researchxuyc.wordpress.com/2018/09/26/install-libjasper-in-ubuntu-18-04/
+# (do not copy code from there - the quotes are wrong!)
+# https://stackoverflow.com/a/48326450/1497139
+# https://github.com/opencv/opencv/issues/8622
+install2() {
+  sudo add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
+  sudo apt update
+  sudo apt install libjasper1 libjasper-dev
+}
+
+downloadLibrary() {
+  # in which directory is this script?
+  mydir=$(dirname $0)
+  # the library is in the neighbour directory ../lib
+  lib="$mydir/../lib/libopencv_java343.so"
+  if [ ! -f $lib ]
+  then
+    echo "downloading $lib from JavaCameraApp github repository"
+    curl -L https://github.com/chethan749/JavaCameraApp/blob/master/libopencv_java343.so?raw=true -o $lib
+  fi
+}
+
+# necessary step if you don't want to compile yourself
+downloadLibrary
+# necessary step on ubuntu 18
+install2
+# step might be necessary - try out yourself ...
+#install1
