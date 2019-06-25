@@ -2,6 +2,9 @@
 dist: xenial
 # this is a java project using maven
 language: java
+# we'll get java 11 or higher if we don't do this
+jdk:
+  - openjdk8
 # switch off gpg handling
 # clean is mandatory to get opencv jar integrated
 install: mvn clean install -Dgpg.skip=true
@@ -9,4 +12,5 @@ install: mvn clean install -Dgpg.skip=true
 before_install:
 - "sudo apt-get install graphviz"
 # we need to install opencv
-- "scripts/opencvubuntu"
+# do not do this yet - simply check the build first
+#- "scripts/opencvubuntu"
