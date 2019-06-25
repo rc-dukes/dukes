@@ -183,7 +183,13 @@ cat << EOF > $runmaven
 # run the maven clean with environment variables set
 export ANT_HOME=/usr/share/ant
 export MAKEFLAGS=-j4
-/usr/bin/mvn clean install
+# https://stackoverflow.com/a/38225337/1497139
+if [ $USER = "travis" ]
+then
+   /usr/local/maven/bin/mvn clean install
+else
+   /usr/bin/mvn clean install
+fi
 EOF
     # make the script executable
     chmod +x $runmaven
