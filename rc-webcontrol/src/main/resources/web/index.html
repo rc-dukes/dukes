@@ -16,9 +16,8 @@
 <link href="css/materialdesignicons.min.css" media="all"
 	rel="stylesheet" type="text/css" />
 
-<style>
-<
-style type ="text /css">body {
+<style type ="text /css">
+body {
 	background-attachment: scroll;
 	background-clip: border-box;
 	background-image: none;
@@ -91,12 +90,6 @@ td {
 	padding-left: 10px;
 	padding-right: 10px;
 	padding-top: 7px;
-}
-
-#events {
-	width: 90%;
-	white-space: pre-wrap;
-	height: 400px;
 }
 
 table.images {
@@ -189,32 +182,45 @@ td.controls {
 	<div id='navigationbox' title='Self Driving RC Car WebControl'>Self
 		Driving RC Car WebControl</div>
 	<div id='contentbox'>
-	  <table id="navigationcontrols">
-	    <tr>
-	      <td></td>
-	      <td><i id="up"   class='mdi mdi-arrow-up-bold bigicon' title="up/u"        onclick="up();"></i></td>
-	      <td></td>
-	      <td><i id="autopilot"     class='mdi mdi-car bigicon' title="autopilot/+"        onclick="autopilot();"></i></td>
-	    </tr>
-	    <tr>   
-	      <td><i id="left" class='mdi mdi-arrow-left-bold bigicon'   title="left/l"  onclick="left();"></i></td>
-        <td><i id="stop" class='mdi mdi-stop bigicon'              title="stop/space"   onclick="stop();"></i></td>
-        <td><i id="right" class='mdi mdi-arrow-right-bold bigicon' title="right/r" onclick="right();"></i></td>
-	    </tr>
-	    <tr>
-        <td></td>
-        <td><i id="down" class='mdi mdi-arrow-down-bold bigicon' title="down/d"    onclick="down();"></i></td>
-        <td></td>
-        <td><i id="manual"     class='mdi mdi-account bigicon' title="manual/-"        onclick="manual();"></i></td>
-      </tr>
-	  </table>
+		<table id="navigationcontrols">
+			<tr>
+				<td></td>
+				<td><i id="up" class='mdi mdi-arrow-up-bold bigicon'
+					title="up/u" onclick="up();"></i></td>
+				<td></td>
+				<td><i id="autopilot" class='mdi mdi-car bigicon'
+					title="autopilot/+" onclick="autopilot();"></i></td>
+			</tr>
+			<tr>
+				<td><i id="left" class='mdi mdi-arrow-left-bold bigicon'
+					title="left/l" onclick="left();"></i></td>
+				<td><i id="stop" class='mdi mdi-stop bigicon'
+					title="stop/space" onclick="stop();"></i></td>
+				<td><i id="right" class='mdi mdi-arrow-right-bold bigicon'
+					title="right/r" onclick="right();"></i></td>
+				<td></td>	
+			</tr>
+			<tr>
+				<td></td>
+				<td><i id="down" class='mdi mdi-arrow-down-bold bigicon'
+					title="down/d" onclick="down();"></i></td>
+				<td></td>
+				<td><i id="manual" class='mdi mdi-account bigicon'
+					title="manual/-" onclick="manual();"></i></td>
+			</tr>
+			<tr>
+			  <td><i id="brake" class='mdi mdi-close bigicon'
+          title="brake/b/s" onclick="brake();"></i></td>
+        <td><i id="center" class='mdi mdi-image-filter-center-focus bigicon' title='center/c/z' onclick="center();"></i></td>  
+			</tr>
+		</table>
+		<h6>Events:</h6>
+		<textarea id='events' cols="80" rows="3"></textarea>
 		<table class="images">
 			<tr>
 				<td class="controls">
-						<div id="z">z(center steering)</div>
-						<div id="s">s (brake)</div>
-						<br /> <b>Canny config</b><br />
-					</div> Threshold 1: <input id="cannyConfigThreshold1Slider" value="60"
+					<b>Canny config</b><br />
+					Threshold 1: <input id="cannyConfigThreshold1Slider" value="60"
 					type="range" min="0" max="500" step="1"
 					oninput="onSlide('cannyConfigThreshold1Slider', 'cannyConfigThreshold1Textbox')" />
 					<input id="cannyConfigThreshold1Textbox" size="2" /><br />
@@ -235,14 +241,10 @@ td.controls {
 					min="0" max="200" step="1"
 					oninput="onSlide('houghConfigThresholdSlider', 'houghConfigThresholdTextbox')" />
 					<input id="houghConfigThresholdTextbox" size="2" /><br />
-
-
 					MinLineLength: <input id="houghConfigMinLineLengthSlider"
 					value="20" type="range" min="0" max="200" step="1"
 					oninput="onSlide('houghConfigMinLineLengthSlider', 'houghConfigMinLineLengthTextbox')" />
 					<input id="houghConfigMinLineLengthTextbox" size="2" /><br />
-
-
 					MaxLineGap: <input id="houghConfigMaxLineGapSlider" value="10"
 					type="range" min="0" max="200" step="1"
 					oninput="onSlide('houghConfigMaxLineGapSlider', 'houghConfigMaxLineGapTextbox')" />
@@ -272,14 +274,16 @@ td.controls {
 		</table>
 		<!--<div id="message"></div>-->
 		<!--<input type="file" accept="video/*"/>-->
-		<!--<video controls autoplay></video>-->
-
-		<h3>Events</h3>
-		<pre id="events"></pre>
+		<!--<video controls autoplay></video>-->		
 	</div>
-	<!--  end of maincontentbox -->
+	<!--  end of main content box -->
 	<div id='footerbox'></div>
 	<script type="text/javascript">
+		// redirect console output
+		// redirectConsole('console','','\n');
+		// allow keyboard input
+		registerControls();
+
 		var eb = new EventBus("http://localhost:8080/eventbus");
 
 		var NUM_LOG_LINES_VISIBLE = 15;
@@ -322,7 +326,6 @@ td.controls {
 			eb.registerHandler("STARTLIGHTDETECTION", display);
 
 			registerHeartBeat();
-			registerControls();
 			registerDebugImages();
 		}
 
@@ -348,7 +351,6 @@ td.controls {
 
 			if (isError) {
 				return
-
 			}
 
 			var fReader = new FileReader();
@@ -373,49 +375,65 @@ td.controls {
 			window.setInterval(sendHeartBeat, 150);
 		}
 
+		// register key handling controls
 		function registerControls() {
 
-			document.onkeypress = function(e) {
+			document.onkeydown = function(e) {
 				e = e || window.event;
 
+				// see
+				// https://hacks.mozilla.org/2017/03/internationalize-your-keyboard-controls/
+				// https://www.w3.org/TR/uievents-code/#code-value-tables
 				var code = e.charCode;
+				var key = e.key;
 				if (code == 0) {
 					code = e.keyCode;
 				}
 				console.log('keycode: ', code);
-				if (code == 37 || code == 108) {
-					// key left/"l": wheel left
-					left();
-				} else if (code == 39 || code == 114) {
-					// key right/"r": wheel right
-					right();
-				} else if (code == 38 || code == 117) {
-					// key up/"u": speed up
-					up();
-				} else if (code == 40 || code == 100) {
-					// key down/"d": speed down
-					down();
-				} else if (code == 32) {
-					// space: stop
-					stop();
-				} else if (code == 115 || code == 98) {
-					// b / s: stop (with brake)
-					keyPressed("s");
-					sendSpeedCommand('brake');
-				} else if (code == 103) {
+				console.log('key:', key);
+				switch (key) {
+				case 'ArrowLeft':
+				case 'l':
+					left(); // wheel left
+					break;
+				case 'ArrowRight':
+				case 'r':
+					right(); // wheel right
+					break;
+				case 'ArrowUp':
+				case 'u':
+					up(); // speed up
+					break;
+				case 'ArrowDown':
+				case 'd':
+					down(); // speed down
+					break;
+				case  ' ': // space
+					stop(); // stop
+					break;
+				case 'b':
+				case 's':
+				  brake(); // brake
+					break;
+				case 'g':	
 					// g: go
 					sendSpeedDirectCommand("1");
-				} else if (code == 122) {
-					// z: center wheel
-					keyPressed("z");
-					sendWheelCommand('center');
-				} else if (code == 61 || code == 43) {
+				  break;
+				case 'z':
+				case 'c':
+					center();
+					break;
+				case '+':
 					// +: enable autopilot
 					autopilot()
-				} else if (code == 45) {
+				  break;
+				case '-':
 					// -: disable autopilot
 					manual();
-				} else if (code >= 48 && code <= 58) {
+				  break;
+				} 
+				// numeric key
+				if (code >= 48 && code <= 58) {
 					// 48: 1 key
 					// 49: 2 key
 					// set speed direct.
@@ -425,8 +443,23 @@ td.controls {
 			};
 		}
 
-		var CALLSIGN_BO = 'Lost sheep Bo';
-		var CALLSIGN_DAISY = 'Bo Peep';
+		// https://stackoverflow.com/a/6604660/1497139
+		// call e.g. with redirectConsole('debugDiv','<p>','</p>')
+		function redirectConsole(consoleId, prefix, postfix) {
+			if (typeof console != "undefined")
+				if (typeof console.log != 'undefined')
+					console.olog = console.log;
+				else
+					console.olog = function() {
+					};
+
+			console.log = function(message) {
+				console.olog(message);
+				document.getElementById(consoleId).innerHTML += prefix
+						+ message + postfix;
+			};
+			console.error = console.debug = console.info = console.log
+		}
 
 		function up() {
 			keyPressed("up");
@@ -448,20 +481,32 @@ td.controls {
 			sendWheelCommand('right');
 		}
 		
+		function center() {
+	    // z/c: center wheel
+	    keyPressed("center");
+	    sendWheelCommand('center');
+	 	}
+
 		function stop() {
-		  keyPressed("stop");
-      sendSpeedCommand('stop');
-      sendWheelCommand('center');
+			keyPressed("stop");
+			sendSpeedCommand('stop');
+			sendWheelCommand('center');
+		}
+
+		function brake() {
+		  // b / s: stop (with brake)
+	    keyPressed("brake");
+	    sendSpeedCommand('brake');
 		}
 		
 		function autopilot() {
 			keyPressed("autopilot");
-	    startAutoPilot();}
+			startAutoPilot();
 		}
-		
+
 		function manual() {
 			keyPressed("manual");
-	    stopAutoPilot();
+			stopAutoPilot();
 		}
 
 		function keyPressed(id) {
@@ -472,6 +517,9 @@ td.controls {
 				element.style.fontWeight = 'normal';
 			}, 200);
 		}
+
+		var CALLSIGN_BO = 'Lost sheep Bo';
+		var CALLSIGN_DAISY = 'Bo Peep';
 
 		function sendWheelCommand(position) {
 
@@ -504,7 +552,6 @@ td.controls {
 				type : 'heartbeat'
 			};
 			eb.publish(CALLSIGN_FLASH, data);
-
 		}
 
 		var CALLSIGN_LUKE = "Lost sheep Luke";
