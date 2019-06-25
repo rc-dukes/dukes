@@ -83,8 +83,15 @@ public class NativeLibrary {
     switch (OsCheck.getOperatingSystemType()) {
     case MacOS:
       libraryFileName = "lib" + Core.NATIVE_LIBRARY_NAME + ".dylib";
+      break;
+    case Linux:
+      libraryFileName = "lib" + Core.NATIVE_LIBRARY_NAME + ".so";
+      break;
+    case Windows:
+      libraryFileName = Core.NATIVE_LIBRARY_NAME + ".so";
+      break;
     default:
-
+      // might be unsupported 
     }
     return libraryFileName;
   }
