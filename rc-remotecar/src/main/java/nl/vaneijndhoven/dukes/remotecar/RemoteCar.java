@@ -12,7 +12,6 @@ import nl.vaneijndhoven.dukes.car.Command;
 import nl.vaneijndhoven.dukes.car.Engine;
 import nl.vaneijndhoven.dukes.car.Steering;
 import nl.vaneijndhoven.dukes.common.ClusterStarter;
-import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.dukes.common.Environment;
 import nl.vaneijndhoven.dukes.drivecontrol.EngineMap;
 import nl.vaneijndhoven.dukes.drivecontrol.SteeringMap;

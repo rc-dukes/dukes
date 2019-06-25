@@ -9,4 +9,4 @@ install: mvn clean install -Dgpg.skip=true
 before_install:
 - "sudo apt-get install graphviz"
 # we need to install opencv
-- "scripts/opencvubuntu"
+- "sudo scripts/opencvubuntu"
