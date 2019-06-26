@@ -171,7 +171,8 @@ install5() {
     sudo unzip -q $zip
     #sudo git clone -b 3.4 https://github.com/opencv/opencv
   fi
-  #sudo chown -R $(id -u).$(id -g) opencv-$version
+  color_msg $blue "changing owner to $(id -u).$(id -g) for opencv-$version"
+  sudo chown -R $(id -u).$(id -g) opencv-$version
   lib=${src}/opencv-$version/build/lib/libopencv_java343.so
   if [ ! -f $lib ] 
   then
