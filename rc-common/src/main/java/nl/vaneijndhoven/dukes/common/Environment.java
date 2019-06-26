@@ -171,6 +171,17 @@ public class Environment {
   }
   
   /**
+   * get the property value for the given key
+   * @param key
+   * @return - the string value for the given property key
+   * @throws Exception
+   */
+  public String getString(String key) throws Exception {
+    String value=this.getProperties().get(key).toString();
+    return value;
+  }
+  
+  /**
    * reset my singleton
    */
   public static void reset() {

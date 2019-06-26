@@ -43,12 +43,13 @@ error() {
 # show usage
 #
 usage() {
-  echo "$(basename $0) [-d|-h|-m|-s]"
+  echo "$(basename $0) [-a|-d|-h|-m|-s]"
   echo ""
+  echo "  -a |--autostart         : configure the remotecar app to autostart on reboot"
   echo "  -d |--debug             : debug this script"
   echo "  -m |--maven             : run maven install"
   echo "  -h |--help              : show this usage"
-  echo "  -s |--start             : deploy and start duke-farm fat jar"
+  echo "  -s |--start             : deploy and start remotecar (duke) fat jar"
   exit 1
 }
 
@@ -75,9 +76,6 @@ copyToTarget() {
      scp "$l_iniPath" "$target:$l_ini"
      # sync the fat file
      rsync -avz --progress target/$jar $target:~
-     color_msg $blue "starting rc-remote-car aka duke-farm"
-     #ssh $target -t "killall -9 java; screen sh -c \"/usr/bin/java -jar $jar\""
-     ssh $target -t "killall -9 java;/usr/bin/java -jar $jar"
   fi
 }
 
@@ -94,20 +92,9 @@ getValue() {
 }
 
 #
-# start the farm
+# check that the target is available
 #
-startFarm() {
-  ini=.dukes/dukes.ini
-  inipath=$HOME/$ini
-  if [ -f $inipath  ]
-  then
-    targetUser=$(getValue $inipath targetUser)
-    targetHost=$(getValue $inipath targetHost)
-    target=$targetUser@$targetHost
-  else
-    color_msg $red "configuration file $inipath is missing - will use $target as target"
-  fi
-
+pingCheck() {
   # ping intranet assuming 500 msecs max response time
   color_msg $blue "trying to ping $targetHost for 500 msecs"
   ping -i 0.5 -c 1 -W 500 $targetHost > /dev/null
@@ -115,10 +102,88 @@ startFarm() {
   then
     error "target host $targetHost is not reachable\nYou might want to check $ini or modify the deploy.sh script"
     exit 1
-  else
-    copyToTarget "$ini" "$inipath"
   fi
 }
+
+#
+# deploy the Jar file
+#
+deployJar() {
+  pingCheck
+  copyToTarget "$ini" "$inipath"
+}
+
+#
+# start the farm
+#
+startFarm() {
+  deployJar
+  color_msg $blue "starting rc-remote-car aka duke-farm"
+  #ssh $target -t "killall -9 java; screen sh -c \"/usr/bin/java -jar $jar\""
+  ssh $target -t "killall -9 java;/usr/bin/java -jar $jar"
+}
+
+#
+# template for a desktop entry
+#
+desktopEntry() {
+  cat << EOF
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=Dukes
+Comment=Self Driving Car Client
+Exec=lxterminal -e '/usr/local/lib/dukes/startRemoteCar.sh'
+Type=Application
+Categories=Utility
+EOF
+}
+
+#
+# configure the Raspberry to autostart the application
+#
+configureAutostart() {
+  deployJar
+  # create the target location
+  lib="/usr/local/lib/dukes"
+  color_msg $blue "creating $lib on $targetHost"
+  ssh $target sudo mkdir -p $lib
+  color_msg $blue "installing startRemoteCar.sh on $targetHost"
+  # copy the startRemoteCar.sh script to the target location
+  # see https://possiblelossofprecision.net/?p=444 for the ssh stdin handling
+  script=startRemoteCar.sh
+  cat << EOF | ssh $target "cat >/tmp/$script"
+#!/bin/bash
+# Autostart script for Raspberry see
+# https://github.com/rc-dukes/dukes/issues/26
+# WF 2019-06-26 - version 0.0.2
+java -jar /home/$targetUser/$jar
+EOF
+  # move and make executable
+  ssh $target sudo mv /tmp/$script $lib
+  ssh $target chmod +x $lib/$script
+  color_msg $blue "creating autostart desktop entry for $targetUser on $targetHost"
+  # copy the autostart desktop entry
+  autostart="~/.config/autostart"
+  ssh $target mkdir -p $autostart
+  desktopEntry | ssh $target "cat > $autostart/Dukes.desktop"
+  echo "Shall I reboot $targetHost? y/n"
+  read x
+  case $x in
+    y|Y) ssh $target sudo reboot
+  esac
+}
+
+ini=.dukes/dukes.ini
+inipath=$HOME/$ini
+if [ -f $inipath  ]
+then
+  targetUser=$(getValue $inipath targetUser)
+  targetHost=$(getValue $inipath targetHost)
+  target=$targetUser@$targetHost
+else
+  color_msg $red "configuration file $inipath is missing - will use $target as target"
+fi
 
 # commandline option
 while [  "$1" != ""  ]
@@ -144,6 +209,10 @@ do
 
     -s|--start)
        startFarm
+       ;;
+
+    -a|--autostart)
+       configureAutostart
        ;;
   esac
 done
