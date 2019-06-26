@@ -1,0 +1,52 @@
+@startuml
+
+    namespace nl.vaneijndhoven.dukes.camera.matrix {
+
+        class TestSuite [[TestSuite.html]] {
+        }
+
+        class TestPerspectiveShift [[TestPerspectiveShift.html]] {
+            +transform(): void
+        }
+
+        class TestCameraMatrix [[TestCameraMatrix.html]] {
+            +testCalculation(): void
+        }
+
+        class MatrixTestbase [[MatrixTestbase.html]] {
+            {static} +debug: boolean
+            +isTravis(): boolean
+        }
+
+        class PerspectiveShift [[PerspectiveShift.html]] {
+            +PerspectiveShift(Polygon, Polygon)
+            +apply(Mat): Mat
+            +apply(Object): Object
+        }
+
+        class CameraMatrix [[CameraMatrix.html]] {
+            {static} +DEFAULT: CameraMatrix
+            +CameraMatrix(int, int)
+            +getRvecs(): List<Mat>
+            +getTvecs(): List<Mat>
+            +calibrate(Mat[]): void
+            +apply(Mat): Mat
+            +serialize(): String
+            {static} +deserizalize(String): CameraMatrix
+            +apply(Object): Object
+        }
+
+        MatrixTestbase <|-- TestPerspectiveShift
+
+        MatrixTestbase <|-- TestCameraMatrix
+
+        interface java.util.function.UnaryOperator<T>
+        java.util.function.UnaryOperator <|.. PerspectiveShift
+
+        java.util.function.UnaryOperator <|.. CameraMatrix
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

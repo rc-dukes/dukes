@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>Characters xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../apidocs/nl/vaneijndhoven/dukes/common/Characters.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> nl.vaneijndhoven.dukes.common;
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> * nicknames used for verticles</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *   Bo “Lost sheep"-&gt; main character, driver, act first think later</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> *   Luke “Lost sheep” -&gt; main character, sidekick, planner</em>
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> *   Daisy “Bo Peep” -&gt; sister of main characters, pretty, gathers intel</em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_javadoccomment"> *   Uncle Jesse “Shepherd"-&gt; guardian of main characters, wise man</em>
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_javadoccomment"> *   Roscoe P Coltrane “Red Dog” -&gt; comical sheriff, chasing, illegal speed traps, “hot pursuit"</em>
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_javadoccomment"> *   Flash “Velvet ears” -&gt; Roscoes dog</em>
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment"> *   Boss “J.D.” Hogg “little fat buddy” -&gt; villain, rich, fat, food lover “get them duke boys"</em>
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment"> *   Cooter Davenport “Crazy Cooter” -&gt; Mechanic, supports main characters, "Breaker one, Breaker one, I might be crazy but I ain't dumb, Craaaazy Cooter comin' atcha, come on.”</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> *   Enos Strate “dipstick" -&gt; roscoes sidekick, loves daisy, helps the dukes</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> *   Cletus Hogg -&gt; roscoes sidekick, loves daisy,</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">public</strong> enum <a href="../../../../nl/vaneijndhoven/dukes/common/Characters.html">Characters</a> {
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>    BO(<span class="jxr_string">"Lost sheep Bo"</span>), LUKE(<span class="jxr_string">"Lost sheep Luke"</span>), DAISY(<span class="jxr_string">"Bo Peep"</span>), UNCLE_JESSE(
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>        <span class="jxr_string">"Shepherd"</span>), ROSCOE(<span class="jxr_string">"Red Dog"</span>), FLASH(<span class="jxr_string">"Velvet ears"</span>), BOSS_HOGG(
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>            <span class="jxr_string">"Little fat buddy"</span>), COOTER(
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>                <span class="jxr_string">"Crazy Cooter"</span>), ENOS(<span class="jxr_string">"Dipstick"</span>), CLETUS(<span class="jxr_string">"Cletus"</span>);
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>    <strong class="jxr_keyword">private</strong> String callsign;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>    <a href="../../../../nl/vaneijndhoven/dukes/common/Characters.html">Characters</a>(String callsign) {
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>      <strong class="jxr_keyword">this</strong>.callsign = callsign;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>    }
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>    <strong class="jxr_keyword">public</strong> String getCallsign() {
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>      <strong class="jxr_keyword">return</strong> callsign;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>    }
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2019. All rights reserved.</div>
+</body>
+</html>

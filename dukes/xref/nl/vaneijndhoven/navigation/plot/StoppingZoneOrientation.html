@@ -8,9 +8,9 @@
 <div id="overview"><a href="../../../../../apidocs/nl/vaneijndhoven/navigation/plot/StoppingZoneOrientation.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> nl.vaneijndhoven.navigation.plot;
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   
-<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <strong class="jxr_keyword">import</strong> nl.vaneijndhoven.dukes.enos.geometry.Line;
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <strong class="jxr_keyword">import</strong> nl.vaneijndhoven.dukes.enos.geometry.Point;
-<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <strong class="jxr_keyword">import</strong> nl.vaneijndhoven.dukes.enos.geometry.Point2D;
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <strong class="jxr_keyword">import</strong> nl.vaneijndhoven.dukes.geometry.Line;
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <strong class="jxr_keyword">import</strong> nl.vaneijndhoven.dukes.geometry.Point;
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <strong class="jxr_keyword">import</strong> nl.vaneijndhoven.dukes.geometry.Point2D;
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">import</strong> nl.vaneijndhoven.objects.Lane;
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> nl.vaneijndhoven.objects.StoppingZone;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> nl.vaneijndhoven.objects.ViewPort;
@@ -41,9 +41,9 @@
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>              <strong class="jxr_keyword">return</strong> Double.NaN;
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>          }
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>          <a href="../../../../nl/vaneijndhoven/dukes/enos/geometry/Line.html">Line</a> entrance = <strong class="jxr_keyword">new</strong> <a href="../../../../nl/vaneijndhoven/dukes/enos/geometry/Line.html">Line</a>(leftIntersect.get(), rightIntersect.get());
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>          <a href="../../../../nl/vaneijndhoven/dukes/geometry/Line.html">Line</a> entrance = <strong class="jxr_keyword">new</strong> <a href="../../../../nl/vaneijndhoven/dukes/geometry/Line.html">Line</a>(leftIntersect.get(), rightIntersect.get());
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>          <a href="../../../../nl/vaneijndhoven/dukes/enos/geometry/Point2D.html">Point2D</a> base = <strong class="jxr_keyword">new</strong> <a href="../../../../nl/vaneijndhoven/dukes/enos/geometry/Point.html">Point</a>(viewPort.getOrigin().getX() + (viewPort.getWidth() / 2), viewPort.getOrigin().getY() + viewPort.getHeight());
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>          <a href="../../../../nl/vaneijndhoven/dukes/geometry/Point2D.html">Point2D</a> base = <strong class="jxr_keyword">new</strong> <a href="../../../../nl/vaneijndhoven/dukes/geometry/Point.html">Point</a>(viewPort.getOrigin().getX() + (viewPort.getWidth() / 2), viewPort.getOrigin().getY() + viewPort.getHeight());
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>          <strong class="jxr_keyword">return</strong> entrance.distance(base);
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>      }
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  
@@ -59,9 +59,9 @@
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>              <strong class="jxr_keyword">return</strong> Double.NaN;
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>          }
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>          <a href="../../../../nl/vaneijndhoven/dukes/enos/geometry/Line.html">Line</a> exit = <strong class="jxr_keyword">new</strong> <a href="../../../../nl/vaneijndhoven/dukes/enos/geometry/Line.html">Line</a>(leftIntersect.get(), rightIntersect.get());
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>          <a href="../../../../nl/vaneijndhoven/dukes/geometry/Line.html">Line</a> exit = <strong class="jxr_keyword">new</strong> <a href="../../../../nl/vaneijndhoven/dukes/geometry/Line.html">Line</a>(leftIntersect.get(), rightIntersect.get());
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>  
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>          <a href="../../../../nl/vaneijndhoven/dukes/enos/geometry/Point2D.html">Point2D</a> base = <strong class="jxr_keyword">new</strong> <a href="../../../../nl/vaneijndhoven/dukes/enos/geometry/Point.html">Point</a>(viewPort.getOrigin().getX() + (viewPort.getWidth() / 2), viewPort.getOrigin().getY() + viewPort.getHeight());
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>          <a href="../../../../nl/vaneijndhoven/dukes/geometry/Point2D.html">Point2D</a> base = <strong class="jxr_keyword">new</strong> <a href="../../../../nl/vaneijndhoven/dukes/geometry/Point.html">Point</a>(viewPort.getOrigin().getX() + (viewPort.getWidth() / 2), viewPort.getOrigin().getY() + viewPort.getHeight());
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>          <strong class="jxr_keyword">return</strong> exit.distance(base);
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>      }
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>  }

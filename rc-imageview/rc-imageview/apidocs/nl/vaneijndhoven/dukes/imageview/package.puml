@@ -1,0 +1,16 @@
+@startuml
+
+    namespace nl.vaneijndhoven.dukes.imageview {
+
+        class ImageView [[ImageView.html]] {
+            +start(): void
+        }
+
+        abstract class io.vertx.core.AbstractVerticle
+        io.vertx.core.AbstractVerticle <|-- ImageView
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

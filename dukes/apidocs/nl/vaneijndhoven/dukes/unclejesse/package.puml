@@ -5,31 +5,12 @@
         class LaneDetectionGUI [[LaneDetectionGUI.html]] {
         }
 
-        class StartLightDetectionController [[StartLightDetectionController.html]] {
-        }
-
-        class LaneDetectionController [[LaneDetectionController.html]] {
-        }
-
-        class StartLightDetectionApp [[StartLightDetectionApp.html]] {
-        }
-
         class UncleJesse [[UncleJesse.html]] {
             +start(): void
         }
 
-        class LaneDetectionApp [[LaneDetectionApp.html]] {
-            +start(Stage): void
-            {static} +main(String[]): void
-        }
-
         class io.vertx.rxjava.core.AbstractVerticle
         io.vertx.rxjava.core.AbstractVerticle <|-- UncleJesse
-
-        abstract class javafx.application.Application {
-            {abstract} +start(Stage): void
-        }
-        javafx.application.Application <|-- LaneDetectionApp
 
     }
 

@@ -1,0 +1,30 @@
+@startuml
+
+    namespace nl.vaneijndhoven.dukes.camera.matrix {
+
+        class PerspectiveShift [[PerspectiveShift.html]] {
+            +PerspectiveShift(Polygon, Polygon)
+            +apply(Mat): Mat
+        }
+
+        class CameraMatrix [[CameraMatrix.html]] {
+            {static} +DEFAULT: CameraMatrix
+            +CameraMatrix(int, int)
+            +getRvecs(): List<Mat>
+            +getTvecs(): List<Mat>
+            +calibrate(Mat[]): void
+            +apply(Mat): Mat
+            +serialize(): String
+            {static} +deserizalize(String): CameraMatrix
+        }
+
+        interface java.util.function.UnaryOperator<T>
+        java.util.function.UnaryOperator <|.. PerspectiveShift
+
+        java.util.function.UnaryOperator <|.. CameraMatrix
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

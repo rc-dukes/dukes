@@ -1,0 +1,35 @@
+@startuml
+
+    namespace com.bitplan.opencv {
+
+        class OsCheck [[OsCheck.html]] {
+            {static} #detectedOS: OsCheck.OSType
+            {static} +getOperatingSystemType(): OsCheck.OSType
+        }
+
+        enum com.bitplan.opencv.OsCheck.OSType [[OsCheck.OSType.html]] {
+            {static} +Windows
+            {static} +MacOS
+            {static} +Linux
+            {static} +Other
+        }
+
+        class NativeLibrary [[NativeLibrary.html]] {
+            {static} #nativeLibPath: File
+            {static} #currentLibraryPath: String[]
+            {static} +getNativeLibPath(): File
+            {static} +setNativeLibPath(File): void
+            {static} +getCurrentLibraryPath(): String[]
+            {static} +addLibraryPath(String): void
+            {static} +getLibraryFileName(): String
+            {static} +getNativeLib(): File
+            {static} +load(): void
+        }
+
+        OsCheck +-- com.bitplan.opencv.OsCheck.OSType
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

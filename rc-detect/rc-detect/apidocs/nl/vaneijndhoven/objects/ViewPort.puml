@@ -1,0 +1,12 @@
+@startuml
+
+    class ViewPort [[ViewPort.html]] {
+        +ViewPort(Point2D, double, double)
+        +getOrigin(): Point2D
+        +getWidth(): double
+        +getHeight(): double
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

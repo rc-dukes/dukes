@@ -1,0 +1,55 @@
+@startuml
+
+    namespace nl.vaneijndhoven.dukes.common {
+
+        enum Events [[Events.html]] {
+            {static} +STREAMADDED
+            {static} +CANNYCONFIG
+            {static} +HOUGHLINESCONFIG
+            {static} +LANEDETECTION
+            {static} +STARTLIGHTDETECTION
+        }
+
+        class Environment [[Environment.html]] {
+            {static} +propFilePath: String
+            {static} +readFirstLine(File): String
+            {static} +osRelease(): String
+            +isPi(): boolean
+            {static} +getInstance(): Environment
+            +runningOnRaspberryPi(): boolean
+            +getProperties(): Properties
+            +getPiAddress(): String
+            +getCameraUrl(): String
+            +getMyIpAddresses(): List<String>
+            {static} +reset(): void
+        }
+
+        class Config [[Config.html]] {
+            {static} +configureLogging(): void
+            {static} +createHazelcastConfig(): ClusterManager
+        }
+
+        class ClusterStarter [[ClusterStarter.html]] {
+            +prepare(): void
+            +getOptions(): VertxOptions
+        }
+
+        enum Characters [[Characters.html]] {
+            {static} +BO
+            {static} +LUKE
+            {static} +DAISY
+            {static} +UNCLE_JESSE
+            {static} +ROSCOE
+            {static} +FLASH
+            {static} +BOSS_HOGG
+            {static} +COOTER
+            {static} +ENOS
+            {static} +CLETUS
+            +getCallsign(): String
+        }
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

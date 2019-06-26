@@ -1,2 +1,5 @@
-com.bitplan.rccar.api
-nl.vaneijndhoven.dukes.cooter
+com.bitplan.rc.common
+com.bitplan.rc.roi
+com.bitplan.watchdog
+nl.vandeindhoven.dukes.geometry
+nl.vaneijndhoven.dukes.camera.matrix
