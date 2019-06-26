@@ -51,6 +51,8 @@ The self driving car consists of modules with the following responsibilities:
 #
 targetHost=10.9.8.7
 targetUser=pi
+# carserver configuration
+carserver.port=8080
 ```
 - run './deploy.sh -m -s' in module 'rc-remotecar'
 - start 'CarServer' in module 'rc-server' in IDE
