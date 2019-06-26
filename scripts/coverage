@@ -1,0 +1,14 @@
+#!/bin/bash
+# WF 2019-06-26
+# create test coverage report for coveralls
+tokenpath=$HOME/.dukes/coveralls.token
+if [ ! -f $tokenpath ]
+then
+  echo "Script needs coveralls token in $tokenpath to work" 1>&2
+  echo "Script can only be run successfully by project admins" 1>&2
+  echo "see https://github.com/trautonen/coveralls-maven-plugin" 1>&2
+  exit 1 
+else
+  token=$(cat $tokenpath)
+  mvn clean test jacoco:report coveralls:report -DrepoToken=$token
+fi
