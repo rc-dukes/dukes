@@ -1,5 +1,4 @@
   /**
-   * nl.vaneijndhoven.dukes.action.drag is part of the rc-action module
-   * @TODO - add description
+   * StartLight, Lane and Stopping Zone detectors
    */
   package nl.vaneijndhoven.dukes.action.drag;
