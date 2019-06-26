@@ -1,0 +1,44 @@
+#!/bin/bash
+# WF 2019-06-26
+# create package-info.java files
+
+#
+# the template to be use
+#
+template() {
+  local l_package="$1"
+  local l_module="$2"
+  local l_desc="$3"
+cat << EOF
+  /**
+   * $l_package is part of the $l_module module
+   * $l_desc
+   */
+  package $l_package;
+EOF
+}
+#
+# create inital package-info.java files
+#
+initialforempty() {
+  mydir=$(dirname $0)
+  for src in $(find . -name java -type d | grep "src/main/java")
+  do
+    module=$(echo $src | cut -f2 -d /)
+    echo $module:$src
+    # https://stackoverflow.com/a/27629943/1497139
+    for packagepath in $($mydir/subdirs.py $src)
+    do
+       package=$(echo "${packagepath#$src/}" | sed 's/\//./g')
+       pinfo=$packagepath/package-info.java
+       if [ ! -f $pinfo ]
+       then
+         template $package $module "@TODO - add description" > $pinfo
+       fi
+       echo " $package: "
+       cat $pinfo
+    done
+  done
+}
+
+initialforempty
