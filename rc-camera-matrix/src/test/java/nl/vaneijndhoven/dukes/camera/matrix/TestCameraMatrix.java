@@ -24,7 +24,7 @@ public class TestCameraMatrix extends MatrixTestbase {
 
   @Test
   public void testCalculation() throws Exception {
-    if (!isTravis()) {
+    //if (!isTravis()) {
       NativeLibrary.load();
 
       CameraMatrix matrix = new CameraMatrix(8, 6);
@@ -59,6 +59,6 @@ public class TestCameraMatrix extends MatrixTestbase {
         Imgcodecs.imwrite(testPath + "debug.jpg", undistorted);
     }
 
-  }
+  //}
 
 }
