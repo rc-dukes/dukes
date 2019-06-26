@@ -12,7 +12,7 @@ import nl.vaneijndhoven.dukes.webcontrol.WebControl;
 import nl.vaneijndhoven.dukes.common.ClusterStarter;
 import nl.vaneijndhoven.dukes.common.Environment;
 import nl.vaneijndhoven.dukes.common.Events;
-import nl.vaneijndhoven.dukes.luke.Luke;
+import nl.vaneijndhoven.dukes.action.Action;
 import nl.vaneijndhoven.dukes.imageview.ImageView;
 
 /**
@@ -54,7 +54,7 @@ public class CarServer {
       boolean enableAutoPilot = true;
 
       if (enableAutoPilot) {
-        vertx.deployVerticle(new Luke());
+        vertx.deployVerticle(new Action());
         vertx.deployVerticle(new Detector(), deploymentOptions, async -> {
           vertx.eventBus().send(Events.STREAMADDED.name(),
               new JsonObject().put("source", cameraUrl));

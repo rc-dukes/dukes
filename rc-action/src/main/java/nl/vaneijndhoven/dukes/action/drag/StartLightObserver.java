@@ -1,8 +1,11 @@
-package nl.vaneijndhoven.dukes.luke.drag;
+package nl.vaneijndhoven.dukes.action.drag;
 
 import io.vertx.core.json.JsonObject;
 import rx.Observable;
 
+/**
+ * start light observer
+ */
 public class StartLightObserver {
 
     public Observable<JsonObject> observe(JsonObject startLightDetection) {

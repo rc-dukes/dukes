@@ -1,21 +1,25 @@
-package nl.vaneijndhoven.dukes.luke;
+package nl.vaneijndhoven.dukes.action;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.Message;
-import nl.vaneijndhoven.dukes.luke.drag.StoppingZoneDetector;
-import nl.vaneijndhoven.dukes.luke.drag.StraightLaneNavigator;
+import nl.vaneijndhoven.dukes.action.drag.StoppingZoneDetector;
+import nl.vaneijndhoven.dukes.action.drag.StraightLaneNavigator;
 import nl.vaneijndhoven.dukes.common.Characters;
 import nl.vaneijndhoven.dukes.common.Events;
-import nl.vaneijndhoven.dukes.luke.drag.StartLightObserver;
+import nl.vaneijndhoven.dukes.action.drag.StartLightObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
 import rx.Subscription;
 
-public class Luke extends AbstractVerticle {
+/**
+ * action (aka Luke) control Verticle
+ *
+ */
+public class Action extends AbstractVerticle {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Luke.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Action.class);
     public static final String START_DRAG_NAVIGATION = "START_DRAG_NAVIGATION";
     public static final String STOP_NAVIGATION = "STOP_NAVIGATION";
     private Subscription laneDetection;
@@ -24,7 +28,7 @@ public class Luke extends AbstractVerticle {
 
     @Override
     public void start() throws Exception {
-        LOG.info("Starting Luke (Hardcoded Intelligence?)");
+        LOG.info("Starting Action/ Luke (Hardcoded Intelligence?)");
 
         vertx.eventBus().consumer(Characters.LUKE.getCallsign() + ":" + START_DRAG_NAVIGATION, x -> startDragNavigator());
         vertx.eventBus().consumer(Characters.LUKE.getCallsign() + ":" + STOP_NAVIGATION, x -> stopNavigator());
@@ -91,7 +95,7 @@ public class Luke extends AbstractVerticle {
                 .flatMap(startLightObserver::observe)
                 .subscribe(instruction -> vertx.eventBus().publish(Characters.BO.getCallsign(), instruction));
 
-        LOG.info("Luke started");
+        LOG.info("Action / Luke started");
     }
 
 }

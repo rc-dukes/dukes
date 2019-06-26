@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.luke.drag;
+package nl.vaneijndhoven.dukes.action.drag;
 
 import io.vertx.core.json.JsonObject;
 import rx.Observable;
@@ -7,6 +7,9 @@ import java.util.concurrent.TimeUnit;
 
 import static rx.Observable.just;
 
+/**
+ * stopping zone detector
+ */
 public class StoppingZoneDetector {
 
     private boolean stoppingZoneDetected = false;
