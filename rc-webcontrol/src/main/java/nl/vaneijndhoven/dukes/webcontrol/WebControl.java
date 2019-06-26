@@ -21,7 +21,7 @@ public class WebControl extends AbstractVerticle {
 
   @Override
   public void start() throws Exception {
-    String port=Environment.getInstance().getString("carserver.port");
+    int port=Environment.getInstance().getInteger("carserver.port");
     LOG.info("Starting WebControl Boss Hogg (manual UI controller) on port "+port);
 
     super.start();
@@ -47,7 +47,7 @@ public class WebControl extends AbstractVerticle {
         .handler(SockJSHandler.create(vertx).bridge(options));
     router.route()
         .handler(StaticHandler.create("web").setCachingEnabled(false));
-    vertx.createHttpServer().requestHandler(router::accept).listen(8080);
+    vertx.createHttpServer().requestHandler(router::accept).listen(port);
 
     // vertx.eventBus().sendObservable(Characters.DAISY.getCallsign() +
     // "lane.start", new JsonObject().put("source",

@@ -45,7 +45,8 @@ public class TestEnvironment {
   @Test
   public void testEnvironment() throws Exception {
     String ip = "1.2.3.4";
-    File propFile = setProperties("targetHost", ip);
+    int port=8080;
+    File propFile = setProperties("targetHost", ip,"carserver.port",""+port);
 
     Environment env = Environment.getInstance();
     String piIp = env.getPiAddress();
@@ -55,6 +56,8 @@ public class TestEnvironment {
     // tests are done on a development machine e.g. laptop
     // comment out if you actually intend to test on the PI
     assertFalse(env.isPi());
+    
+    assertEquals(port,env.getInteger("carserver.port"));
     // cleanup
     propFile.delete();
   }

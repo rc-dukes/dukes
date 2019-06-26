@@ -182,10 +182,23 @@ public class Environment {
   }
   
   /**
+   * get an integer property with the given key
+   * @param key
+   * @return - the property value
+   * @throws Exception
+   */
+  public int getInteger(String key) throws Exception {
+    Object prop=getProperties().get(key);
+    return Integer.parseInt(prop.toString());
+  }
+  
+  /**
    * reset my singleton
    */
   public static void reset() {
     instance=null;
   }
+
+  
 
 }
