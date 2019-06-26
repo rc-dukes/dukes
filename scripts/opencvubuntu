@@ -195,8 +195,8 @@ EOF
     # make the script executable
     chmod +x $runmaven
     # run it
-    color_msg $blue "running mvn installation of opencv"
     color_msg $blue "running maven installation of opencv as superuser"
+    $runmaven
     # remove it or comment out to keep
     rm $runmaven
   fi
