@@ -19,4 +19,6 @@ before_install:
   - scripts/opencvubuntu
 # see https://github.com/trautonen/coveralls-maven-plugin
 after_success:
-  - mvn clean test jacoco:report coveralls:report
+  # if you uncomment this one have fun with https://github.com/rc-dukes/dukes/issues/21
+  #- mvn clean test jacoco:report coveralls:report
+  - mvn clean cobertura:cobertura coveralls:report

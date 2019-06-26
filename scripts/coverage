@@ -7,8 +7,9 @@ then
   echo "Script needs coveralls token in $tokenpath to work" 1>&2
   echo "Script can only be run successfully by project admins" 1>&2
   echo "see https://github.com/trautonen/coveralls-maven-plugin" 1>&2
-  exit 1 
+  exit 1
 else
   token=$(cat $tokenpath)
-  mvn clean test jacoco:report coveralls:report -DrepoToken=$token
+  #mvn clean test jacoco:report coveralls:report -DrepoToken=$token
+  mvn cobertura:cobertura coveralls:report -DrepoToken=$token
 fi
