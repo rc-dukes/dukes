@@ -13,7 +13,7 @@ import rx.Observable;
  *
  */
 public class TestAction {
-  public static boolean debug=false;
+  public static boolean debug=true;
   /**
    * check the observed value
    * https://stackoverflow.com/a/31330706/1497139
@@ -32,7 +32,8 @@ public class TestAction {
       for (int i=0;i<nameValues.length;i+=2) {
         String name=nameValues[i].toString();
         String value=nameValues[i+1].toString();
-        assertEquals(value,nav.getValue(name));
+        String foundValue=nav.getValue(name).toString();
+        assertEquals(value,foundValue);
       }
     });
     assertTrue(observed[0]);
