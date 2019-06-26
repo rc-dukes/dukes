@@ -41,18 +41,18 @@ install1() {
 
 #Remove any previous installations of x264</h3>
 sudo apt-get remove x264 libx264-dev
- 
+
 #We will Install dependencies now
-install="sudo apt-get install -y" 
+install="sudo apt-get install -y"
 $install build-essential checkinstall cmake pkg-config yasm
 $install git gfortran
 $install libjpeg8-dev libjasper-dev libpng12-dev
- 
+
 # If you are using Ubuntu 14.04
 #$install libtiff4-dev
 # If you are using Ubuntu 16.04
 #$install libtiff5-dev
- 
+
 $install libavcodec-dev libavformat-dev libswscale-dev libdc1394-22-dev
 $install libxine2-dev libv4l-dev
 $install libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev
@@ -62,7 +62,7 @@ $install libfaac-dev libmp3lame-dev libtheora-dev
 $install libvorbis-dev libxvidcore-dev
 $install libopencore-amrnb-dev libopencore-amrwb-dev
 $install x264 v4l-utils
- 
+
 # Optional dependencies
 $install libprotobuf-dev protobuf-compiler
 $install libgoogle-glog-dev libgflags-dev
@@ -130,40 +130,46 @@ EOF
   python /tmp/cvpath.py
 }
 install4() {
-  install="sudo apt-get install -y" 
-  $install libpng-dev                                       
-  $install libpng-dev                                     
-  $install libpng12-dev                                     
-  $install libopenjp2-7-dev                                 
-  $install libjasper-dev                                    
-  $install python-dev                                       
-  $install python-numpy                                     
-  $install build-essential                                      
-  $install cmake                                                
-  $install git                                                  
-  $install libgtk2.0-dev                                        
-  $install pkg-config                                           
-  $install libavcodec-dev                                       
-  $install libavformat-dev                                      
-  $install libswscale-dev                                       
-  $install libtbb2                                              
-  $install libtbb-dev                                           
-  $install libjpeg-dev                                          
-  $install libtiff5-dev                                         
-  $install libdc1394-22-dev                                     
-  $install execstack                                            
-  $install ant     
+  install="sudo apt-get install -y"
+  $install libpng-dev
+  $install libpng-dev
+  $install libpng12-dev
+  $install libopenjp2-7-dev
+  $install libjasper-dev
+  $install python-dev
+  $install python-numpy
+  $install build-essential
+  $install cmake
+  $install git
+  $install libgtk2.0-dev
+  $install pkg-config
+  $install libavcodec-dev
+  $install libavformat-dev
+  $install libswscale-dev
+  $install libtbb2
+  $install libtbb-dev
+  $install libjpeg-dev
+  $install libtiff5-dev
+  $install libdc1394-22-dev
+  $install execstack
+  $install ant
 }
+
 # https://github.com/emchristiansen/Billy/blob/master/.travis.yml
 install5() {
   pwd=$(pwd)
-  src=/usr/local/src 
+  src=/usr/local/src
+  if [ ! -d $src ]
+  then
+    color_msg $blue "creating $src"
+    sudo mkdir -p $src
+  fi
   cd $src
   version=3.4.3
   zip=opencv-${version}.zip
   if [ ! -f $zip ]
   then
-    sudo wget https://github.com/opencv/opencv/archive/$version.zip -O $zip 
+    sudo wget https://github.com/opencv/opencv/archive/$version.zip -O $zip
   fi
   if [ ! -d opencv-$version ]
   then
@@ -171,17 +177,18 @@ install5() {
     sudo unzip -q $zip
     #sudo git clone -b 3.4 https://github.com/opencv/opencv
   fi
-  color_msg $blue "changing owner to $(id -u).$(id -g) for opencv-$version"
-  sudo chown -R $(id -u).$(id -g) opencv-$version
+  color_msg $blue "changing owner to $(id -un).$(id -gn) for opencv-$version"
+  sudo chown -R $(id -un) opencv-$version
+  sudo chgrp -R $(id -gn) opencv-$version
   lib=${src}/opencv-$version/build/lib/libopencv_java343.so
-  if [ ! -f $lib ] 
+  if [ ! -f $lib ]
   then
     cd opencv-$version/platforms/maven
     # prepare a script e.g. for running maven
     runmaven=/tmp/runmaven$$
-    # create the script with a here document 
+    # create the script with a here document
 cat << EOF > $runmaven
-#!/bin/bash 
+#!/bin/bash
 # run the maven clean with environment variables set
 export ANT_HOME=/usr/share/ant
 export MAKEFLAGS=-j4
@@ -190,7 +197,7 @@ if [ $USER = "travis" ]
 then
    /usr/local/maven/bin/mvn clean install
 else
-   /usr/bin/mvn clean install
+   mvn clean install
 fi
 EOF
     # make the script executable
@@ -201,7 +208,7 @@ EOF
     # remove it or comment out to keep
     rm $runmaven
   fi
-  if [ ! -f $lib ] 
+  if [ ! -f $lib ]
   then
     error "maven install of opencv failed"
   else
@@ -227,20 +234,28 @@ EOF
 }
 
 # necessary step if you don't want to compile yourself
-version=$(lsb_release -a | grep Release | cut -f2 )
-case $version in
-  18*) color_msg $green "found Ubuntu Bionic Beaver $version"
-       # necessary step on ubuntu 18
-       downloadLibrary
-       install2;;
-  16*) color_msg $green "found Ubuntu Xenial Xerus $version"
-       # necessary step on ubuntu 16
-       #install1
-       install4
-       install5;;
-  14*) color_msg $blue "found Ubuntu Trusty Tahr $version"
-       error "do not know what to do - you might want to check the script yourself" ;;
-  *) error "found Ubuntu ${version} - i have no clue what to do";;
+os=$(uname -a)
+case $os in
+  Darwin*)
+    color_msg $blue "found MacOs"
+    install5
+  ;;
+  *)
+  version=$(lsb_release -a | grep Release | cut -f2 )
+  case $version in
+    18*) color_msg $green "found Ubuntu Bionic Beaver $version"
+         # necessary step on ubuntu 18
+         downloadLibrary
+         install2;;
+    16*) color_msg $green "found Ubuntu Xenial Xerus $version"
+         # necessary step on ubuntu 16
+         #install1
+         install4
+         install5;;
+    14*) color_msg $blue "found Ubuntu Trusty Tahr $version"
+         error "do not know what to do - you might want to check the script yourself" ;;
+    *) error "found Ubuntu ${version} - i have no clue what to do";;
+  esac
 esac
 # step might be necessary - try out yourself ...
 #install1

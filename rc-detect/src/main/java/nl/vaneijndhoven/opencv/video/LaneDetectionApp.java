@@ -7,6 +7,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.opencv.core.Core;
 
+import com.bitplan.opencv.NativeLibrary;
+
 public class LaneDetectionApp extends Application {
 
     @Override
@@ -18,8 +20,8 @@ public class LaneDetectionApp extends Application {
         primaryStage.show();
     }
 
-    public static void main(String... args) {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+    public static void main(String... args) throws Exception {
+        NativeLibrary.load();
         launch(args);
     }
 

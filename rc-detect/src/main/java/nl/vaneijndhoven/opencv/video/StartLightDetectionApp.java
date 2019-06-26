@@ -1,11 +1,12 @@
 package nl.vaneijndhoven.opencv.video;
 
+import com.bitplan.opencv.NativeLibrary;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import org.opencv.core.Core;
 
 public class StartLightDetectionApp extends Application {
 
@@ -18,8 +19,8 @@ public class StartLightDetectionApp extends Application {
         primaryStage.show();
     }
 
-    public static void main(String... args) {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+    public static void main(String... args) throws Exception {
+        NativeLibrary.load();
         launch(args);
     }
 
