@@ -97,6 +97,10 @@ function power() {
 	setControlState(powerState)
 }
 
+/**
+ * set the state of the power - dependent controls
+ * @param powerState
+ */
 function setControlState(powerState) {
   var color="grey";
   if (powerState)
