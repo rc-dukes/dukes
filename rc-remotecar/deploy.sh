@@ -178,8 +178,8 @@ ini=.dukes/dukes.ini
 inipath=$HOME/$ini
 if [ -f $inipath  ]
 then
-  targetUser=$(getValue $inipath targetUser)
-  targetHost=$(getValue $inipath targetHost)
+  targetUser=$(getValue $inipath remotecar.user)
+  targetHost=$(getValue $inipath remotecar.host)
   target=$targetUser@$targetHost
 else
   color_msg $red "configuration file $inipath is missing - will use $target as target"

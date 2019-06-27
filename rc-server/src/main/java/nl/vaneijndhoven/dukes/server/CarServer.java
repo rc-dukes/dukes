@@ -8,12 +8,12 @@ import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
 import nl.vaneijndhoven.detect.Detector;
-import nl.vaneijndhoven.dukes.webcontrol.WebControl;
-import nl.vaneijndhoven.dukes.common.ClusterStarter;
-import nl.vaneijndhoven.dukes.common.Environment;
-import nl.vaneijndhoven.dukes.common.Events;
 import nl.vaneijndhoven.dukes.action.Action;
+import nl.vaneijndhoven.dukes.common.ClusterStarter;
+import nl.vaneijndhoven.dukes.common.Config;
+import nl.vaneijndhoven.dukes.common.Events;
 import nl.vaneijndhoven.dukes.imageview.ImageView;
+import nl.vaneijndhoven.dukes.webcontrol.WebControl;
 
 /**
  * main entry point to start cluster
@@ -35,7 +35,7 @@ public class CarServer {
     ClusterStarter starter = new ClusterStarter();
     starter.prepare();
 
-    String cameraUrl = Environment.getInstance().getCameraUrl();
+    String cameraUrl = Config.getEnvironment().getString(Config.CAMERA_URL);
 
     LOG.info("Firing up Car Server Boars Nest (UI runner) using cameraUrl " + cameraUrl);
     // TODO check necessity of this workaround

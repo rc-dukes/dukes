@@ -12,6 +12,7 @@ import nl.vaneijndhoven.dukes.car.Command;
 import nl.vaneijndhoven.dukes.car.Engine;
 import nl.vaneijndhoven.dukes.car.Steering;
 import nl.vaneijndhoven.dukes.common.ClusterStarter;
+import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.dukes.common.Environment;
 import nl.vaneijndhoven.dukes.drivecontrol.EngineMap;
 import nl.vaneijndhoven.dukes.drivecontrol.SteeringMap;
@@ -53,7 +54,7 @@ public class RemoteCar {
       LOG.info(
           "Running on the Raspberry Pi, activating Vert.x clustering over the network.");
       // activate clustering over the network on the right interface.
-      options.setClusterHost(Environment.getInstance().getPiAddress());
+      options.setClusterHost(Config.getEnvironment().getString(Config.REMOTECAR_HOST));
     } else {
       LOG.info(
           "Not running on the Raspberry Pi, not activating Vert.x clustering over the network.");

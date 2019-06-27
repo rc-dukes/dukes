@@ -9,6 +9,7 @@ import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.ext.web.Router;
 import io.vertx.rxjava.ext.web.handler.StaticHandler;
 import io.vertx.rxjava.ext.web.handler.sockjs.SockJSHandler;
+import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.dukes.common.Environment;
 
 /**
@@ -21,7 +22,7 @@ public class WebControl extends AbstractVerticle {
 
   @Override
   public void start() throws Exception {
-    int port=Environment.getInstance().getInteger("carserver.port");
+    int port=Config.getEnvironment().getInteger(Config.WEBCONTROL_PORT);
     LOG.info("Starting WebControl Boss Hogg (manual UI controller) on port "+port);
 
     super.start();

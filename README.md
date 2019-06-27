@@ -45,13 +45,17 @@ The self driving car consists of modules with the following responsibilities:
 - create a "~/dukes/dukes.ini" file with your settings, example:
 ```
 #
-# rc-dukes configuration file
-# see https://github.com/rc-dukes/dukes
+# WF 2019-06-21
 #
-targetHost=10.9.8.7
-targetUser=pi
-# carserver configuration
-carserver.port=8080
+# rc-duke configuration file
+# remote car raspberry PI configuration
+remotecar.host=2.0.0.111
+remotecar.user=wf
+# camera url format
+camera.url=http://2.0.0.111/html/cam_pic_new.php
+# webserver configuration
+webcontrol.port=8080
+imageview.port=8081
 ```
 - run './deploy.sh -m -s' in module 'rc-remotecar'
 - start 'CarServer' in module 'rc-server' in IDE

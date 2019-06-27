@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
+import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.dukes.common.Environment;
 
 /**
@@ -46,10 +47,10 @@ public class TestEnvironment {
   public void testEnvironment() throws Exception {
     String ip = "1.2.3.4";
     int port=8080;
-    File propFile = setProperties("targetHost", ip,"carserver.port",""+port);
+    File propFile = setProperties(Config.REMOTECAR_HOST, ip,Config.WEBCONTROL_PORT,""+port);
 
-    Environment env = Environment.getInstance();
-    String piIp = env.getPiAddress();
+    Environment env = Config.getEnvironment();
+    String piIp = env.getString(Config.REMOTECAR_HOST);
     // check that the configured ip address is the expected one
     assertEquals(ip, piIp);
     // check that we are not running on a PI - we deploy the code remotely so
@@ -57,17 +58,17 @@ public class TestEnvironment {
     // comment out if you actually intend to test on the PI
     assertFalse(env.isPi());
     
-    assertEquals(port,env.getInteger("carserver.port"));
+    assertEquals(port,env.getInteger(Config.WEBCONTROL_PORT));
     // cleanup
     propFile.delete();
   }
 
   @Test
   public void testCameraUrl() throws Exception {
-    String ip = "5.6.7.8";
-    File propFile = setProperties("targetHost", ip);
-    assertEquals("http://5.6.7.8/html/cam_pic_new.php",
-        Environment.getInstance().getCameraUrl());
+    String url="http://5.6.7.8/html/cam_pic_new.php";
+    File propFile = setProperties(Config.CAMERA_URL, url);
+    assertEquals(url,
+        Config.getEnvironment().getString(Config.CAMERA_URL));
     // cleanup
     propFile.delete();
   }

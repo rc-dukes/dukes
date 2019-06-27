@@ -132,28 +132,6 @@ public class Environment {
   }
 
   /**
-   * get the address of the raspberry PI
-   * 
-   * @return the address as configured in the property file @see #propfilePath
-   * @throws Exception if getting the address fails
-   */
-  public String getPiAddress() throws Exception {
-    String piAddress = getProperties().getProperty("targetHost", "10.9.8.7");
-    return piAddress;
-  }
-
-  /**
-   * get the camera Url
-   * @return the camera URL
-   * @throws Exception if getting the camera url fails
-   */
-  public String getCameraUrl() throws Exception {
-    String defaultCameraUrl=String.format("http://%s/html/cam_pic_new.php",getPiAddress());
-    String cameraUrl=getProperties().getProperty("cameraUrl",defaultCameraUrl);
-    return cameraUrl;
-  }
-
-  /**
    * get my ip addresses
    * 
    * @return - my ip addresses

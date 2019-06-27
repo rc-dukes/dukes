@@ -18,11 +18,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Configuration for Logging and HazelCastClusterManager
+ * Configuration for 
+ *   Logging and HazelCastClusterManager
+ *   Environment 
  *
  */
 public class Config {
   private static final Logger LOG = LoggerFactory.getLogger(Config.class);
+  public static final String WEBCONTROL_PORT = "carserver.port";
+  public static final String IMAGEVIEW_PORT = "imageview.port";
+  public static final String REMOTECAR_HOST = "remotecar.host";
+  public static final String CAMERA_URL = "camera.url";
 
   /**
    * configure the logging

@@ -4,6 +4,8 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerRequest;
 import nl.vaneijndhoven.detect.Detector;
+import nl.vaneijndhoven.dukes.common.Config;
+
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.slf4j.Logger;
@@ -19,8 +21,9 @@ public class ImageView extends AbstractVerticle {
 
   @Override
   public void start() throws Exception {
-    LOG.info("Starting Roscoe (lane detection debug image web server");
-    vertx.createHttpServer().requestHandler(this::sendImage).listen(8081);
+    int port=Config.getEnvironment().getInteger(Config.IMAGEVIEW_PORT);
+    LOG.info("Starting ImageView Roscoe (lane detection debug image web server");
+    vertx.createHttpServer().requestHandler(this::sendImage).listen(port);
   }
 
   private void sendImage(HttpServerRequest request) {
