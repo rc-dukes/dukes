@@ -33,7 +33,7 @@ function publish(address, message, headers) {
 	} else {
 		stateColor = "violet";
 	}
-	document.getElementById("eventslabel").style.color = stateColor;
+	setColor("eventslabel",stateColor);
 }
 
 var NUM_LOG_LINES_VISIBLE = 15;
@@ -73,8 +73,6 @@ function logMessage(msg) {
  */
 function initRemote() {
 	initRemoteControls();
-	initEventBus(display, false);
-	registerHeartBeat();
 	registerCamera();
 }
 
@@ -83,11 +81,35 @@ function initRemote() {
  */
 function initDetect() {
 	initRemoteControls();
-	initEventBus(display, true);
 	initialSliderValues();
-	registerHeartBeat();
 	registerCamera();
 	registerDebugImages();
+}
+
+var powerState=false;
+function power() {
+	powerState=!powerState;
+	keyPressed('power');
+	if (powerState) {
+	  initEventBus(display, true);
+	  registerHeartBeat();
+	}
+	setControlState(powerState)
+}
+
+function setControlState(powerState) {
+  var color="grey";
+  if (powerState)
+	color="blue";
+  setColor("manual",color);
+  setColor("autopilot",color);
+  setColor("left",color);
+  setColor("right",color);
+  setColor("up",color);
+  setColor("down",color);
+  setColor("center",color);
+  setColor("stop",color);
+  setColor("brake",color);
 }
 
 /**
@@ -99,6 +121,7 @@ function initRemoteControls() {
 
 	// allow keyboard input
 	registerControls();
+	setControlState(false);
 }
 
 function initEventBus(withDetect) {
@@ -206,6 +229,9 @@ function registerControls() {
 		case 'ArrowDown':
 		case 'd':
 			down(); // speed down
+			break;
+		case 'p':
+			power();
 			break;
 		case ' ': // space
 			stop(); // stop
@@ -408,6 +434,15 @@ function updateConfig() {
 
 	console.log('update hough config: ', houghConfig);
 	publish(CALLSIGN_DAISY + ':HOUGH_CONFIG_UPDATE', houghConfig);
+}
+
+/**
+ * set the color of the element with the given id
+ * @param id
+ * @param color
+ */
+function setColor(id, color) {
+	document.getElementById(id).style.color = color;
 }
 
 /**

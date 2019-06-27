@@ -19,15 +19,15 @@
 <link rel="stylesheet" href="css/dukes.css">
 </head>
 <body>
-    <!--  common menu -->
+	<!--  common menu -->
 	<div id='headerbox'>
-	<!-- see https://cdn.materialdesignicons.com/1.1.34/ for possible icons-->
+		<!-- see https://cdn.materialdesignicons.com/1.1.34/ for possible icons-->
 		<a href='index.html' title='Home'><i
-			class='mdi mdi-home headerboxicon'></i> <!-- home --></a> 
-	    <a href='detect.html' title='Detect'><i
-			class='mdi mdi-camera headerboxicon'></i> <!-- home --></a>
-		<a href='https://github.com/rc-dukes/dukes' title='Dukes on GitHub'><i
-			class='mdi mdi-github-box headerboxicon'></i> <!-- home --></a> 
+			class='mdi mdi-home headerboxicon'></i> <!-- home --></a> <a
+			href='detect.html' title='Detect'><i
+			class='mdi mdi-camera headerboxicon'></i> <!-- home --></a> <a
+			href='https://github.com/rc-dukes/dukes' title='Dukes on GitHub'><i
+			class='mdi mdi-github-box headerboxicon'></i> <!-- home --></a>
 	</div>
 	<div id='navigationbox' title='Self Driving RC Car WebControl'>Self
 		Driving RC Car WebControl</div>
@@ -65,10 +65,13 @@
 				<td><i id="center"
 					class='mdi mdi-image-filter-center-focus bigicon'
 					title='center/c/z' onclick="center();"></i></td>
+				<td></td>
+				<td><i id="power" class='mdi mdi-power bigicon' title="p"
+					onclick="power();"></i></td>
 			</tr>
 		</table>
 		<h6 id='eventslabel'>Events:</h6>
-		<textarea id='events' cols="120" rows="12"></textarea>
+		<textarea id='events' cols="80" rows="15"></textarea>
 		<!--<div id="message"></div>-->
 		<!--<input type="file" accept="video/*"/>-->
 		<!--<video controls autoplay></video>-->
@@ -76,7 +79,7 @@
 	<!--  end of main content box -->
 	<div id='footerbox'></div>
 	<script type="text/javascript">
-	    // reset the global eventbus variable
+		// reset the global eventbus variable
 		initRemote();
 	</script>
 </body>

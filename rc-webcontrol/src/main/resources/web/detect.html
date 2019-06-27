@@ -32,44 +32,52 @@
 	<div id='navigationbox' title='Self Driving RC Car WebControl'>Self
 		Driving RC Car WebControl</div>
 	<div id='contentbox'>
-		<table id='controlgrid'>
+		<table id="navigationcontrols">
 			<tr>
-				<td><table id="navigationcontrols">
-						<tr>
-							<td></td>
-							<td><i id="up" class='mdi mdi-arrow-up-bold mediumicon'
-								title="up/u" onclick="up();"></i></td>
-							<td></td>
-							<td><i id="autopilot" class='mdi mdi-car mediumicon'
-								title="autopilot/+" onclick="autopilot();"></i></td>
-							<td class="previewImage" rowspan='4'><img id="cameraImage"></td>
-						</tr>
-						<tr>
-							<td><i id="left" class='mdi mdi-arrow-left-bold mediumicon'
-								title="left/l" onclick="left();"></i></td>
-							<td><i id="stop" class='mdi mdi-stop mediumicon'
-								title="stop/space" onclick="stop();"></i></td>
-							<td><i id="right" class='mdi mdi-arrow-right-bold mediumicon'
-								title="right/r" onclick="right();"></i></td>
-							<td></td>
-						</tr>
-						<tr>
-							<td></td>
-							<td><i id="down" class='mdi mdi-arrow-down-bold mediumicon'
-								title="down/d" onclick="down();"></i></td>
-							<td></td>
-							<td><i id="manual" class='mdi mdi-account mediumicon'
-								title="manual/-" onclick="manual();"></i></td>
-						</tr>
-						<tr>
-							<td><i id="brake" class='mdi mdi-close mediumicon'
-								title="brake/b/s" onclick="brake();"></i></td>
-							<td><i id="center"
-								class='mdi mdi-image-filter-center-focus mediumicon'
-								title='center/c/z' onclick="center();"></i></td>
-						</tr>
-					</table></td>
-				<td class="controls" rowspan='4'><b>Canny config</b><br />
+				<td></td>
+				<td><i id="up" class='mdi mdi-arrow-up-bold mediumicon'
+					title="up/u" onclick="up();"></i></td>
+				<td></td>
+				<td><i id="autopilot" class='mdi mdi-car mediumicon'
+					title="autopilot/+" onclick="autopilot();"></i></td>
+				<td class="previewImage" rowspan='4'><img id="cameraImage"></td>
+				<td class="previewImage" rowspan='4'><img id="edgesImage">
+					<br /> <img id="birdseyeImage"></td>
+				<td class="previewImage" rowspan='4'><img id="linesImage"></td>
+			</tr>
+			<tr>
+				<td><i id="left" class='mdi mdi-arrow-left-bold mediumicon'
+					title="left/l" onclick="left();"></i></td>
+				<td><i id="stop" class='mdi mdi-stop mediumicon'
+					title="stop/space" onclick="stop();"></i></td>
+				<td><i id="right" class='mdi mdi-arrow-right-bold mediumicon'
+					title="right/r" onclick="right();"></i></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><i id="down" class='mdi mdi-arrow-down-bold mediumicon'
+					title="down/d" onclick="down();"></i></td>
+				<td></td>
+				<td><i id="manual" class='mdi mdi-account mediumicon'
+					title="manual/-" onclick="manual();"></i></td>
+			</tr>
+			<tr>
+				<td><i id="brake" class='mdi mdi-close mediumicon'
+					title="brake/b/s" onclick="brake();"></i></td>
+				<td><i id="center"
+					class='mdi mdi-image-filter-center-focus mediumicon'
+					title='center/c/z' onclick="center();"></i></td>
+				<td></td>
+				<td><i id="power" class='mdi mdi-power mediumicon' title="p"
+					onclick="power();"></i></td>
+			</tr>
+			<tr>
+				<td colspan='5'>
+					<h6 id='eventslabel'>Events:</h6> <textarea rows='15' cols='90'
+						id='events'></textarea>
+				</td>
+				<td class="controls" colspan='2'><b>Canny config</b><br />
 					Threshold 1: <input id="cannyConfigThreshold1Slider" value="60"
 					type="range" min="0" max="500" step="1"
 					oninput="onSlide('cannyConfigThreshold1Slider', 'cannyConfigThreshold1Textbox')" />
@@ -114,13 +122,9 @@
 					<!--private double theta = Math.PI/180; // By choosing this value lines sloping left to right will be < 0 radian, while lines sloping right to left will be > 0 radian.-->
 					<!--private int threshold = 70;--> <!--private double minLineLength = 20;-->
 					<!--private double maxLineGap = 10;--></td>
-				<td class="previewImage"><img id="edgesImage"> <br /> <img
-					id="birdseyeImage"></td>
-				<td class="previewImage"><img id="linesImage"></td>
 			</tr>
 		</table>
-		<h6 id='eventslabel'>Events:</h6>
-		<textarea id='events' cols="180" rows="15"></textarea>
+
 
 		<!--<div id="message"></div>-->
 		<!--<input type="file" accept="video/*"/>-->
@@ -129,8 +133,8 @@
 	<!--  end of main content box -->
 	<div id='footerbox'></div>
 	<script type="text/javascript">
-	   // reset the global event bus variable
-	   initDetect();
+		// reset the global event bus variable
+		initDetect();
 	</script>
 </body>
 </html>
