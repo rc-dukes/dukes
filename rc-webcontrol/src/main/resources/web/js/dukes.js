@@ -4,11 +4,8 @@
 // redirect console output
 // redirectConsole('console','','\n');
 // allow keyboard input
-function initPage() {
+function initRemote() {
 	registerControls();
-
-	var eb = new EventBus("http://localhost:8080/eventbus");
-
 	var NUM_LOG_LINES_VISIBLE = 15;
 	var logLines = [];
 
@@ -27,7 +24,12 @@ function initPage() {
 		}
 		elem.innerText = allLogs;
 	};
+}
 
+function initDetect() {
+	initRemote();
+
+	var eb = new EventBus("http://localhost:8080/eventbus");
 	eb.onopen = function() {
 		eb.registerHandler("Lost sheep Bo", display);
 		eb.registerHandler("Lost sheep Luke", display);
@@ -48,6 +50,7 @@ function initPage() {
 		eb.registerHandler("LANEDETECTION", display);
 		eb.registerHandler("STARTLIGHTDETECTION", display);
 
+		initialSliderValues();
 		registerHeartBeat();
 		registerDebugImages();
 	}
@@ -73,22 +76,7 @@ function initPage() {
 		displayMessage(message, isError)
 
 		if (isError) {
-			return
-
-			
-
-					
-
-			
-
-									
-
-			
-
-					
-
-			
-
+			return;
 		}
 
 		var fReader = new FileReader();
@@ -302,6 +290,7 @@ function stopAutoPilot() {
 	eb.publish(CALLSIGN_LUKE + ':STOP_NAVIGATION', undefined);
 }
 
+// register the function to update the debug images
 function registerDebugImages() {
 	window.setInterval(updateDebugImages, 100);
 }
@@ -352,8 +341,16 @@ function updateConfig() {
 	eb.publish(CALLSIGN_DAISY + ':HOUGH_CONFIG_UPDATE', houghConfig);
 }
 
-function updateSliderValue(sliderId, textbox) {
-	var x = document.getElementById(textbox);
+/**
+ * update the slider for the given sliderId from the given textbox
+ * 
+ * @param sliderId -
+ *            the slider to update
+ * @param textboxId -
+ *            the id of the textbox
+ */
+function updateSliderValue(sliderId, textboxId) {
+	var x = document.getElementById(textboxId);
 	var y = document.getElementById(sliderId);
 	x.value = y.value;
 }
@@ -363,21 +360,28 @@ function onSlide(sliderId, textbox) {
 	updateConfig();
 }
 
-// set initial values for config
-updateSliderValue('cannyConfigThreshold1Slider', 'cannyConfigThreshold1Textbox');
-updateSliderValue('cannyConfigThreshold2Slider', 'cannyConfigThreshold2Textbox');
-updateSliderValue('houghConfigRhoSlider', 'houghConfigRhoTextbox');
-updateSliderValue('houghConfigThetaSlider', 'houghConfigThetaTextbox');
-updateSliderValue('houghConfigThresholdSlider', 'houghConfigThresholdTextbox');
-updateSliderValue('houghConfigMinLineLengthSlider',
-		'houghConfigMinLineLengthTextbox');
-updateSliderValue('houghConfigMaxLineGapSlider', 'houghConfigMaxLineGapTextbox');
-updateSliderValue('houghConfigMaxLineGapSlider', 'houghConfigMaxLineGapTextbox');
+function initialSlidervalues() {
+	// set initial values for config
+	updateSliderValue('cannyConfigThreshold1Slider',
+			'cannyConfigThreshold1Textbox');
+	updateSliderValue('cannyConfigThreshold2Slider',
+			'cannyConfigThreshold2Textbox');
+	updateSliderValue('houghConfigRhoSlider', 'houghConfigRhoTextbox');
+	updateSliderValue('houghConfigThetaSlider', 'houghConfigThetaTextbox');
+	updateSliderValue('houghConfigThresholdSlider',
+			'houghConfigThresholdTextbox');
+	updateSliderValue('houghConfigMinLineLengthSlider',
+			'houghConfigMinLineLengthTextbox');
+	updateSliderValue('houghConfigMaxLineGapSlider',
+			'houghConfigMaxLineGapTextbox');
+	updateSliderValue('houghConfigMaxLineGapSlider',
+			'houghConfigMaxLineGapTextbox');
 
-// set initial values for cam config
-updateSliderValue('camEcSlider', 'camEcTextbox');
-updateSliderValue('camBrSlider', 'camBrTextbox');
-updateSliderValue('camSaSlider', 'camSaTextbox');
+	// set initial values for cam config
+	updateSliderValue('camEcSlider', 'camEcTextbox');
+	updateSliderValue('camBrSlider', 'camBrTextbox');
+	updateSliderValue('camSaSlider', 'camSaTextbox');
+}
 
 function onSlideCam(sliderId, textbox, configKey) {
 	updateSliderValue(sliderId, textbox);
