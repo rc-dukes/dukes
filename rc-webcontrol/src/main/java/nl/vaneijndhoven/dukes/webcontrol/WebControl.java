@@ -3,14 +3,13 @@ package nl.vaneijndhoven.dukes.webcontrol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.ext.web.handler.sockjs.BridgeOptions;
 import io.vertx.ext.bridge.PermittedOptions;
+import io.vertx.ext.web.handler.sockjs.BridgeOptions;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.ext.web.Router;
 import io.vertx.rxjava.ext.web.handler.StaticHandler;
 import io.vertx.rxjava.ext.web.handler.sockjs.SockJSHandler;
 import nl.vaneijndhoven.dukes.common.Config;
-import nl.vaneijndhoven.dukes.common.Environment;
 
 /**
  * Manual UI web based control (Boss Hogg)

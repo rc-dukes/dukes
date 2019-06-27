@@ -3,7 +3,7 @@
  */
 
 var eb = null; // we start with an undefined eventbus
-var imageViewUrl = 'http://localhost:8081'; // FIXME - make really configurable
+var imageViewUrl = 'http://2.0.0.25:8081'; // FIXME - make really configurable
 
 /**
  * all publish messages should go thru this function
@@ -14,7 +14,7 @@ var imageViewUrl = 'http://localhost:8081'; // FIXME - make really configurable
  */
 function publish(address, message, headers) {
 	var stateColor = "black";
-	logMessage(address + "->" + message);
+	// logMessage(address + "->" + message);
 	if (eb) {
 		switch (eb.state) {
 		case EventBus.CONNECTING:
@@ -97,7 +97,6 @@ function initDetect() {
 	initRemoteControls();
 	initialSliderValues();
 	registerCamera();
-	registerDebugImages();
 }
 
 var powerState = false;
@@ -159,9 +158,11 @@ function initEventBus(withDetect) {
 	if (protocol === "file:") {
 		busUrl = "http://localhost:8080/eventbus";
 		imageViewUrl = 'http://localhost:8081';
+		registerDebugImages(100);
 	} else {
 		busUrl = window.location.origin + "/eventbus";
 		imageViewUrl = 'http://' + window.location.hostname + ':8081'
+		registerDebugImages(300);
 		msg = window.location.origin;
 	}
 	logMessage("server is " + msg + "\n busUrl=" + busUrl + "\nimageViewUrl="
@@ -237,7 +238,7 @@ function localFileVideoPlayer() {
 }
 
 function registerHeartBeat() {
-	window.setInterval(sendHeartBeat(), 150);
+	window.setInterval(sendHeartBeat, 150);
 }
 
 // register key handling controls
@@ -432,8 +433,10 @@ function stopAutoPilot() {
 }
 
 // register the function to update the debug images
-function registerDebugImages() {
-	window.setInterval(updateDebugImages(), 100);
+function registerDebugImages(msecs) {
+	logMessage('updateDebugImages at ' + imageViewUrl + ' every ' + msecs
+			+ ' msecs')
+	window.setInterval(updateDebugImages, msecs);
 }
 
 /**
@@ -442,17 +445,19 @@ function registerDebugImages() {
  * @param imageViewUrl -
  *            the URL of the imageView server as configured in the Enviroment
  */
+function updateDebugImages2() {
+  setImage("birdseyeImage", imageViewUrl + '?type=birdseye&' + Math.random());
+  setImage("edgesImage", imageViewUrl + '?type=edges&' + Math.random());
+  setImage("linesImage", imageViewUrl + '?type=lines&' + Math.random());
+}
 function updateDebugImages() {
-	if (imageViewUrl) {
-		setImage("birdseyeImage",imageViewUrl
-				+ '?type=birdseye&' + Math.random());
-		setImage("edgesImage",imageViewUrl
-				+ '?type=edges&' + Math.random());
-		setImage("linesImage",imageViewUrl
-				+ '?type=lines' + Math.random());
-	} else {
-		logMessage('imageViewUrl not set')
-	}
+	// document.getElementById("cameraImage").src = 'http://pibeewifi/html/cam_pic.php'; // 'http://localhost:8081?type=original&' + Math.random();
+	document.getElementById("birdseyeImage").src = 'http://localhost:8081?type=birdseye&'
+			+ Math.random();
+	document.getElementById("edgesImage").src = 'http://localhost:8081?type=edges&'
+			+ Math.random();
+	document.getElementById("linesImage").src = 'http://localhost:8081?type=lines'
+			+ Math.random();
 }
 
 function updateConfig() {
@@ -501,11 +506,13 @@ function setColor(id, color) {
 
 /**
  * set the image for the given id to the given source
+ * 
  * @param id
  * @param src
  */
-function setImage(id,src) {
-	document.getElementById(id).src =src;
+function setImage(id, src) {
+  logMessage("id.src:"+id+"->"+src);	
+  document.getElementById(id).src = src;
 }
 
 /**
