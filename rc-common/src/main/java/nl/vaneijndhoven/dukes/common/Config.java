@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Config {
   private static final Logger LOG = LoggerFactory.getLogger(Config.class);
-  public static final String WEBCONTROL_PORT = "carserver.port";
+  public static final String WEBCONTROL_PORT = "webcontrol.port";
   public static final String IMAGEVIEW_PORT = "imageview.port";
   public static final String REMOTECAR_HOST = "remotecar.host";
   public static final String CAMERA_URL = "camera.url";

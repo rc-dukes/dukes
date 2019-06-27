@@ -155,7 +155,10 @@ public class Environment {
    * @throws Exception
    */
   public String getString(String key) throws Exception {
-    String value=this.getProperties().get(key).toString();
+    Object prop=this.getProperties().get(key);
+    if (prop==null)
+      throw new IllegalArgumentException("Property "+key+" is not configured in "+propFilePath);
+    String value=prop.toString();
     return value;
   }
   
@@ -165,9 +168,10 @@ public class Environment {
    * @return - the property value
    * @throws Exception
    */
-  public int getInteger(String key) throws Exception {
-    Object prop=getProperties().get(key);
-    return Integer.parseInt(prop.toString());
+  public int getInteger(String key) throws Exception  {
+    String valueStr=this.getString(key);
+    int value=Integer.parseInt(valueStr);
+    return value;
   }
   
   /**

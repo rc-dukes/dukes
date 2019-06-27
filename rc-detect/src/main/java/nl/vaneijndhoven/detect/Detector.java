@@ -3,11 +3,11 @@ package nl.vaneijndhoven.detect;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bitplan.opencv.NativeLibrary;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,8 +51,8 @@ public class Detector extends AbstractVerticle {
 
   @Override
   public void start() throws Exception {
-    System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-    LOG.info("Starting Daisy (image processing)");
+    LOG.info("Starting Detector aka Daisy (image processing)");
+    NativeLibrary.load();
     vertx.eventBus().consumer(Events.STREAMADDED.name(), this::streamAdded);
 
     vertx.eventBus().consumer(
@@ -71,7 +71,7 @@ public class Detector extends AbstractVerticle {
         Characters.DAISY.getCallsign() + ":" + CAMERA_MATRIX_UPDATE,
         this::cameraMatrix);
 
-    LOG.info("Daisy started");
+    LOG.info("Detector / Daisy started");
   }
 
   private void streamAdded(Message<JsonObject> message) {
