@@ -1,35 +1,83 @@
 /**
  * rc-dukes webcontrol javascript functions
  */
-// redirect console output
-// redirectConsole('console','','\n');
-// allow keyboard input
-function initRemote() {
-	registerControls();
-	var NUM_LOG_LINES_VISIBLE = 15;
-	var logLines = [];
 
-	var display = function(err, msg) {
-		var elem = document.getElementById("events");
-		var logLine = new Date() + ' ' + JSON.stringify(msg.body);
-		logLines.push(logLine);
+var eb=null; //  we start with an undefined eventbus
 
-		if (logLines.length > NUM_LOG_LINES_VISIBLE) {
-			logLines = logLines.splice(-NUM_LOG_LINES_VISIBLE);
-		}
-
-		var allLogs = '';
-		for (i = 0; i < logLines.length; i++) {
-			allLogs += '\n' + logLines[i];
-		}
-		elem.innerText = allLogs;
-	};
+/**
+ * all publish messages should go thru this function
+ * @param address
+ * @param message
+ * @param headers
+ */
+function publish(address,message,headers) {
+  if (eb) {
+	if (eb.state== EventBus.OPEN) {
+      eb.publish(address,message,headers)	
+	  document.getElementById("events").style.color = "green";
+	} else {
+	  document.getElementById("events").style.color = "orange";	
+	}
+  } else {
+	document.getElementById("events").style.color = "red";
+  }
 }
 
-function initDetect() {
-	initRemote();
+var NUM_LOG_LINES_VISIBLE = 15;
+var logLines = [];
 
-	var eb = new EventBus("http://localhost:8080/eventbus");
+/**
+ * display events
+ */
+var display = function(err, msg) {
+	var elem = document.getElementById("events");
+	var logLine = new Date() + ' ' + JSON.stringify(msg.body);
+	logLines.push(logLine);
+
+	if (logLines.length > NUM_LOG_LINES_VISIBLE) {
+		logLines = logLines.splice(-NUM_LOG_LINES_VISIBLE);
+	}
+
+	var allLogs = '';
+	for (i = 0; i < logLines.length; i++) {
+		allLogs += '\n' + logLines[i];
+	}
+	elem.innerText = allLogs;
+};
+
+/**
+ * init remote Screen
+ */
+function initRemote() {
+	initRemoteControls();
+	initEventBus(display, false);
+	registerHeartBeat();
+}
+
+/**
+ * init Detect screen
+ */
+function initDetect() {
+	initRemoteControls();
+    initEventBus(display,true);
+	initialSliderValues();
+	registerHeartBeat();
+	registerDebugImages();
+}
+
+/**
+ * init the remote Controls
+ */
+function initRemoteControls() {
+	// redirect console output
+	// redirectConsole('console','','\n');
+
+	// allow keyboard input
+	registerControls();
+}
+
+function initEventBus(withDetect) {
+	eb = new EventBus("http://localhost:8080/eventbus");
 	eb.onopen = function() {
 		eb.registerHandler("Lost sheep Bo", display);
 		eb.registerHandler("Lost sheep Luke", display);
@@ -41,21 +89,20 @@ function initDetect() {
 		eb.registerHandler("Crazy Cooter", display);
 		eb.registerHandler("Dipstick", display);
 		eb.registerHandler("Cletus", display);
-		eb.registerHandler("STREAMADDED", function(err, msg) {
-			var videoNode = document.querySelector('video');
-			videoNode.src = "blob:" + msg.body.source;
-		});
-		eb.registerHandler("CANNYCONFIG", display);
-		eb.registerHandler("HOUGHLINESCONFIG", display);
-		eb.registerHandler("LANEDETECTION", display);
-		eb.registerHandler("STARTLIGHTDETECTION", display);
-
-		initialSliderValues();
-		registerHeartBeat();
-		registerDebugImages();
+		if (withDetect) {
+			eb.registerHandler("STREAMADDED", function(err, msg) {
+				var videoNode = document.querySelector('video');
+				videoNode.src = "blob:" + msg.body.source;
+			});
+			eb.registerHandler("CANNYCONFIG", display);
+			eb.registerHandler("HOUGHLINESCONFIG", display);
+			eb.registerHandler("LANEDETECTION", display);
+			eb.registerHandler("STARTLIGHTDETECTION", display);
+		}
 	}
+}
 
-	// function localFileVideoPlayer() {
+function localFileVideoPlayer() {
 	// 'use strict'
 	var URL = window.URL || window.webkitURL
 	var displayMessage = function(message, isError) {
@@ -84,7 +131,7 @@ function initDetect() {
 		fReader.onloadend = function(event) {
 
 			var fileURL = URL.createObjectURL(file)
-			eb.publish("STREAMADDED", {
+			publish("STREAMADDED", {
 				"source" : fileURL.replace(/blob:/, ''),
 				"config" : {
 					"interval" : 100
@@ -99,7 +146,7 @@ function initDetect() {
 }
 
 function registerHeartBeat() {
-	window.setInterval(sendHeartBeat, 150);
+	window.setInterval(sendHeartBeat(), 150);
 }
 
 // register key handling controls
@@ -254,7 +301,7 @@ function sendWheelCommand(position) {
 		type : 'servo',
 		position : position
 	};
-	eb.publish(CALLSIGN_BO, data);
+	publish(CALLSIGN_BO, data);
 }
 
 function sendSpeedCommand(speed) {
@@ -262,7 +309,7 @@ function sendSpeedCommand(speed) {
 		type : 'motor',
 		speed : speed
 	};
-	eb.publish(CALLSIGN_BO, data);
+	publish(CALLSIGN_BO, data);
 }
 
 function sendSpeedDirectCommand(speed) {
@@ -270,7 +317,7 @@ function sendSpeedDirectCommand(speed) {
 		type : 'speedDirect',
 		speed : '' + speed
 	};
-	eb.publish(CALLSIGN_BO, data);
+	publish(CALLSIGN_BO, data);
 }
 
 var CALLSIGN_FLASH = "Velvet ears";
@@ -278,16 +325,16 @@ function sendHeartBeat() {
 	data = {
 		type : 'heartbeat'
 	};
-	eb.publish(CALLSIGN_FLASH, data);
+	publish(CALLSIGN_FLASH, data);
 }
 
 var CALLSIGN_LUKE = "Lost sheep Luke";
 function startAutoPilot() {
-	eb.publish(CALLSIGN_LUKE + ':START_DRAG_NAVIGATION', undefined);
+	publish(CALLSIGN_LUKE + ':START_DRAG_NAVIGATION', undefined);
 }
 
 function stopAutoPilot() {
-	eb.publish(CALLSIGN_LUKE + ':STOP_NAVIGATION', undefined);
+	publish(CALLSIGN_LUKE + ':STOP_NAVIGATION', undefined);
 }
 
 // register the function to update the debug images
@@ -319,7 +366,7 @@ function updateConfig() {
 
 	console.log('update canny config: ', cannyConfig);
 
-	eb.publish(CALLSIGN_DAISY + ':CANNY_CONFIG_UPDATE', cannyConfig);
+	publish(CALLSIGN_DAISY + ':CANNY_CONFIG_UPDATE', cannyConfig);
 
 	var houghConfigRho = document.getElementById('houghConfigRhoSlider').value;
 	var houghConfigTheta = document.getElementById('houghConfigThetaSlider').value;
@@ -338,7 +385,7 @@ function updateConfig() {
 	houghConfig.minLineLength = Number(houghConfigMinLineLength);
 
 	console.log('update hough config: ', houghConfig);
-	eb.publish(CALLSIGN_DAISY + ':HOUGH_CONFIG_UPDATE', houghConfig);
+	publish(CALLSIGN_DAISY + ':HOUGH_CONFIG_UPDATE', houghConfig);
 }
 
 /**
@@ -360,7 +407,12 @@ function onSlide(sliderId, textbox) {
 	updateConfig();
 }
 
-function initialSlidervalues() {
+/**
+ * set the initial slider values
+ * 
+ * @returns
+ */
+function initialSliderValues() {
 	// set initial values for config
 	updateSliderValue('cannyConfigThreshold1Slider',
 			'cannyConfigThreshold1Textbox');
