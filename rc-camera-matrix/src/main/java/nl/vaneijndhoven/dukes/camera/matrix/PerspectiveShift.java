@@ -11,12 +11,20 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+/**
+ * perspective shift
+ */
 public class PerspectiveShift implements UnaryOperator<Mat> {
 
     private final Polygon imagePolygon;
     private final Polygon worldPolygon;
     Mat perspectiveTransform;
 
+    /**
+     * construct me from the given image and worl polygon
+     * @param imagePolygon - image
+     * @param worldPolygon - world
+     */
     public PerspectiveShift(Polygon imagePolygon, Polygon worldPolygon) {
         this.imagePolygon = imagePolygon;
         this.worldPolygon = worldPolygon;

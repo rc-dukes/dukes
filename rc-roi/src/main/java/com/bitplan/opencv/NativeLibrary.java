@@ -7,7 +7,7 @@ import java.util.Arrays;
 import org.opencv.core.Core;
 
 /**
- * load OpenCV NativeLibrary properly
+ * load <a href='https://opencv.org/'>OpenCV</a> NativeLibrary properly
  */
 public class NativeLibrary {
   protected static File nativeLibPath = new File("../lib");

@@ -11,8 +11,7 @@ import static java.util.Optional.of;
 import java.util.Arrays;
 
 /**
- * 
- *
+ * Connection between two {@link Point2D}
  */
 public class Line {
 
@@ -320,6 +319,9 @@ public class Line {
         / determinant;
   }
 
+  /**
+   * implementation of a x/y orientation
+   */
   public static class Vector {
 
     private double x;

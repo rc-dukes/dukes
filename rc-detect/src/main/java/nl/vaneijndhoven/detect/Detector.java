@@ -23,7 +23,7 @@ import nl.vaneijndhoven.opencv.tools.ImageCollector;
 import rx.Observable;
 
 /**
- * Detector aka Daisy)
+ * Detector aka Daisy
  */
 public class Detector extends AbstractVerticle {
 

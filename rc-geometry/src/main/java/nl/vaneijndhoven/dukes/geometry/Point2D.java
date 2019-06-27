@@ -1,7 +1,7 @@
 package nl.vaneijndhoven.dukes.geometry;
 
 /**
- * represents a point
+ * represents a 2 dimensional point
  *
  */
 public interface Point2D {

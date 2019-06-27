@@ -145,6 +145,10 @@ public class StartLightDetector {
         return this;
     }
 
+    /**
+     * Configuration for start light detector
+     * @TODO - make configurable
+     */
     public static class Config {
         private double hueStart = 0.0d;
         private double hueStop = 28.3d;

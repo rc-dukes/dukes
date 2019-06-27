@@ -20,6 +20,8 @@
  */
 package com.bitplan.opencv;
 
+import java.util.Locale;
+
 /**
  * helper class to check the operating system this Java VM runs in
  *
@@ -29,8 +31,6 @@ package com.bitplan.opencv;
  * compare to http://svn.terracotta.org/svn/tc/dso/tags/2.6.4/code/base/common/src/com/tc/util/runtime/Os.java
  * http://www.docjar.com/html/api/org/apache/commons/lang/SystemUtils.java.html
  */
-import java.util.Locale;
-
 public final class OsCheck {
 	/**
 	 * types of Operating Systems
