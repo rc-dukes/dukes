@@ -53,6 +53,7 @@ public class WatchDog extends AbstractVerticle {
         // missed 2 heartbeats
         LOG.trace("Missed at least 2 heartbeats.");
         LOG.error("Client connection lost, stopping car and turning off led");
+        LOG.info("Heartbeat off -> power off");
         vertx.eventBus().send(Characters.BO.getCallsign(),
             new JsonObject().put("type", "motor").put("speed", "stop"));
 

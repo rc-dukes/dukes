@@ -3,6 +3,9 @@ package nl.vaneijndhoven.dukes.car;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Engine / Motor handling
+ */
 public class Engine {
 
     private static final Logger LOG = LoggerFactory.getLogger(Engine.class);
@@ -11,6 +14,10 @@ public class Engine {
 
     private EngineMap mapping;
 
+    /**
+     * create an Engine with the given mapping
+     * @param mapping
+     */
     public Engine(EngineMap mapping) {
         this.mapping = mapping;
     }
@@ -25,18 +32,16 @@ public class Engine {
         neutral(force);
     }
 
-
     public void neutral(boolean force) {
         setSpeed(mapping.neutral(), force);
     }
 
-
-    public static void setSpeed(int speed) {
+    public void setSpeed(int speed) {
         boolean force = false;
         setSpeed(speed, force);
     }
 
-    private static void setSpeed(int speed, boolean force) {
+    private void setSpeed(int speed, boolean force) {
         if (!Command.powerIsOn() && !force) {
             LOG.debug("Not setting motor value; power is off and force is false.");
             return;

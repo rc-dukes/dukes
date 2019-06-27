@@ -4,6 +4,7 @@
 
 var eb = null; // we start with an undefined eventbus
 var imageViewUrl = null; 
+var cameraUrl=null;
 
 /**
  * all publish messages should go thru this function
@@ -113,6 +114,7 @@ function power() {
 		clearLog("power on");
 		initEventBus(display, true);
 		heartBeatInterval=registerHeartBeat();
+		cameraUrl='http://pibeewifi/html/cam_get.php';
 	} else {
 		clearLog("power off");
 		// switch off heartBeat
@@ -389,6 +391,7 @@ function manual() {
 
 function keyPressed(id) {
 	console.log(id);
+	logMessage(id+" pressed");
 	var element = document.getElementById(id);
 	element.style.fontWeight = 'bold';
 	setTimeout(function() {
@@ -592,7 +595,7 @@ function updateCamConfig(elementId, configKey) {
 function registerCamera(msecs) {
 	return setInterval(
 			function() {
-				document.getElementById("cameraImage").src = 'http://pibeewifi/html/cam_get.php?timestamp='
+				document.getElementById("cameraImage").src = cameraUrl+'?timestamp='
 						+ new Date();
 			}, msecs);
 	// 'http://localhost:8081?type=original&'

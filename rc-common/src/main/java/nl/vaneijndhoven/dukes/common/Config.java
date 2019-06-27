@@ -29,6 +29,10 @@ public class Config {
   public static final String IMAGEVIEW_PORT = "imageview.port";
   public static final String REMOTECAR_HOST = "remotecar.host";
   public static final String CAMERA_URL = "camera.url";
+  public static final String WHEEL_CENTER = "wheel.center";
+  public static final String WHEEL_STEP_SIZE = "wheel.stepsize";
+  public static final String WHEEL_MAX_LEFT = "wheel.maxleft";
+  public static final String WHEEL_MAX_RIGHT = "wheel.maxright";
 
   /**
    * configure the logging
