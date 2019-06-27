@@ -17,6 +17,10 @@ public class ImageFetcher {
     private VideoCapture capture = new VideoCapture();
     private String source;
 
+    /**
+     * fetch from the given source
+     * @param source - the source to fetch from
+     */
     public ImageFetcher(String source) {
         this.source = source;
     }

@@ -3,7 +3,7 @@
  */
 
 var eb = null; // we start with an undefined eventbus
-var imageViewUrl = 'http://2.0.0.25:8081'; // FIXME - make really configurable
+var imageViewUrl = null; 
 
 /**
  * all publish messages should go thru this function
@@ -44,7 +44,7 @@ var logIndex = 0;
  * display events
  */
 var display = function(err, msg) {
-	if (logIndex++ % 200 == 0) {
+	if (logIndex++ % 100 == 0) {
 		var prefix = "";
 		if (eb)
 			prefix = +eb.state + '/' + EventBus.OPEN + ':';
@@ -82,12 +82,16 @@ function clearLog(msg) {
 	logMessage(msg);
 }
 
+var heartBeatInterval;
+var debugImagesInterval;
+var cameraInterval;
+
 /**
  * init remote Screen
  */
 function initRemote() {
 	initRemoteControls();
-	registerCamera();
+	cameraInterval=registerCamera(50);
 }
 
 /**
@@ -96,10 +100,11 @@ function initRemote() {
 function initDetect() {
 	initRemoteControls();
 	initialSliderValues();
-	registerCamera();
+	cameraInterval=registerCamera(50);
 }
 
 var powerState = false;
+
 function power() {
 	powerState = !powerState;
 	setControlState(powerState);
@@ -107,9 +112,13 @@ function power() {
 	if (powerState) {
 		clearLog("power on");
 		initEventBus(display, true);
-		registerHeartBeat();
+		heartBeatInterval=registerHeartBeat();
 	} else {
 		clearLog("power off");
+		// switch off heartBeat
+		clearInterval(heartBeatInterval);
+		imageViewUrl=null;
+		// clearInterval(debugImagesInterval);
 	}
 }
 
@@ -158,11 +167,11 @@ function initEventBus(withDetect) {
 	if (protocol === "file:") {
 		busUrl = "http://localhost:8080/eventbus";
 		imageViewUrl = 'http://localhost:8081';
-		registerDebugImages(100);
+		debugImagesInterval=registerDebugImages(100);
 	} else {
 		busUrl = window.location.origin + "/eventbus";
 		imageViewUrl = 'http://' + window.location.hostname + ':8081'
-		registerDebugImages(300);
+		debugImagesInterval=registerDebugImages(200);
 		msg = window.location.origin;
 	}
 	logMessage("server is " + msg + "\n busUrl=" + busUrl + "\nimageViewUrl="
@@ -238,7 +247,7 @@ function localFileVideoPlayer() {
 }
 
 function registerHeartBeat() {
-	window.setInterval(sendHeartBeat, 150);
+   return window.setInterval(sendHeartBeat, 150);
 }
 
 // register key handling controls
@@ -436,7 +445,7 @@ function stopAutoPilot() {
 function registerDebugImages(msecs) {
 	logMessage('updateDebugImages at ' + imageViewUrl + ' every ' + msecs
 			+ ' msecs')
-	window.setInterval(updateDebugImages, msecs);
+	return window.setInterval(updateDebugImages, msecs);
 }
 
 /**
@@ -445,20 +454,19 @@ function registerDebugImages(msecs) {
  * @param imageViewUrl -
  *            the URL of the imageView server as configured in the Enviroment
  */
-function updateDebugImages2() {
-  setImage("birdseyeImage", imageViewUrl + '?type=birdseye&' + Math.random());
-  setImage("edgesImage", imageViewUrl + '?type=edges&' + Math.random());
-  setImage("linesImage", imageViewUrl + '?type=lines&' + Math.random());
+function updateDebugImages() {	
+  if (imageViewUrl) {
+	  setImage("birdseyeImage", imageViewUrl + '?type=birdseye&' + Math.random());
+	  setImage("edgesImage", imageViewUrl + '?type=edges&' + Math.random());
+	  setImage("linesImage", imageViewUrl + '?type=lines&' + Math.random());	  
+  } else {
+	  var streetLane="images/StreetLane.jpg";
+	  setImage("birdseyeImage",streetLane);
+	  setImage("edgesImage",streetLane);
+	  setImage("linesImage",streetLane);
+  }
 }
-function updateDebugImages() {
-	// document.getElementById("cameraImage").src = 'http://pibeewifi/html/cam_pic.php'; // 'http://localhost:8081?type=original&' + Math.random();
-	document.getElementById("birdseyeImage").src = 'http://localhost:8081?type=birdseye&'
-			+ Math.random();
-	document.getElementById("edgesImage").src = 'http://localhost:8081?type=edges&'
-			+ Math.random();
-	document.getElementById("linesImage").src = 'http://localhost:8081?type=lines'
-			+ Math.random();
-}
+
 
 function updateConfig() {
 	var cannyConfigThreshold1 = document
@@ -511,7 +519,7 @@ function setColor(id, color) {
  * @param src
  */
 function setImage(id, src) {
-  logMessage("id.src:"+id+"->"+src);	
+  // logMessage("id.src:"+id+"->"+src);	
   document.getElementById(id).src = src;
 }
 
@@ -577,11 +585,15 @@ function updateCamConfig(elementId, configKey) {
 	ajax_cmd.send();
 }
 
-function registerCamera() {
-	setInterval(
+/**
+ * register the camera
+ * @param msecs - refresh time
+ */
+function registerCamera(msecs) {
+	return setInterval(
 			function() {
 				document.getElementById("cameraImage").src = 'http://pibeewifi/html/cam_get.php?timestamp='
 						+ new Date();
-			}, 50);
+			}, msecs);
 	// 'http://localhost:8081?type=original&'
 }
