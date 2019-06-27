@@ -3,6 +3,7 @@
  */
 
 var eb = null; // we start with an undefined eventbus
+var imageViewUrl = 'http://localhost:8081'; // FIXME - make really configurable
 
 /**
  * all publish messages should go thru this function
@@ -33,7 +34,7 @@ function publish(address, message, headers) {
 	} else {
 		stateColor = "violet";
 	}
-	setColor("eventslabel",stateColor);
+	setColor("eventslabel", stateColor);
 }
 
 var NUM_LOG_LINES_VISIBLE = 15;
@@ -44,15 +45,16 @@ var logIndex = 0;
  */
 var display = function(err, msg) {
 	if (logIndex++ % 200 == 0) {
-		var prefix="";
+		var prefix = "";
 		if (eb)
-			prefix=+ eb.state + '/' + EventBus.OPEN + ':';
-		logMessage(prefix+JSON.stringify(msg.body));
+			prefix = +eb.state + '/' + EventBus.OPEN + ':';
+		logMessage(prefix + JSON.stringify(msg.body));
 	}
 }
 
 /**
  * log the given message
+ * 
  * @param msg
  */
 function logMessage(msg) {
@@ -60,7 +62,7 @@ function logMessage(msg) {
 	var newLine = "\n"; // pre
 	var elem = document.getElementById("events");
 	var now = new Date().toISOString();
-	var logLine =now + ': ' + msg + newLine;
+	var logLine = now + ': ' + msg + newLine;
 	logLines.push(logLine);
 
 	if (logLines.length > NUM_LOG_LINES_VISIBLE) {
@@ -75,9 +77,9 @@ function logMessage(msg) {
 };
 
 function clearLog(msg) {
-  // https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
-  logLines.length=0;
-  logMessage(msg);
+	// https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
+	logLines.length = 0;
+	logMessage(msg);
 }
 
 /**
@@ -98,37 +100,38 @@ function initDetect() {
 	registerDebugImages();
 }
 
-var powerState=false;
+var powerState = false;
 function power() {
-	powerState=!powerState;
+	powerState = !powerState;
 	setControlState(powerState);
 	keyPressed('power');
 	if (powerState) {
-	  clearLog("power on");	
-	  initEventBus(display, true);
-	  registerHeartBeat();
+		clearLog("power on");
+		initEventBus(display, true);
+		registerHeartBeat();
 	} else {
-	  clearLog("power off");
+		clearLog("power off");
 	}
 }
 
 /**
  * set the state of the power - dependent controls
+ * 
  * @param powerState
  */
 function setControlState(powerState) {
-  var color="grey";
-  if (powerState)
-	color="blue";
-  setColor("manual",color);
-  setColor("autopilot",color);
-  setColor("left",color);
-  setColor("right",color);
-  setColor("up",color);
-  setColor("down",color);
-  setColor("center",color);
-  setColor("stop",color);
-  setColor("brake",color);
+	var color = "grey";
+	if (powerState)
+		color = "blue";
+	setColor("manual", color);
+	setColor("autopilot", color);
+	setColor("left", color);
+	setColor("right", color);
+	setColor("up", color);
+	setColor("down", color);
+	setColor("center", color);
+	setColor("stop", color);
+	setColor("brake", color);
 }
 
 /**
@@ -145,26 +148,30 @@ function initRemoteControls() {
 
 /**
  * init the event Bus
+ * 
  * @param withDetect
  */
 function initEventBus(withDetect) {
 	// https://web-design-weekly.com/snippets/get-url-with-javascript/
-	var protocol=window.location.protocol;
-	var busUrl="";
-	var msg=window.location.href;
-	if (protocol==="file:") {
-	  busUrl="http://localhost:8080/eventbus";
+	var protocol = window.location.protocol;
+	var busUrl = "";
+	var msg = window.location.href;
+	if (protocol === "file:") {
+		busUrl = "http://localhost:8080/eventbus";
+		imageViewUrl = 'http://localhost:8081';
 	} else {
-	  busUrl="http://2.0.0.25:8080/eventbus";
-	  msg=window.location.origin;
+		busUrl = window.location.origin + "/eventbus";
+		imageViewUrl = 'http://' + window.location.hostname + ':8081'
+		msg = window.location.origin;
 	}
-	logMessage("server is "+msg+" busUrl="+busUrl);
+	logMessage("server is " + msg + "\n busUrl=" + busUrl + "\nimageViewUrl="
+			+ imageViewUrl);
 	eb = new EventBus(busUrl);
 	eb.onopen = function() {
-		eb.registerHandler("Lost sheep Bo", display);    // car
-		eb.registerHandler("Lost sheep Luke", display);  // action
-		eb.registerHandler("Bo Peep", display);  // detect
-		eb.registerHandler("Shepherd", display); //  app
+		eb.registerHandler("Lost sheep Bo", display); // car
+		eb.registerHandler("Lost sheep Luke", display); // action
+		eb.registerHandler("Bo Peep", display); // detect
+		eb.registerHandler("Shepherd", display); // app
 		eb.registerHandler("Red Dog", display); // imageview
 		eb.registerHandler("Velvet ears", display); // watchdog
 		eb.registerHandler("Little fat buddy", display); // webcontrol
@@ -426,16 +433,26 @@ function stopAutoPilot() {
 
 // register the function to update the debug images
 function registerDebugImages() {
-	window.setInterval(updateDebugImages, 100);
+	window.setInterval(updateDebugImages(), 100);
 }
 
+/**
+ * update the Debug Images based on the given imageView Url
+ * 
+ * @param imageViewUrl -
+ *            the URL of the imageView server as configured in the Enviroment
+ */
 function updateDebugImages() {
-	document.getElementById("birdseyeImage").src = 'http://localhost:8081?type=birdseye&'
-			+ Math.random();
-	document.getElementById("edgesImage").src = 'http://localhost:8081?type=edges&'
-			+ Math.random();
-	document.getElementById("linesImage").src = 'http://localhost:8081?type=lines'
-			+ Math.random();
+	if (imageViewUrl) {
+		setImage("birdseyeImage",imageViewUrl
+				+ '?type=birdseye&' + Math.random());
+		setImage("edgesImage",imageViewUrl
+				+ '?type=edges&' + Math.random());
+		setImage("linesImage",imageViewUrl
+				+ '?type=lines' + Math.random());
+	} else {
+		logMessage('imageViewUrl not set')
+	}
 }
 
 function updateConfig() {
@@ -474,11 +491,21 @@ function updateConfig() {
 
 /**
  * set the color of the element with the given id
+ * 
  * @param id
  * @param color
  */
 function setColor(id, color) {
 	document.getElementById(id).style.color = color;
+}
+
+/**
+ * set the image for the given id to the given source
+ * @param id
+ * @param src
+ */
+function setImage(id,src) {
+	document.getElementById(id).src =src;
 }
 
 /**
