@@ -15,10 +15,12 @@
 * [dukes Project pages](https://rc-dukes.github.io/dukes)
 
 ## Modules
+### Inspiration for naming
+* [Dukes of Hazzard](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard)
 ![](https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/General_lee.jpg/420px-General_lee.jpg)
 
+### Module Overview
 The self driving car consists of modules with the following responsibilities:
-
 
 | module        | nickname      | type     | runs on | responsibility                            |  
 |---------------|---------------|----------|---------|-------------------------------------------|  
@@ -36,9 +38,6 @@ The self driving car consists of modules with the following responsibilities:
 | [action](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/action/package-summary.html)        | [Luke ](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Luke)         | Verticle |         | Proc Image analysis results into actions
 | [imageview](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/imageview/package-summary.html)     | [Roscoe](https://en.wikipedia.org/wiki/Sheriff_Rosco_P._Coltrane)        | Runner   |         | lane detection debug image web server
 | [app](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/app/package-summary.html)           | [Uncle Jesse](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Jesse)   | JavaFX   | laptop  | JavaFX app to monitor the car
-
-### Inspiration for naming
-* [Dukes of Hazzard](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard)
 
 
 ## Getting started
