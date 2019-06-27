@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * implements a polygon as a list of Point2D
+ * implements a polygon as a list of {@link Point2D}
  *
  */
 public class Polygon {

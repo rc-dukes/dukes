@@ -22,20 +22,20 @@ The self driving car consists of modules with the following responsibilities:
 
 | module        | nickname      | type     | runs on | responsibility                            |  
 |---------------|---------------|----------|---------|-------------------------------------------|  
-| server        | [Boars Nest](https://www.thedukesofhazzard.nl/georgia-filming-locations/oxford-area/the-boars-nest/)    | Runner   | laptop  | Runner to start the cluster on the laptop |
-| car           | [Bo](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Bo)            | Verticle | car     | Processing Car control inputs
-| webcontrol    | [Boss Hogg](https://en.wikipedia.org/wiki/Boss_Hogg)     | Web      | laptop  | Application to provide manual inputs
-| roi           | [Cletus](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Cletus)        | Library  |         | Region of Interest
-| camera-matrix | [Cooter](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Cooter)        | Library  |         | CameraMatrix and PerspectiveShift
+| [server](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/server/package-summary.html)        | [Boars Nest](https://www.thedukesofhazzard.nl/georgia-filming-locations/oxford-area/the-boars-nest/)    | Runner   | laptop  | Runner to start the cluster on the laptop |
+| [car](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/car/package-summary.html)           | [Bo](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Bo)            | Verticle | car     | Processing Car control inputs
+| [webcontrol](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/webcontrol/package-summary.html)    | [Boss Hogg](https://en.wikipedia.org/wiki/Boss_Hogg)     | Web      | laptop  | Application to provide manual inputs
+| [roi](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/roi/package-summary.html)           | [Cletus](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Cletus)        | Library  |         | Region of Interest
+| [camera-matrix](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/camera/matrix/package-summary.html) | [Cooter](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Cooter)        | Library  |         | CameraMatrix and PerspectiveShift
 | [detect](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/detect/package-summary.html)        | [Daisy](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Daisy)         | Verticle |         | Detectors - e.g. Lane and StartLight
-| remotecar     | [Duke Farm](https://www.thedukesofhazzard.nl/georgia-filming-locations/loganville-area/duke-farm/)     | Runner   | car     | Runner to start the cluster on the car
-| geometry      | [Enos](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Enos) | Library  |         | Geometry
-| watchdog      | [Flash](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Flash)         | Verticle | car     | Heartbeat controller watchdog     
-| drivecontrol  | [General Lee](https://en.wikipedia.org/wiki/General_Lee_(car))   | Library  |         | RC Car/Engine/Steering
-| common        | [Hazard County](https://en.wikipedia.org/wiki/Hazzard_County,_Georgia) | Library  |         | Lib containing common API classes
-| action        | [Luke ](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Luke)         | Verticle |         | Proc Image analysis results into actions
-| imageview     | [Roscoe](https://en.wikipedia.org/wiki/Sheriff_Rosco_P._Coltrane)        | Runner   |         | lane detection debug image web server
-| app           | [Uncle Jesse](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Jesse)   | JavaFX   | laptop  | JavaFX app to monitor the car
+| [remotecar](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/remotecar/package-summary.html)     | [Duke Farm](https://www.thedukesofhazzard.nl/georgia-filming-locations/loganville-area/duke-farm/)     | Runner   | car     | Runner to start the cluster on the car
+| [geometry](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/geometry/package-summary.html)      | [Enos](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Enos) | Library  |         | Geometry
+| [watchdog](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/watchdog/package-summary.html)      | [Flash](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Flash)         | Verticle | car     | Heartbeat controller watchdog     
+| [drivecontrol](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/drivecontrol/package-summary.html)  | [General Lee](https://en.wikipedia.org/wiki/General_Lee_(car))   | Library  |         | RC Car/Engine/Steering
+| [common](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/common/package-summary.html)        | [Hazard County](https://en.wikipedia.org/wiki/Hazzard_County,_Georgia) | Library  |         | Lib containing common API classes
+| [action](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/action/package-summary.html)        | [Luke ](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Luke)         | Verticle |         | Proc Image analysis results into actions
+| [imageview](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/imageview/package-summary.html)     | [Roscoe](https://en.wikipedia.org/wiki/Sheriff_Rosco_P._Coltrane)        | Runner   |         | lane detection debug image web server
+| [app](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/app/package-summary.html)           | [Uncle Jesse](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Jesse)   | JavaFX   | laptop  | JavaFX app to monitor the car
 
 ### Inspiration for naming
 * [Dukes of Hazzard](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard)

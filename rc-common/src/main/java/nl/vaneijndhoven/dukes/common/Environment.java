@@ -134,7 +134,7 @@ public class Environment {
   /**
    * get the address of the raspberry PI
    * 
-   * @return the address as configured in the property file @see propfileName
+   * @return the address as configured in the property file @see #propfilePath
    * @throws Exception if getting the address fails
    */
   public String getPiAddress() throws Exception {
