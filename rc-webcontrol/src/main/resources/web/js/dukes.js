@@ -2,36 +2,59 @@
  * rc-dukes webcontrol javascript functions
  */
 
-var eb=null; //  we start with an undefined eventbus
+var eb = null; // we start with an undefined eventbus
 
 /**
  * all publish messages should go thru this function
+ * 
  * @param address
  * @param message
  * @param headers
  */
-function publish(address,message,headers) {
-  if (eb) {
-	if (eb.state== EventBus.OPEN) {
-      eb.publish(address,message,headers)	
-	  document.getElementById("events").style.color = "green";
+function publish(address, message, headers) {
+	var stateColor = "black";
+	logMessage(address + "->" + message);
+	if (eb) {
+		switch (eb.state) {
+		case EventBus.CONNECTING:
+			stateColor = "orange";
+			break;
+		case EventBus.OPEN:
+			eb.publish(address, message, headers)
+			stateColor = "green";
+			break;
+		case EventBus.CLOSING:
+			stateColor = "orange";
+			break;
+		case EventBus.CLOSED:
+			stateColor = "red";
+			break;
+		}
 	} else {
-	  document.getElementById("events").style.color = "orange";	
+		stateColor = "violet";
 	}
-  } else {
-	document.getElementById("events").style.color = "red";
-  }
+	document.getElementById("eventslabel").style.color = stateColor;
 }
 
 var NUM_LOG_LINES_VISIBLE = 15;
 var logLines = [];
-
+var logIndex = 0;
 /**
  * display events
  */
 var display = function(err, msg) {
+	if (logIndex++ % 200 == 0) {
+		logMessage(JSON.stringify(msg.body));
+	}
+}
+
+function logMessage(msg) {
+	// var newLine="<br>"; // textarea
+	var newLine = "\n"; // pre
 	var elem = document.getElementById("events");
-	var logLine = new Date() + ' ' + JSON.stringify(msg.body);
+	var now = new Date().toISOString();
+	var logLine = now + ' ' + eb.state + '/' + EventBus.OPEN + ':' + newLine
+			+ msg + newLine;
 	logLines.push(logLine);
 
 	if (logLines.length > NUM_LOG_LINES_VISIBLE) {
@@ -40,7 +63,7 @@ var display = function(err, msg) {
 
 	var allLogs = '';
 	for (i = 0; i < logLines.length; i++) {
-		allLogs += '\n' + logLines[i];
+		allLogs += newLine + logLines[i];
 	}
 	elem.innerText = allLogs;
 };
@@ -52,6 +75,7 @@ function initRemote() {
 	initRemoteControls();
 	initEventBus(display, false);
 	registerHeartBeat();
+	registerCamera();
 }
 
 /**
@@ -59,9 +83,10 @@ function initRemote() {
  */
 function initDetect() {
 	initRemoteControls();
-    initEventBus(display,true);
+	initEventBus(display, true);
 	initialSliderValues();
 	registerHeartBeat();
+	registerCamera();
 	registerDebugImages();
 }
 
@@ -84,7 +109,7 @@ function initEventBus(withDetect) {
 		eb.registerHandler("Bo Peep", display);
 		eb.registerHandler("Shepherd", display);
 		eb.registerHandler("Red Dog", display);
-		// eb.registerHandler("Velvet ears", display);
+		eb.registerHandler("Velvet ears", display);
 		eb.registerHandler("Little fat buddy", display);
 		eb.registerHandler("Crazy Cooter", display);
 		eb.registerHandler("Dipstick", display);
@@ -343,9 +368,6 @@ function registerDebugImages() {
 }
 
 function updateDebugImages() {
-	document.getElementById("originalImage").src = 'http://pibeewifi/html/cam_pic.php'; // 'http://localhost:8081?type=original&'
-	// +
-	// Math.random();
 	document.getElementById("birdseyeImage").src = 'http://localhost:8081?type=birdseye&'
 			+ Math.random();
 	document.getElementById("edgesImage").src = 'http://localhost:8081?type=edges&'
@@ -450,7 +472,11 @@ function updateCamConfig(elementId, configKey) {
 	ajax_cmd.send();
 }
 
-// setInterval(function() {
-// document.getElementById("cameraImage").src='http://10.9.8.7/html/cam_get.php?timestamp='
-// + new Date();
-// }, 50);
+function registerCamera() {
+	setInterval(
+			function() {
+				document.getElementById("cameraImage").src = 'http://pibeewifi/html/cam_get.php?timestamp='
+						+ new Date();
+			}, 50);
+	// 'http://localhost:8081?type=original&'
+}

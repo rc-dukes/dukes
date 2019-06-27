@@ -26,6 +26,10 @@ public class ImageView extends AbstractVerticle {
     vertx.createHttpServer().requestHandler(this::sendImage).listen(port);
   }
 
+  /**
+   * send an image for the given request
+   * @param request
+   */
   private void sendImage(HttpServerRequest request) {
     String type = request.getParam("type");
     byte[] bytes = new byte[] {};

@@ -42,7 +42,7 @@
 							<td></td>
 							<td><i id="autopilot" class='mdi mdi-car mediumicon'
 								title="autopilot/+" onclick="autopilot();"></i></td>
-							<td class="previewImage" rowspan='4'><img id="originalImage"></td>
+							<td class="previewImage" rowspan='4'><img id="cameraImage"></td>
 						</tr>
 						<tr>
 							<td><i id="left" class='mdi mdi-arrow-left-bold mediumicon'
@@ -114,15 +114,13 @@
 					<!--private double theta = Math.PI/180; // By choosing this value lines sloping left to right will be < 0 radian, while lines sloping right to left will be > 0 radian.-->
 					<!--private int threshold = 70;--> <!--private double minLineLength = 20;-->
 					<!--private double maxLineGap = 10;--></td>
-
-				<td class="previewImage"><img id="cameraImage"></td>
 				<td class="previewImage"><img id="edgesImage"> <br /> <img
 					id="birdseyeImage"></td>
 				<td class="previewImage"><img id="linesImage"></td>
 			</tr>
 		</table>
-		<h6>Events:</h6>
-		<textarea id='events' cols="120" rows="10"></textarea>
+		<h6 id='eventslabel'>Events:</h6>
+		<textarea id='events' cols="180" rows="15"></textarea>
 
 		<!--<div id="message"></div>-->
 		<!--<input type="file" accept="video/*"/>-->

@@ -26,7 +26,7 @@
 			class='mdi mdi-home headerboxicon'></i> <!-- home --></a> 
 	    <a href='detect.html' title='Detect'><i
 			class='mdi mdi-camera headerboxicon'></i> <!-- home --></a>
-		<a href='https://github.com/rc-dukes/dukes' title='Home'><i
+		<a href='https://github.com/rc-dukes/dukes' title='Dukes on GitHub'><i
 			class='mdi mdi-github-box headerboxicon'></i> <!-- home --></a> 
 	</div>
 	<div id='navigationbox' title='Self Driving RC Car WebControl'>Self
@@ -40,7 +40,7 @@
 				<td></td>
 				<td><i id="autopilot" class='mdi mdi-car bigicon'
 					title="autopilot/+" onclick="autopilot();"></i></td>
-				<td rowspan='4'><img id="originalImage"></td>
+				<td rowspan='4'><img id="cameraImage"></td>
 			</tr>
 			<tr>
 				<td><i id="left" class='mdi mdi-arrow-left-bold bigicon'
@@ -67,7 +67,7 @@
 					title='center/c/z' onclick="center();"></i></td>
 			</tr>
 		</table>
-		<h6>Events:</h6>
+		<h6 id='eventslabel'>Events:</h6>
 		<textarea id='events' cols="120" rows="12"></textarea>
 		<!--<div id="message"></div>-->
 		<!--<input type="file" accept="video/*"/>-->
