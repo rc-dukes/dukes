@@ -1,0 +1,21 @@
+@startuml
+
+    namespace nl.vaneijndhoven.dukes.action.drag {
+
+        class StraightLaneNavigator [[StraightLaneNavigator.html]] {
+            +navigate(JsonObject): Observable<JsonObject>
+        }
+
+        class StoppingZoneDetector [[StoppingZoneDetector.html]] {
+            +detect(JsonObject): Observable<JsonObject>
+        }
+
+        class StartLightObserver [[StartLightObserver.html]] {
+            +observe(JsonObject): Observable<JsonObject>
+        }
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

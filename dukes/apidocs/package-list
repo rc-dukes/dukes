@@ -1,5 +1,8 @@
 com.bitplan.opencv
 nl.vaneijndhoven.detect
+nl.vaneijndhoven.dukes.action
+nl.vaneijndhoven.dukes.action.drag
+nl.vaneijndhoven.dukes.app
 nl.vaneijndhoven.dukes.camera.matrix
 nl.vaneijndhoven.dukes.car
 nl.vaneijndhoven.dukes.common
@@ -7,12 +10,9 @@ nl.vaneijndhoven.dukes.drivecontrol
 nl.vaneijndhoven.dukes.geometry
 nl.vaneijndhoven.dukes.geometry.pointinplane
 nl.vaneijndhoven.dukes.imageview
-nl.vaneijndhoven.dukes.luke
-nl.vaneijndhoven.dukes.luke.drag
 nl.vaneijndhoven.dukes.remotecar
 nl.vaneijndhoven.dukes.roi
 nl.vaneijndhoven.dukes.server
-nl.vaneijndhoven.dukes.unclejesse
 nl.vaneijndhoven.dukes.watchdog
 nl.vaneijndhoven.dukes.webcontrol
 nl.vaneijndhoven.navigation.plot

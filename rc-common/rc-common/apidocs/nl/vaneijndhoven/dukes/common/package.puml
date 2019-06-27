@@ -21,12 +21,16 @@
             +getPiAddress(): String
             +getCameraUrl(): String
             +getMyIpAddresses(): List<String>
+            +getString(String): String
+            +getInteger(String): int
             {static} +reset(): void
         }
 
         class Config [[Config.html]] {
             {static} +configureLogging(): void
             {static} +createHazelcastConfig(): ClusterManager
+            {static} +getMyIpAddresses(): List<String>
+            {static} +getEnvironment(): Environment
         }
 
         class ClusterStarter [[ClusterStarter.html]] {

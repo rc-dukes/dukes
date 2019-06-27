@@ -11,6 +11,8 @@
         +getPiAddress(): String
         +getCameraUrl(): String
         +getMyIpAddresses(): List<String>
+        +getString(String): String
+        +getInteger(String): int
         {static} +reset(): void
     }
 

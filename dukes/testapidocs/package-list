@@ -1,5 +1,7 @@
 com.bitplan.rc.common
 com.bitplan.rc.roi
+com.bitplan.rccar.server
 com.bitplan.watchdog
 nl.vandeindhoven.dukes.geometry
+nl.vaneijndhoven.dukes.action
 nl.vaneijndhoven.dukes.camera.matrix

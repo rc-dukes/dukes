@@ -3,6 +3,8 @@
     class Config [[Config.html]] {
         {static} +configureLogging(): void
         {static} +createHazelcastConfig(): ClusterManager
+        {static} +getMyIpAddresses(): List<String>
+        {static} +getEnvironment(): Environment
     }
 
 

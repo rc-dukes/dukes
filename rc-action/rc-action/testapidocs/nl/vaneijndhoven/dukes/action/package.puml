@@ -1,0 +1,25 @@
+@startuml
+
+    namespace nl.vaneijndhoven.dukes.action {
+
+        class TestAction [[TestAction.html]] {
+            {static} +debug: boolean
+            {static} +TIME_OUT: int
+            +check(Observable<JsonObject>, int, String[]): void
+            +testStraightLaneNavigator(): void
+        }
+
+        class Action [[Action.html]] {
+            {static} +START_DRAG_NAVIGATION: String
+            {static} +STOP_NAVIGATION: String
+            +start(): void
+        }
+
+        class io.vertx.rxjava.core.AbstractVerticle
+        io.vertx.rxjava.core.AbstractVerticle <|-- Action
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml
