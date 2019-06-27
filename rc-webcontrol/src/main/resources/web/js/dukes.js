@@ -44,17 +44,23 @@ var logIndex = 0;
  */
 var display = function(err, msg) {
 	if (logIndex++ % 200 == 0) {
-		logMessage(JSON.stringify(msg.body));
+		var prefix="";
+		if (eb)
+			prefix=+ eb.state + '/' + EventBus.OPEN + ':';
+		logMessage(prefix+JSON.stringify(msg.body));
 	}
 }
 
+/**
+ * log the given message
+ * @param msg
+ */
 function logMessage(msg) {
-	// var newLine="<br>"; // textarea
+	// var newLine="<p>"; // textarea
 	var newLine = "\n"; // pre
 	var elem = document.getElementById("events");
 	var now = new Date().toISOString();
-	var logLine = now + ' ' + eb.state + '/' + EventBus.OPEN + ':' + newLine
-			+ msg + newLine;
+	var logLine =now + ': ' + msg + newLine;
 	logLines.push(logLine);
 
 	if (logLines.length > NUM_LOG_LINES_VISIBLE) {
@@ -65,8 +71,14 @@ function logMessage(msg) {
 	for (i = 0; i < logLines.length; i++) {
 		allLogs += newLine + logLines[i];
 	}
-	elem.innerText = allLogs;
+	elem.value = allLogs;
 };
+
+function clearLog(msg) {
+  // https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
+  logLines.length=0;
+  logMessage(msg);
+}
 
 /**
  * init remote Screen
@@ -89,12 +101,15 @@ function initDetect() {
 var powerState=false;
 function power() {
 	powerState=!powerState;
+	setControlState(powerState);
 	keyPressed('power');
 	if (powerState) {
+	  clearLog("power on");	
 	  initEventBus(display, true);
 	  registerHeartBeat();
+	} else {
+	  clearLog("power off");
 	}
-	setControlState(powerState)
 }
 
 /**
@@ -128,20 +143,37 @@ function initRemoteControls() {
 	setControlState(false);
 }
 
+/**
+ * init the event Bus
+ * @param withDetect
+ */
 function initEventBus(withDetect) {
-	eb = new EventBus("http://localhost:8080/eventbus");
+	// https://web-design-weekly.com/snippets/get-url-with-javascript/
+	var protocol=window.location.protocol;
+	var busUrl="";
+	var msg=window.location.href;
+	if (protocol==="file:") {
+	  busUrl="http://localhost:8080/eventbus";
+	} else {
+	  busUrl="http://2.0.0.25:8080/eventbus";
+	  msg=window.location.origin;
+	}
+	logMessage("server is "+msg+" busUrl="+busUrl);
+	eb = new EventBus(busUrl);
 	eb.onopen = function() {
-		eb.registerHandler("Lost sheep Bo", display);
-		eb.registerHandler("Lost sheep Luke", display);
-		eb.registerHandler("Bo Peep", display);
-		eb.registerHandler("Shepherd", display);
-		eb.registerHandler("Red Dog", display);
-		eb.registerHandler("Velvet ears", display);
-		eb.registerHandler("Little fat buddy", display);
-		eb.registerHandler("Crazy Cooter", display);
-		eb.registerHandler("Dipstick", display);
-		eb.registerHandler("Cletus", display);
+		eb.registerHandler("Lost sheep Bo", display);    // car
+		eb.registerHandler("Lost sheep Luke", display);  // action
+		eb.registerHandler("Bo Peep", display);  // detect
+		eb.registerHandler("Shepherd", display); //  app
+		eb.registerHandler("Red Dog", display); // imageview
+		eb.registerHandler("Velvet ears", display); // watchdog
+		eb.registerHandler("Little fat buddy", display); // webcontrol
+		eb.registerHandler("Crazy Cooter", display); // camera-matrix
+		eb.registerHandler("Dipstick", display); // geometry
+		eb.registerHandler("Cletus", display); // roi
+		logMessage("with no detect finished ...")
 		if (withDetect) {
+			logMessage("withDetect!");
 			eb.registerHandler("STREAMADDED", function(err, msg) {
 				var videoNode = document.querySelector('video');
 				videoNode.src = "blob:" + msg.body.source;
