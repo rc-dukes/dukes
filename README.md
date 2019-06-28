@@ -1,4 +1,4 @@
-# Dukes of Hazard self driving car
+# Dukes of Hazzard self driving car
 
 [![Travis (.org)](https://img.shields.io/travis/rc-dukes/dukes.svg)](https://travis-ci.org/rc-dukes/dukes)
 [![Coverage Status](https://coveralls.io/repos/github/rc-dukes/dukes/badge.svg?branch=master)](https://coveralls.io/github/rc-dukes/dukes?branch=master)
@@ -7,8 +7,8 @@
 [![GitHub](https://img.shields.io/github/license/rc-dukes/dukes.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## Videos
-[![Build a self driving RC car](http://img.youtube.com/vi/OL0vg1WmI6I/0.jpg)](http://www.youtube.com/watch?v=OL0vg1WmI6I "Building a self driving RC car")
-[![Build a self driving RC car](http://img.youtube.com/vi/YeUMtQyvZKM/0.jpg)](http://www.youtube.com/watch?v=YeUMtQyvZKM "Building a self driving RC car")
+[![Build a self driving RC car](http://img.youtube.com/vi/OL0vg1WmI6I/0.jpg)](http://www.youtube.com/watch?v=OL0vg1WmI6I "Building a self driving RC car")[![Build a self driving RC car](http://img.youtube.com/vi/YeUMtQyvZKM/0.jpg)](http://www.youtube.com/watch?v=YeUMtQyvZKM "Building a self driving RC car")
+[![General Lee](http://img.youtube.com/vi/pUZtAK5jjyE/0.jpg)](https://youtu.be/pUZtAK5jjyE&t=22 "General Lee")
 
 ## Documentation
 * [Wiki](http://wiki.bitplan.com/index.php/Self_Driving_RC_Car)
