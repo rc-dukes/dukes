@@ -20,13 +20,9 @@ public class CarVerticle extends AbstractVerticle {
 
     private static final Logger LOG = LoggerFactory.getLogger(CarVerticle.class);
 
-    private Car car = null;
+    private Car car = new Car(new Engine(new EngineMap()), new Steering(new SteeringMap()));
     private SpeedHandler speedHandler = new SpeedHandler(car);
     private SteeringHandler steeringHandler = new SteeringHandler(car);
-    
-    public CarVerticle() throws Exception {
-      car = new Car(new Engine(new EngineMap()), new Steering(new SteeringMap()));
-    }
 
     @Override
     public void start() {
