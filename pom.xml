@@ -54,7 +54,7 @@
 		<javadoc.opts>-Xdoclint:none</javadoc.opts>
 
 		<!-- Version numbers -->
-		<!-- https://mvnrepository.com/artifact/com.mycila/license-maven-plugin 
+		<!-- https://mvnrepository.com/artifact/com.mycila/license-maven-plugin
 			(latest: 3.0 Aug 2016) we purposely use an older version -->
 		<com.mycila.maven-license-plugin.version>1.9.0</com.mycila.maven-license-plugin.version>
 		<!-- https://mvnrepository.com/artifact/org.sonatype.plugins/nexus-staging-maven-plugin -->
@@ -101,7 +101,7 @@
 		<vertx.version>3.5.4</vertx.version>
 		<hazelcast.version>3.9</hazelcast.version>
 		<logback-classic.version>1.1.5</logback-classic.version>
-		<!-- open cv version 2019-06: 2.4.6.1 which would be available in maven 
+		<!-- open cv version 2019-06: 2.4.6.1 which would be available in maven
 			central 3.3.0 / 3.4.3 has to be installed e.g. from lib directory (see below) -->
 		<opencv.version>3.4.3</opencv.version>
 		<opencv.lib>343</opencv.lib>
@@ -201,7 +201,7 @@
 	<!-- see http://wiki.bitplan.com/index.php/Multi-Module_Maven_with_github_pages -->
 	<distributionManagement>
 		<site>
-			<!-- Do mvn site site:stage -DstagingDirectory=/tmp/path first, then manually 
+			<!-- Do mvn site site:stage -DstagingDirectory=/tmp/path first, then manually
 				add/push to the gh-pages branch on GitHub) -->
 			<id>${project.artifactId}-site</id>
 			<name>${github.owner} ${project.artifactId} ${project.version} GitHub Pages</name>
@@ -211,11 +211,11 @@
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
-		<!-- see https://stackoverflow.com/questions/10483180/maven-what-is-pluginmanagement 
+		<!-- see https://stackoverflow.com/questions/10483180/maven-what-is-pluginmanagement
 			plugins that child poms might use -->
 		<pluginManagement>
 			<plugins>
-				<!-- git hub site plugin https://github.com/github/maven-plugins configured 
+				<!-- git hub site plugin https://github.com/github/maven-plugins configured
 					for fixing the multi-module issue https://github.com/github/maven-plugins/issues/22 -->
 				<plugin>
 					<groupId>com.github.github</groupId>
@@ -285,8 +285,8 @@
 			</plugin>
 			<!-- source plugin -->
 			<plugin>
-				<!-- see http://central.sonatype.org/pages/apache-maven.html Javadoc 
-					and Sources Attachments To get Javadoc and Source jar files generated, you 
+				<!-- see http://central.sonatype.org/pages/apache-maven.html Javadoc
+					and Sources Attachments To get Javadoc and Source jar files generated, you
 					have to configure the javadoc and source Maven plugins. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -334,7 +334,7 @@
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>${maven-project-info-reports-plugin.version}</version>
 			</plugin>
-			<!-- GPG Signed Components The Maven GPG plugin is used to sign the components 
+			<!-- GPG Signed Components The Maven GPG plugin is used to sign the components
 				with the following configuration. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -350,10 +350,10 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- according to : http://central.sonatype.org/pages/apache-maven.html 
-				Nexus Staging Maven Plugin for Deployment and Release The Nexus Staging Maven 
-				Plugin is the recommended way to deploy your components to OSSRH and release 
-				them to the Central Repository. To configure it simply add the plugin to 
+			<!-- according to : http://central.sonatype.org/pages/apache-maven.html
+				Nexus Staging Maven Plugin for Deployment and Release The Nexus Staging Maven
+				Plugin is the recommended way to deploy your components to OSSRH and release
+				them to the Central Repository. To configure it simply add the plugin to
 				your Maven pom.xml. -->
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
@@ -494,4 +494,60 @@
 			</plugin>
 		</plugins>
 	</reporting>
+	<profiles>
+		<profile>
+			<id>createAssembly</id>
+			<!-- set <createAssembly>true</createAssembly> and <assemblyMainClass>a.b.c</assemblyMainClass>
+				to activate -->
+			<activation>
+				<property>
+					<name>createAssembly</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<!-- jar creation -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<version>${maven-jar-plugin.version}</version>
+						<configuration>
+							<archive>
+								<manifest>
+									<addClasspath>true</addClasspath>
+									<mainClass>${assemblyMainClass}</mainClass>
+								</manifest>
+							</archive>
+						</configuration>
+					</plugin>
+					<!-- executable jar with dependencies see http://stackoverflow.com/questions/574594/how-can-i-create-an-executable-jar-with-dependencies-using-maven
+						run with mvn clean compile assembly:single -->
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>${maven-assembly-plugin.version}</version>
+						<configuration>
+							<archive>
+								<manifest>
+									<mainClass>${assemblyMainClass}</mainClass>
+								</manifest>
+							</archive>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+						</configuration>
+						<executions>
+							<execution>
+								<id>make-assembly</id> <!-- this is used for inheritance merges -->
+								<phase>package</phase> <!-- bind to the packaging phase -->
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

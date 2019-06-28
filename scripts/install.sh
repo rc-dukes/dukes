@@ -37,14 +37,19 @@ error() {
 # show usage
 #
 usage() {
-  echo "$(basename $0) [-q|-h]"
+  echo "usage: $(basename $0) [-d|-f|-j|-q]* [-h]?"
   echo ""
   echo "  -d |--debug        : debug this script"
+  echo "  -f |--fatjar       : create a fat jar"
+  echo "  -j |--javadoc      : with javadoc (default is without)"
   echo "  -q |--quick        : no tests, no javadoc"
+  echo ""
   echo "  -h |--help         : show this usage"
   exit 1
 }
 
+mvnOptions="clean install"
+javaDoc="-Dmaven.javadoc.skip=true"
 # commandline option
 while [  "$1" != ""  ]
 do
@@ -58,16 +63,21 @@ do
       debug=true;
       ;;
 
+    -f|--fatjar)
+      mvnOptions="$mvnOptions -D createAssembly=true"
+      ;;
+    -j|--javadoc)
+      javaDoc=""
+      ;;
+
     -h|--help)
       usage
+      exit 0
       ;;
 
     -q)
-      mvn clean install -D skipTests -Dmaven.javadoc.skip=true -D gpg.skip
-      ;;
-
-    *)
-      mvn clean install -Dmaven.javadoc.skip=true
+      mvnOptions="$mvnOptions -D skipTests -D gpg.skip"
       ;;
   esac
 done
+mvn $mvnOptions $javaDoc

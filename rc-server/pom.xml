@@ -13,6 +13,10 @@
   <description>
     Runner to start the cluster on the laptop
   </description>
+  <properties>
+     <!-- to create a fat jar call mvn clean install -D createAssembly=true -->
+     <assemblyMainClass>nl.vaneijndhoven.dukes.server.CarServer</assemblyMainClass>
+  </properties>
 
   <dependencies>
     <dependency>
