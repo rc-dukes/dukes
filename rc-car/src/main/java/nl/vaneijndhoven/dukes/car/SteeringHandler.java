@@ -6,6 +6,10 @@ import io.vertx.core.logging.LoggerFactory;
 import nl.vaneijndhoven.dukes.car.SteeringMap;
 import nl.vaneijndhoven.dukes.drivecontrol.Car;
 
+/**
+ * handle the steering of the car from given command messages
+ *
+ */
 class SteeringHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(SteeringHandler.class);
@@ -13,11 +17,19 @@ class SteeringHandler {
     private static int currentWheelPosition;
     private Car car;
 
+    /**
+     * create a steering handler for the given car
+     * @param car
+     */
     SteeringHandler(Car car) {
         this.car = car;
         this.currentWheelPosition = car.getSteering().getSteeringMap().center();
     }
 
+    /**
+     * handle direct servo Messages - the position is to be absolutely set
+     * @param messageBody containing a double value "position" element
+     */
     void handleServoDirect(JsonObject messageBody) {
         LOG.debug("Received direct message for servo: " + messageBody);
         String position = messageBody.getString("position");
@@ -45,10 +57,13 @@ class SteeringHandler {
             currentWheelPosition = steeringMap.maxRight();
         }
         LOG.debug("about to set current wheel pos to " + currentWheelPosition);
-//        Command.setWheelPosition(currentWheelPosition);
         car.turn(currentWheelPosition);
     }
 
+    /**
+     * handle a message for the steering servo
+     * @param messageBody - containing a position element with "left"/"right" commands
+     */
     void handleServo(JsonObject messageBody) {
         LOG.debug("Received message for servo: " + messageBody);
         String position = messageBody.getString("position");
@@ -68,7 +83,6 @@ class SteeringHandler {
         } else if ("center".equals(position)) {
             currentWheelPosition = steeringMap.center();
         }
-//        Command.setWheelPosition(currentWheelPosition);
         car.turn(currentWheelPosition);
     }
 

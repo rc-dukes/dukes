@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import nl.vaneijndhoven.dukes.car.Engine;
 import nl.vaneijndhoven.dukes.car.Led;
 import nl.vaneijndhoven.dukes.car.ServoBlaster;
+import nl.vaneijndhoven.dukes.car.ServoCommand;
 import nl.vaneijndhoven.dukes.car.Steering;
 
 /**
@@ -13,7 +14,7 @@ import nl.vaneijndhoven.dukes.car.Steering;
  */
 public class Car {
   private static final Logger LOG = LoggerFactory.getLogger(Car.class);
-  
+  public static ServoCommand servoCommand=null;
   private boolean powerIsOn = false;
   Engine engine;
   Steering steering;
@@ -23,7 +24,10 @@ public class Car {
    * get a new car as configured -but as a singleton
    */
   private Car() {
-    ServoBlaster servoCommand = new ServoBlaster();
+    // if nobody configured the servoCommand
+    // then we'll use the default ServoBlaster
+    if (servoCommand==null) 
+      servoCommand = new ServoBlaster();
     engine=new Engine(this,new EngineMap(servoCommand));
     steering=new Steering(this,new SteeringMap(servoCommand));
     led=new Led(new LedMap(servoCommand));
@@ -88,6 +92,11 @@ public class Car {
   public Steering getSteering() {
     return steering;
   }
+  
+  public Led getLed() {
+    return led;
+  }
+  
   private static Car instance=null;
   
   /**
@@ -99,5 +108,6 @@ public class Car {
       instance=new Car();
     return instance;
   }
+
   
 }

@@ -15,6 +15,7 @@ public class ServoMap implements nl.vaneijndhoven.dukes.car.ServoMap {
   
   protected ServoCommand servoCommand;
   protected int gpioPin;
+  protected boolean turnedOrientation;
   
   @Override
   public int gpioPin() {
@@ -27,9 +28,15 @@ public class ServoMap implements nl.vaneijndhoven.dukes.car.ServoMap {
   }
 
   @Override
-  public void configure(int gpioPin, ServoCommand servoCommand) {
+  public void configure(int gpioPin, ServoCommand servoCommand,  boolean turnedOrientation) {
     this.gpioPin=gpioPin;
     this.servoCommand=servoCommand;
+    this.turnedOrientation=turnedOrientation;
+  }
+
+  @Override
+  public boolean turnedOrientation() {
+    return turnedOrientation;
   }
 
 }

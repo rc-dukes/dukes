@@ -40,6 +40,9 @@ public class Steering extends Servo {
     setWheelPosition(steeringMap.center(), force);
   }
 
+  /** 
+   * set the wheel Position to the given position
+   */
   public void setWheelPosition(int position) {
     boolean force = false;
     setWheelPosition(position, force);

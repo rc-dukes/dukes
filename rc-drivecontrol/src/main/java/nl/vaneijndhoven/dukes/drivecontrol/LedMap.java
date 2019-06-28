@@ -32,7 +32,7 @@ public class LedMap extends ServoMap
     }
     LOG.info(String.format("LED gpio: %3d off: %3d on:  %3d",
         LED_GPIO,LED_OFF,LED_ON));
-    super.configure(LED_GPIO, servoCommand);
+    super.configure(LED_GPIO, servoCommand,false);
   }
 
   @Override

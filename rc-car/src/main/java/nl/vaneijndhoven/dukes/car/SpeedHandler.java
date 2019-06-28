@@ -17,15 +17,26 @@ class SpeedHandler {
     private static int currentSpeed;
     private Car car;
 
+    /**
+     * create a speed handler for the given car
+     * @param car
+     */
     public SpeedHandler(Car car) {
         this.car = car;
         currentSpeed = car.getEngine().getEngineMap().neutral();
     }
 
+    /**
+     * set the speed to zero / neutral
+     */
     public void setCurrentSpeedToZero() {
         currentSpeed = car.getEngine().getEngineMap().neutral();
     }
 
+    /**
+     * handle a motor message 
+     * @param messageBody - containing an "up"/"down" element
+     */
     void handleMotor(JsonObject messageBody) {
         LOG.debug("Received message for motor: " + messageBody);
         String speed = messageBody.getString("speed");

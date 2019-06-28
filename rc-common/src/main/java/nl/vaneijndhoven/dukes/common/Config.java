@@ -28,17 +28,20 @@ public class Config {
   public static final String REMOTECAR_HOST = "remotecar.host";
   public static final String CAMERA_URL = "camera.url";
   // wheel configuration
+  public static final String WHEEL_GPIO = "wheel.gpio";
+  public static final String WHEEL_ORIENTATION="wheel.orientation";
   public static final String WHEEL_CENTER = "wheel.center";
   public static final String WHEEL_STEP_SIZE = "wheel.stepsize";
   public static final String WHEEL_MAX_LEFT = "wheel.maxleft";
   public static final String WHEEL_MAX_RIGHT = "wheel.maxright";
-  public static final String WHEEL_GPIO = "wheel.gpio";
+
   // led configuration
   public static final String LED_ON = "led.on";
   public static final String LED_OFF = "led.off";
   public static final String LED_GPIO = "led.gpio";
   // engine configuration
   public static final String ENGINE_GPIO = "engine.gpio";
+  public static final String ENGINE_ORIENTATION="engine.orientation";
   public static final String ENGINE_SPEED_ZERO = "engine.speed.zero";
   public static final String ENGINE_STEP_SIZE = "engine.stepsize";
   public static final String ENGINE_MIN_SPEED_REVERSE = "engine.min.speed.reverse";
