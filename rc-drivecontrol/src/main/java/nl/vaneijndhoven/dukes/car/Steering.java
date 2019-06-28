@@ -25,7 +25,7 @@ public class Steering {
         setWheelPosition(steeringMap.center(), force);
     }
 
-    public void setWheelPosition(int position) {
+    public static void setWheelPosition(int position) {
         boolean force = false;
         setWheelPosition(position, force);
     }
