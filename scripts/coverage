@@ -10,6 +10,6 @@ then
   exit 1
 else
   token=$(cat $tokenpath)
-  #mvn clean test jacoco:report coveralls:report -DrepoToken=$token
-  mvn cobertura:cobertura coveralls:report -DrepoToken=$token
+  mvn clean test jacoco:report coveralls:report -D jacoco=true -DrepoToken=$token
+  #mvn cobertura:cobertura coveralls:report -DrepoToken=$token
 fi
