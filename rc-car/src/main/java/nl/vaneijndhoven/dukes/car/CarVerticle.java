@@ -8,7 +8,7 @@ import io.vertx.rxjava.core.eventbus.Message;
 import nl.vaneijndhoven.dukes.car.Engine;
 import nl.vaneijndhoven.dukes.car.Steering;
 import nl.vaneijndhoven.dukes.common.Characters;
-import nl.vaneijndhoven.dukes.car.Car;
+import nl.vaneijndhoven.dukes.drivecontrol.Car;
 import nl.vaneijndhoven.dukes.drivecontrol.EngineMap;
 import nl.vaneijndhoven.dukes.drivecontrol.SteeringMap;
 import rx.Subscription;
@@ -20,7 +20,7 @@ public class CarVerticle extends AbstractVerticle {
 
     private static final Logger LOG = LoggerFactory.getLogger(CarVerticle.class);
 
-    private Car car = new Car(new Engine(new EngineMap()), new Steering(new SteeringMap()));
+    private Car car = new Car();
     private SpeedHandler speedHandler = new SpeedHandler(car);
     private SteeringHandler steeringHandler = new SteeringHandler(car);
 

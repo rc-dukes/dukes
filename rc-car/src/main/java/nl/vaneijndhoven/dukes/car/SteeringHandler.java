@@ -4,7 +4,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import nl.vaneijndhoven.dukes.car.SteeringMap;
-import nl.vaneijndhoven.dukes.car.Car;
+import nl.vaneijndhoven.dukes.drivecontrol.Car;
 
 class SteeringHandler {
 

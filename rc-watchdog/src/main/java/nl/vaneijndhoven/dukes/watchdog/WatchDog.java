@@ -3,8 +3,9 @@ package nl.vaneijndhoven.dukes.watchdog;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.Message;
-import nl.vaneijndhoven.dukes.car.Command;
 import nl.vaneijndhoven.dukes.common.Characters;
+import nl.vaneijndhoven.dukes.drivecontrol.Car;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Subscription;
@@ -18,6 +19,15 @@ public class WatchDog extends AbstractVerticle {
   public static final int HEARTBEAT_INTERVAL_MS = 150;
   private static final Logger LOG = LoggerFactory.getLogger(WatchDog.class);
   private long lastHeartbeat = 0;
+  private Car car;
+  
+  /**
+   * create watch dog for the given car
+   * @param car
+   */
+  public WatchDog(Car car) {
+    this.car=car;
+  }
 
   @Override
   public void start() {
@@ -38,9 +48,9 @@ public class WatchDog extends AbstractVerticle {
       lastHeartbeat = System.currentTimeMillis();
       // LOG.trace("Heartbeat received, set last heartbeat to {}",
       // lastHeartbeat);
-      if (!Command.powerIsOn()) {
+      if (!car.powerIsOn()) {
         LOG.info("First heartbeat received, power on");
-        Command.setPowerOn();
+        car.setPowerOn();
       }
     }
   }
@@ -49,7 +59,7 @@ public class WatchDog extends AbstractVerticle {
     long currentTime = System.currentTimeMillis();
     // LOG.trace("Check heartbeat, current time: {}", currentTime);
     if (currentTime - lastHeartbeat > (6 * HEARTBEAT_INTERVAL_MS)) {
-      if (Command.powerIsOn()) {
+      if (car.powerIsOn()) {
         // missed 2 heartbeats
         LOG.trace("Missed at least 2 heartbeats.");
         LOG.error("Client connection lost, stopping car and turning off led");
@@ -60,7 +70,7 @@ public class WatchDog extends AbstractVerticle {
         // failsafe: send stop command again after 200ms
         vertx.setTimer(200, fired -> sendStopCommand());
 
-        Command.setPowerOff();
+        car.setPowerOff();
       }
     }
   }

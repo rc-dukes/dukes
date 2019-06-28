@@ -8,16 +8,11 @@ import com.bitplan.error.ErrorHandler;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
-import nl.vaneijndhoven.dukes.car.Car;
 import nl.vaneijndhoven.dukes.car.CarVerticle;
-import nl.vaneijndhoven.dukes.car.Command;
-import nl.vaneijndhoven.dukes.car.Engine;
-import nl.vaneijndhoven.dukes.car.Steering;
 import nl.vaneijndhoven.dukes.common.ClusterStarter;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.dukes.common.Environment;
-import nl.vaneijndhoven.dukes.drivecontrol.EngineMap;
-import nl.vaneijndhoven.dukes.drivecontrol.SteeringMap;
+import nl.vaneijndhoven.dukes.drivecontrol.Car;
 import nl.vaneijndhoven.dukes.watchdog.WatchDog;
 
 /**
@@ -40,8 +35,7 @@ public class RemoteCar {
     starter.prepare();
     Car car;
     try {
-      car = new Car(new Engine(new EngineMap()),
-          new Steering(new SteeringMap()));
+      car = new Car();
       configureShutdownHook(car);
 
       // Set wheel and speed to neutral.
@@ -68,7 +62,7 @@ public class RemoteCar {
         Vertx vertx = resultHandler.result();
         DeploymentOptions deploymentOptions = new DeploymentOptions();
         deploymentOptions.setWorker(true);
-        vertx.deployVerticle(new WatchDog(), deploymentOptions);
+        vertx.deployVerticle(new WatchDog(car), deploymentOptions);
         try {
           vertx.deployVerticle(new CarVerticle(), deploymentOptions);
         } catch (Exception ex) {
@@ -103,7 +97,6 @@ public class RemoteCar {
       public void run() {
         LOG.info("Activating shutdown hook.");
         car.stop();
-        Command.statusLedOff();
       }
     });
   }
