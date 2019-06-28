@@ -20,7 +20,7 @@ public class CarVerticle extends AbstractVerticle {
 
     private static final Logger LOG = LoggerFactory.getLogger(CarVerticle.class);
 
-    private Car car = new Car();
+    private Car car = Car.getInstance(); // there is only one car for the time being
     private SpeedHandler speedHandler = new SpeedHandler(car);
     private SteeringHandler steeringHandler = new SteeringHandler(car);
 

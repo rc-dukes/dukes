@@ -20,9 +20,9 @@ public class Car {
   Led led;
 
   /**
-   * get a new car as configured
+   * get a new car as configured -but as a singleton
    */
-  public Car() {
+  private Car() {
     ServoBlaster servoCommand = new ServoBlaster();
     engine=new Engine(this,new EngineMap(servoCommand));
     steering=new Steering(this,new SteeringMap(servoCommand));
@@ -88,4 +88,16 @@ public class Car {
   public Steering getSteering() {
     return steering;
   }
+  private static Car instance=null;
+  
+  /**
+   * get the car instance
+   * @return - the car instance
+   */
+  public static Car getInstance() {
+    if (instance==null)
+      instance=new Car();
+    return instance;
+  }
+  
 }

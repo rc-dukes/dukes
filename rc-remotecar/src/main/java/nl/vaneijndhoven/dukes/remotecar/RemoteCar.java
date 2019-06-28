@@ -35,7 +35,7 @@ public class RemoteCar {
     starter.prepare();
     Car car;
     try {
-      car = new Car();
+      car = Car.getInstance(); // the one and only to be used also by the verticle!
       configureShutdownHook(car);
 
       // Set wheel and speed to neutral.

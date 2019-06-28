@@ -41,22 +41,4 @@ The self driving car consists of modules with the following responsibilities:
 
 
 ## Getting started
-- run 'install.sh'
-- create a "~/dukes/dukes.ini" file with your settings, example:
-```
-#
-# WF 2019-06-21
-#
-# rc-duke configuration file
-# remote car raspberry PI configuration
-remotecar.host=2.0.0.111
-remotecar.user=wf
-# camera url format
-camera.url=http://2.0.0.111/html/cam_pic_new.php
-# webserver configuration
-webcontrol.port=8080
-imageview.port=8081
-```
-- run './deploy.sh -m -s' in module 'rc-remotecar'
-- start 'CarServer' in module 'rc-server' in IDE
-- point your browser to http://localhost:8080
+see [Deployment](http://wiki.bitplan.com/index.php/Self_Driving_RC_Car#Deployment) in the Wiki
