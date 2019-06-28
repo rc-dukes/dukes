@@ -32,7 +32,7 @@ public interface ExceptionHandler {
    * @param th - the throwable
    * @param hint - the hint to give to the user how to potentially fix this
    */
-  public void handle(Throwable th, String msg);
+  public void handle(Throwable th, String hint);
   
   /**
    * handle the given Throwable with no hint

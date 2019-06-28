@@ -118,7 +118,8 @@ function power() {
 	} else {
 		clearLog("power off");
 		// switch off heartBeat
-		clearInterval(heartBeatInterval);
+		// @TODO - check if this is problematic
+		// clearInterval(heartBeatInterval);
 		imageViewUrl=null;
 		// clearInterval(debugImagesInterval);
 	}
