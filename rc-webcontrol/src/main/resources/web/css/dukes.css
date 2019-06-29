@@ -44,7 +44,7 @@ tbody {
 	line-height: 20px;
 }
 
-th {
+th,.thlabel {
 	background-color: #3F51B5; /* PRIMARY COLOR */
 	border-color: #303F9F;
 	border-style: solid;
@@ -82,20 +82,23 @@ table.images {
 }
 
 img#cameraImage {
-	height: 330px;
+	width: 100%;
 }
 
 img#linesImage {
-	height: 240px; /* 330 px */
+	width: 100%;
 }
 
-img#edgesImage, img#birdseyeImage {
-	height: 150px; /* 150 px */
+img#edgesImage{
+	width: 100%;
+}
+img#birdseyeImage {
+	height: 50%;
 }
 
 td.controls {
 	display: block;
-	width: 550px;
+/*	width: 550px;*/
 }
 /* material design Indigo
     https://www.materialpalette.com/indigo/indigo

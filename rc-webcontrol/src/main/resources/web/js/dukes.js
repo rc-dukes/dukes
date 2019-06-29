@@ -259,7 +259,9 @@ function registerControls() {
 
 	document.onkeydown = function(e) {
 		e = e || window.event;
-
+		// ignore Command key ⌘
+		if (e.metaKey)
+			return;
 		// see
 		// https://hacks.mozilla.org/2017/03/internationalize-your-keyboard-controls/
 		// https://www.w3.org/TR/uievents-code/#code-value-tables
@@ -498,9 +500,9 @@ function updateDebugImages() {
 		setImage("edgesImage", imageViewUrl + '?type=edges&' + Math.random());
 		setImage("linesImage", imageViewUrl + '?type=lines&' + Math.random());
 	} else {
-		setImage("birdseyeImage", streetLane);
-		setImage("edgesImage", streetLane);
-		setImage("linesImage", streetLane);
+		setImage("birdseyeImage", "images/nolines.png");
+		setImage("edgesImage", "images/noedges.png");
+		setImage("linesImage", "images/nolines.png");
 	}
 }
 

@@ -1,15 +1,25 @@
 #!/bin/bash
 # WF 2019-06-26
 # create test coverage report for coveralls
-tokenpath=$HOME/.dukes/coveralls.token
-if [ ! -f $tokenpath ]
+
+# is the environment variable not set?
+if [ "$COVERALLS_TOKEN" = "" ]
 then
-  echo "Script needs coveralls token in $tokenpath to work" 1>&2
-  echo "Script can only be run successfully by project admins" 1>&2
-  echo "see https://github.com/trautonen/coveralls-maven-plugin" 1>&2
-  exit 1
+  tokenpath=$HOME/.dukes/coveralls.token
+  if [ ! -f $tokenpath ]
+  then
+    echo "Script needs coveralls token in $tokenpath to or COVERALLS_TOKEN environment variable to work" 1>&2
+    echo "Script can only be run successfully by project admins" 1>&2
+    echo "see https://github.com/trautonen/coveralls-maven-plugin" 1>&2
+    echo "see https://stackoverflow.com/a/56815300/1497139" 1>&2
+    exit 1
+  fi
 else
-  token=$(cat $tokenpath)
-  mvn clean test jacoco:report coveralls:report -D jacoco=true -DrepoToken=$token
-  #mvn cobertura:cobertura coveralls:report -DrepoToken=$token
+  export COVERALLS_TOKEN=$(cat $tokenpath)
 fi
+# the jacoco variable tries triggering a profile - check your pom.xml
+# for any profile being in use
+mvn clean test jacoco:report coveralls:report -D jacoco=true
+mvn clean test jacoco:report coveralls:report -D jacoco=true -DrepoToken=$token
+#mvn cobertura:cobertura coveralls:report
+#mvn cobertura:cobertura coveralls:report -DrepoToken=$COVERALLS_TOKEN
