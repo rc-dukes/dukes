@@ -106,56 +106,140 @@
 				<div class="col-md-4 thlabel">Detection Config</div>
 			</div>
 			<div class='row'>
-				<div class="col-md-5" id='events' style="overflow-y: scroll;height:300px;"></div>
+				<div class="col-md-5" id='events'
+					style="overflow-y: scroll; height: 300px;"></div>
 				<div class="col-md-3"></div>
 				<div class="col-md-4">
-					<b>Canny config</b><br /> Threshold 1: <input
-						id="cannyConfigThreshold1Slider" value="60" type="range" min="0"
-						max="500" step="1"
-						oninput="onSlide('cannyConfigThreshold1Slider', 'cannyConfigThreshold1Textbox')" />
-					<input id="cannyConfigThreshold1Textbox" size="2" /><br />
+					<fieldset>
+						<legend>Canny config</legend>
+						<div class='row'>
+							<div class='col-md-4'>Treshold 1:</div>
+							<div class='col-md-2'>
+								<input id="cannyConfigThreshold1Textbox" size="2" />
+							</div>
+							<div class='col-md-6'>
+								<input id="cannyConfigThreshold1Slider" value="60" type="range"
+									min="0" max="500" step="1"
+									oninput="onSlide('cannyConfigThreshold1Slider',
+								'cannyConfigThreshold1Textbox')" />
+							</div>
 
-					Threshold 2: <input id="cannyConfigThreshold2Slider" value="150"
-						type="range" min="0" max="500" step="1"
-						oninput="onSlide('cannyConfigThreshold2Slider', 'cannyConfigThreshold2Textbox')" />
-					<input id="cannyConfigThreshold2Textbox" size="2" /><br /> <br />
-					<b>Hough config</b><br /> Rho: <input id="houghConfigRhoSlider"
-						value="1" type="range" min="0.01" max="10" step="0.01"
-						oninput="onSlide('houghConfigRhoSlider', 'houghConfigRhoTextbox')" />
-					<input id="houghConfigRhoTextbox" size="2" /><br /> Theta: <input
-						id="houghConfigThetaSlider" value="0.01745329251" type="range"
-						min="0.01" max="0.2" step="0.00001"
-						oninput="onSlide('houghConfigThetaSlider', 'houghConfigThetaTextbox')" />
-					<input id="houghConfigThetaTextbox" size="8" /><br /> Threshold:
-					<input id="houghConfigThresholdSlider" value="70" type="range"
-						min="0" max="200" step="1"
-						oninput="onSlide('houghConfigThresholdSlider', 'houghConfigThresholdTextbox')" />
-					<input id="houghConfigThresholdTextbox" size="2" /><br />
-					MinLineLength: <input id="houghConfigMinLineLengthSlider"
-						value="20" type="range" min="0" max="200" step="1"
-						oninput="onSlide('houghConfigMinLineLengthSlider', 'houghConfigMinLineLengthTextbox')" />
-					<input id="houghConfigMinLineLengthTextbox" size="2" /><br />
-					MaxLineGap: <input id="houghConfigMaxLineGapSlider" value="10"
-						type="range" min="0" max="200" step="1"
-						oninput="onSlide('houghConfigMaxLineGapSlider', 'houghConfigMaxLineGapTextbox')" />
-					<input id="houghConfigMaxLineGapTextbox" size="2" /><br /> <br />
-					<b>Camera config</b><br /> Exposure Comp. (-10...10), default 0: <input
-						id="camEcSlider" value="0" type="range" min="-10" max="10"
-						step="1" oninput="onSlideCam('camEcSlider', 'camEcTextbox', 'ec')" />
-					<input id="camEcTextbox" size="2" /><br /> Brightness (0...100),
-					default 50: <input id="camBrSlider" value="50" type="range" min="0"
-						max="100" step="1"
-						oninput="onSlideCam('camBrSlider', 'camBrTextbox', 'br')" /> <input
-						id="camBrTextbox" size="2" /><br /> Saturation (-100...100),
-					default 0: <input id="camSaSlider" value="0" type="range"
-						min="-100" max="100" step="1"
-						oninput="onSlideCam('camSaSlider', 'camSaTextbox', 'sa')" /> <input
-						id="camSaTextbox" size="2" /><br />
-					<!--private double rho = 1;-->
-					<!--private double theta = Math.PI/180; // By choosing this value lines sloping left to right will be < 0 radian, while lines sloping right to left will be > 0 radian.-->
-					<!--private int threshold = 70;-->
-					<!--private double minLineLength = 20;-->
-					<!--private double maxLineGap = 10;-->
+						</div>
+						<div class='row'>
+							<div class='col-md-4'>Threshold 2:</div>
+							<div class='col-md-2'>
+								<input id="cannyConfigThreshold2Textbox" size="2" />
+							</div>
+
+							<div class='col-md-6'>
+								<input id="cannyConfigThreshold2Slider" value="150" type="range"
+									min="0" max="500" step="1"
+									oninput="onSlide('cannyConfigThreshold2Slider', 'cannyConfigThreshold2Textbox')" />
+							</div>
+						</div>
+					</fieldset>
+					<fieldset>
+						<legend>Hough config</legend>
+						<div class='row'>
+							<div class='col-md-4'>Rho:</div>
+							<div class='col-md-2'>
+								<input id="houghConfigRhoTextbox" size="2" />
+							</div>
+							<div class='col-md-6'>
+								<input id="houghConfigThetaSlider" value="0.01745329251"
+									type="range" min="0.01" max="0.2" step="0.00001"
+									oninput="onSlide('houghConfigThetaSlider', 'houghConfigThetaTextbox')" />
+							</div>
+						</div>
+						<div class='row'>
+							<div class='col-md-4'>Theta:</div>
+							<div class='col-md-2'>
+								<input id="houghConfigThetaTextbox" size="8" />
+							</div>
+							<div class='col-md-6'>
+								<input id="houghConfigRhoSlider" value="1" type="range"
+									min="0.01" max="10" step="0.01"
+									oninput="onSlide('houghConfigRhoSlider', 'houghConfigRhoTextbox')" />
+							</div>
+						</div>
+						<div class='row'>
+							<div class='col-md-4'>Threshold:</div>
+							<div class='col-md-2'>
+								<input id="houghConfigThresholdTextbox" size="2" />
+							</div>
+							<div class='col-md-6'>
+								<input id="houghConfigThresholdSlider" value="70" type="range"
+									min="0" max="200" step="1"
+									oninput="onSlide('houghConfigThresholdSlider', 'houghConfigThresholdTextbox')" />
+							</div>
+						</div>
+
+						<div class='row'>
+							<div class='col-md-4'>MinLineLength:</div>
+							<div class='col-md-2'>
+								<input id="houghConfigMinLineLengthTextbox" size="2" /><br />
+							</div>
+							<div class='col-md-6'>
+								<input id="houghConfigMinLineLengthSlider" value="20"
+									type="range" min="0" max="200" step="1"
+									oninput="onSlide('houghConfigMinLineLengthSlider', 'houghConfigMinLineLengthTextbox')" />
+							</div>
+
+						</div>
+						<div class='row'>
+							<div class='col-md-4'>MaxLineGap:</div>
+							<div class='col-md-2'>
+								<input id="houghConfigMaxLineGapTextbox" size="2" />
+							</div>
+							<div class='col-md-6'>
+								<input id="houghConfigMaxLineGapSlider" value="10" type="range"
+									min="0" max="200" step="1"
+									oninput="onSlide('houghConfigMaxLineGapSlider', 'houghConfigMaxLineGapTextbox')" />
+							</div>
+						</div>
+					</fieldset>
+					<fieldset>
+						<legend>Camera config</legend>
+						<div class='row'>
+							<div class='col-md-4'>Exposure Comp. (-10...10), default 0:
+							</div>
+							<div class='col-md-2'>
+								<input id="camEcTextbox" size="2" />
+							</div>
+							<div class='col-md-6'>
+								<input id="camEcSlider" value="0" type="range" min="-10"
+									max="10" step="1"
+									oninput="onSlideCam('camEcSlider', 'camEcTextbox', 'ec')" />
+							</div>
+						</div>
+						<div class='row'>
+							<div class='col-md-4'>Brightness (0...100), default 50:</div>
+							<div class='col-md-2'>
+								<input id="camBrTextbox" size="2" />
+							</div>
+							<div class='col-md-6'>
+								<input id="camBrSlider" value="50" type="range" min="0"
+									max="100" step="1"
+									oninput="onSlideCam('camBrSlider', 'camBrTextbox', 'br')" />
+							</div>
+						</div>
+						<div class='row'>
+							<div class='col-md-4'>Saturation (-100...100), default 0:</div>
+							<div class='col-md-2'>
+								<input id="camSaTextbox" size="2" />
+							</div>
+							<div class='col-md-6'>
+								<input id="camSaSlider" value="0" type="range" min="-100"
+									max="100" step="1"
+									oninput="onSlideCam('camSaSlider', 'camSaTextbox', 'sa')" />
+							</div>
+						</div>
+						<!--private double rho = 1;-->
+						<!--private double theta = Math.PI/180; // By choosing this value lines sloping left to right will be < 0 radian, while lines sloping right to left will be > 0 radian.-->
+						<!--private int threshold = 70;-->
+						<!--private double minLineLength = 20;-->
+						<!--private double maxLineGap = 10;-->
+					</fieldset>
 				</div>
 			</div>
 			<div id="message"></div>
