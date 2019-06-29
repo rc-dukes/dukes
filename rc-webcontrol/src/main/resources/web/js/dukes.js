@@ -5,6 +5,7 @@
 var eb = null; // we start with an undefined eventbus
 var imageViewUrl = null;
 var cameraUrl = null;
+var cameraFps=5;
 var streetLane = "images/StreetLane.jpg"; // default Image
 
 /**
@@ -114,7 +115,7 @@ function power() {
 		clearLog("power on");
 		initEventBus(display, true);
 		heartBeatInterval = registerHeartBeat();
-		registerCamera('http://pibeewifi/html/cam_get.php', 200);
+		registerCamera('http://pibeewifi/html/cam_get.php', cameraFps);
 	} else {
 		clearLog("power off");
 		// switch off heartBeat
@@ -468,19 +469,20 @@ function setCameraImageUrl(baseurl) {
 /**
  * register the camera
  * 
- * @param msecs -
- *            refresh time
+ * @param fps - frames per second
  */
-function registerCamera(url, msecs) {
+function registerCamera(url, fps) {
+	cameraFps=fps;
 	cameraUrl = url;
+	if (cameraInterval)
+		clearInterval(cameraInterval);
 	if (url) {
+		var msecs=1000/fps;
 		logMessage('camera image ' + url + ' every ' + msecs + ' msecs');
 		cameraInterval = setInterval(function() {
 			setCameraImageUrl(cameraUrl);
 		}, msecs);
 	} else {
-		if (cameraInterval)
-			clearInterval(cameraInterval);
 		setCameraImageUrl(streetLane);
 	}
 
@@ -507,6 +509,9 @@ function updateDebugImages() {
 }
 
 function updateConfig() {
+	var newCameraFps=document.getElementById('cameraFpsSlider').value;
+	if (newCameraFps!=cameraFps)
+	  registerCamera(cameraUrl,newCameraFps)
 	var cannyConfigThreshold1 = document
 			.getElementById('cannyConfigThreshold1Slider').value;
 	var cannyConfigThreshold2 = document

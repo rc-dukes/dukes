@@ -108,7 +108,23 @@
 			<div class='row'>
 				<div class="col-md-5" id='events'
 					style="overflow-y: scroll; height: 300px;"></div>
-				<div class="col-md-3"></div>
+				<div class="col-md-3">
+					<fieldset>
+						<legend>Frame rates:</legend>
+						<div class='row'>
+							<div class='col-md-4'>Camera:</div>
+							<div class='col-md-2'>
+								<input id="cameraFpsTextbox" size="2" />
+							</div>
+							<div class='col-md-6'>
+								<input id="cameraFpsSlider" value="60" type="range" min="1"
+									max="20" step="1"
+									oninput="onSlide('cameraFpsSlider',
+								'cameraFpsTextbox')" />
+							</div>
+						</div>
+					</fieldset>
+				</div>
 				<div class="col-md-4">
 					<fieldset>
 						<legend>Canny config</legend>
@@ -201,8 +217,7 @@
 					<fieldset>
 						<legend>Camera config</legend>
 						<div class='row'>
-							<div class='col-md-4'>Exposure Comp. (-10...10), default 0:
-							</div>
+							<div class='col-md-4'>Exposure Comp. (-10...10), default 0:</div>
 							<div class='col-md-2'>
 								<input id="camEcTextbox" size="2" />
 							</div>
