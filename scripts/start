@@ -88,21 +88,23 @@ runInTerminal() {
 #
 runServer() {
   # the server components are in rc-server
+  pwd=$(pwd)
   server=$mydir/../rc-server
   jar=$server/target/rc-server-${version}-jar-with-dependencies.jar
-  jar=$(realpath $jar)
   if [ ! -f $jar ]
   then
     color_msg $blue  "$jar is missing - will create it for your"
-    cd ../rc-server
+    cd $mydir/../rc-server
     ../scripts/install.sh -f -q
-    cd $mydir
+    cd $pwd
   fi
+  jar=$(realpath $jar)
   runInTerminal "java -jar $jar"&
 }
 
 runCar() {
   # the deploy script is in rc-remotecar
+  pwd=$(pwd)
   remotecar=$mydir/../rc-remotecar
   remotecar=$(realpath $remotecar)
   fatjar=$remotecar/target/rc-remotecar-${version}-fat.jar
@@ -111,7 +113,7 @@ runCar() {
     color_msg "$blue $fatjar is missing - will create it for you ..."
     cd $remotecar
     ./deploy.sh -m
-    cd $mydir
+    cd $pwd
   fi
   runInTerminal "cd $remotecar;./deploy.sh -s"&
 }

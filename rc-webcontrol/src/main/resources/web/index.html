@@ -40,7 +40,9 @@
 				<td></td>
 				<td><i id="autopilot" class='mdi mdi-car bigicon'
 					title="autopilot/+" onclick="autopilot();"></i></td>
-				<td rowspan='4'><img id="cameraImage"></td>
+				<td rowspan='4'><img id="cameraImage"><br>
+				<input id="cameraImageUrlBox" type="text" size=60></input</td>
+				</td>
 			</tr>
 			<tr>
 				<td><i id="left" class='mdi mdi-arrow-left-bold bigicon'
@@ -69,9 +71,13 @@
 				<td><i id="power" class='mdi mdi-power bigicon' title="p"
 					onclick="power();"></i></td>
 			</tr>
+			<tr>
+				<th id='eventslabel' colspan='5'>Events</th>
+			</tr>
+			<tr>
+				<td id='events' colspan='5'></td>
+			</tr>
 		</table>
-		<h6 id='eventslabel'>Events:</h6>
-		<textarea id='events' cols="80" rows="15"></textarea>
 		<!--<div id="message"></div>-->
 		<!--<input type="file" accept="video/*"/>-->
 		<!--<video controls autoplay></video>-->

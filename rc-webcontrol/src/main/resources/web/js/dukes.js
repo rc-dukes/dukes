@@ -3,8 +3,9 @@
  */
 
 var eb = null; // we start with an undefined eventbus
-var imageViewUrl = null; 
-var cameraUrl=null;
+var imageViewUrl = null;
+var cameraUrl = null;
+var streetLane = "images/StreetLane.jpg"; // default Image
 
 /**
  * all publish messages should go thru this function
@@ -35,10 +36,10 @@ function publish(address, message, headers) {
 	} else {
 		stateColor = "violet";
 	}
-	setColor("eventslabel", stateColor);
+	setColor("events", stateColor);
 }
 
-var NUM_LOG_LINES_VISIBLE = 15;
+var NUM_LOG_LINES_VISIBLE = 7;
 var logLines = [];
 var logIndex = 0;
 /**
@@ -59,8 +60,9 @@ var display = function(err, msg) {
  * @param msg
  */
 function logMessage(msg) {
-	// var newLine="<p>"; // textarea
-	var newLine = "\n"; // pre
+	var newLine = "<p>\n"; // td
+	// var newLine = "\n"; // textarea
+
 	var elem = document.getElementById("events");
 	var now = new Date().toISOString();
 	var logLine = now + ': ' + msg + newLine;
@@ -72,9 +74,9 @@ function logMessage(msg) {
 
 	var allLogs = '';
 	for (i = 0; i < logLines.length; i++) {
-		allLogs += newLine + logLines[i];
+		allLogs += logLines[i];
 	}
-	elem.value = allLogs;
+	elem.innerHTML = allLogs;
 };
 
 function clearLog(msg) {
@@ -92,7 +94,6 @@ var cameraInterval;
  */
 function initRemote() {
 	initRemoteControls();
-	cameraInterval=registerCamera(50);
 }
 
 /**
@@ -101,7 +102,6 @@ function initRemote() {
 function initDetect() {
 	initRemoteControls();
 	initialSliderValues();
-	cameraInterval=registerCamera(50);
 }
 
 var powerState = false;
@@ -113,14 +113,15 @@ function power() {
 	if (powerState) {
 		clearLog("power on");
 		initEventBus(display, true);
-		heartBeatInterval=registerHeartBeat();
-		cameraUrl='http://pibeewifi/html/cam_get.php';
+		heartBeatInterval = registerHeartBeat();
+		registerCamera('http://pibeewifi/html/cam_get.php', 200);
 	} else {
 		clearLog("power off");
 		// switch off heartBeat
 		// @TODO - check if this is problematic
 		clearInterval(heartBeatInterval);
-		imageViewUrl=null;
+		imageViewUrl = null;
+		registerCamera(null, 0);
 		// clearInterval(debugImagesInterval);
 	}
 }
@@ -170,11 +171,11 @@ function initEventBus(withDetect) {
 	if (protocol === "file:") {
 		busUrl = "http://localhost:8080/eventbus";
 		imageViewUrl = 'http://localhost:8081';
-		debugImagesInterval=registerDebugImages(100);
+		debugImagesInterval = registerDebugImages(100);
 	} else {
 		busUrl = window.location.origin + "/eventbus";
 		imageViewUrl = 'http://' + window.location.hostname + ':8081'
-		debugImagesInterval=registerDebugImages(200);
+		debugImagesInterval = registerDebugImages(200);
 		msg = window.location.origin;
 	}
 	logMessage("server is " + msg + "\n busUrl=" + busUrl + "\nimageViewUrl="
@@ -250,7 +251,7 @@ function localFileVideoPlayer() {
 }
 
 function registerHeartBeat() {
-   return window.setInterval(sendHeartBeat, 150);
+	return window.setInterval(sendHeartBeat, 150);
 }
 
 // register key handling controls
@@ -392,7 +393,7 @@ function manual() {
 
 function keyPressed(id) {
 	console.log(id);
-	logMessage(id+" pressed");
+	logMessage(id + " pressed");
 	var element = document.getElementById(id);
 	element.style.fontWeight = 'bold';
 	setTimeout(function() {
@@ -453,24 +454,55 @@ function registerDebugImages(msecs) {
 }
 
 /**
+ * set the camera Image Url based on the given base url
+ * @param baseurl
+ */
+function setCameraImageUrl(baseurl) {
+	var url = baseurl + '?time=' + new Date().getTime();
+	document.getElementById("cameraImage").src = url;
+	cameraImageUrlBox.value = url;
+}
+
+/**
+ * register the camera
+ * 
+ * @param msecs -
+ *            refresh time
+ */
+function registerCamera(url, msecs) {
+	cameraUrl = url;
+	if (url) {
+		logMessage('camera image ' + url + ' every ' + msecs + ' msecs');
+		cameraInterval = setInterval(function() {
+			setCameraImageUrl(cameraUrl);
+		}, msecs);
+	} else {
+		if (cameraInterval)
+			clearInterval(cameraInterval);
+		setCameraImageUrl(streetLane);
+	}
+
+	// 'http://localhost:8081?type=original&'
+}
+
+/**
  * update the Debug Images based on the given imageView Url
  * 
  * @param imageViewUrl -
  *            the URL of the imageView server as configured in the Enviroment
  */
-function updateDebugImages() {	
-  if (imageViewUrl) {
-	  setImage("birdseyeImage", imageViewUrl + '?type=birdseye&' + Math.random());
-	  setImage("edgesImage", imageViewUrl + '?type=edges&' + Math.random());
-	  setImage("linesImage", imageViewUrl + '?type=lines&' + Math.random());	  
-  } else {
-	  var streetLane="images/StreetLane.jpg";
-	  setImage("birdseyeImage",streetLane);
-	  setImage("edgesImage",streetLane);
-	  setImage("linesImage",streetLane);
-  }
+function updateDebugImages() {
+	if (imageViewUrl) {
+		setImage("birdseyeImage", imageViewUrl + '?type=birdseye&'
+				+ Math.random());
+		setImage("edgesImage", imageViewUrl + '?type=edges&' + Math.random());
+		setImage("linesImage", imageViewUrl + '?type=lines&' + Math.random());
+	} else {
+		setImage("birdseyeImage", streetLane);
+		setImage("edgesImage", streetLane);
+		setImage("linesImage", streetLane);
+	}
 }
-
 
 function updateConfig() {
 	var cannyConfigThreshold1 = document
@@ -523,8 +555,8 @@ function setColor(id, color) {
  * @param src
  */
 function setImage(id, src) {
-  // logMessage("id.src:"+id+"->"+src);	
-  document.getElementById(id).src = src;
+	// logMessage("id.src:"+id+"->"+src);
+	document.getElementById(id).src = src;
 }
 
 /**
@@ -587,17 +619,4 @@ function updateCamConfig(elementId, configKey) {
 	var ajax_cmd = new XMLHttpRequest();
 	ajax_cmd.open("GET", url, true);
 	ajax_cmd.send();
-}
-
-/**
- * register the camera
- * @param msecs - refresh time
- */
-function registerCamera(msecs) {
-	return setInterval(
-			function() {
-				document.getElementById("cameraImage").src = cameraUrl+'?timestamp='
-						+ new Date();
-			}, msecs);
-	// 'http://localhost:8081?type=original&'
 }

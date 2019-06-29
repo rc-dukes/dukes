@@ -81,8 +81,12 @@ table.images {
 	display: block;
 }
 
-img#cameraImage, img#linesImage, img#originalImage {
-	height: 330px; /* 330 px */
+img#cameraImage {
+	height: 330px;
+}
+
+img#linesImage {
+	height: 240px; /* 330 px */
 }
 
 img#edgesImage, img#birdseyeImage {

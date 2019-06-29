@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<!--
+  WebControl frontend
+ -->
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+<title>Dukes Self driving RC-Car Webcontrol</title>
+<script src="js/sockjs.0.3.4.min.js"></script>
+<script src="js/vertx-eventbus.js"></script>
+<script src="js/dukes.js"></script>
+<!--  Material Design Lite -->
+<script src="md/material.min.js"></script>
+<link rel="stylesheet" href="md/material.min.css">
+<!--  Material design icons see https://materialdesignicons.com/getting-started -->
+<link href="css/materialdesignicons.min.css" media="all"
+	rel="stylesheet" type="text/css" />
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"
+	crossorigin="anonymous">
+<link rel="stylesheet" href="css/dukes.css">
+</head>
+<body>
+	<!--  common menu -->
+	<div id='headerbox'>
+		<!-- see https://cdn.materialdesignicons.com/1.1.34/ for possible icons-->
+		<a href='index.html' title='Home'><i
+			class='mdi mdi-home headerboxicon'></i> <!-- home --></a> <a
+			href='detect.html' title='Detect'><i
+			class='mdi mdi-camera headerboxicon'></i> <!-- home --></a> <a
+			href='https://github.com/rc-dukes/dukes' title='Home'><i
+			class='mdi mdi-github-box headerboxicon'></i> <!-- home --></a>
+	</div>
+	<div id='navigationbox' title='Self Driving RC Car WebControl'>Self
+		Driving RC Car WebControl</div>
+	<div id='contentbox' class='container'>
+
+		<div class='row'>
+			<div class="col-md-2">
+				<table id="navigationcontrols">
+					<tr>
+						<td></td>
+						<td><i id="up" class='mdi mdi-arrow-up-bold mediumicon'
+							title="up/u" onclick="up();"></i></td>
+						<td></td>
+						<td><i id="autopilot" class='mdi mdi-car mediumicon'
+							title="autopilot/+" onclick="autopilot();"></i></td>
+					</tr>
+					<tr>
+						<td><i id="left" class='mdi mdi-arrow-left-bold mediumicon'
+							title="left/l" onclick="left();"></i></td>
+						<td><i id="stop" class='mdi mdi-stop mediumicon'
+							title="stop/space" onclick="stop();"></i></td>
+						<td><i id="right" class='mdi mdi-arrow-right-bold mediumicon'
+							title="right/r" onclick="right();"></i></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><i id="down" class='mdi mdi-arrow-down-bold mediumicon'
+							title="down/d" onclick="down();"></i></td>
+						<td></td>
+						<td><i id="manual" class='mdi mdi-account mediumicon'
+							title="manual/-" onclick="manual();"></i></td>
+					</tr>
+					<tr>
+						<td><i id="brake" class='mdi mdi-close mediumicon'
+							title="brake/b/s" onclick="brake();"></i></td>
+						<td><i id="center"
+							class='mdi mdi-image-filter-center-focus mediumicon'
+							title='center/c/z' onclick="center();"></i></td>
+						<td></td>
+						<td><i id="power" class='mdi mdi-power mediumicon' title="p"
+							onclick="power();"></i></td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-md-4">
+				<img id="cameraImage" />
+			</div>
+			<div class="col-md-3">
+				<img id="edgesImage" />
+			</div>
+			<div class="col-md-3">
+				<img id="birdseyeImage" /> <img id="linesImage" />
+			</div>
+		</div>
+		<div class='row'>
+			<div id='eventslabel' class="col-md-4">Events</div>
+			<div class="col-md-4">Config</div>
+			<div class="col-md-4"></div>
+		</div>
+		<div class='row'>
+			<div id='events' class="col-md-4"></div>
+			<div id='cannyconfig' class="col-md-4">
+				<b>Canny config</b><br /> Threshold 1: <input
+					id="cannyConfigThreshold1Slider" value="60" type="range" min="0"
+					max="500" step="1"
+					oninput="onSlide('cannyConfigThreshold1Slider', 'cannyConfigThreshold1Textbox')" />
+				<input id="cannyConfigThreshold1Textbox" size="2" /><br />
+
+				Threshold 2: <input id="cannyConfigThreshold2Slider" value="150"
+					type="range" min="0" max="500" step="1"
+					oninput="onSlide('cannyConfigThreshold2Slider', 'cannyConfigThreshold2Textbox')" />
+				<input id="cannyConfigThreshold2Textbox" size="2" /><br /> <br />
+				<b>Hough config</b><br /> Rho: <input id="houghConfigRhoSlider"
+					value="1" type="range" min="0.01" max="10" step="0.01"
+					oninput="onSlide('houghConfigRhoSlider', 'houghConfigRhoTextbox')" />
+				<input id="houghConfigRhoTextbox" size="2" /><br /> Theta: <input
+					id="houghConfigThetaSlider" value="0.01745329251" type="range"
+					min="0.01" max="0.2" step="0.00001"
+					oninput="onSlide('houghConfigThetaSlider', 'houghConfigThetaTextbox')" />
+				<input id="houghConfigThetaTextbox" size="8" /><br /> Threshold: <input
+					id="houghConfigThresholdSlider" value="70" type="range" min="0"
+					max="200" step="1"
+					oninput="onSlide('houghConfigThresholdSlider', 'houghConfigThresholdTextbox')" />
+				<input id="houghConfigThresholdTextbox" size="2" /><br />
+				MinLineLength: <input id="houghConfigMinLineLengthSlider" value="20"
+					type="range" min="0" max="200" step="1"
+					oninput="onSlide('houghConfigMinLineLengthSlider', 'houghConfigMinLineLengthTextbox')" />
+				<input id="houghConfigMinLineLengthTextbox" size="2" /><br />
+				MaxLineGap: <input id="houghConfigMaxLineGapSlider" value="10"
+					type="range" min="0" max="200" step="1"
+					oninput="onSlide('houghConfigMaxLineGapSlider', 'houghConfigMaxLineGapTextbox')" />
+				<input id="houghConfigMaxLineGapTextbox" size="2" /><br /> <br />
+				<b>Camera config</b><br /> Exposure Comp. (-10...10), default 0: <input
+					id="camEcSlider" value="0" type="range" min="-10" max="10" step="1"
+					oninput="onSlideCam('camEcSlider', 'camEcTextbox', 'ec')" /> <input
+					id="camEcTextbox" size="2" /><br /> Brightness (0...100), default
+				50: <input id="camBrSlider" value="50" type="range" min="0"
+					max="100" step="1"
+					oninput="onSlideCam('camBrSlider', 'camBrTextbox', 'br')" /> <input
+					id="camBrTextbox" size="2" /><br /> Saturation (-100...100),
+				default 0: <input id="camSaSlider" value="0" type="range" min="-100"
+					max="100" step="1"
+					oninput="onSlideCam('camSaSlider', 'camSaTextbox', 'sa')" /> <input
+					id="camSaTextbox" size="2" /><br />
+				<!--private double rho = 1;-->
+				<!--private double theta = Math.PI/180; // By choosing this value lines sloping left to right will be < 0 radian, while lines sloping right to left will be > 0 radian.-->
+				<!--private int threshold = 70;-->
+				<!--private double minLineLength = 20;-->
+				<!--private double maxLineGap = 10;-->
+			</div>
+			<div class="col-md-4"></div>
+		</div>
+		<!-- row -->
+		<div id="message"></div>
+		<!--<input type="file" accept="video/*"/>-->
+		<!--<video controls autoplay></video>-->
+	</div>
+	<!--  end of main content box -->
+	<div id='footerbox'></div>
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		// reset the global event bus variable
+		initDetect();
+	</script>
+</body>
+</html>

@@ -40,7 +40,8 @@
 				<td></td>
 				<td><i id="autopilot" class='mdi mdi-car mediumicon'
 					title="autopilot/+" onclick="autopilot();"></i></td>
-				<td class="previewImage" rowspan='4'><img id="cameraImage"></td>
+				<td class="previewImage" rowspan='4'><img id="cameraImage">
+				<br><input id="cameraImageUrlBox" type="text" size=60></input</td>
 				<td class="previewImage" rowspan='4'><img id="edgesImage">
 					<br /> <img id="birdseyeImage"></td>
 				<td class="previewImage" rowspan='4'><img id="linesImage"></td>
@@ -73,9 +74,11 @@
 					onclick="power();"></i></td>
 			</tr>
 			<tr>
-				<td colspan='5'>
-					<h6 id='eventslabel'>Events:</h6> <textarea rows='15' cols='90'
-						id='events'></textarea>
+				<th id='eventslabel' colspan='5'>Events</th>
+				<th>Config</th>
+			</tr>
+			<tr>
+				<td id='events' colspan='5'>
 				</td>
 				<td class="controls" colspan='2'><b>Canny config</b><br />
 					Threshold 1: <input id="cannyConfigThreshold1Slider" value="60"
