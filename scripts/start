@@ -1,0 +1,235 @@
+#!/bin/bash
+# WF 2019-06-29
+# start server and client
+
+#ansi colors
+#http://www.csc.uvic.ca/~sae/seng265/fall04/tips/s265s047-tips/bash-using-colors.html
+blue='\033[0;34m'
+red='\033[0;31m'
+green='\033[0;32m' # '\e[1;32m' is too bright for white bg.
+endColor='\033[0m'
+
+#
+# a colored message
+#   params:
+#     1: l_color - the color of the message
+#     2: l_msg - the message to display
+#
+color_msg() {
+  local l_color="$1"
+  local l_msg="$2"
+  echo -e "${l_color}$l_msg${endColor}"
+}
+
+# error
+#
+#   show an error message and exit
+#
+#   params:
+#     1: l_msg - the message to display
+error() {
+  local l_msg="$1"
+  # use ansi red for error
+  color_msg $red "Error: $l_msg" 1>&2
+}
+
+#
+# show usage
+#
+usage() {
+  echo "$(basename $0) [-d|-h]"
+  echo ""
+  echo "  -a |--all     : run all parts of the software"
+  echo "  -c |--car     : run car software on pi"
+  echo "  -s |--server  : run server software"
+  echo "  -r |--remote  : point webbrowser to remot control"
+  echo "  -w |--web     : point webbrowser to detect.html"
+  echo "  -d |--debug   : debug this script"
+  echo "  -h |--help    : show this usage"
+  exit 1
+}
+
+#
+# from the given properties file get the given value
+#   param 1: ini file
+#   param 2: name of property
+#   returns: value of property or fails with error message
+#
+getValue() {
+  local l_ini="$1"
+  local l_name="$2"
+  cat $l_ini | egrep -v "^#" | grep "^$l_name=" | cut -f2 -d "="
+}
+
+#
+# run the given command in a terminal
+#
+runInTerminal() {
+  local l_cmd="$1"
+  # check operationg system
+  os=$(uname -a)
+
+  case $os in
+      # MacOs see https://stackoverflow.com/a/7820639/1497139
+    Darwin*)
+      local l_script="/tmp/cmd$$"
+      echo "$l_cmd" > $l_script
+      chmod +x $l_script
+      open -b com.apple.terminal $l_script
+      #rm $l_script ;;
+      ;;
+      # Unix
+    *) xterm -e "$l_cmd" ;;
+  esac
+}
+
+#
+# run the server
+#
+runServer() {
+  # the server components are in rc-server
+  server=$mydir/../rc-server
+  jar=$server/target/rc-server-${version}-jar-with-dependencies.jar
+  jar=$(realpath $jar)
+  if [ ! -f $jar ]
+  then
+    color_msg $blue  "$jar is missing - will create it for your"
+    cd ../rc-server
+    ../scripts/install.sh -f -q
+    cd $mydir
+  fi
+  runInTerminal "java -jar $jar"&
+}
+
+runCar() {
+  # the deploy script is in rc-remotecar
+  remotecar=$mydir/../rc-remotecar
+  remotecar=$(realpath $remotecar)
+  fatjar=$remotecar/target/rc-remotecar-${version}-fat.jar
+  if [ ! -f $fatjar ]
+  then
+    color_msg "$blue $fatjar is missing - will create it for you ..."
+    cd $remotecar
+    ./deploy.sh -m
+    cd $mydir
+  fi
+  runInTerminal $remotecar/deploy.sh -s&
+}
+
+# http://fahdshariff.blogspot.com/2014/02/retrying-commands-in-shell-scripts.html
+# Retries a command on failure.
+# $1 - the max number of attempts
+# $2... - the command to run
+retry() {
+  local -r -i max_attempts="$1"; shift
+  local -r cmd="$@"
+  local -i attempt_num=1
+
+  until [ $cmd ]
+  do
+    if (( attempt_num == max_attempts ))
+    then
+      echo "Attempt $attempt_num failed and there are no more attempts left!"
+      return 1
+    else
+      echo "Attempt $attempt_num failed! Trying again in $attempt_num seconds..."
+      sleep $(( attempt_num++ ))
+    fi
+  done
+}
+
+#
+# open the given url waiting for the given number of seconds
+#
+# param #1: the url to open
+# param #2: the number of loops to wait
+# param #3: the sleep time per loop
+openUrl() {
+  local l_url="$1"
+  local l_loops="$2"
+  local l_sleep="$3"
+  local l_count=1
+  local l_done=0
+  until [ $l_done -eq 1 ]
+  do
+    l_count=$((l_count+1))
+    if [ "$l_count" -gt "$l_loops" ]
+    then
+      l_done=1
+    fi
+    status=$(curl -Is $l_url | head -1)
+    echo "waiting $l_count/$l_loops for $l_url: $status"
+    case $status in
+      *200*OK*) open $l_url
+        l_done="1" ;;
+    esac
+    sleep $l_sleep
+  done
+}
+
+#
+# run the given web page of the server
+#
+runWeb() {
+  local l_page="$1"
+  # let's get the port being used
+  ini=.dukes/dukes.ini
+  inipath=$HOME/$ini
+  port=8080
+  if [ -f $inipath  ]
+  then
+    port=$(getValue $inipath webcontrol.port)
+  else
+    color_msg $red "configuration file $inipath is missing - will use $port as port"
+  fi
+  openUrl "http://localhost:$port/$l_page" 60 0.5
+}
+
+# where am i?
+mydir=$(dirname $0)
+
+# let's get the current version
+version=$(grep '<version>' $mydir/../pom.xml | head -1 | cut -f2 -d '<' | cut -f2 -d '>')
+
+# commandline option
+while [  "$1" != ""  ]
+do
+  option=$1
+  shift
+
+  # optionally show usage
+  case $option in
+    -d|--debug)
+      set -x
+      debug=true;
+      ;;
+
+    -c |--car)
+      # the remote software on the PI
+      runCar
+      ;;
+    -s |--server)
+      # the server on e.g. a laptop
+      runServer
+      ;;
+    -r |--remote)
+      # the browser pointing to the web page of the server
+      # remote control of car only
+      runWeb "index.html"
+      ;;
+    -w |--web)
+      # the browser pointing to the web page of the server
+      # detect page
+      runWeb "detect.html"
+      ;;
+    -a|--all)
+      runCar
+      runServer
+      runWeb "detect.html"
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+  esac
+done
