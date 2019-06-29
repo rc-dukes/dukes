@@ -113,7 +113,7 @@ runCar() {
     ./deploy.sh -m
     cd $mydir
   fi
-  runInTerminal $remotecar/deploy.sh -s&
+  runInTerminal "cd $remotecar;./deploy.sh -s"&
 }
 
 # http://fahdshariff.blogspot.com/2014/02/retrying-commands-in-shell-scripts.html
