@@ -21,13 +21,16 @@ public class ImageView extends AbstractVerticle {
 
   @Override
   public void start() throws Exception {
-    int port=Config.getEnvironment().getInteger(Config.IMAGEVIEW_PORT);
-    LOG.info("Starting ImageView Roscoe (lane detection debug image web server on port "+port);
+    int port = Config.getEnvironment().getInteger(Config.IMAGEVIEW_PORT);
+    LOG.info(
+        "Starting ImageView Roscoe (lane detection debug image web server on port "
+            + port);
     vertx.createHttpServer().requestHandler(this::sendImage).listen(port);
   }
 
   /**
    * send an image for the given request
+   * 
    * @param request
    */
   private void sendImage(HttpServerRequest request) {
@@ -47,8 +50,18 @@ public class ImageView extends AbstractVerticle {
     default:
       if (Detector.MAT != null) {
         MatOfByte matOfByte = new MatOfByte();
-        Imgcodecs.imencode(".png", Detector.MAT, matOfByte);
-        bytes = matOfByte.toArray();
+        try {
+          if (Detector.MAT.width()>0) {
+            Imgcodecs.imencode(".png", Detector.MAT, matOfByte);
+            bytes = matOfByte.toArray();
+          } else {
+            String msg=String.format("can't encode %d x %d size image",Detector.MAT.width(),Detector.MAT.height());
+            LOG.trace(msg);
+          }
+        } catch (org.opencv.core.CvException cve) {
+          LOG.warn("image encoding failed: "+cve.getMessage());
+          bytes=null;
+        }
       }
     }
 

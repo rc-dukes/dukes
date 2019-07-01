@@ -59,7 +59,7 @@ public class Config {
 
     LoggerContext logConfig = (LoggerContext) LoggerFactory.getILoggerFactory();
     logConfig.getLogger("ROOT").setLevel(Level.TRACE);
-
+    logConfig.getLogger("nl.vaneijndhoven.dukes.imageview").setLevel(Level.INFO);
     logConfig.getLogger("io.vertx").setLevel(Level.INFO);
     logConfig.getLogger("com.hazelcast").setLevel(Level.INFO);
     logConfig.getLogger("com.hazelcast.nio.tcp").setLevel(Level.ERROR);
