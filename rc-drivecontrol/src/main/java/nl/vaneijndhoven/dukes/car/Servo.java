@@ -12,6 +12,7 @@ public class Servo {
  
   protected static final Logger LOG = LoggerFactory.getLogger(Servo.class);
   protected ServoMap servoMap;
+  private int value;
   
   /**
    * construct this servo with the given Command interface and gpioPin
@@ -28,6 +29,11 @@ public class Servo {
   public void setServo(int value) {
     // servo command and pin are configurable
     this.servoMap.servoCommand().setServo(this.servoMap.gpioPin(), value);
+    this.value=value;
+  }
+  
+  public int getServo() {
+    return value;
   }
   
 }

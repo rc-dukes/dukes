@@ -109,5 +109,8 @@ public class Car {
     return instance;
   }
 
+  public static void resetInstance() {
+    instance=null;
+  }
   
 }
