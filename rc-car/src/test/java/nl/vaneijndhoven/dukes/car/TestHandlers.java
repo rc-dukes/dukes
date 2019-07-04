@@ -5,16 +5,11 @@ import static org.junit.Assert.assertEquals;
 import java.time.Instant;
 
 import org.apache.tinkerpop.gremlin.process.traversal.Order;
-import org.apache.tinkerpop.gremlin.process.traversal.Scope;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import org.junit.Test;
 
 import io.vertx.core.json.JsonObject;
-import nl.vaneijndhoven.dukes.car.Engine;
-import nl.vaneijndhoven.dukes.car.Led;
-import nl.vaneijndhoven.dukes.car.ServoCommand;
-import nl.vaneijndhoven.dukes.car.Steering;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.dukes.common.Environment;
 import nl.vaneijndhoven.dukes.drivecontrol.Car;
@@ -38,7 +33,7 @@ public class TestHandlers {
      * create the dummy
      */
     public ServoCommandDummy() {
-      start=Instant.now().getNano()/1000000;
+      graph = TinkerGraph.open();
       // reset the log
       resetLog();
     }
@@ -47,16 +42,16 @@ public class TestHandlers {
      * get the graph database going
      */
     public void resetLog() {
-      graph = TinkerGraph.open();
+      start=Instant.now().getNano()/1000000;
     }
 
 
     @Override
     public void setServo(int gpioPin, int value) {
-      long now = Instant.now().getNano()/1000000-start;
+      long now = Instant.now().getNano()/1000000;
       // remember the values set with the corresponding time stamps
       graph.addVertex("label", "servo", "gpioPin", gpioPin, "value", value,
-          "timestamp", now);
+          "timestamp", now,"relative",now-start);
       // wait a millisecond since we can't measure time
       // more precisely without effort
       try {
