@@ -1,6 +1,8 @@
 package nl.vaneijndhoven.opencv.video;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.lanedetection.ImageLaneDetection;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
@@ -9,8 +11,14 @@ import org.opencv.core.Mat;
 
 import java.util.Map;
 
+/**
+ * lane detection controller
+ *
+ */
 public class LaneDetectionController {
 
+    protected static final Logger LOG = LoggerFactory
+      .getLogger(LaneDetectionController.class);
 
     public static double DEFAULT_LANE_BOUNDARY_ANGLE = 45;
     public static double DEFAULT_LANE_BOUNDARY_TOLERANCE = 30;
@@ -105,8 +113,9 @@ public class LaneDetectionController {
                         direction = "right";
                         rudderPercentage = rudderPercentage * 1.3;
                     }
-
-                    // System.out.println("steering " + direction + ", percentage: " + rudderPercentage);
+                    String msg=String.format("steering %s, percentage: %3.1f %% ",direction,rudderPercentage);
+                    LOG.debug(msg);
+                    
 
                 }
 

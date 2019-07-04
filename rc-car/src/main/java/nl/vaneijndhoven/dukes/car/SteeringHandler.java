@@ -41,6 +41,9 @@ class SteeringHandler {
     int positionPercentage = Double.valueOf(position).intValue();
 
     SteeringMap steeringMap = car.getSteering().getSteeringMap();
+    if (!steeringMap.turnedOrientation()) {
+      positionPercentage=-positionPercentage;
+    }
 
     if (positionPercentage < 5) {
       int range = steeringMap.center() - steeringMap.maxLeft();

@@ -4,6 +4,8 @@ import static rx.Observable.just;
 import static rx.exceptions.Exceptions.propagate;
 
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import rx.Observable;
 import stormbots.MiniPID;
 
@@ -12,7 +14,8 @@ import stormbots.MiniPID;
  *
  */
 public class StraightLaneNavigator {
-
+  protected static final Logger LOG = LoggerFactory
+      .getLogger(StraightLaneNavigator.class);
   private static final long MAX_DURATION_NO_LINES_DETECTED = 1000;
 
   // private long COMMAND_LOOP_INTERVAL = 250L;
@@ -114,6 +117,8 @@ public class StraightLaneNavigator {
       previousAngle = angle;
       JsonObject message = new JsonObject().put("type", "servoDirect")
           .put("position", String.valueOf(rudderPercentage));
+      String debugMsg=String.format("sending servoDirect position %3.1f",rudderPercentage);
+      LOG.debug(debugMsg);
       return just(message);
     }
 
