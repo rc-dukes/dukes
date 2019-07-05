@@ -1,5 +1,6 @@
 package nl.vaneijndhoven.dukes.action;
 
+import static nl.vaneijndhoven.dukes.action.drag.StraightLaneNavigator.COMMAND_LOOP_INTERVAL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
@@ -13,14 +14,13 @@ import org.junit.Test;
 import io.vertx.core.json.JsonObject;
 import nl.vaneijndhoven.dukes.action.drag.StraightLaneNavigator;
 import rx.Observable;
+import rx.observers.TestObserver;
+import rx.observers.TestSubscriber;
 
 /**
  * test Action/Luke
  *
  */
-// @FIXME - why does this fail on the command line and in travis
-// but not in the Eclipse IDE?
-@Ignore
 public class TestAction {
   public static boolean debug = true;
   public static int TIME_OUT = 500; // we expect a result within 50 msecs
@@ -40,36 +40,57 @@ public class TestAction {
     if (nameValues.length % 2 != 0)
       throw new IllegalArgumentException(
           "nameValue parameter list length may not be odd");
-    boolean observed[] = { false };
-    obs.timeout(timeOutMilliSecs, TimeUnit.MILLISECONDS).subscribe(nav -> {
-      observed[0] = true;
-      if (debug)
-        for (String key : nav.fieldNames()) {
-          System.out.println(String.format("%s=%s", key, nav.getValue(key)));
-        }
-      for (int i = 0; i < nameValues.length; i += 2) {
-        String name = nameValues[i].toString();
-        String value = nameValues[i + 1].toString();
-        String foundValue = nav.getValue(name).toString();
-        assertEquals(value, foundValue);
+    TestSubscriber<JsonObject> subscriber = TestSubscriber.create();
+
+    obs.subscribe(subscriber);
+
+    assertTrue("timed out waiting for on next event", subscriber.awaitValueCount(1, timeOutMilliSecs, TimeUnit.MILLISECONDS));
+    subscriber.assertCompleted();
+    subscriber.assertNoErrors();
+    subscriber.assertValueCount(1);
+
+    JsonObject nav = subscriber.getOnNextEvents().get(0);
+    if (debug) {
+      for (String key : nav.fieldNames()) {
+        System.out.println(String.format("%s=%s", key, nav.getValue(key)));
       }
-    });
-    String msg = String.format(
-        "the observable wasn't observed (yet ...) after %d mSecs",
-        timeOutMilliSecs);
-    assertTrue(msg, observed[0]);
+    }
+    for (int i = 0; i < nameValues.length; i += 2) {
+      String name = nameValues[i].toString();
+      String value = nameValues[i + 1].toString();
+      String foundValue = nav.getValue(name).toString();
+      assertEquals(value, foundValue);
+    }
   }
 
   @Test
-  public void testStraightLaneNavigator() {
+  public void testStraightLaneNavigator() throws InterruptedException {
     if (!TestSuite.isTravis()) {
       StraightLaneNavigator navigator = new StraightLaneNavigator();
+
+      // Sleep (after creating the navigator) to ensure we surpass the command loop interval, otherwise no
+      // navigation command will be issued.
+      Thread.sleep(COMMAND_LOOP_INTERVAL);
+      TestSubscriber<JsonObject> subscriber = TestSubscriber.create();
       JsonObject laneDetectResult = new JsonObject();
       Observable<JsonObject> nav = navigator.navigate(laneDetectResult);
-      // we expect an empty Observable here
-      assertNotNull(nav);
-      // since we get no angle found for 1000ms, emergency stop
-      assertNotEquals(Observable.empty(), nav);
+      nav.subscribe(subscriber);
+
+      subscriber.assertCompleted();
+      subscriber.assertNoErrors();
+      subscriber.assertValueCount(0);
+    }
+  }
+
+  @Test
+  public void testStraightLaneNavigator2() throws InterruptedException {
+    if (!TestSuite.isTravis()) {
+      StraightLaneNavigator navigator = new StraightLaneNavigator();
+
+      // Sleep (after creating the navigator) to ensure we surpass the command loop interval, otherwise no
+      // navigation command will be issued.
+      Thread.sleep(COMMAND_LOOP_INTERVAL);
+      JsonObject laneDetectResult = new JsonObject();
       laneDetectResult.put("angle", 10.0);
       Observable<JsonObject> nav2 = navigator.navigate(laneDetectResult);
       check(nav2, TIME_OUT, "type", "servoDirect", "position", "60.0");
