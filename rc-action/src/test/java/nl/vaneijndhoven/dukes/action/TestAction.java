@@ -2,19 +2,15 @@ package nl.vaneijndhoven.dukes.action;
 
 import static nl.vaneijndhoven.dukes.action.drag.StraightLaneNavigator.COMMAND_LOOP_INTERVAL;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.vertx.core.json.JsonObject;
 import nl.vaneijndhoven.dukes.action.drag.StraightLaneNavigator;
 import rx.Observable;
-import rx.observers.TestObserver;
 import rx.observers.TestSubscriber;
 
 /**
@@ -23,7 +19,8 @@ import rx.observers.TestSubscriber;
  */
 public class TestAction {
   public static boolean debug = true;
-  public static int TIME_OUT = 500; // we expect a result within 50 msecs
+  public static long TIME_OUT = COMMAND_LOOP_INTERVAL * 2; // we expect a result
+                                                           // within 50 msecs
 
   /**
    * check the observed value https://stackoverflow.com/a/31330706/1497139
@@ -35,7 +32,7 @@ public class TestAction {
    * @param nameValues
    *          - an array of name - value object pairs
    */
-  public void check(Observable<JsonObject> obs, int timeOutMilliSecs,
+  public void check(Observable<JsonObject> obs, long timeOutMilliSecs,
       String... nameValues) {
     if (nameValues.length % 2 != 0)
       throw new IllegalArgumentException(
@@ -44,7 +41,8 @@ public class TestAction {
 
     obs.subscribe(subscriber);
 
-    assertTrue("timed out waiting for on next event", subscriber.awaitValueCount(1, timeOutMilliSecs, TimeUnit.MILLISECONDS));
+    assertTrue("timed out waiting for on next event",
+        subscriber.awaitValueCount(1, timeOutMilliSecs, TimeUnit.MILLISECONDS));
     subscriber.assertCompleted();
     subscriber.assertNoErrors();
     subscriber.assertValueCount(1);
@@ -68,7 +66,8 @@ public class TestAction {
     if (!TestSuite.isTravis()) {
       StraightLaneNavigator navigator = new StraightLaneNavigator();
 
-      // Sleep (after creating the navigator) to ensure we surpass the command loop interval, otherwise no
+      // Sleep (after creating the navigator) to ensure we surpass the command
+      // loop interval, otherwise no
       // navigation command will be issued.
       Thread.sleep(COMMAND_LOOP_INTERVAL);
       TestSubscriber<JsonObject> subscriber = TestSubscriber.create();
@@ -87,13 +86,25 @@ public class TestAction {
     if (!TestSuite.isTravis()) {
       StraightLaneNavigator navigator = new StraightLaneNavigator();
 
-      // Sleep (after creating the navigator) to ensure we surpass the command loop interval, otherwise no
+      // Sleep (after creating the navigator) to ensure we surpass the command
+      // loop interval, otherwise no
       // navigation command will be issued.
       Thread.sleep(COMMAND_LOOP_INTERVAL);
-      JsonObject laneDetectResult = new JsonObject();
-      laneDetectResult.put("angle", 10.0);
-      Observable<JsonObject> nav2 = navigator.navigate(laneDetectResult);
-      check(nav2, TIME_OUT, "type", "servoDirect", "position", "60.0");
+
+      double angles[] = { -45.0, -30.0, -15.0, -10.0, 0.0, 10.0, 15.0, 30.0,
+          45.0 };
+      String expected[] = { "-100.0", "-100.0", "-60.0", "-40.0", "0.0", "60.0",
+          "90.0", "100.0", "100.0" };
+      int index = 0;
+      for (double angle : angles) {
+        Thread.sleep(COMMAND_LOOP_INTERVAL);
+        JsonObject laneDetectResult = new JsonObject();
+        laneDetectResult.put("angle", angle);
+        Observable<JsonObject> nav2 = navigator.navigate(laneDetectResult);
+        check(nav2, TIME_OUT, "type", "servoDirect", "position",
+            expected[index]);
+        index++;
+      }
     }
   }
 
