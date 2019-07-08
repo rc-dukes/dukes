@@ -1,4 +1,4 @@
-# Dukes of Hazzard self driving car
+# Dukes of Hazzard self driving RC car
 
 [![Travis (.org)](https://img.shields.io/travis/rc-dukes/dukes.svg)](https://travis-ci.org/rc-dukes/dukes)
 [![Coverage Status](https://coveralls.io/repos/github/rc-dukes/dukes/badge.svg?branch=master)](https://coveralls.io/github/rc-dukes/dukes?branch=master)
@@ -6,7 +6,7 @@
 [![GitHub issues](https://img.shields.io/github/issues-closed/rc-dukes/dukes.svg)](https://github.com/rc-dukes/dukes/issues/?q=is%3Aissue+is%3Aclosed)
 [![GitHub](https://img.shields.io/github/license/rc-dukes/dukes.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![jpoint](https://www.jpoint.nl/images/logo/jpoint-black-small.png)](https://www.jpoint.nl/)
-[![openvalue](http://wiki.bitplan.com/images/wiki/a/a4/OpenValueLogo.png)](https://www.openvalue.nl)
+[![openvalue](http://wiki.bitplan.com/images/wiki/thumb/a/a4/OpenValueLogo.png/225px-OpenValueLogo.png)](https://www.openvalue.nl)
 [![BITPlan](http://wiki.bitplan.com/images/wiki/thumb/3/38/BITPlanLogoFontLessTransparent.png/198px-BITPlanLogoFontLessTransparent.png)](http://www.bitplan.com)
 
 ## Videos
