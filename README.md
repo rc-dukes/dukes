@@ -10,8 +10,8 @@
 [![BITPlan](http://wiki.bitplan.com/images/wiki/thumb/3/38/BITPlanLogoFontLessTransparent.png/120px-BITPlanLogoFontLessTransparent.png)](http://www.bitplan.com)
 
 ## Videos
-[![Build a self driving RC car](http://img.youtube.com/vi/OL0vg1WmI6I/0.jpg)](http://www.youtube.com/watch?v=OL0vg1WmI6I "Building a self driving RC car")[![Build a self driving RC car](http://img.youtube.com/vi/YeUMtQyvZKM/0.jpg)](http://www.youtube.com/watch?v=YeUMtQyvZKM "Building a self driving RC car")
-[![General Lee](http://img.youtube.com/vi/pUZtAK5jjyE/0.jpg)](https://www.youtube.com/watch?v=pUZtAK5jjyE&t=18 "General Lee")
+[![Build a self driving RC car](http://img.youtube.com/vi/OL0vg1WmI6I/mqdefault.jpg)](http://www.youtube.com/watch?v=OL0vg1WmI6I "Building a self driving RC car")[![Build a self driving RC car](http://img.youtube.com/vi/YeUMtQyvZKM/mqdefault.jpg)](http://www.youtube.com/watch?v=YeUMtQyvZKM "Building a self driving RC car")
+[![General Lee](http://img.youtube.com/vi/pUZtAK5jjyE/mqdefault.jpg)](https://www.youtube.com/watch?v=pUZtAK5jjyE&t=18 "General Lee")
 
 ## Documentation
 * [Wiki](http://wiki.bitplan.com/index.php/Self_Driving_RC_Car)
