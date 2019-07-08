@@ -1,5 +1,5 @@
   /**
    * nl.vaneijndhoven.dukes.camera.matrix is part of the rc-camera-matrix module
-   * @TODO - add description
+   * allows e.g. perspective shifting
    */
   package nl.vaneijndhoven.dukes.camera.matrix;

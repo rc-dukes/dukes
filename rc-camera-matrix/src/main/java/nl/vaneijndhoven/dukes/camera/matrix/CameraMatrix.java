@@ -47,7 +47,7 @@ public class CameraMatrix implements UnaryOperator<Mat> {
     }
 
     /**
-     * create me with the given number of columsn and rows
+     * create me with the given number of columns and rows
      * @param columns
      * @param rows
      */
