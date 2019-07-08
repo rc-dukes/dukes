@@ -48,6 +48,10 @@ public class Config {
   public static final String ENGINE_MAX_SPEED_REVERSE = "engine.max.speed.reverse";
   public static final String ENGINE_MIN_SPEED_FORWARD = "engine.min.speed.forward";
   public static final String ENGINE_MAX_SPEED_FORWARD = "engine.max.speed.forward";
+  // Commands
+  public static final String POSITION_LEFT = "left";
+  public static final String POSITION_RIGHT = "right";
+  public static final String POSITION_CENTER = "center";
 
   /**
    * configure the logging

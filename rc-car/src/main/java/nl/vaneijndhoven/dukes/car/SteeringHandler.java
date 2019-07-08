@@ -4,6 +4,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import nl.vaneijndhoven.dukes.car.SteeringMap;
+import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.dukes.drivecontrol.Car;
 
 /**
@@ -83,17 +84,17 @@ class SteeringHandler {
 
     SteeringMap steeringMap = car.getSteering().getSteeringMap();
 
-    if ("left".equals(position)) {
+    if (Config.POSITION_LEFT.equals(position)) {
       currentWheelPosition = currentWheelPosition - steeringMap.stepSize();
       if (currentWheelPosition < steeringMap.maxLeft()) {
         currentWheelPosition = steeringMap.maxLeft();
       }
-    } else if ("right".equals(position)) {
+    } else if (Config.POSITION_RIGHT.equals(position)) {
       currentWheelPosition = currentWheelPosition + steeringMap.stepSize();
       if (currentWheelPosition > steeringMap.maxRight()) {
         currentWheelPosition = steeringMap.maxRight();
       }
-    } else if ("center".equals(position)) {
+    } else if (Config.POSITION_CENTER.equals(position)) {
       currentWheelPosition = steeringMap.center();
     }
     turnWrapper(currentWheelPosition);

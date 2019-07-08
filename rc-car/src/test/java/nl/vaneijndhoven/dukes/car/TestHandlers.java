@@ -159,13 +159,13 @@ public class TestHandlers {
     SteeringHandler sh=new SteeringHandler(car);
     Steering steering = car.getSteering();
     JsonObject msg=new JsonObject();
-    msg.put("position","center");
+    msg.put("position",Config.POSITION_CENTER);
     sh.handleServo(msg);
     assertEquals(130,steering.getServo());
-    msg.put("position","left");
+    msg.put("position",Config.POSITION_RIGHT);
     sh.handleServo(msg);
     assertEquals(135,steering.getServo());
-    msg.put("position","left");
+    msg.put("position",Config.POSITION_LEFT);
     sh.handleServo(msg);
     assertEquals(140,steering.getServo());
     if (debug)

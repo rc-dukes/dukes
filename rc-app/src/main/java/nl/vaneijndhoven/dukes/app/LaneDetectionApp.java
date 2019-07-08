@@ -7,6 +7,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import nl.vaneijndhoven.dukes.common.Config;
+import nl.vaneijndhoven.dukes.common.Environment;
 
 /**
  * JavaFx Lane Detection App
