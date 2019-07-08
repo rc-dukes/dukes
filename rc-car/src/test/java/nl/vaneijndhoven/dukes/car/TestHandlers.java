@@ -162,7 +162,7 @@ public class TestHandlers {
     msg.put("position",Config.POSITION_CENTER);
     sh.handleServo(msg);
     assertEquals(130,steering.getServo());
-    msg.put("position",Config.POSITION_RIGHT);
+    msg.put("position",Config.POSITION_LEFT);
     sh.handleServo(msg);
     assertEquals(135,steering.getServo());
     msg.put("position",Config.POSITION_LEFT);
