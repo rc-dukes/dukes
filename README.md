@@ -5,7 +5,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/rc-dukes/dukes.svg)](https://github.com/rc-dukes/dukes/issues)
 [![GitHub issues](https://img.shields.io/github/issues-closed/rc-dukes/dukes.svg)](https://github.com/rc-dukes/dukes/issues/?q=is%3Aissue+is%3Aclosed)
 [![GitHub](https://img.shields.io/github/license/rc-dukes/dukes.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-[![jpoint](https://www.jpoint.nl/images/logo/jpoint-black-small.png)](https://www.jpoint.nl/)
+[![jpoint](http://wiki.bitplan.com/images/wiki/thumb/7/78/JpointLogo.png/100px-JpointLogo.png)](https://www.jpoint.nl/)
 [![openvalue](http://wiki.bitplan.com/images/wiki/thumb/a/a4/OpenValueLogo.png/113px-OpenValueLogo.png)](https://www.openvalue.nl)
 [![BITPlan](http://wiki.bitplan.com/images/wiki/thumb/3/38/BITPlanLogoFontLessTransparent.png/120px-BITPlanLogoFontLessTransparent.png)](http://www.bitplan.com)
 
