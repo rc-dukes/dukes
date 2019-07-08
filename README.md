@@ -6,8 +6,8 @@
 [![GitHub issues](https://img.shields.io/github/issues-closed/rc-dukes/dukes.svg)](https://github.com/rc-dukes/dukes/issues/?q=is%3Aissue+is%3Aclosed)
 [![GitHub](https://img.shields.io/github/license/rc-dukes/dukes.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![jpoint](https://www.jpoint.nl/images/logo/jpoint-black-small.png)](https://www.jpoint.nl/)
-[![openvalue](http://wiki.bitplan.com/images/wiki/thumb/a/a4/OpenValueLogo.png/225px-OpenValueLogo.png)](https://www.openvalue.nl)
-[![BITPlan](http://wiki.bitplan.com/images/wiki/thumb/3/38/BITPlanLogoFontLessTransparent.png/198px-BITPlanLogoFontLessTransparent.png)](http://www.bitplan.com)
+[![openvalue](http://wiki.bitplan.com/images/wiki/thumb/a/a4/OpenValueLogo.png/113px-OpenValueLogo.png)](https://www.openvalue.nl)
+[![BITPlan](http://wiki.bitplan.com/images/wiki/thumb/3/38/BITPlanLogoFontLessTransparent.png/150px-BITPlanLogoFontLessTransparent.png)](http://www.bitplan.com)
 
 ## Videos
 [![Build a self driving RC car](http://img.youtube.com/vi/OL0vg1WmI6I/0.jpg)](http://www.youtube.com/watch?v=OL0vg1WmI6I "Building a self driving RC car")[![Build a self driving RC car](http://img.youtube.com/vi/YeUMtQyvZKM/0.jpg)](http://www.youtube.com/watch?v=YeUMtQyvZKM "Building a self driving RC car")
