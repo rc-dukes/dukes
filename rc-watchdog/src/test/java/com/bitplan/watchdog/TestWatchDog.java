@@ -1,5 +1,7 @@
 package com.bitplan.watchdog;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -65,9 +67,10 @@ public class TestWatchDog {
   }
 
   @Test
-  public void printSomething(TestContext context) {
+  public void testAsync(TestContext context) {
    Async async = context.async(); // wait for context
-   System.out.println("Print from method printSomething()");
+   assertNotNull(async);
+   // System.out.println("Print from method printSomething()");
    async.complete();
   }
 

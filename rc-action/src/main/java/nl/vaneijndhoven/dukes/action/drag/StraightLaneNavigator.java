@@ -19,7 +19,7 @@ public class StraightLaneNavigator {
   private static final long MAX_DURATION_NO_LINES_DETECTED = 1000;
 
   // private long COMMAND_LOOP_INTERVAL = 250L;
-  public static final long COMMAND_LOOP_INTERVAL = 50L;
+  public static long COMMAND_LOOP_INTERVAL = 50L;
 
   private long tsLastLinesDetected = System.currentTimeMillis();
 
