@@ -63,7 +63,7 @@ public class TestAction {
 
   @Test
   public void testStraightLaneNavigator() throws InterruptedException {
-    if (!TestSuite.isTravis()) {
+    //if (!TestSuite.isTravis()) {
       StraightLaneNavigator navigator = new StraightLaneNavigator();
 
       // Sleep (after creating the navigator) to ensure we surpass the command
@@ -78,12 +78,12 @@ public class TestAction {
       subscriber.assertCompleted();
       subscriber.assertNoErrors();
       subscriber.assertValueCount(0);
-    }
+    //}
   }
 
   @Test
   public void testStraightLaneNavigator2() throws InterruptedException {
-    if (!TestSuite.isTravis()) {
+    //if (!TestSuite.isTravis()) {
       StraightLaneNavigator navigator = new StraightLaneNavigator();
 
       // Sleep (after creating the navigator) to ensure we surpass the command
@@ -105,7 +105,7 @@ public class TestAction {
             expected[index]);
         index++;
       }
-    }
+    //}
   }
 
 }
