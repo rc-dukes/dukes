@@ -20,7 +20,7 @@ import rx.observers.TestSubscriber;
  */
 public class TestAction {
 	public static boolean debug = true;
-	public static long TIME_OUT = COMMAND_LOOP_INTERVAL * 2; // we expect a result
+	public static long TIME_OUT = COMMAND_LOOP_INTERVAL * 3; // we expect a result
 																// within 50 msecs
 
 	@BeforeClass
