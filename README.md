@@ -1,7 +1,7 @@
 # Dukes of Hazzard self driving RC car
 
 [![Travis (.org)](https://img.shields.io/travis/rc-dukes/dukes.svg)](https://travis-ci.org/rc-dukes/dukes)
-[![Coverage Status](https://coveralls.io/repos/github/rc-dukes/dukes/badge.svg?branch=master)](https://coveralls.io/github/rc-dukes/dukes?branch=master)
+[![codecov](https://codecov.io/gh/rc-dukes/dukes/branch/master/graph/badge.svg)](https://codecov.io/gh/rc-dukes/dukes)
 [![GitHub issues](https://img.shields.io/github/issues/rc-dukes/dukes.svg)](https://github.com/rc-dukes/dukes/issues)
 [![GitHub issues](https://img.shields.io/github/issues-closed/rc-dukes/dukes.svg)](https://github.com/rc-dukes/dukes/issues/?q=is%3Aissue+is%3Aclosed)
 [![GitHub](https://img.shields.io/github/license/rc-dukes/dukes.svg)](https://www.apache.org/licenses/LICENSE-2.0)
