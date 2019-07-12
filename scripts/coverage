@@ -1,7 +1,11 @@
 #!/bin/bash
 # WF 2019-06-26
-# create test coverage report for coveralls
 
+#
+# create test coverage report for coveralls
+# this didn't work as of 2019-07-01
+#
+coveralls() {
 # is the environment variable not set?
 if [ "$COVERALLS_TOKEN" = "" ]
 then
@@ -23,3 +27,6 @@ mvn clean test jacoco:report coveralls:report -D jacoco=true
 mvn clean test jacoco:report coveralls:report -D jacoco=true -DrepoToken=$token
 #mvn cobertura:cobertura coveralls:report
 #mvn cobertura:cobertura coveralls:report -DrepoToken=$COVERALLS_TOKEN
+}
+
+mvn clean test -D jacoco -D gpg.skip

@@ -206,6 +206,8 @@
 		<module>rc-app</module>
 		<module>rc-common</module>
 		<module>rc-drivecontrol</module>
+		<!--  pseudo module for coverage -->
+		<module>rc-coverage</module>
 	</modules>
 	<!-- see http://wiki.bitplan.com/index.php/Multi-Module_Maven_with_github_pages -->
 	<distributionManagement>
@@ -501,6 +503,12 @@
 					<aggregate>true</aggregate>
 				</configuration>
 			</plugin>
+			<!--  https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->
+			<plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${maven-jacoco-plugin.version}</version>
+        </plugin>
 		</plugins>
 	</reporting>
 	<profiles>
@@ -524,13 +532,11 @@
 					<!-- Prepares the property pointing to the JaCoCo runtime agent which
 						is passed as VM argument when Maven the Surefire plugin is executed. -->
 					<execution>
-						<id>pre-unit-test</id>
+						<id>prepare-agent</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
 						<configuration>
-							<!-- Sets the path to the file which contains the execution data. -->
-							<destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
 							<!-- Sets the name of the property containing the settings for JaCoCo
 								runtime agent. -->
 							<propertyName>surefireArgLine</propertyName>

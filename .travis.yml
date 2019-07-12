@@ -7,8 +7,9 @@ jdk:
   - openjdk8
 # switch off gpg handling
 # clean is mandatory to get opencv jar integrated
+# -D jacoco switches on code coverage
 install: 
-  - mvn clean install -Dgpg.skip=true
+  - mvn clean install -D jacoco -Dgpg.skip=true
 # We need GraphViz to get uml diagrams with javadoc 
 before_install:
   - sudo apt-get install graphviz openjfx
@@ -18,7 +19,6 @@ before_install:
 # so you might want to add -D skipTests above
   - scripts/opencvubuntu
 # see https://github.com/trautonen/coveralls-maven-plugin
+# put the coverage results on codecov.io
 after_success:
-  # if you uncomment this one have fun with https://github.com/rc-dukes/dukes/issues/21
-  #- mvn clean test jacoco:report coveralls:report
-  - mvn clean cobertura:cobertura coveralls:report
+- bash <(curl -s https://codecov.io/bash)

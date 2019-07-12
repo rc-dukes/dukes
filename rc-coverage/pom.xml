@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         	<modelVersion>4.0.0</modelVersion>
+         <parent>
+           <groupId>nl.vaneijndhoven</groupId>
+           <artifactId>dukes</artifactId>
+           <version>0.0.2</version>
+         </parent>
+
+         <groupId>nl.vaneijndhoven.dukes</groupId>
+         <artifactId>coverage</artifactId>
+
+         <description>
+           coverage dummy-module
+         </description>
+
+  <dependencies>
+    <dependency>
+			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<artifactId>rc-action</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+    <dependency>
+			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<artifactId>rc-camera-matrix</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+    <dependency>
+			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<artifactId>rc-common</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+    <dependency>
+			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<artifactId>rc-geometry</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+    <dependency>
+			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<artifactId>rc-remotecar</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+    <dependency>
+			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<artifactId>rc-roi</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+    <dependency>
+			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<artifactId>rc-server</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+    <dependency>
+			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<artifactId>rc-watchdog</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <!-- aggregated unit test coverage report -->
+          <execution>
+            <id>aggregate-reports-ut</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report-aggregate</goal>
+            </goals>
+            <configuration>
+              <title>Coverage of Unit Tests</title>
+              <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate-ut</outputDirectory>
+              <dataFileExcludes>
+                <dataFileExclude>**/target/jacoco-it.exec</dataFileExclude>
+              </dataFileExcludes>
+            </configuration>
+          </execution>
+          <!-- aggregated integration test coverage report -->
+          <execution>
+            <id>aggregate-reports-it</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report-aggregate</goal>
+            </goals>
+            <configuration>
+              <title>Coverage of Integration Tests</title>
+              <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate-it</outputDirectory>
+              <dataFileExcludes>
+                <dataFileExclude>**/target/jacoco.exec</dataFileExclude>
+              </dataFileExcludes>
+            </configuration>
+          </execution>
+          <!-- aggregated overall coverage report -->
+          <execution>
+            <id>aggregate-reports-all</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report-aggregate</goal>
+            </goals>
+            <configuration>
+              <title>Overall Coverage </title>
+              <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate-all</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>
