@@ -42,6 +42,5 @@ The self driving car consists of modules with the following responsibilities:
 | [imageview](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/imageview/package-summary.html)     | [Roscoe](https://en.wikipedia.org/wiki/Sheriff_Rosco_P._Coltrane)        | Runner   |         | lane detection debug image web server
 | [app](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/app/package-summary.html)           | [Uncle Jesse](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Jesse)   | JavaFX   | laptop  | JavaFX app to monitor the car
 
-
 ## Getting started
 see [Deployment](http://wiki.bitplan.com/index.php/Self_Driving_RC_Car#Deployment) in the Wiki
