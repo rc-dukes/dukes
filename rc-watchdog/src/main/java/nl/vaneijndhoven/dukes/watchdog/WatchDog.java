@@ -16,68 +16,68 @@ import rx.Subscription;
  */
 public class WatchDog extends AbstractVerticle {
 
-  public static final int HEARTBEAT_INTERVAL_MS = 150;
-  private static final Logger LOG = LoggerFactory.getLogger(WatchDog.class);
-  private long lastHeartbeat = 0;
-  private Car car;
-  
-  /**
-   * create watch dog for the given car
-   * @param car
-   */
-  public WatchDog(Car car) {
-    this.car=car;
-  }
+	public static final int HEARTBEAT_INTERVAL_MS = 150;
+	private static final Logger LOG = LoggerFactory.getLogger(WatchDog.class);
+	private long lastHeartbeat = 0;
+	private Car car;
+	protected Subscription subscription;
 
-  @Override
-  public void start() {
-    LOG.info("Starting WatchDog (Flash - heartbeat guard dog)");
-    // Command.statusLedOff();
+	/**
+	 * create watch dog for the given car
+	 * 
+	 * @param car
+	 */
+	public WatchDog(Car car) {
+		this.car = car;
+	}
 
-    vertx.setPeriodic(HEARTBEAT_INTERVAL_MS, id -> checkHeartbeat());
-    Subscription subscription = vertx.eventBus()
-        .consumer(Characters.FLASH.getCallsign()).toObservable()
-        .subscribe(this::heartbeat);
+	@Override
+	public void start() {
+		LOG.info("Starting WatchDog (Flash - heartbeat guard dog)");
+		// Command.statusLedOff();
 
-    LOG.info("WatchDog Flash started ");
-  }
+		vertx.setPeriodic(HEARTBEAT_INTERVAL_MS, id -> checkHeartbeat());
+		subscription = vertx.eventBus().consumer(Characters.FLASH.getCallsign()).toObservable()
+				.subscribe(this::heartbeat);
 
-  private void heartbeat(Message<Object> message) {
-    JsonObject messageBody = (JsonObject) message.body();
-    if ("heartbeat".equals(messageBody.getString("type"))) {
-      lastHeartbeat = System.currentTimeMillis();
-      // LOG.trace("Heartbeat received, set last heartbeat to {}",
-      // lastHeartbeat);
-      if (!car.powerIsOn()) {
-        LOG.info("First heartbeat received, power on");
-        car.setPowerOn();
-      }
-    }
-  }
+		LOG.info("WatchDog Flash started ");
+	}
 
-  private void checkHeartbeat() {
-    long currentTime = System.currentTimeMillis();
-    // LOG.trace("Check heartbeat, current time: {}", currentTime);
-    if (currentTime - lastHeartbeat > (6 * HEARTBEAT_INTERVAL_MS)) {
-      if (car.powerIsOn()) {
-        // missed 2 heartbeats
-        LOG.trace("Missed at least 2 heartbeats.");
-        LOG.error("Client connection lost, stopping car and turning off led");
-        LOG.info("Heartbeat off -> power off");
-        vertx.eventBus().send(Characters.BO.getCallsign(),
-            new JsonObject().put("type", "motor").put("speed", "stop"));
+	private void heartbeat(Message<Object> message) {
+		JsonObject messageBody = (JsonObject) message.body();
+		if ("heartbeat".equals(messageBody.getString("type"))) {
+			lastHeartbeat = System.currentTimeMillis();
+			// LOG.trace("Heartbeat received, set last heartbeat to {}",
+			// lastHeartbeat);
+			if (!car.powerIsOn()) {
+				LOG.info("First heartbeat received, power on");
+				car.setPowerOn();
+			}
+		}
+	}
 
-        // failsafe: send stop command again after 200ms
-        vertx.setTimer(200, fired -> sendStopCommand());
+	private void checkHeartbeat() {
+		long currentTime = System.currentTimeMillis();
+		// LOG.trace("Check heartbeat, current time: {}", currentTime);
+		if (currentTime - lastHeartbeat > (6 * HEARTBEAT_INTERVAL_MS)) {
+			if (car.powerIsOn()) {
+				// missed 2 heartbeats
+				LOG.trace("Missed at least 2 heartbeats.");
+				LOG.error("Client connection lost, stopping car and turning off led");
+				LOG.info("Heartbeat off -> power off");
+				vertx.eventBus().send(Characters.BO.getCallsign(),
+						new JsonObject().put("type", "motor").put("speed", "stop"));
 
-        car.setPowerOff();
-      }
-    }
-  }
+				// failsafe: send stop command again after 200ms
+				vertx.setTimer(200, fired -> sendStopCommand());
 
-  private void sendStopCommand() {
-    vertx.eventBus().send(Characters.BO.getCallsign(),
-        new JsonObject().put("type", "motor").put("speed", "stop"));
-  }
+				car.setPowerOff();
+			}
+		}
+	}
+
+	private void sendStopCommand() {
+		vertx.eventBus().send(Characters.BO.getCallsign(), new JsonObject().put("type", "motor").put("speed", "stop"));
+	}
 
 }
