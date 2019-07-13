@@ -3,27 +3,16 @@ package com.bitplan.watchdog;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.apache.tinkerpop.shaded.minlog.Log;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.unit.Async;
-import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import nl.vaneijndhoven.dukes.common.Characters;
 import nl.vaneijndhoven.dukes.common.ClusterStarter;
-import nl.vaneijndhoven.dukes.common.Events;
 import nl.vaneijndhoven.dukes.drivecontrol.Car;
 import nl.vaneijndhoven.dukes.drivecontrol.TestCar;
 import nl.vaneijndhoven.dukes.watchdog.WatchDog;
@@ -58,6 +47,7 @@ public class TestWatchDog {
 		}
 		assertTrue(loops<100);
 		LOG.info(String.format("car powered on after %3d msecs",loops*10));
+		
 	}
 
 }

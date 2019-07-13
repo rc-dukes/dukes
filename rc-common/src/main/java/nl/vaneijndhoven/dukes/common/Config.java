@@ -27,6 +27,10 @@ public class Config {
   public static final String IMAGEVIEW_PORT = "imageview.port";
   public static final String REMOTECAR_HOST = "remotecar.host";
   public static final String CAMERA_URL = "camera.url";
+  // watchdog configuration
+  public static final String WATCHDOG_HEARTBEAT_INTERVAL_MS = "watchdog.heartbeat.interval.ms";
+  public static final String WATCHDOG_MAX_MISSED_BEATS = "watchdog.max.missed.beats";
+
   // wheel configuration
   public static final String WHEEL_GPIO = "wheel.gpio";
   public static final String WHEEL_ORIENTATION="wheel.orientation";

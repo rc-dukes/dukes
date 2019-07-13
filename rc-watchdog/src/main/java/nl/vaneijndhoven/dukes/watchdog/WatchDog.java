@@ -4,10 +4,14 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.Message;
 import nl.vaneijndhoven.dukes.common.Characters;
+import nl.vaneijndhoven.dukes.common.Config;
+import nl.vaneijndhoven.dukes.common.Environment;
 import nl.vaneijndhoven.dukes.drivecontrol.Car;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+
 import rx.Subscription;
 
 /**
@@ -16,7 +20,8 @@ import rx.Subscription;
  */
 public class WatchDog extends AbstractVerticle {
 
-	public static final int HEARTBEAT_INTERVAL_MS = 150;
+	protected static int HEARTBEAT_INTERVAL_MS = 150;
+	protected static int MAX_MISSED_BEATS=6;
 	private static final Logger LOG = LoggerFactory.getLogger(WatchDog.class);
 	private long lastHeartbeat = 0;
 	private Car car;
@@ -31,9 +36,13 @@ public class WatchDog extends AbstractVerticle {
 	 * create watch dog for the given car
 	 * 
 	 * @param car
+	 * @throws Exception 
 	 */
-	public WatchDog(Car car) {
+	public WatchDog(Car car) throws Exception {
 		this.car = car;
+		Environment env = Config.getEnvironment();
+		HEARTBEAT_INTERVAL_MS=env.getInteger(Config.WATCHDOG_HEARTBEAT_INTERVAL_MS);
+		MAX_MISSED_BEATS=env.getInteger(Config.WATCHDOG_MAX_MISSED_BEATS);
 	}
 
 	@Override
@@ -65,10 +74,10 @@ public class WatchDog extends AbstractVerticle {
 	private void checkHeartbeat() {
 		long currentTime = System.currentTimeMillis();
 		// LOG.trace("Check heartbeat, current time: {}", currentTime);
-		if (currentTime - lastHeartbeat > (6 * HEARTBEAT_INTERVAL_MS)) {
+		if (currentTime - lastHeartbeat > (MAX_MISSED_BEATS * HEARTBEAT_INTERVAL_MS)) {
 			if (car.powerIsOn()) {
-				// missed 2 heartbeats
-				LOG.trace("Missed at least 2 heartbeats.");
+				// missed maximum number of allowed heartbeats
+				LOG.trace("Missed at least "+MAX_MISSED_BEATS+" heartbeats.");
 				LOG.error("Client connection lost, stopping car and turning off led");
 				LOG.info("Heartbeat off -> power off");
 				sendStopCommand();
