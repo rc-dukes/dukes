@@ -46,6 +46,14 @@
 			<version>0.0.2</version>
 		</dependency>
 		<dependency>
+			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<artifactId>rc-drivecontrol</artifactId>
+			<version>0.0.2</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 		</dependency>

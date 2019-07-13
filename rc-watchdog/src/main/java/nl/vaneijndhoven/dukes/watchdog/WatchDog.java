@@ -21,6 +21,11 @@ public class WatchDog extends AbstractVerticle {
 	private long lastHeartbeat = 0;
 	private Car car;
 	protected Subscription subscription;
+	boolean started=false;
+
+	public boolean isStarted() {
+		return started;
+	}
 
 	/**
 	 * create watch dog for the given car
@@ -41,6 +46,7 @@ public class WatchDog extends AbstractVerticle {
 				.subscribe(this::heartbeat);
 
 		LOG.info("WatchDog Flash started ");
+		started=true;
 	}
 
 	private void heartbeat(Message<Object> message) {
@@ -65,9 +71,8 @@ public class WatchDog extends AbstractVerticle {
 				LOG.trace("Missed at least 2 heartbeats.");
 				LOG.error("Client connection lost, stopping car and turning off led");
 				LOG.info("Heartbeat off -> power off");
-				vertx.eventBus().send(Characters.BO.getCallsign(),
-						new JsonObject().put("type", "motor").put("speed", "stop"));
-
+				sendStopCommand();
+				
 				// failsafe: send stop command again after 200ms
 				vertx.setTimer(200, fired -> sendStopCommand());
 

@@ -19,9 +19,9 @@ import nl.vaneijndhoven.dukes.common.Environment;
 public class TestCar {
 	public static boolean debug = true;
 
-	protected ServoCommandDummy servoCommand;
+	protected static ServoCommandDummy servoCommand;
 
-	public Car getCar() throws Exception {
+	public static Car getCar() throws Exception {
 		// Let's fake a car instance with some properties
 		Environment.propFilePath = "../rc-drivecontrol/src/test/resources/dukes/dukes.ini";
 		Environment env = Config.getEnvironment();

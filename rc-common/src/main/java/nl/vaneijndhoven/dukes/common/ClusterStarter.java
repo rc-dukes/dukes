@@ -19,6 +19,11 @@ public class ClusterStarter {
 
 	private VertxOptions options;
 	private boolean prepared = false;
+	private Vertx vertx;
+
+	public Vertx getVertx() {
+		return vertx;
+	}
 
 	/**
 	 * prepare the starter
@@ -46,7 +51,7 @@ public class ClusterStarter {
 	 */
 	public void deployVerticles(AbstractVerticle... verticles) {
 		this.clusteredVertx(resultHandler -> {
-			Vertx vertx = resultHandler.result();
+			vertx = resultHandler.result();
 			DeploymentOptions deploymentOptions = new DeploymentOptions();
 			deploymentOptions.setWorker(true);
 			for (AbstractVerticle verticle : verticles) {
