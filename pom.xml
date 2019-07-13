@@ -91,6 +91,8 @@
 		<maven-surefire-report-plugin.version>${maven-surefire-plugin.version}</maven-surefire-report-plugin.version>
 		<!--https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jxr-plugin -->
 		<maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
+		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin -->
+    <maven-jar-plugin-version>3.1.2</maven-jar-plugin-version>
 		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-checkstyle-plugin -->
 		<maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
 		<!-- https://github.com/github/maven-plugins -->
@@ -230,6 +232,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
+					<version>${maven-jar-plugin-version}</version>
 					<executions>
 						<execution>
 							<goals>
