@@ -92,7 +92,7 @@
 		<!--https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jxr-plugin -->
 		<maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
 		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin -->
-    <maven-jar-plugin-version>3.1.2</maven-jar-plugin-version>
+		<maven-jar-plugin-version>3.1.2</maven-jar-plugin-version>
 		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-checkstyle-plugin -->
 		<maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
 		<!-- https://github.com/github/maven-plugins -->
@@ -111,6 +111,8 @@
 		<commons-io.version>2.6</commons-io.version>
 		<!-- Gremlin/Tinkerpop -->
 		<tinkerpop.version>3.3.1</tinkerpop.version>
+		<!-- args4j command line parser -->
+		<args4j.version>2.33</args4j.version>
 		<!-- other settings -->
 		<main_dir>${project.parent.relativePath}/..</main_dir>
 		<!-- fix encoding -->
@@ -189,6 +191,13 @@
 				<artifactId>tinkergraph-gremlin</artifactId>
 				<version>${tinkerpop.version}</version>
 			</dependency>
+			<!-- https://mvnrepository.com/artifact/args4j/args4j -->
+			<dependency>
+				<groupId>args4j</groupId>
+				<artifactId>args4j</artifactId>
+				<version>${args4j.version}</version>
+			</dependency>
+
 		</dependencies>
 
 	</dependencyManagement>

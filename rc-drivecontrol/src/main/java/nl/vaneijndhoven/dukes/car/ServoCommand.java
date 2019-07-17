@@ -5,5 +5,11 @@ package nl.vaneijndhoven.dukes.car;
  *
  */
 public interface ServoCommand {
-  public void setServo(int gpioPin, int value);
+  /**
+   * set the servo with the given gpioPin to the given value
+   * @param ioId - the input/output id of the servo - the numbering
+   * scheme is implementation dependent
+   * @param value - the (raw) value to set for the servo
+   */
+  public void setServo(int ioId, int value);
 }
