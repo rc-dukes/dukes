@@ -31,6 +31,7 @@ public class AdaFruit implements ServoCommand {
 	private BigDecimal frequency;
 	private I2CBus bus;
 	private PCA9685GpioProvider provider;
+	private GpioPinPwmOutput[] outputs;
 	private static final Logger LOG = LoggerFactory.getLogger(AdaFruit.class);
 
 	/**
@@ -67,6 +68,27 @@ public class AdaFruit implements ServoCommand {
 		provider.reset();
 	}
 
+	protected GpioPinPwmOutput[] provisionPwmOutputs(final PCA9685GpioProvider gpioProvider) {
+		GpioController gpio = GpioFactory.getInstance();
+		GpioPinPwmOutput myOutputs[] = { gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_00, "Pulse 00"),
+				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_01, "Pulse 01"),
+				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_02, "Pulse 02"),
+				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_03, "Pulse 03"),
+				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_04, "Pulse 04"),
+				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_05, "Pulse 05"),
+				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_06, "Pulse 06"),
+				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_07, "Pulse 07"),
+				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_08, "Pulse 08"),
+				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_09, "Pulse 09"),
+				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_10, "Pulse 10"),
+				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_11, "Pulse 11"),
+				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_12, "Pulse 12"),
+				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_13, "Pulse 13"),
+				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_14, "Pulse 14"),
+				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_15, "Pulse 15") };
+		return myOutputs;
+	}
+
 	private static final int SERVO_DURATION_MIN = 900;
 	private static final int SERVO_DURATION_MAX = 2100;
 
@@ -74,13 +96,13 @@ public class AdaFruit implements ServoCommand {
 	public void setServo(int ioId, int value) {
 		if ((ioId < 0) || (ioId > 15))
 			throw new IllegalArgumentException("Invalied ioId " + ioId + " ioId must be 0-15");
-		Pin pin = PCA9685Pin.ALL[ioId];
+		GpioPinPwmOutput output = outputs[ioId];
 		int duration = SERVO_DURATION_MIN + value * (SERVO_DURATION_MAX - SERVO_DURATION_MIN) / 256;
 		if (debug) {
-			String msg = String.format("setting servo %3d (%s) to %4d", pin.getAddress(), pin.getName(), duration);
+			String msg = String.format("setting servo %3d (%s) to %4d", output.getPin().getAddress(),output.getName(), duration);
 			LOG.info(msg);
 		}
-		provider.setPwm(pin, duration);
+		output.setPwm(duration);
 	}
 
 	protected CmdLineParser parser;
