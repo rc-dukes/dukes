@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import stormbots.Main;
 import stormbots.MiniPID;
 
 /**
@@ -30,6 +31,17 @@ public class TestMiniPID {
 		for (double actual : sensorValues) {
 			assertEquals(target-actual,pid.getOutput(actual, target),epsilon);
 		}
+		pid.setI(0);
+		pid.setD(0.5);
+		for (double actual : sensorValues) {
+			System.out.println(pid.getOutput(actual*actual, target));
+		}
+	}
+	
+	@Test
+	public void testMain() {
+		String args[]= {};
+		Main.main(args);
 	}
 
 }
