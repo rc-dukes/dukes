@@ -91,8 +91,8 @@ public class AdaFruit implements ServoCommand {
 		return myOutputs;
 	}
 
-	private static final int SERVO_DURATION_MIN = 900;
-	private static final int SERVO_DURATION_MAX = 2100;
+	private static final int SERVO_DURATION_MIN = 400;
+	private static final int SERVO_DURATION_MAX = 2400;
 
 	@Override
 	public void setServo(int ioId, int value) {
