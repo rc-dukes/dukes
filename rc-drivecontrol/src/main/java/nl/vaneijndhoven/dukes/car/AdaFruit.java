@@ -64,6 +64,8 @@ public class AdaFruit implements ServoCommand {
 		// Create custom PCA9685 GPIO provider
 		bus = I2CFactory.getInstance(I2CBus.BUS_1);
 		provider = new PCA9685GpioProvider(bus, 0x40, frequency, frequencyCorrectionFactor);
+		// Define outputs in use for this example
+		outputs = provisionPwmOutputs(provider);
 		// Reset outputs
 		provider.reset();
 	}
