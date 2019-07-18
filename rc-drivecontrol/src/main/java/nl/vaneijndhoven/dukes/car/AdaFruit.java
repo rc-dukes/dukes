@@ -31,7 +31,6 @@ public class AdaFruit implements ServoCommand {
 	private BigDecimal frequency;
 	private I2CBus bus;
 	private PCA9685GpioProvider provider;
-	private GpioPinPwmOutput[] outputs;
 	private static final Logger LOG = LoggerFactory.getLogger(AdaFruit.class);
 
 	/**
@@ -40,7 +39,7 @@ public class AdaFruit implements ServoCommand {
 	 * @throws Exception
 	 */
 	public AdaFruit() throws Exception {
-		this(50.0, 1.0);
+		this(48.828, 1.0578);
 	}
 
 	/**
@@ -64,34 +63,12 @@ public class AdaFruit implements ServoCommand {
 		// Create custom PCA9685 GPIO provider
 		bus = I2CFactory.getInstance(I2CBus.BUS_1);
 		provider = new PCA9685GpioProvider(bus, 0x40, frequency, frequencyCorrectionFactor);
-		outputs = provisionPwmOutputs(provider);
 		// Reset outputs
 		provider.reset();
 	}
 
-	protected GpioPinPwmOutput[] provisionPwmOutputs(final PCA9685GpioProvider gpioProvider) {
-		GpioController gpio = GpioFactory.getInstance();
-		GpioPinPwmOutput myOutputs[] = { gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_00, "Pulse 00"),
-				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_01, "Pulse 01"),
-				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_02, "Pulse 02"),
-				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_03, "Pulse 03"),
-				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_04, "Pulse 04"),
-				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_05, "Pulse 05"),
-				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_06, "Pulse 06"),
-				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_07, "Pulse 07"),
-				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_08, "Pulse 08"),
-				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_09, "Pulse 09"),
-				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_10, "Pulse 10"),
-				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_11, "Pulse 11"),
-				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_12, "Pulse 12"),
-				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_13, "Pulse 13"),
-				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_14, "Pulse 14"),
-				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_15, "Pulse 15") };
-		return myOutputs;
-	}
-
-	private static final int SERVO_DURATION_MIN = 150;
-	private static final int SERVO_DURATION_MAX = 600;
+	private static final int SERVO_DURATION_MIN = 900;
+	private static final int SERVO_DURATION_MAX = 2100;
 
 	@Override
 	public void setServo(int ioId, int value) {
@@ -100,7 +77,7 @@ public class AdaFruit implements ServoCommand {
 		Pin pin = PCA9685Pin.ALL[ioId];
 		int duration = SERVO_DURATION_MIN + value * (SERVO_DURATION_MAX - SERVO_DURATION_MIN) / 256;
 		if (debug) {
-			String msg = String.format("setting servo %3d (%s) to %4d", pin.getAddress(),pin.getName(), duration);
+			String msg = String.format("setting servo %3d (%s) to %4d", pin.getAddress(), pin.getName(), duration);
 			LOG.info(msg);
 		}
 		provider.setPwm(pin, duration);
@@ -131,9 +108,9 @@ public class AdaFruit implements ServoCommand {
 	public void work() {
 		this.setServo(ioId, value);
 		try {
-		  Thread.sleep(1000);
+			Thread.sleep(1000);
 		} catch (Exception ex) {
-                }
+		}
 	}
 
 	/**
