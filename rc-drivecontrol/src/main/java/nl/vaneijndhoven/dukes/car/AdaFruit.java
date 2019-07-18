@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.bitplan.error.ErrorHandler;
 import com.pi4j.gpio.extension.pca.PCA9685GpioProvider;
@@ -30,6 +32,7 @@ public class AdaFruit implements ServoCommand {
 	private I2CBus bus;
 	private PCA9685GpioProvider provider;
 	private GpioPinPwmOutput[] outputs;
+	private static final Logger LOG = LoggerFactory.getLogger(AdaFruit.class);
 
 	/**
 	 * default constructor
@@ -87,15 +90,19 @@ public class AdaFruit implements ServoCommand {
 		return myOutputs;
 	}
 
-	private static final int SERVO_DURATION_MIN = 900;
-	private static final int SERVO_DURATION_MAX = 2100;
+	private static final int SERVO_DURATION_MIN = 150;
+	private static final int SERVO_DURATION_MAX = 600;
 
 	@Override
 	public void setServo(int ioId, int value) {
-		if ((ioId<0) || (ioId>15))
-		throw new IllegalArgumentException("Invalied ioId "+ioId+" ioId must be 0-15");
+		if ((ioId < 0) || (ioId > 15))
+			throw new IllegalArgumentException("Invalied ioId " + ioId + " ioId must be 0-15");
 		Pin pin = PCA9685Pin.ALL[ioId];
-		int duration = SERVO_DURATION_MIN+value*(SERVO_DURATION_MAX-SERVO_DURATION_MIN)/256;
+		int duration = SERVO_DURATION_MIN + value * (SERVO_DURATION_MAX - SERVO_DURATION_MIN) / 256;
+		if (debug) {
+			String msg = String.format("setting servo %3d to %4d", pin, duration);
+			LOG.info(msg);
+		}
 		provider.setPwm(pin, duration);
 	}
 
