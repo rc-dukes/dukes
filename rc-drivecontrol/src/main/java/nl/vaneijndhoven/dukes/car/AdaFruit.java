@@ -130,6 +130,10 @@ public class AdaFruit implements ServoCommand {
 
 	public void work() {
 		this.setServo(ioId, value);
+		try {
+		  Thread.sleep(1000);
+		} catch (Exception ex) {
+                }
 	}
 
 	/**
