@@ -100,7 +100,7 @@ public class AdaFruit implements ServoCommand {
 		Pin pin = PCA9685Pin.ALL[ioId];
 		int duration = SERVO_DURATION_MIN + value * (SERVO_DURATION_MAX - SERVO_DURATION_MIN) / 256;
 		if (debug) {
-			String msg = String.format("setting servo %3d to %4d", pin, duration);
+			String msg = String.format("setting servo %3d (%s) to %4d", pin.getAddress(),pin.getName(), duration);
 			LOG.info(msg);
 		}
 		provider.setPwm(pin, duration);
