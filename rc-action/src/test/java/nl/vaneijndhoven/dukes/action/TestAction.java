@@ -28,7 +28,7 @@ public class TestAction {
 		// in Travis environment things might be *really* slow
 		if (!TestSuite.isTravis()) {
 			// increase the timing
-			int TRAVIS_FACTOR = 2000; // 50 worked - 25 and 37 did not - 
+			int TRAVIS_FACTOR = 2000; // 50 worked - 25 and 37 did not -
 			// 60/75 failed in one instance and even 300/600 !
 			COMMAND_LOOP_INTERVAL = COMMAND_LOOP_INTERVAL * TRAVIS_FACTOR;
 			TIME_OUT = TIME_OUT * TRAVIS_FACTOR;
@@ -74,46 +74,46 @@ public class TestAction {
 
 	@Test
 	public void testStraightLaneNavigator() throws InterruptedException {
-		// if (!TestSuite.isTravis()) {
-		StraightLaneNavigator navigator = new StraightLaneNavigator();
+		if (!TestSuite.isTravis()) {
+			StraightLaneNavigator navigator = new StraightLaneNavigator();
 
-		// Sleep (after creating the navigator) to ensure we surpass the command
-		// loop interval, otherwise no
-		// navigation command will be issued.
-		Thread.sleep(COMMAND_LOOP_INTERVAL);
-		TestSubscriber<JsonObject> subscriber = TestSubscriber.create();
-		JsonObject laneDetectResult = new JsonObject();
-		Observable<JsonObject> nav = navigator.navigate(laneDetectResult);
-		nav.subscribe(subscriber);
+			// Sleep (after creating the navigator) to ensure we surpass the command
+			// loop interval, otherwise no
+			// navigation command will be issued.
+			Thread.sleep(COMMAND_LOOP_INTERVAL);
+			TestSubscriber<JsonObject> subscriber = TestSubscriber.create();
+			JsonObject laneDetectResult = new JsonObject();
+			Observable<JsonObject> nav = navigator.navigate(laneDetectResult);
+			nav.subscribe(subscriber);
 
-		subscriber.assertCompleted();
-		subscriber.assertNoErrors();
-		subscriber.assertValueCount(0);
-		// }
+			subscriber.assertCompleted();
+			subscriber.assertNoErrors();
+			subscriber.assertValueCount(0);
+		}
 	}
 
 	@Test
 	public void testStraightLaneNavigator2() throws InterruptedException {
-		// if (!TestSuite.isTravis()) {
-		StraightLaneNavigator navigator = new StraightLaneNavigator();
+		if (!TestSuite.isTravis()) {
+			StraightLaneNavigator navigator = new StraightLaneNavigator();
 
-		// Sleep (after creating the navigator) to ensure we surpass the command
-		// loop interval, otherwise no
-		// navigation command will be issued.
-		Thread.sleep(COMMAND_LOOP_INTERVAL);
-
-		double angles[] = { -45.0, -30.0, -15.0, -10.0, 0.0, 10.0, 15.0, 30.0, 45.0 };
-		String expected[] = { "-100.0", "-100.0", "-60.0", "-40.0", "0.0", "60.0", "90.0", "100.0", "100.0" };
-		int index = 0;
-		for (double angle : angles) {
+			// Sleep (after creating the navigator) to ensure we surpass the command
+			// loop interval, otherwise no
+			// navigation command will be issued.
 			Thread.sleep(COMMAND_LOOP_INTERVAL);
-			JsonObject laneDetectResult = new JsonObject();
-			laneDetectResult.put("angle", angle);
-			Observable<JsonObject> nav2 = navigator.navigate(laneDetectResult);
-			check(nav2, TIME_OUT, "type", "servoDirect", "position", expected[index]);
-			index++;
+
+			double angles[] = { -45.0, -30.0, -15.0, -10.0, 0.0, 10.0, 15.0, 30.0, 45.0 };
+			String expected[] = { "-100.0", "-100.0", "-60.0", "-40.0", "0.0", "60.0", "90.0", "100.0", "100.0" };
+			int index = 0;
+			for (double angle : angles) {
+				Thread.sleep(COMMAND_LOOP_INTERVAL);
+				JsonObject laneDetectResult = new JsonObject();
+				laneDetectResult.put("angle", angle);
+				Observable<JsonObject> nav2 = navigator.navigate(laneDetectResult);
+				check(nav2, TIME_OUT, "type", "servoDirect", "position", expected[index]);
+				index++;
+			}
 		}
-		// }
 	}
 
 }
