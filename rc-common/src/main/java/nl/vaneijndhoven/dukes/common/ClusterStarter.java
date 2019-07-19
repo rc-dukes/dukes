@@ -8,6 +8,7 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.json.JsonObject;
 
 /**
  * starter for VertxCluster
@@ -45,18 +46,32 @@ public class ClusterStarter {
 	}
 
 	/**
+	 * get the deployment options
+	 * @param worker - true if worker should be set to true
+	 * @return the deployment options
+	 * @throws Exception 
+	 */
+	public DeploymentOptions getDeployMentOptions(boolean worker) throws Exception {
+		DeploymentOptions deploymentOptions = new DeploymentOptions();
+		deploymentOptions.setWorker(worker);
+		JsonObject config=Config.getEnvironment().asJsonObject();
+		deploymentOptions.setConfig(config);
+		return deploymentOptions;
+	}
+
+	/**
 	 * deploy the given verticles
 	 * 
 	 * @param verticles
+	 * @throws Exception 
 	 */
-	public void deployVerticles(AbstractVerticle... verticles) {
+	public void deployVerticles(AbstractVerticle... verticles) throws Exception {
+		DeploymentOptions deploymentOptions = this.getDeployMentOptions(true);
 		this.clusteredVertx(resultHandler -> {
 			vertx = resultHandler.result();
-			DeploymentOptions deploymentOptions = new DeploymentOptions();
-			deploymentOptions.setWorker(true);
 			for (AbstractVerticle verticle : verticles) {
 				try {
-					vertx.deployVerticle(verticle,deploymentOptions);
+					vertx.deployVerticle(verticle, deploymentOptions);
 				} catch (Throwable th) {
 					ErrorHandler.getInstance().handle(th);
 				}
