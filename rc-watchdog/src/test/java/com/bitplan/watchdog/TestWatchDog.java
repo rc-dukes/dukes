@@ -59,7 +59,7 @@ public class TestWatchDog {
 		}
 		assertTrue(loops<100);
 		LOG.info(String.format("car powered on after %3d msecs",loops*10));
-		Thread.sleep(heartBeatInterval*(maxMissedBeats+1));
+		Thread.sleep(heartBeatInterval*(maxMissedBeats+3));
 		assertTrue(!car.powerIsOn());
 	}
 
