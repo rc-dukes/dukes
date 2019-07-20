@@ -10,7 +10,7 @@ var streetLane = "images/StreetLane.jpg"; // default Image
 
 /**
  * all publish messages should go thru this function
- * 
+ *
  * @param address
  * @param message
  * @param headers
@@ -47,6 +47,8 @@ var logIndex = 0;
  * display events
  */
 var display = function(err, msg) {
+	// TODO make filter configurable
+	// currently we only show one out of a 100 events
 	if (logIndex++ % 100 == 0) {
 		var prefix = "";
 		if (eb)
@@ -57,7 +59,7 @@ var display = function(err, msg) {
 
 /**
  * log the given message
- * 
+ *
  * @param msg
  */
 function logMessage(msg) {
@@ -115,6 +117,7 @@ function power() {
 		clearLog("power on");
 		initEventBus(display, true);
 		heartBeatInterval = registerHeartBeat();
+		// TODO get url from configuration
 		registerCamera('http://pibeewifi/html/cam_get.php', cameraFps);
 	} else {
 		clearLog("power off");
@@ -129,7 +132,7 @@ function power() {
 
 /**
  * set the state of the power - dependent controls
- * 
+ *
  * @param powerState
  */
 function setControlState(powerState) {
@@ -161,7 +164,7 @@ function initRemoteControls() {
 
 /**
  * init the event Bus
- * 
+ *
  * @param withDetect
  */
 function initEventBus(withDetect) {
@@ -169,13 +172,18 @@ function initEventBus(withDetect) {
 	var protocol = window.location.protocol;
 	var busUrl = "";
 	var msg = window.location.href;
+	// if we are called directly from file:// we assume we are in a development environment
 	if (protocol === "file:") {
 		busUrl = "http://localhost:8080/eventbus";
 		imageViewUrl = 'http://localhost:8081';
+		// 10 fps
 		debugImagesInterval = registerDebugImages(100);
 	} else {
 		busUrl = window.location.origin + "/eventbus";
+		// TODO port should be configurable
 		imageViewUrl = 'http://' + window.location.hostname + ':8081'
+		// TODO debug image fps should be configurable
+		// here it is 5 fps
 		debugImagesInterval = registerDebugImages(200);
 		msg = window.location.origin;
 	}
@@ -468,7 +476,7 @@ function setCameraImageUrl(baseurl) {
 
 /**
  * register the camera
- * 
+ *
  * @param fps - frames per second
  */
 function registerCamera(url, fps) {
@@ -491,7 +499,7 @@ function registerCamera(url, fps) {
 
 /**
  * update the Debug Images based on the given imageView Url
- * 
+ *
  * @param imageViewUrl -
  *            the URL of the imageView server as configured in the Enviroment
  */
@@ -547,7 +555,7 @@ function updateConfig() {
 
 /**
  * set the color of the element with the given id
- * 
+ *
  * @param id
  * @param color
  */
@@ -557,7 +565,7 @@ function setColor(id, color) {
 
 /**
  * set the image for the given id to the given source
- * 
+ *
  * @param id
  * @param src
  */
@@ -568,7 +576,7 @@ function setImage(id, src) {
 
 /**
  * update the slider for the given sliderId from the given textbox
- * 
+ *
  * @param sliderId -
  *            the slider to update
  * @param textboxId -
@@ -587,7 +595,7 @@ function onSlide(sliderId, textbox) {
 
 /**
  * set the initial slider values
- * 
+ *
  * @returns
  */
 function initialSliderValues() {
@@ -620,6 +628,7 @@ function onSlideCam(sliderId, textbox, configKey) {
 
 function updateCamConfig(elementId, configKey) {
 	var configValue = document.getElementById(elementId).value;
+	// FIXME - this should not be hardcoded
 	var url = 'http://10.9.8.7/html/cmd_pipe.php?cmd=' + configKey + '%20'
 			+ configValue;
 
