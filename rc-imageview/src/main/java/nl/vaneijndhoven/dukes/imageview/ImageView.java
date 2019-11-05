@@ -35,6 +35,7 @@ public class ImageView extends AbstractVerticle {
    */
   private void sendImage(HttpServerRequest request) {
     String type = request.getParam("type");
+    if (type==null) type="debug";
     byte[] bytes = new byte[] {};
     switch (type) {
     case "edges":
