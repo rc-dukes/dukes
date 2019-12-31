@@ -6,7 +6,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 	
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="nl.vaneijndhoven.opencv.video.LaneDetectionGUI">
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="nl.vaneijndhoven.dukes.app.LaneDetectionGUI">
 	<right>
 		<VBox alignment="CENTER" spacing="10">
 			<padding>

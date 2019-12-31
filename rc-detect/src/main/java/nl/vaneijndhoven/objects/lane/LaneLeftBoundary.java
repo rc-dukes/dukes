@@ -3,7 +3,6 @@ package nl.vaneijndhoven.objects.lane;
 import nl.vaneijndhoven.dukes.geometry.Line;
 import nl.vaneijndhoven.objects.Boundary;
 import nl.vaneijndhoven.opencv.linedetection.LineFilter;
-import nl.vaneijndhoven.opencv.video.LaneDetectionController;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -11,8 +10,8 @@ import java.util.Optional;
 
 public class LaneLeftBoundary extends Boundary {
 
-    public static final double DEFAULT_ANGLE = -LaneDetectionController.DEFAULT_LANE_BOUNDARY_ANGLE;
-    public static final double DEFAULT_TOLERANCE = LaneDetectionController.DEFAULT_LANE_BOUNDARY_TOLERANCE;
+    public static final double DEFAULT_ANGLE = -BoundaryDefaults.DEFAULT_LANE_BOUNDARY_ANGLE;
+    public static final double DEFAULT_TOLERANCE = BoundaryDefaults.DEFAULT_LANE_BOUNDARY_TOLERANCE;
 
     public LaneLeftBoundary() {
         this(DEFAULT_ANGLE, DEFAULT_TOLERANCE, false);

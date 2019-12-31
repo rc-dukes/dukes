@@ -19,6 +19,7 @@ public class LaneDetectionApp extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
+    // fxml files are in rc-detect
     BorderPane root = FXMLLoader
         .load(getClass().getClassLoader().getResource("fx/lanedetection.fxml"));
     Scene scene = new Scene(root, 1000, 800);

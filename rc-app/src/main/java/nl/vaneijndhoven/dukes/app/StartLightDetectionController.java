@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.opencv.video;
+package nl.vaneijndhoven.dukes.app;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;

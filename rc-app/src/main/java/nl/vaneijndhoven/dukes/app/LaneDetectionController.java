@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.opencv.video;
+package nl.vaneijndhoven.dukes.app;
 
 import org.opencv.core.Mat;
 
@@ -18,9 +18,6 @@ public class LaneDetectionController {
 
   protected static final Logger LOG = LoggerFactory
       .getLogger(LaneDetectionController.class);
-
-  public static double DEFAULT_LANE_BOUNDARY_ANGLE = 45;
-  public static double DEFAULT_LANE_BOUNDARY_TOLERANCE = 30;
 
   public static final double DEFAULT_CANNY_THRESHOLD_1 = 131d;
   public static final double DEFAULT_CANNY_THRESHOLD_2 = 397d;

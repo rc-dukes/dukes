@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.opencv.video;
+package nl.vaneijndhoven.dukes.app;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -15,14 +15,16 @@ import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
 import nl.vaneijndhoven.opencv.tools.MemoryManagement;
+import nl.vaneijndhoven.opencv.video.ImageUtils;
+
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 
 import java.io.ByteArrayInputStream;
 import java.util.concurrent.*;
 
+import static nl.vaneijndhoven.dukes.app.LaneDetectionController.*;
 import static nl.vaneijndhoven.opencv.tools.MemoryManagement.closable;
-import static nl.vaneijndhoven.opencv.video.LaneDetectionController.*;
 
 public class LaneDetectionGUI {
     @FXML private Button cameraButton;
