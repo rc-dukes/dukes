@@ -117,7 +117,7 @@ public class StartLightDetectionController {
       // start the video capture
       // this.capture.open(0);
       this.capture.open(
-          "file://Users/jpoint/Repositories/opencv-playground/src/main/resources/videos/startlamp2.m4v");
+          "http://wiki.bitplan.com/videos/startlamp2.m4v");
       // this.capture.open("http://10.9.8.7/html/cam_pic_new.php?time=1472218786342&pDelay=66666");
 
       // is the video stream available?

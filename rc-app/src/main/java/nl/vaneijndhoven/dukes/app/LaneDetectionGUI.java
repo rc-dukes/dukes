@@ -67,7 +67,8 @@ public class LaneDetectionGUI {
         if (!this.cameraActive) {
             // load test file
 //             this.capture.open("file://Users/jpoint/Repositories/opencv-playground/src/main/resources/videos/stopzone2.m4v");
-             this.capture.open("file://Users/jpoint/Repositories/opencv-playground/src/main/resources/videos/full_run.mp4");
+             this.capture.open("http://wiki.bitplan.com/videos/full_run.mp4");
+                 // "file://Users/jpoint/Repositories/opencv-playground/src/main/resources/videos/full_run.mp4");
 
             // webcam stream
             // this.capture.open(0);
@@ -198,11 +199,16 @@ public class LaneDetectionGUI {
     }
 
     private void displayImage(ImageView fxImage, Mat openCvImage) {
-        this.onFXThread(fxImage.imageProperty(), ImageUtils.mat2Image(openCvImage));
+      if (openCvImage.rows()>0) {
+        Image image=ImageUtils.mat2Image(openCvImage);
+        this.onFXThread(fxImage.imageProperty(), image);
+      }
     }
 
     private void displayImage(ImageView fxImage, byte[] imageData) {
-        this.onFXThread(fxImage.imageProperty(), new Image(new ByteArrayInputStream(imageData)));
+      if (imageData==null) return;
+      Image image= new Image(new ByteArrayInputStream(imageData));
+      this.onFXThread(fxImage.imageProperty(),image);
     }
 
     private <T> void onFXThread(final ObjectProperty<T> property, final T value) {
@@ -219,17 +225,11 @@ public class LaneDetectionGUI {
             this.vertx = vertx;
             controller = new LaneDetectionController(vertx);
 
-
             Runtime.getRuntime().addShutdownHook(new Thread(){
                 public void run() {
                     vertx.close();
                 }
             });
-
-
         });
     }
-
-
-
 }

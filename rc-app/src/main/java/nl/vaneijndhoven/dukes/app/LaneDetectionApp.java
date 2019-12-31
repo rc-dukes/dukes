@@ -11,7 +11,7 @@ import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.dukes.common.Environment;
 
 /**
- * JavaFx Lane Detection App
+ * JavaFx Lane Detection App - it's been replaced by a web UI 
  *
  */
 @Deprecated
