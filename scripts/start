@@ -1,5 +1,6 @@
 #!/bin/bash
 # WF 2019-06-29
+#
 # start server and client
 
 #ansi colors
