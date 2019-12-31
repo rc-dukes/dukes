@@ -26,7 +26,7 @@ public class TestAction {
 	@BeforeClass
 	public static void setTiming() {
 		// in Travis environment things might be *really* slow
-		if (!TestSuite.isTravis()) {
+		if (TestSuite.isTravis()) {
 			// increase the timing
 			int TRAVIS_FACTOR = 2000; // 50 worked - 25 and 37 did not -
 			// 60/75 failed in one instance and even 300/600 !

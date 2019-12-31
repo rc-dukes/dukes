@@ -66,6 +66,7 @@ public class TestEnvironment {
   @Test
   public void testCameraUrl() throws Exception {
     String url="http://5.6.7.8/html/cam_pic_new.php";
+    Environment.propFilePath = File.createTempFile("dukes", ".ini").getAbsolutePath();
     File propFile = setProperties(Config.CAMERA_URL, url);
     assertEquals(url,
         Config.getEnvironment().getString(Config.CAMERA_URL));

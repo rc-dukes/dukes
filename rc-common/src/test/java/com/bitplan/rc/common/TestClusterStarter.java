@@ -24,7 +24,7 @@ public class TestClusterStarter {
 
 	static class TestVerticle extends AbstractVerticle {
 		int counter = 0;
-		public static int TEST_INTERVAL_MS = 10;
+		public static int TEST_INTERVAL_MS = 20;
 
 		@Override
 		public void start() {
@@ -41,16 +41,16 @@ public class TestClusterStarter {
 	public void testClusterStarter() throws Exception {
 		// Let's fake a configuration
 		Environment.propFilePath = "../rc-drivecontrol/src/test/resources/dukes/dukes.ini";
-
+		Environment.reset();
 		ClusterStarter starter = new ClusterStarter();
 		TestVerticle testVerticle = new TestVerticle();
 		starter.deployVerticles(testVerticle);
-		while (testVerticle.counter == 0) {
-			Thread.sleep(10);
+		int minLoops=5;
+		while (testVerticle.counter <=minLoops) {
+		  Thread.sleep(TestVerticle.TEST_INTERVAL_MS);
 		}
-		Thread.sleep(TestVerticle.TEST_INTERVAL_MS * 3);
-		assertTrue(testVerticle.counter >= 3);
-		assertEquals("http://pi.doe.com/html/cam_pic_new.php",testVerticle.config().getString("camera.url"));
+		String cameraurl=testVerticle.config().getString("camera.url");
+		assertEquals("http://pi.doe.com/html/cam_pic_new.php",cameraurl);
 		if (debug) {
 			for (String key : testVerticle.config().fieldNames()) {
 				LOG.info(key);
