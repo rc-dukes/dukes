@@ -13,10 +13,15 @@ import javafx.scene.image.ImageView;
 import nl.vaneijndhoven.opencv.video.ImageUtils;
 
 public class BaseGUI {
-  @FXML protected Button cameraButton;
-  // the FXML area for showing the current frame
-  @FXML protected ImageView originalFrame;
-  
+  GUIDisplayer displayer;
+  public GUIDisplayer getDisplayer() {
+    return displayer;
+  }
+
+  public void setDisplayer(GUIDisplayer displayer) {
+    this.displayer = displayer;
+  }
+
   /**
    * show the given imageFrame in the given JavaFX imageView Control
    * @param imageView

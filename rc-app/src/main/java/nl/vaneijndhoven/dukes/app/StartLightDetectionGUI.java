@@ -1,28 +1,30 @@
 package nl.vaneijndhoven.dukes.app;
 
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Scalar;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.videoio.VideoCapture;
+
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
-import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.objects.StartLight;
 import nl.vaneijndhoven.opencv.startlightdetection.DefaultStartLightDetector;
 import nl.vaneijndhoven.opencv.startlightdetection.StartLightDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
-import org.opencv.core.*;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.videoio.VideoCapture;
-
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.*;
 
 /**
  * StartLight DetectionController
@@ -54,12 +56,6 @@ public class StartLightDetectionGUI extends BaseGUI {
 
   private int numberOfLightOffEvents = 0;
 
-  // the FXML area for showing the mask
-  @FXML
-  private ImageView maskImage;
-  // the FXML area for showing the output of the morphological operations
-  @FXML
-  private ImageView morphImage;
   // FXML slider for setting HSV ranges
   @FXML
   private Slider hueStart;
@@ -73,10 +69,7 @@ public class StartLightDetectionGUI extends BaseGUI {
   private Slider valueStart;
   @FXML
   private Slider valueStop;
-  // FXML label to show the current values set with the sliders
-  @FXML
-  private Label hsvCurrentValues;
-
+ 
   // a timer for acquiring the video stream
   private ScheduledExecutorService timer;
   // the OpenCV object that performs the video capture
@@ -84,21 +77,7 @@ public class StartLightDetectionGUI extends BaseGUI {
   // a flag to change the button behavior
   private boolean cameraActive;
 
-  // property for object binding
-  private ObjectProperty<String> hsvValuesProp;
-
-  @FXML
-  private void startCamera() {
-    // bind a text property with the string containing the current range of
-    // HSV values for object detection
-    hsvValuesProp = new SimpleObjectProperty<>();
-    this.hsvCurrentValues.textProperty().bind(hsvValuesProp);
-
-    // set a fixed width for all the image to show and preserve image ratio
-    this.imageViewProperties(this.originalFrame, 400);
-    this.imageViewProperties(this.maskImage, 200);
-    this.imageViewProperties(this.morphImage, 200);
-
+  public void startCamera() {
     this.hueStart.adjustValue(0.0d);
     this.hueStop.adjustValue(28.3d);
 
@@ -124,9 +103,9 @@ public class StartLightDetectionGUI extends BaseGUI {
           ImageCollector imageCollector = new ImageCollector();
           // detector.withImageCollector(imageCollector);
           StartLight startLight = detectStartLight(imageCollector);
-          displayImage(originalFrame,imageCollector.originalFrame());
-          displayImage(maskImage,imageCollector.mask());
-          displayImage(morphImage,imageCollector.morph());
+          displayer.displayOriginal(imageCollector.originalFrame());
+          displayer.display1(imageCollector.mask());
+          displayer.display2(imageCollector.morph());
           if (this.vertx != null) {
 
             // int minimumNumberOfLightOffEvents = 2;
@@ -178,13 +157,13 @@ public class StartLightDetectionGUI extends BaseGUI {
             TimeUnit.MILLISECONDS);
 
         // update the button content
-        this.cameraButton.setText("Stop Camera");
+        displayer.setCameraButtonText("Stop Camera");
       } else {
         // log the error
         System.err.println("Failed to open the camera connection...");
       }
     } else {
-      this.cameraButton.setText("Start Camera");
+      displayer.setCameraButtonText("Start Camera");
       stopCamera();
     }
   }
@@ -254,13 +233,10 @@ public class StartLightDetectionGUI extends BaseGUI {
               hueStart.getValue(),hueStop.getValue(),
               saturationStart.getValue(), saturationStop.getValue(),
               valueStart.getValue(),valueStop.getValue());
-          this.onFXThread(this.hsvValuesProp, valuesToPrint);
-          this.onFXThread(this.maskImage.imageProperty(),
-              new Image(new ByteArrayInputStream(imageCollector.mask())));
-          this.onFXThread(this.morphImage.imageProperty(),
-              new Image(new ByteArrayInputStream(imageCollector.morph())));
-          this.onFXThread(this.originalFrame.imageProperty(),
-              new Image(new ByteArrayInputStream(imageCollector.startLight())));
+          displayer.showCurrentValues(valuesToPrint);
+          displayer.display1(imageCollector.mask());
+          displayer.display2(imageCollector.morph());
+          displayer.displayOriginal(imageCollector.startLight());
         }
 
       } catch (Exception e) {
@@ -327,23 +303,5 @@ public class StartLightDetectionGUI extends BaseGUI {
     lightOn = lightDetected;
 
     return frame;
-  }
-
-  /**
-   * Convert a {@link Mat} object (OpenCV) in the corresponding {@link Image}
-   * for JavaFX
-   *
-   * @param frame
-   *          the {@link Mat} representing the current frame
-   * @return the {@link Image} to show
-   */
-  private Image mat2Image(Mat frame) {
-    // create a temporary buffer
-    MatOfByte buffer = new MatOfByte();
-    // encode the frame in the buffer, according to the PNG format
-    Imgcodecs.imencode(".png", frame, buffer);
-    // build and return an Image created from the image encoded in the
-    // buffer
-    return new Image(new ByteArrayInputStream(buffer.toArray()));
   }
 }

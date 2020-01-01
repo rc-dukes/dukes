@@ -31,8 +31,6 @@ import nl.vaneijndhoven.opencv.tools.ImageCollector;
 import nl.vaneijndhoven.opencv.tools.MemoryManagement;
 
 public class LaneDetectionGUI extends BaseGUI {
-    @FXML private ImageView processedImage1;
-    @FXML private ImageView processedImage2;
     @FXML private Slider cannyThreshold1;
     @FXML private Slider cannyThreshold2;
     @FXML private Slider lineDetectRho;
@@ -40,13 +38,11 @@ public class LaneDetectionGUI extends BaseGUI {
     @FXML private Slider lineDetectThreshold;
     @FXML private Slider lineDetectMinLineLength;
     @FXML private Slider lineDetectMaxLineGap;
-    @FXML private Label sliderCurrentValues;
 
     private Vertx vertx;
     private ScheduledExecutorService timer;
     private VideoCapture capture = new VideoCapture();
     private boolean cameraActive;
-    private ObjectProperty<String> sliderValuesProp;
 
     private CannyEdgeDetector.Config cannyConfig = new CannyEdgeDetector.Config();
     private ProbabilisticHoughLinesLineDetector.Config houghLinesConfig = new ProbabilisticHoughLinesLineDetector.Config();
@@ -59,7 +55,6 @@ public class LaneDetectionGUI extends BaseGUI {
         initVertx();
     }
 
-    @FXML
     public void startCamera() throws Exception {
         configureGUI();
 
@@ -87,15 +82,13 @@ public class LaneDetectionGUI extends BaseGUI {
                         displayCurrentSliderValues();
                         applySliderValuesToConfig();
 
-
                         try (MemoryManagement.ClosableMat<Mat> originalImage = closable(grabFrame())) {
-                            displayImage(originalFrame, originalImage.get());
+                            displayer.displayOriginal(originalImage.get());
 
                             ImageCollector collector = new ImageCollector();
                             controller.performLaneDetection(originalImage.get(), cannyConfig, houghLinesConfig, collector);
-
-                            displayImage(processedImage1, collector.edges());
-                            displayImage(processedImage2, collector.lines());
+                            displayer.display1(collector.edges());
+                            displayer.display2(collector.lines());
                         }
                     } catch (Exception e) {
                         System.out.println("Exception detected: ");
@@ -107,13 +100,13 @@ public class LaneDetectionGUI extends BaseGUI {
                 // this.timer = Executors.newScheduledThreadPool(100);
                 this.timer.scheduleAtFixedRate(frameGrabber, 0, 50, TimeUnit.MILLISECONDS);
 
-                this.cameraButton.setText("Stop Camera");
+                displayer.setCameraButtonText("Stop Camera");
             } else {
                 System.err.println("Failed to open the camera connection...");
             }
         } else {
             this.cameraActive = false;
-            this.cameraButton.setText("Start Camera");
+            displayer.setCameraButtonText("Start Camera");
 
             try {
                 this.timer.shutdown();
@@ -128,19 +121,9 @@ public class LaneDetectionGUI extends BaseGUI {
 
     private void configureGUI() {
         if (!configured) {
-            sliderValuesProp = new SimpleObjectProperty<>();
-            sliderCurrentValues.textProperty().bind(sliderValuesProp);
-
-            configureImageDisplaySize();
             configureSliderDefaults();
             configured = true;
         }
-    }
-
-    private void configureImageDisplaySize() {
-        this.imageViewProperties(this.originalFrame, 400);
-        this.imageViewProperties(this.processedImage1, 400);
-        this.imageViewProperties(this.processedImage2, 400);
     }
 
     private void applySliderValuesToConfig() {
@@ -162,8 +145,7 @@ public class LaneDetectionGUI extends BaseGUI {
                 ", threshold: " + lineDetectThreshold.getValue() +
                 ", minLength: " + lineDetectMinLineLength.getValue() +
                 ", maxGap: " + lineDetectMaxLineGap.getValue();
-
-        this.onFXThread(this.sliderValuesProp, valuesToPrint);
+        displayer.showCurrentValues(valuesToPrint);
     }
 
     private void configureSliderDefaults() {
