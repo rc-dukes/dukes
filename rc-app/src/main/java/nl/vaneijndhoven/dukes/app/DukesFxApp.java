@@ -5,29 +5,23 @@ import com.bitplan.opencv.NativeLibrary;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import nl.vaneijndhoven.dukes.common.Config;
-import nl.vaneijndhoven.dukes.common.Environment;
-
 /**
- * JavaFx Lane Detection App - it's been replaced by a web UI 
+ * Java FX based GUI 
+ * @author wf
  *
  */
-@Deprecated
-public class LaneDetectionApp extends Application {
-
+public class DukesFxApp extends Application {
   @Override
   public void start(Stage primaryStage) throws Exception {
-    // fxml files are in rc-detect
-    BorderPane root = FXMLLoader
-        .load(getClass().getClassLoader().getResource("fx/lanedetection.fxml"));
-    Scene scene = new Scene(root, 1000, 800);
+    VBox root = FXMLLoader
+        .load(getClass().getClassLoader().getResource("fx/dukes.fxml"));
+    Scene scene = new Scene(root, 1920*2/3, 1080*2/3);
     primaryStage.setTitle("Dukes lane detection");
     primaryStage.setScene(scene);
     primaryStage.show();
   }
-
   /**
    * run the app
    * 
@@ -38,5 +32,4 @@ public class LaneDetectionApp extends Application {
     NativeLibrary.load();
     launch(args);
   }
-
 }

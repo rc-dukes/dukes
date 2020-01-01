@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="nl.vaneijndhoven.dukes.app.DukesFxGUI">
+   <fx:include fx:id="laneDetection" source="lanedetection.fxml"/>
+</VBox>
