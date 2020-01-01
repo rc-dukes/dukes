@@ -29,13 +29,13 @@ import java.util.concurrent.*;
  * @author wf
  *
  */
-public class StartLightDetectionController {
+public class StartLightDetectionGUI extends BaseGUI {
 
   private Vertx vertx;
   private DefaultStartLightDetector.Config startLineConfig = new DefaultStartLightDetector.Config();
   private StartLightDetector detector = new DefaultStartLightDetector();
 
-  public StartLightDetectionController() {
+  public StartLightDetectionGUI() {
     Config.configureLogging();
     VertxOptions options = new VertxOptions().setClustered(true)
         .setClusterManager(Config.createHazelcastConfig());
@@ -64,12 +64,7 @@ public class StartLightDetectionController {
 
   private int numberOfLightOffEvents = 0;
 
-  // FXML camera button
-  @FXML
-  private Button cameraButton;
-  // the FXML area for showing the current frame
-  @FXML
-  private ImageView originalFrame;
+
   // the FXML area for showing the mask
   @FXML
   private ImageView maskImage;
@@ -377,19 +372,5 @@ public class StartLightDetectionController {
     // build and return an Image created from the image encoded in the
     // buffer
     return new Image(new ByteArrayInputStream(buffer.toArray()));
-  }
-
-  /**
-   * Generic method for putting element running on a non-JavaFX thread on the
-   * JavaFX thread, to properly update the UI
-   *
-   * @param property
-   *          a {@link ObjectProperty}
-   * @param value
-   *          the value to set for the given {@link ObjectProperty}
-   */
-  private <T> void onFXThread(final ObjectProperty<T> property, final T value) {
-    Platform.runLater(() -> property.set(value));
-
   }
 }

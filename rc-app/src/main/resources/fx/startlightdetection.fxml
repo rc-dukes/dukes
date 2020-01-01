@@ -6,7 +6,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="nl.vaneijndhoven.dukes.app.StartLightDetectionController">
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="nl.vaneijndhoven.dukes.app.StartLightDetectionGUI">
     <right>
         <VBox alignment="CENTER" spacing="10">
             <padding>

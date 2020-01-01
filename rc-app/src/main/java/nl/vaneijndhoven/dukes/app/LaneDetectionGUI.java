@@ -26,9 +26,7 @@ import java.util.concurrent.*;
 import static nl.vaneijndhoven.dukes.app.LaneDetectionController.*;
 import static nl.vaneijndhoven.opencv.tools.MemoryManagement.closable;
 
-public class LaneDetectionGUI {
-    @FXML private Button cameraButton;
-    @FXML private ImageView originalFrame;
+public class LaneDetectionGUI extends BaseGUI {
     @FXML private ImageView processedImage1;
     @FXML private ImageView processedImage2;
     @FXML private Slider cannyThreshold1;
@@ -209,10 +207,6 @@ public class LaneDetectionGUI {
       if (imageData==null) return;
       Image image= new Image(new ByteArrayInputStream(imageData));
       this.onFXThread(fxImage.imageProperty(),image);
-    }
-
-    private <T> void onFXThread(final ObjectProperty<T> property, final T value) {
-        Platform.runLater(() -> property.set(value));
     }
 
     private void initVertx() {

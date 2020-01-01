@@ -14,7 +14,7 @@ import nl.vaneijndhoven.opencv.tools.ImageCollector;
  * lane detection controller
  *
  */
-public class LaneDetectionController {
+public class LaneDetectionController  {
 
   protected static final Logger LOG = LoggerFactory
       .getLogger(LaneDetectionController.class);
