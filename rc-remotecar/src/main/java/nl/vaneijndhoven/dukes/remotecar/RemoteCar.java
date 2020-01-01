@@ -45,7 +45,7 @@ public class RemoteCar {
 			VertxOptions options = starter.getOptions();
 
 			if (Environment.getInstance().runningOnRaspberryPi()) {
-			  String clusterHost=Config.getEnvironment().getString(Config.REMOTECAR_HOST)
+			  String clusterHost=Config.getEnvironment().getString(Config.REMOTECAR_HOST);
 			  
 				LOG.info(String.format("Running on the Raspberry Pi, activating Vert.x clustering over the network with clusterHost %s.",clusterHost));
 				// activate clustering over the network on the right interface.
