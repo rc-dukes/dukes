@@ -191,23 +191,7 @@ public class LaneDetectionGUI extends BaseGUI {
         return frame;
     }
 
-    private void imageViewProperties(ImageView image, int dimension) {
-        image.setFitWidth(dimension);
-        image.setPreserveRatio(true);
-    }
-
-    private void displayImage(ImageView fxImage, Mat openCvImage) {
-      if (openCvImage.rows()>0) {
-        Image image=ImageUtils.mat2Image(openCvImage);
-        this.onFXThread(fxImage.imageProperty(), image);
-      }
-    }
-
-    private void displayImage(ImageView fxImage, byte[] imageData) {
-      if (imageData==null) return;
-      Image image= new Image(new ByteArrayInputStream(imageData));
-      this.onFXThread(fxImage.imageProperty(),image);
-    }
+  
 
     private void initVertx() {
         VertxOptions options = new VertxOptions()

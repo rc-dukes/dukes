@@ -46,16 +46,6 @@ public class StartLightDetectionGUI extends BaseGUI {
     });
 
   }
-  
-  /**
-   * show the given imageFrame in the given JavaFX imageView Control
-   * @param imageView
-   * @param imageFrame
-   */
-  private void showImage(ImageView imageView, byte[] imageFrame) {
-    Image image=new Image(new ByteArrayInputStream(imageFrame));
-    imageView.setImage(image);
-  }
 
   private boolean lightOn = false;
   private int frameIndex=0;
@@ -63,7 +53,6 @@ public class StartLightDetectionGUI extends BaseGUI {
   String lastCommandSent = "";
 
   private int numberOfLightOffEvents = 0;
-
 
   // the FXML area for showing the mask
   @FXML
@@ -135,9 +124,9 @@ public class StartLightDetectionGUI extends BaseGUI {
           ImageCollector imageCollector = new ImageCollector();
           // detector.withImageCollector(imageCollector);
           StartLight startLight = detectStartLight(imageCollector);
-          showImage(originalFrame,imageCollector.originalFrame());
-          showImage(maskImage,imageCollector.mask());
-          showImage(morphImage,imageCollector.morph());
+          displayImage(originalFrame,imageCollector.originalFrame());
+          displayImage(maskImage,imageCollector.mask());
+          displayImage(morphImage,imageCollector.morph());
           if (this.vertx != null) {
 
             // int minimumNumberOfLightOffEvents = 2;
@@ -338,22 +327,6 @@ public class StartLightDetectionGUI extends BaseGUI {
     lightOn = lightDetected;
 
     return frame;
-  }
-
-  /**
-   * Set typical {@link ImageView} properties: a fixed width and the information
-   * to preserve the original image ration
-   *
-   * @param image
-   *          the {@link ImageView} to use
-   * @param dimension
-   *          the width of the image to set
-   */
-  private void imageViewProperties(ImageView image, int dimension) {
-    // set a fixed width for the given ImageView
-    image.setFitWidth(dimension);
-    // preserve the image ratio
-    image.setPreserveRatio(true);
   }
 
   /**
