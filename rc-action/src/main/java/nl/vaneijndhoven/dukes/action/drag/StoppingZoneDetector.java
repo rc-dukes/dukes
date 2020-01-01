@@ -45,8 +45,6 @@ public class StoppingZoneDetector {
                     }
                 }
             }
-
-
         }
 
         return Observable.empty();
