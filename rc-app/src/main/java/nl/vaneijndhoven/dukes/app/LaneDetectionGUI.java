@@ -1,30 +1,34 @@
 package nl.vaneijndhoven.dukes.app;
 
-import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
-import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import nl.vaneijndhoven.dukes.common.Config;
-import nl.vaneijndhoven.dukes.common.Environment;
-import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
-import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
-import nl.vaneijndhoven.opencv.tools.ImageCollector;
-import nl.vaneijndhoven.opencv.tools.MemoryManagement;
-import nl.vaneijndhoven.opencv.video.ImageUtils;
+import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_CANNY_THRESHOLD_1;
+import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_CANNY_THRESHOLD_2;
+import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_LINE_DETECT_MAX_LINE_GAP;
+import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_LINE_DETECT_MIN_LINE_LENGTH;
+import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_LINE_DETECT_RHO;
+import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_LINE_DETECT_THETA;
+import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_LINE_DETECT_THRESHOLD;
+import static nl.vaneijndhoven.opencv.tools.MemoryManagement.closable;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 
-import java.io.ByteArrayInputStream;
-import java.util.concurrent.*;
-
-import static nl.vaneijndhoven.dukes.app.LaneDetectionController.*;
-import static nl.vaneijndhoven.opencv.tools.MemoryManagement.closable;
+import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.image.ImageView;
+import nl.vaneijndhoven.dukes.common.Config;
+import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
+import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
+import nl.vaneijndhoven.opencv.tools.ImageCollector;
+import nl.vaneijndhoven.opencv.tools.MemoryManagement;
 
 public class LaneDetectionGUI extends BaseGUI {
     @FXML private ImageView processedImage1;
