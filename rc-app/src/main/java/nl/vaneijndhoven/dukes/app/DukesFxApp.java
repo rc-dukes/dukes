@@ -5,7 +5,7 @@ import com.bitplan.opencv.NativeLibrary;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 /**
  * Java FX based GUI 
@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 public class DukesFxApp extends Application {
   @Override
   public void start(Stage primaryStage) throws Exception {
-    VBox root = FXMLLoader
+    TabPane root = FXMLLoader
         .load(getClass().getClassLoader().getResource("fx/dukes.fxml"));
     Scene scene = new Scene(root, 1920*2/3, 1080*2/3);
     primaryStage.setTitle("Dukes lane detection");

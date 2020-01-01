@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.text.*?>
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="nl.vaneijndhoven.dukes.app.DukesFxGUI">
-   <fx:include fx:id="laneDetection" source="lanedetection.fxml"/>
-</VBox>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tab?>
+
+<TabPane fx:id="tabPane" fx:controller="nl.vaneijndhoven.dukes.app.DukesFxGUI" xmlns="http://javafx.com/javafx/8.0.40"
+         xmlns:fx="http://www.w3.org/2001/XInclude">
+    <tabs>
+        <Tab fx:id="laneTabPage" text="Lane">
+            <fx:include fx:id="laneDetection" source="lanedetection.fxml"/>
+        </Tab>
+        <Tab fx:id="startTabPage" text="Start">
+            <fx:include fx:id="startDetection" source="startlightdetection.fxml"/>
+        </Tab>
+    </tabs>
+</TabPane>
