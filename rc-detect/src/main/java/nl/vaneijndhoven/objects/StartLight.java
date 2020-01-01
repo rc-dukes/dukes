@@ -1,6 +1,10 @@
 package nl.vaneijndhoven.objects;
 
-
+/**
+ * enumeration representing the StartLight state machine
+ * @author wf
+ *
+ */
 public enum StartLight {
     OFF {
         @Override

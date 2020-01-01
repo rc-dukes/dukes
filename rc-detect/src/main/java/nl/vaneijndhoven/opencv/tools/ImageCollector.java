@@ -6,6 +6,9 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 import static nl.vaneijndhoven.opencv.tools.MemoryManagement.closable;
 
+/**
+ * a set of images to be used for display/debugging
+ */
 public class ImageCollector {
 
     private byte[] imgEdges;

@@ -46,8 +46,19 @@ public class StartLightDetectionController {
     });
 
   }
+  
+  /**
+   * show the given imageFrame in the given JavaFX imageView Control
+   * @param imageView
+   * @param imageFrame
+   */
+  private void showImage(ImageView imageView, byte[] imageFrame) {
+    Image image=new Image(new ByteArrayInputStream(imageFrame));
+    imageView.setImage(image);
+  }
 
   private boolean lightOn = false;
+  private int frameIndex=0;
 
   String lastCommandSent = "";
 
@@ -129,16 +140,9 @@ public class StartLightDetectionController {
           ImageCollector imageCollector = new ImageCollector();
           // detector.withImageCollector(imageCollector);
           StartLight startLight = detectStartLight(imageCollector);
-          originalFrame.setImage(new Image(
-              new ByteArrayInputStream(imageCollector.originalFrame())));
-          // System.out.println("light on: " + lightOn);
-
-          // if (lightOn) {
-          // numberOfLightOffEvents = 0;
-          // } else {
-          // numberOfLightOffEvents++;
-          // }
-
+          showImage(originalFrame,imageCollector.originalFrame());
+          showImage(maskImage,imageCollector.mask());
+          showImage(morphImage,imageCollector.morph());
           if (this.vertx != null) {
 
             // int minimumNumberOfLightOffEvents = 2;
@@ -253,12 +257,19 @@ public class StartLightDetectionController {
           StartLight detect = detector.withImageCollector(imageCollector)
               .detect(frame);
 
+          if (lightOn) {
+             numberOfLightOffEvents = 0;
+          } else {
+             numberOfLightOffEvents++;
+          }
           // // show the current selected HSV range
-          String valuesToPrint = "Hue range: " + hueStart.getValue() + "-"
-              + hueStop.getValue() + "\tSaturation range: "
-              + saturationStart.getValue() + "-" + saturationStop.getValue()
-              + "\tValue range: " + valueStart.getValue() + "-"
-              + valueStop.getValue();
+          String valuesToPrint = String.format(
+              "%4d: light %s h:%.1f-%.1f s:%.1f-%.1f v:%.1f-%.1f",
+              ++frameIndex,
+              lightOn?"on":"off",
+              hueStart.getValue(),hueStop.getValue(),
+              saturationStart.getValue(), saturationStop.getValue(),
+              valueStart.getValue(),valueStop.getValue());
           this.onFXThread(this.hsvValuesProp, valuesToPrint);
           this.onFXThread(this.maskImage.imageProperty(),
               new Image(new ByteArrayInputStream(imageCollector.mask())));
