@@ -1,24 +1,22 @@
 package nl.vaneijndhoven.dukes.watchdog;
 
-import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.eventbus.Message;
-import nl.vaneijndhoven.dukes.common.Characters;
-import nl.vaneijndhoven.dukes.common.Config;
-import nl.vaneijndhoven.dukes.common.Environment;
-import nl.vaneijndhoven.dukes.drivecontrol.Car;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+import io.vertx.core.json.JsonObject;
+import io.vertx.rxjava.core.eventbus.Message;
+import nl.vaneijndhoven.dukes.common.Characters;
+import nl.vaneijndhoven.dukes.common.Config;
+import nl.vaneijndhoven.dukes.common.DukesVerticle;
+import nl.vaneijndhoven.dukes.common.Environment;
+import nl.vaneijndhoven.dukes.drivecontrol.Car;
 import rx.Subscription;
 
 /**
  * WatchDog that will check if the vehicle is still reachable and send stop
  * command if not
  */
-public class WatchDog extends AbstractVerticle {
+public class WatchDog extends DukesVerticle {
 
 	protected static int HEARTBEAT_INTERVAL_MS = 150;
 	protected static int MAX_MISSED_BEATS=6;
@@ -26,11 +24,7 @@ public class WatchDog extends AbstractVerticle {
 	private long lastHeartbeat = 0;
 	private Car car;
 	protected Subscription subscription;
-	boolean started=false;
-
-	public boolean isStarted() {
-		return started;
-	}
+	
 
 	/**
 	 * create watch dog for the given car

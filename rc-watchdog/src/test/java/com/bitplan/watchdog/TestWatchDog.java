@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import nl.vaneijndhoven.dukes.common.Characters;
 import nl.vaneijndhoven.dukes.common.ClusterStarter;
@@ -44,13 +43,11 @@ public class TestWatchDog {
 		WatchDog watchDog=new WatchDog(car);
 		
 		clusterStarter.deployVerticles(watchDog);
-		while (!watchDog.isStarted()) {
-			Thread.sleep(10);
-		}
+		watchDog.waitStarted(20000,10);
 		Vertx vertx=clusterStarter.getVertx();
 		assertNotNull(vertx);
-		vertx.eventBus().send(Characters.FLASH.getCallsign(),
-	              new JsonObject().put("type", "heartbeat"));
+		assertEquals(watchDog.getVertx(),vertx);
+		clusterStarter.send(Characters.FLASH,"type","heartbeat");
 		// car should power on by heartbeat
 		int loops=0;
 		while(!car.powerIsOn() && loops<=100) {
