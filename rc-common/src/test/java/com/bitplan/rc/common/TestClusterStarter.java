@@ -1,7 +1,6 @@
 package com.bitplan.rc.common;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -39,9 +38,7 @@ public class TestClusterStarter {
 
 	@Test
 	public void testClusterStarter() throws Exception {
-		// Let's fake a configuration
-		Environment.propFilePath = "../rc-drivecontrol/src/test/resources/dukes/dukes.ini";
-		Environment.reset();
+		Environment.mock();
 		ClusterStarter starter = new ClusterStarter();
 		TestVerticle testVerticle = new TestVerticle();
 		starter.deployVerticles(testVerticle);

@@ -81,8 +81,8 @@ public class DukesVerticle extends AbstractVerticle {
   
   /**
    * send a message to the given receiver via the event bus
-   * @param receiver
-   * @param namevalues
+   * @param receiver the character to sendd a message to
+   * @param nameValues - the content of the message as name-value pairs
    */
   public void send(Characters receiver, String ...nameValues) {
     JsonObject jo = this.toJsonObject(nameValues);

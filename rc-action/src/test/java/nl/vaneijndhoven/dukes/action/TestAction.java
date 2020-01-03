@@ -12,6 +12,7 @@ import org.junit.Test;
 import io.vertx.core.json.JsonObject;
 import nl.vaneijndhoven.dukes.action.drag.StraightLaneNavigator;
 import nl.vaneijndhoven.dukes.common.ClusterStarter;
+import nl.vaneijndhoven.dukes.common.Environment;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
@@ -119,11 +120,11 @@ public class TestAction {
 	
 	@Test
 	public void testAction() throws Exception {
+	  Environment.mock();
 	  ClusterStarter clusterStarter=new ClusterStarter();
 	  Action action = new Action();
 	  clusterStarter.deployVerticles(action);
     action.waitStarted(20000,10);
-	  
 	}
 
 }

@@ -199,4 +199,10 @@ public class Environment {
 		instance = null;
 	}
 
+  public static void mock() {
+    // Let's fake a configuration
+    Environment.propFilePath = "../rc-drivecontrol/src/test/resources/dukes/dukes.ini";
+    Environment.reset();
+  }
+
 }
