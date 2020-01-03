@@ -7,7 +7,7 @@ package nl.vaneijndhoven.dukes.camera.matrix;
  */
 public class MatrixTestbase {
   String basePath = "./";
-  public static boolean debug=false;
+  public static boolean debug=true;
   /**
    * check if we are in the Travis-CI environment
    * 
