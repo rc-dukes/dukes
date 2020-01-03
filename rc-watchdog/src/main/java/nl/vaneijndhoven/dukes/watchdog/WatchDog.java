@@ -85,7 +85,7 @@ public class WatchDog extends DukesVerticle {
 	}
 
 	private void sendStopCommand() {
-		vertx.eventBus().send(Characters.BO.getCallsign(), new JsonObject().put("type", "motor").put("speed", "stop"));
+	  send(Characters.BO,"type", "motor","speed", "stop");
 	}
 
 }

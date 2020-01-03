@@ -47,7 +47,7 @@ public class TestWatchDog {
 		Vertx vertx=clusterStarter.getVertx();
 		assertNotNull(vertx);
 		assertEquals(watchDog.getVertx(),vertx);
-		clusterStarter.send(Characters.FLASH,"type","heartbeat");
+		watchDog.send(Characters.FLASH,"type","heartbeat");
 		// car should power on by heartbeat
 		int loops=0;
 		while(!car.powerIsOn() && loops<=100) {

@@ -10,12 +10,13 @@ import io.vertx.rxjava.ext.web.Router;
 import io.vertx.rxjava.ext.web.handler.StaticHandler;
 import io.vertx.rxjava.ext.web.handler.sockjs.SockJSHandler;
 import nl.vaneijndhoven.dukes.common.Config;
+import nl.vaneijndhoven.dukes.common.DukesVerticle;
 
 /**
  * Manual UI web based control (Boss Hogg)
  *
  */
-public class WebControl extends AbstractVerticle {
+public class WebControl extends DukesVerticle {
 
   private static final Logger LOG = LoggerFactory.getLogger(WebControl.class);
 
@@ -52,7 +53,7 @@ public class WebControl extends AbstractVerticle {
     // vertx.eventBus().sendObservable(Characters.DAISY.getCallsign() +
     // "lane.start", new JsonObject().put("source",
     // "file://Users/jpoint/Repositories/opencv-playground/src/main/resources/videos/full_run.mp4"));
-
+    super.started=true;
     LOG.info("WebControl Boss Hogg started");
   }
 

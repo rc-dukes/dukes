@@ -99,14 +99,4 @@ public class ClusterStarter {
     return options;
   }
   
-  /**
-   * send a message to the given receive via the event bus
-   * @param receiver
-   * @param name
-   * @param value
-   */
-  public void send(Characters receiver, String name, String value) {
-    vertx.eventBus().send(receiver.getCallsign(),
-        new JsonObject().put(name, value));
-  }
 }
