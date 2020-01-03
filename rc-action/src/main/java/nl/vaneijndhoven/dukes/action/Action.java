@@ -1,15 +1,16 @@
 package nl.vaneijndhoven.dukes.action;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.Message;
+import nl.vaneijndhoven.dukes.action.drag.StartLightObserver;
 import nl.vaneijndhoven.dukes.action.drag.StoppingZoneDetector;
 import nl.vaneijndhoven.dukes.action.drag.StraightLaneNavigator;
 import nl.vaneijndhoven.dukes.common.Characters;
+import nl.vaneijndhoven.dukes.common.DukesVerticle;
 import nl.vaneijndhoven.dukes.common.Events;
-import nl.vaneijndhoven.dukes.action.drag.StartLightObserver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import rx.Observable;
 import rx.Subscription;
 
@@ -17,7 +18,7 @@ import rx.Subscription;
  * action (aka Luke) control Verticle
  *
  */
-public class Action extends AbstractVerticle {
+public class Action extends DukesVerticle {
 
     private static final Logger LOG = LoggerFactory.getLogger(Action.class);
     public static final String START_DRAG_NAVIGATION = "START_DRAG_NAVIGATION";
@@ -32,6 +33,7 @@ public class Action extends AbstractVerticle {
 
         vertx.eventBus().consumer(Characters.LUKE.getCallsign() + ":" + START_DRAG_NAVIGATION, x -> startDragNavigator());
         vertx.eventBus().consumer(Characters.LUKE.getCallsign() + ":" + STOP_NAVIGATION, x -> stopNavigator());
+        super.started=true;
     }
 
     private void stopNavigator() {
