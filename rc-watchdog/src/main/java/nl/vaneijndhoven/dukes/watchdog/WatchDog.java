@@ -1,8 +1,5 @@
 package nl.vaneijndhoven.dukes.watchdog;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.eventbus.Message;
 import nl.vaneijndhoven.dukes.common.Characters;
@@ -20,12 +17,10 @@ public class WatchDog extends DukesVerticle {
 
 	protected static int HEARTBEAT_INTERVAL_MS = 150;
 	protected static int MAX_MISSED_BEATS=6;
-	private static final Logger LOG = LoggerFactory.getLogger(WatchDog.class);
 	private long lastHeartbeat = 0;
 	private Car car;
 	protected Subscription subscription;
 	
-
 	/**
 	 * create watch dog for the given car
 	 * 
@@ -33,6 +28,7 @@ public class WatchDog extends DukesVerticle {
 	 * @throws Exception 
 	 */
 	public WatchDog(Car car) throws Exception {
+	  super(Characters.FLASH);
 		this.car = car;
 		Environment env = Config.getEnvironment();
 		HEARTBEAT_INTERVAL_MS=env.getInteger(Config.WATCHDOG_HEARTBEAT_INTERVAL_MS);
@@ -41,15 +37,14 @@ public class WatchDog extends DukesVerticle {
 
 	@Override
 	public void start() {
-		LOG.info("Starting WatchDog (Flash - heartbeat guard dog)");
+	  super.preStart();
 		// Command.statusLedOff();
 
 		vertx.setPeriodic(HEARTBEAT_INTERVAL_MS, id -> checkHeartbeat());
 		subscription = vertx.eventBus().consumer(Characters.FLASH.getCallsign()).toObservable()
 				.subscribe(this::heartbeat);
 
-		LOG.info("WatchDog Flash started ");
-		started=true;
+		super.postStart();
 	}
 
 	private void heartbeat(Message<Object> message) {

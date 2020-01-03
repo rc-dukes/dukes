@@ -1,25 +1,21 @@
 package nl.vaneijndhoven.dukes.app;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-//import io.vertx.rxjava.ext.web.handler.sockjs.BridgeOptions;
-//import io.vertx.rxjava.ext.web.handler.sockjs.PermittedOptions;
-import io.vertx.rxjava.core.AbstractVerticle;
+import nl.vaneijndhoven.dukes.common.Characters;
+import nl.vaneijndhoven.dukes.common.DukesVerticle;
 
 /**
  * JavaFx Application Verticle
  *
  */
-public class App extends AbstractVerticle {
+public class App extends DukesVerticle {
 
-    private static final Logger LOG = LoggerFactory.getLogger(App.class);
+    public App() {
+      super(Characters.UNCLE_JESSE);
+    }
 
     @Override
     public void start() throws Exception {
-        LOG.info("Starting App Uncle Jesse ");
-
-
-        LOG.info("App Uncle Jesse started");
+        super.preStart();
+        super.postStart();
     }
 }

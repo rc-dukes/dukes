@@ -1,8 +1,5 @@
 package nl.vaneijndhoven.dukes.action;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.eventbus.Message;
 import nl.vaneijndhoven.dukes.action.drag.StartLightObserver;
@@ -20,20 +17,22 @@ import rx.Subscription;
  */
 public class Action extends DukesVerticle {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Action.class);
     public static final String START_DRAG_NAVIGATION = "START_DRAG_NAVIGATION";
     public static final String STOP_NAVIGATION = "STOP_NAVIGATION";
     private Subscription laneDetection;
     private Subscription stoppingZoneDetection;
     private Subscription startLightDetection;
+    
+    public Action() {
+      super(Characters.LUKE);
+    }
 
     @Override
     public void start() throws Exception {
-        LOG.info("Starting Action/ Luke (Hardcoded Intelligence?)");
-
-        vertx.eventBus().consumer(Characters.LUKE.getCallsign() + ":" + START_DRAG_NAVIGATION, x -> startDragNavigator());
-        vertx.eventBus().consumer(Characters.LUKE.getCallsign() + ":" + STOP_NAVIGATION, x -> stopNavigator());
-        super.started=true;
+      super.preStart();
+      vertx.eventBus().consumer(Characters.LUKE.getCallsign() + ":" + START_DRAG_NAVIGATION, x -> startDragNavigator());
+      vertx.eventBus().consumer(Characters.LUKE.getCallsign() + ":" + STOP_NAVIGATION, x -> stopNavigator());
+      super.postStart();
     }
 
     private void stopNavigator() {
@@ -96,8 +95,7 @@ public class Action extends DukesVerticle {
                 .map(JsonObject::new)
                 .flatMap(startLightObserver::observe)
                 .subscribe(instruction -> vertx.eventBus().publish(Characters.BO.getCallsign(), instruction));
-
-        LOG.info("Action / Luke started");
+        LOG.info("drag navigator started");
     }
 
 }

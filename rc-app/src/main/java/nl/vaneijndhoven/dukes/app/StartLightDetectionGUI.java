@@ -1,6 +1,5 @@
 package nl.vaneijndhoven.dukes.app;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -8,10 +7,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Scalar;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
@@ -117,15 +114,15 @@ public class StartLightDetectionGUI extends BaseGUI {
               // eventBusSendAfterMS(100, "speed:up");
               // eventBusSendAfterMS(30, "speed:up");
 
-              // vertx.eventBus().send("control", "speed:up");
-              // vertx.eventBus().send("control", "speed:up");
+              // vertx-eventBus().send("control", "speed:up");
+              // vertx-eventBus().send("control", "speed:up");
 
               Executors.newSingleThreadScheduledExecutor()
                   .schedule(() -> stopCamera(), 500, TimeUnit.MILLISECONDS);
 
-              // vertx.eventBus().send("control", "speed:up");
-              // vertx.eventBus().send("control", "speed:up");
-              // vertx.eventBus().send("control", "speed:up");
+              // vertx-eventBus().send("control", "speed:up");
+              // vertx-eventBus().send("control", "speed:up");
+              // vertx-eventBus().send("control", "speed:up");
               // Platform.runLater(() -> this.cameraButton.setText("Stop
               // Camera"));
 

@@ -1,13 +1,25 @@
 package nl.vaneijndhoven.dukes.common;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.AbstractVerticle;
+
 /**
  * 
  * @author wf
  * unifies handling of AbstracVerticles in rc-dukes project
+ * uses the rxjava version of AbstractVerticles
  */
 public class DukesVerticle extends AbstractVerticle {
-  protected boolean started=false;
+  protected static final Logger LOG = LoggerFactory.getLogger(DukesVerticle.class);
+  
+  private boolean started=false;
+  protected Characters  character;
+  
+  public DukesVerticle(Characters character) {
+    this.character=character;
+  }
 
   /**
    * is this AbstractVerticle already started?
@@ -15,6 +27,17 @@ public class DukesVerticle extends AbstractVerticle {
    */
   public boolean isStarted() {
     return started;
+  }
+  
+  public void preStart() {
+    String msg=String.format("Starting %s",character.description());
+    LOG.info(msg);
+  }
+  
+  public void postStart() {
+    this.started=true;
+    String msg=String.format("%s started",character.description());
+    LOG.info(msg);
   }
   
   /**
@@ -36,11 +59,13 @@ public class DukesVerticle extends AbstractVerticle {
   }
   
   /**
-   * send a message to the given receive via the event bus
-   * @param receiver
-   * @param namevalues
+   * convert the given list of name Value to a JsonObject
+   * @param nameValues - needs to be an even number of arguments otherwise
+   * an IllegalArgumentException runtime exception is thrown
+   * @return - the JsonObject create from the nameValues by putting
+   * name,value into the object in a pairwise fassion 
    */
-  public void send(Characters receiver, String ...nameValues) {
+  public JsonObject toJsonObject(String ...nameValues) {
     JsonObject jo = new JsonObject();
     if (nameValues.length%2 !=0) {
       String msg=String.format("got %d namevalue but expected even number",nameValues.length);
@@ -51,6 +76,16 @@ public class DukesVerticle extends AbstractVerticle {
       String value=nameValues[i+1];
       jo.put(name,value);
     }
+    return jo;
+  }
+  
+  /**
+   * send a message to the given receiver via the event bus
+   * @param receiver
+   * @param namevalues
+   */
+  public void send(Characters receiver, String ...nameValues) {
+    JsonObject jo = this.toJsonObject(nameValues);
     getVertx().eventBus().send(receiver.getCallsign(),jo);
   }
 }

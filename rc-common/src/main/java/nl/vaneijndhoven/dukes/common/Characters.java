@@ -33,4 +33,9 @@ public enum Characters {
   public String getCallsign() {
     return callsign;
   }
+
+  public String description() {
+    String text=String.format("%s (%s -> %s)",name(),module,purpose);
+    return text;
+  }
 }

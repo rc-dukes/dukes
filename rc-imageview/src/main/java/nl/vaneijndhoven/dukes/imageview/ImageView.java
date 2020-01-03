@@ -23,7 +23,7 @@ public class ImageView extends AbstractVerticle {
   public void start() throws Exception {
     int port = Config.getEnvironment().getInteger(Config.IMAGEVIEW_PORT);
     LOG.info(
-        "Starting ImageView Roscoe (lane detection debug image web server on port "
+        "Starting ImageView Rosco (lane detection debug image web server on port "
             + port);
     vertx.createHttpServer().requestHandler(this::sendImage).listen(port);
   }

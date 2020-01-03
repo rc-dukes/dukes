@@ -4,18 +4,16 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.bitplan.opencv.NativeLibrary;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.Message;
 import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
 import nl.vaneijndhoven.dukes.common.Characters;
+import nl.vaneijndhoven.dukes.common.DukesVerticle;
 import nl.vaneijndhoven.dukes.common.Events;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
@@ -25,9 +23,8 @@ import rx.Observable;
 /**
  * Detector aka Daisy
  */
-public class Detector extends AbstractVerticle {
+public class Detector extends DukesVerticle {
 
-  private static final Logger LOG = LoggerFactory.getLogger(Detector.class);
 
   private final static long LANE_DETECTION_INTERVAL = 200;
   private final static long START_LIGHT_DETECTION_INTERVAL = 50;
@@ -46,12 +43,12 @@ public class Detector extends AbstractVerticle {
    * default constructor
    */
   public Detector() {
-
+    super(Characters.DAISY);
   }
 
   @Override
   public void start() throws Exception {
-    LOG.info("Starting Detector aka Daisy (image processing)");
+    super.preStart();
     NativeLibrary.load();
     vertx.eventBus().consumer(Events.STREAMADDED.name(), this::streamAdded);
 
@@ -71,7 +68,7 @@ public class Detector extends AbstractVerticle {
         Characters.DAISY.getCallsign() + ":" + CAMERA_MATRIX_UPDATE,
         this::cameraMatrix);
 
-    LOG.info("Detector / Daisy started");
+    super.postStart();
   }
 
   private void streamAdded(Message<JsonObject> message) {

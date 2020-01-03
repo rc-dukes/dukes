@@ -1,14 +1,11 @@
 package nl.vaneijndhoven.dukes.webcontrol;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.ext.web.handler.sockjs.BridgeOptions;
-import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.ext.web.Router;
 import io.vertx.rxjava.ext.web.handler.StaticHandler;
 import io.vertx.rxjava.ext.web.handler.sockjs.SockJSHandler;
+import nl.vaneijndhoven.dukes.common.Characters;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.dukes.common.DukesVerticle;
 
@@ -18,15 +15,15 @@ import nl.vaneijndhoven.dukes.common.DukesVerticle;
  */
 public class WebControl extends DukesVerticle {
 
-  private static final Logger LOG = LoggerFactory.getLogger(WebControl.class);
-
+  public WebControl() {
+    super(Characters.BOSS_HOGG);
+  }
+  
   @Override
   public void start() throws Exception {
+    super.preStart();
     int port=Config.getEnvironment().getInteger(Config.WEBCONTROL_PORT);
-    LOG.info("Starting WebControl Boss Hogg (manual UI controller) on port "+port);
-
-    super.start();
-
+    LOG.info("using port "+port);
     Router router = Router.router(vertx);
     BridgeOptions options = new BridgeOptions();
 
@@ -53,8 +50,7 @@ public class WebControl extends DukesVerticle {
     // vertx.eventBus().sendObservable(Characters.DAISY.getCallsign() +
     // "lane.start", new JsonObject().put("source",
     // "file://Users/jpoint/Repositories/opencv-playground/src/main/resources/videos/full_run.mp4"));
-    super.started=true;
-    LOG.info("WebControl Boss Hogg started");
+    super.postStart();
   }
 
 }

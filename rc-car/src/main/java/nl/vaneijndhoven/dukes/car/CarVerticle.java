@@ -1,32 +1,28 @@
 package nl.vaneijndhoven.dukes.car;
 
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.Message;
-import nl.vaneijndhoven.dukes.car.Engine;
-import nl.vaneijndhoven.dukes.car.Steering;
 import nl.vaneijndhoven.dukes.common.Characters;
+import nl.vaneijndhoven.dukes.common.DukesVerticle;
 import nl.vaneijndhoven.dukes.drivecontrol.Car;
-import nl.vaneijndhoven.dukes.drivecontrol.EngineMap;
-import nl.vaneijndhoven.dukes.drivecontrol.SteeringMap;
 import rx.Subscription;
 
 /**
  * Motor and steering output aka Bo
  */
-public class CarVerticle extends AbstractVerticle {
+public class CarVerticle extends DukesVerticle {
+  
+  public CarVerticle() {
+    super(Characters.BO);
+  }
 
-    private static final Logger LOG = LoggerFactory.getLogger(CarVerticle.class);
-
-    private Car car = Car.getInstance(); // there is only one car for the time being
-    private SpeedHandler speedHandler = new SpeedHandler(car);
-    private SteeringHandler steeringHandler = new SteeringHandler(car);
+  private Car car = Car.getInstance(); // there is only one car for the time being
+  private SpeedHandler speedHandler = new SpeedHandler(car);
+  private SteeringHandler steeringHandler = new SteeringHandler(car);
 
     @Override
     public void start() {
-        LOG.info("Starting Car Verticle Bo (motor and steering output)");
+      super.preStart();
 
         Subscription subscription = vertx.eventBus().consumer(Characters.BO.getCallsign()).toObservable()
                 .doOnNext(x -> LOG.trace("Received instruction"))
@@ -56,7 +52,6 @@ public class CarVerticle extends AbstractVerticle {
                             LOG.error("Unknown message type {}", type);
                     }
         });
-
-        LOG.info("CarVerticle Bo started");
+        super.postStart();
     }
 }
