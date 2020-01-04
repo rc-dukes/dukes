@@ -17,4 +17,9 @@ public interface GUIDisplayer {
   void showCurrentValues(String text);
   StringProperty getLaneVideoProperty();
   StringProperty getStartVideoProperty();
+  /** 
+   * handle the given error
+   * @param th
+   */
+  void handle(Throwable th);
 }

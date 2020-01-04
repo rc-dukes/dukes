@@ -14,8 +14,6 @@ import org.opencv.videoio.VideoCapture;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
@@ -88,10 +86,8 @@ public class StartLightDetectionGUI extends BaseGUI {
 
     if (!this.cameraActive) {
       // start the video capture
-      // this.capture.open(0);
       this.capture.open(displayer.getStartVideoProperty().getValue());
-      // this.capture.open("http://10.9.8.7/html/cam_pic_new.php?time=1472218786342&pDelay=66666");
-
+ 
       // is the video stream available?
       if (this.capture.isOpened()) {
         this.cameraActive = true;
@@ -104,6 +100,7 @@ public class StartLightDetectionGUI extends BaseGUI {
           displayer.displayOriginal(imageCollector.originalFrame());
           displayer.display1(imageCollector.mask());
           displayer.display2(imageCollector.morph());
+          // displayer.displayOriginal(imageCollector.startLight());
           if (this.vertx != null) {
 
             // int minimumNumberOfLightOffEvents = 2;
@@ -126,16 +123,6 @@ public class StartLightDetectionGUI extends BaseGUI {
               // vertx-eventBus().send("control", "speed:up");
               // Platform.runLater(() -> this.cameraButton.setText("Stop
               // Camera"));
-
-              // this.cameraButton.setText("Start Camera");
-              // stopCamera();
-              // try {
-              // Thread.sleep(500);
-              // } catch (InterruptedException e) {
-              // e.printStackTrace();
-              // }
-              // stopCamera();
-
             }
 
             if (!startLight.started() && !lastCommandSent.equals("off")) {
@@ -232,15 +219,10 @@ public class StartLightDetectionGUI extends BaseGUI {
               saturationStart.getValue(), saturationStop.getValue(),
               valueStart.getValue(),valueStop.getValue());
           displayer.showCurrentValues(valuesToPrint);
-          displayer.display1(imageCollector.mask());
-          displayer.display2(imageCollector.morph());
-          displayer.displayOriginal(imageCollector.startLight());
         }
 
       } catch (Exception e) {
-        // log the (full) error
-        System.err.print("ERROR");
-        e.printStackTrace();
+        displayer.handle(e);
       }
     }
 

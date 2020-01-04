@@ -54,7 +54,7 @@
 				<center>
 					<HBox alignment="CENTER" spacing="5">
 						<padding>
-							<Insets left="10" right="10" />
+							<Insets left="5" right="5" />
 						</padding>
 						<ImageView fx:id="originalFrame" />
 						<VBox alignment="CENTER" spacing="5">

@@ -25,7 +25,6 @@ import rx.Observable;
  */
 public class Detector extends DukesVerticle {
 
-
   private final static long LANE_DETECTION_INTERVAL = 200;
   private final static long START_LIGHT_DETECTION_INTERVAL = 50;
 

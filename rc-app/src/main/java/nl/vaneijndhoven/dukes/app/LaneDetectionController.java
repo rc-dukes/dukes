@@ -1,12 +1,16 @@
 package nl.vaneijndhoven.dukes.app;
 
+import java.util.Map;
+
 import org.opencv.core.Mat;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
+import nl.vaneijndhoven.opencv.lanedetection.ImageLaneDetection;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
 
@@ -56,21 +60,16 @@ public class LaneDetectionController  {
 
   public void performLaneDetection(Mat originalImage,
       CannyEdgeDetector.Config cannyConfig,
-      ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig,
-      ImageCollector collector) {
-    // ImageLaneDetection laneDetect = new ImageLaneDetection(cannyConfig,
-    // lineDetectorConfig, matrix);
-    // Map<String, Object> laneDetectResult =
-    // laneDetect.detectLane(originalImage, collector);
-    //
-    // double distanceToStoppingZoneStart = (double)
-    // laneDetectResult.get("distanceToStoppingZone");
-    // double distanceToStoppingZoneEnd = (double)
-    // laneDetectResult.get("distanceToStoppingZoneEnd");
-    // double angle = (double) laneDetectResult.get("angle");
-    //
-    // processLane(angle, distanceToStoppingZoneStart,
-    // distanceToStoppingZoneEnd);
+      ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig, ImageCollector collector) {
+      CameraMatrix matrix = CameraMatrix.DEFAULT;
+      ImageLaneDetection laneDetect = new ImageLaneDetection(cannyConfig, lineDetectorConfig, matrix);
+      Map<String, Object> laneDetectResult =
+      laneDetect.detectLane(originalImage, collector);
+     
+       double distanceToStoppingZoneStart = (double) laneDetectResult.get("distanceToStoppingZone");
+       double distanceToStoppingZoneEnd = (double) laneDetectResult.get("distanceToStoppingZoneEnd");
+       double angle = (double) laneDetectResult.get("angle");
+       processLane(angle, distanceToStoppingZoneStart,distanceToStoppingZoneEnd);
   }
 
   private void processLane(double angle, double distanceToStoppingZoneStart,

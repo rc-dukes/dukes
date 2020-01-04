@@ -6,8 +6,6 @@ import org.opencv.core.Mat;
 
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import nl.vaneijndhoven.opencv.video.ImageUtils;
@@ -44,16 +42,17 @@ public class BaseGUI {
    * Set typical {@link ImageView} properties: a fixed width and the information
    * to preserve the original image ration
    *
-   * @param image
+   * @param imageView
    *          the {@link ImageView} to use
    * @param dimension
    *          the width of the image to set
    */
-  protected void imageViewProperties(ImageView image, int dimension) {
-    // set a fixed width for the given ImageView
-    image.setFitWidth(dimension);
+  protected void imageViewProperties(ImageView imageView, int width) {
     // preserve the image ratio
-    image.setPreserveRatio(true);
+    imageView.setPreserveRatio(true);
+    // set a fixed width for the given ImageView
+    imageView.setFitWidth(width);
+    
   }
 
   

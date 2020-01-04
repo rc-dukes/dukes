@@ -8,8 +8,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javax.annotation.Resources;
-
 import org.opencv.core.Mat;
 
 import javafx.application.Platform;
@@ -101,7 +99,7 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,Initializable {
             displayMode = DisplayMode.Start;
           }
         });
-    this.configureImageDisplaySize();
+    this.configureImageDisplaySize(400);
     this.displayer = this;
     this.laneDetectionController.setDisplayer(this);
     this.startDetectionController.setDisplayer(this);
@@ -111,10 +109,10 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,Initializable {
   }
   
 
-  private void configureImageDisplaySize() {
-    this.imageViewProperties(this.originalFrame, 400);
-    this.imageViewProperties(this.processedImage1, 400);
-    this.imageViewProperties(this.processedImage2, 400);
+  private void configureImageDisplaySize(int fitWidth) {
+    this.imageViewProperties(this.originalFrame, fitWidth);
+    this.imageViewProperties(this.processedImage1, fitWidth);
+    this.imageViewProperties(this.processedImage2, fitWidth);
   }
 
   @FXML
@@ -153,7 +151,7 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,Initializable {
 
   @Override
   public void setCameraButtonText(String text) {
-    this.cameraButton.setText("Start Camera");
+    this.cameraButton.setText(text);
   }
 
   @Override
@@ -242,9 +240,9 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,Initializable {
     }
   }
 
-  private void handle(Exception e) {
+  public void handle(Throwable th) {
     // @TODO display properly
-    e.printStackTrace();
+    th.printStackTrace();
   }
 
   private void help() {
