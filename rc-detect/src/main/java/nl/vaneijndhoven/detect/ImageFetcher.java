@@ -69,6 +69,10 @@ public class ImageFetcher {
     super.finalize();
   }
 
+  /**
+   * convert me to an observable
+   * @return a Mat emitting Observable 
+   */
   public Observable<Mat> toObservable() {
     // Resource creation.
     Func0<VideoCapture> resourceFactory = () -> {
