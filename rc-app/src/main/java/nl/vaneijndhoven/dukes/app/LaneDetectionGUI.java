@@ -18,12 +18,10 @@ import org.opencv.videoio.VideoCapture;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.image.ImageView;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
@@ -64,7 +62,7 @@ public class LaneDetectionGUI extends BaseGUI {
         if (!this.cameraActive) {
             // load test file
 //             this.capture.open("file://Users/jpoint/Repositories/opencv-playground/src/main/resources/videos/stopzone2.m4v");
-             this.capture.open("http://wiki.bitplan.com/videos/full_run.mp4");
+             this.capture.open(displayer.getLaneVideoProperty().getValue());
                  // "file://Users/jpoint/Repositories/opencv-playground/src/main/resources/videos/full_run.mp4");
 
             // webcam stream

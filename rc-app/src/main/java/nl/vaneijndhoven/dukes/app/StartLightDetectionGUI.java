@@ -14,6 +14,8 @@ import org.opencv.videoio.VideoCapture;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
@@ -87,8 +89,7 @@ public class StartLightDetectionGUI extends BaseGUI {
     if (!this.cameraActive) {
       // start the video capture
       // this.capture.open(0);
-      this.capture.open(
-          "http://wiki.bitplan.com/videos/startlamp2.m4v");
+      this.capture.open(displayer.getStartVideoProperty().getValue());
       // this.capture.open("http://10.9.8.7/html/cam_pic_new.php?time=1472218786342&pDelay=66666");
 
       // is the video stream available?

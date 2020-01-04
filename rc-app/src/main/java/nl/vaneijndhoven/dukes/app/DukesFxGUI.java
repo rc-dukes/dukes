@@ -5,21 +5,28 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import javax.annotation.Resources;
 
 import org.opencv.core.Mat;
 
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
@@ -32,7 +39,7 @@ import javafx.stage.Stage;
  * combined GUI for detectors
  *
  */
-public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
+public class DukesFxGUI extends BaseGUI implements GUIDisplayer,Initializable {
   @FXML
   private VBox vbox;
   @FXML
@@ -65,6 +72,11 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   private ImageView processedImage2;
   @FXML
   protected Button cameraButton;
+  @FXML
+  protected TextField lanevideo;
+  @FXML
+  protected TextField startvideo;
+  
   // FXML label to show the current values set with the sliders
   @FXML
   private Label currentValues;
@@ -97,6 +109,7 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     currentValuesProp = new SimpleObjectProperty<>();
     this.currentValues.textProperty().bind(currentValuesProp);
   }
+  
 
   private void configureImageDisplaySize() {
     this.imageViewProperties(this.originalFrame, 400);
@@ -249,4 +262,19 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     browse("https://github.com/rc-dukes/dukes");
   }
 
+  @Override
+  public void initialize(URL location, ResourceBundle resources) {
+    this.lanevideo.setText("http://wiki.bitplan.com/videos/full_run.mp4");
+    this.startvideo.setText("http://wiki.bitplan.com/videos/startlamp2.m4v"); 
+  }
+  
+  @Override
+  public StringProperty getLaneVideoProperty() {
+    return this.lanevideo.textProperty();
+  }
+
+  @Override
+  public StringProperty getStartVideoProperty() {
+    return this.startvideo.textProperty();
+  }
 }
