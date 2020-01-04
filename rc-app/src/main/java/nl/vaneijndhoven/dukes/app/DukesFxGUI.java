@@ -1,24 +1,43 @@
 package nl.vaneijndhoven.dukes.app;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.opencv.core.Mat;
 
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 /**
  * combined GUI for detectors
  *
  */
 public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
+  @FXML
+  private VBox vbox;
+  @FXML
+  private MenuBar menuBar;
+
   @FXML
   private SplitPane splitPane;
   @FXML
@@ -57,8 +76,10 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   }
 
   DisplayMode displayMode = DisplayMode.Lane;
+  private Stage primaryStage;
 
-  public void init() {
+  public void init(Stage primaryStage) {
+    this.primaryStage=primaryStage;
     tabPane.getSelectionModel().selectedItemProperty()
         .addListener((ObservableValue<? extends Tab> observable, Tab oldValue,
             Tab newValue) -> {
@@ -68,13 +89,13 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
             displayMode = DisplayMode.Start;
           }
         });
-      this.configureImageDisplaySize();
-      this.displayer=this;
-      this.laneDetectionController.setDisplayer(this);
-      this.startDetectionController.setDisplayer(this);
-      // bind a text property with the string containing the current Values of
-      currentValuesProp = new SimpleObjectProperty<>();
-      this.currentValues.textProperty().bind(currentValuesProp);
+    this.configureImageDisplaySize();
+    this.displayer = this;
+    this.laneDetectionController.setDisplayer(this);
+    this.startDetectionController.setDisplayer(this);
+    // bind a text property with the string containing the current Values of
+    currentValuesProp = new SimpleObjectProperty<>();
+    this.currentValues.textProperty().bind(currentValuesProp);
   }
 
   private void configureImageDisplaySize() {
@@ -98,10 +119,10 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   }
 
   @Override
-  public void displayOriginal(byte[] imageFrame) {   
-    displayImage(originalFrame,imageFrame);
+  public void displayOriginal(byte[] imageFrame) {
+    displayImage(originalFrame, imageFrame);
   }
-  
+
   @Override
   public void displayOriginal(Mat openCvImage) {
     this.displayImage(originalFrame, openCvImage);
@@ -109,12 +130,12 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
 
   @Override
   public void display1(byte[] imageFrame) {
-    displayImage(this.processedImage1,imageFrame);
+    displayImage(this.processedImage1, imageFrame);
   }
 
   @Override
   public void display2(byte[] imageFrame) {
-    displayImage(this.processedImage2,imageFrame);
+    displayImage(this.processedImage2, imageFrame);
   }
 
   @Override
@@ -127,4 +148,105 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     System.out.println(text);
     this.onFXThread(this.currentValuesProp, text);
   }
+  
+  /**
+   * File/Open clicked
+   * @param event Event on "File/Open" menu item.
+   */
+  @FXML
+  private void onOpen(final ActionEvent event) {
+    final FileChooser fileChooser = new FileChooser();
+    File file = fileChooser.showOpenDialog(primaryStage);
+    if (file != null) {
+    }
+  }
+  
+  /**
+   * File/Quit clicked
+   * @param event Event on "File/Quit" menu item.
+   */
+  @FXML
+  private void onQuit(final ActionEvent event) {
+    Platform.exit();
+    System.exit(0);
+  }
+
+
+  /**
+   * Online Manual clicked
+   * @param event Event on "Help/Online Manual" menu item.
+   */
+  @FXML
+  private void onHelp(final ActionEvent event) {
+    this.help();
+  }
+  
+  /**
+   * Report Issue clicked
+   * @param event Event on "Help/" menu item.
+   */
+  @FXML
+  private void onReportIssue(final ActionEvent event) {
+    this.reportIssue();
+  }
+  
+  /**
+   * Help/About clicked
+   * @param event Event on "Help/About" menu item.
+   */
+  @FXML
+  private void onHelpAbout(final ActionEvent event) {
+    this.helpAbout();
+  }
+
+  /**
+   * Handle action related to input (in this case specifically only responds to
+   * keyboard event CTRL-A).
+   * 
+   * @param event
+   *          Input event.
+   */
+  @FXML
+  private void handleKeyInput(final InputEvent event) {
+    if (event instanceof KeyEvent) {
+      final KeyEvent keyEvent = (KeyEvent) event;
+      if (isKey(keyEvent, KeyCode.A))
+        helpAbout();
+      if (isKey(keyEvent, KeyCode.H))
+        help();
+    }
+  }
+
+  public boolean isKey(KeyEvent keyEvent, KeyCode keyCode) {
+    return keyEvent.isControlDown() && keyEvent.getCode() == keyCode;
+  }
+
+  protected void browse(String url) {
+    try {
+      Desktop.getDesktop().browse(new URI(url));
+    } catch (IOException | URISyntaxException e) {
+      handle(e);
+    }
+  }
+
+  private void handle(Exception e) {
+    // @TODO display properly
+    e.printStackTrace();
+  }
+
+  private void help() {
+    browse("http://wiki.bitplan.com/index.php/Self_Driving_RC_Car/App");
+  }
+  
+  private void reportIssue() {
+    browse("https://github.com/rc-dukes/dukes/issues/new");
+  }
+
+  /**
+   * "About" menu selected or CTRL-A pressed.
+   */
+  private void helpAbout() {
+    browse("https://github.com/rc-dukes/dukes");
+  }
+
 }

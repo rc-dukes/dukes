@@ -1,5 +1,5 @@
 # Dukes of Hazzard self driving RC car
-
+[![Join the chat at https://gitter.im/rc-dukes/community](https://badges.gitter.im/rc-dukes/community.svg)](https://gitter.im/rc-dukes/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Travis (.org)](https://img.shields.io/travis/rc-dukes/dukes.svg)](https://travis-ci.org/rc-dukes/dukes)
 [![codecov](https://codecov.io/gh/rc-dukes/dukes/branch/master/graph/badge.svg)](https://codecov.io/gh/rc-dukes/dukes)
 [![GitHub issues](https://img.shields.io/github/issues/rc-dukes/dukes.svg)](https://github.com/rc-dukes/dukes/issues)

@@ -3,52 +3,72 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<SplitPane
+<VBox id="vbox" prefHeight="720" prefWidth="1280"
 	fx:controller="nl.vaneijndhoven.dukes.app.DukesFxGUI"
-	dividerPositions="0.6667" maxHeight="-Infinity"
-	maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-	prefHeight="400.0" prefWidth="600.0"
 	xmlns:fx="http://javafx.com/fxml">
-	<items>
-		<BorderPane>
-			<center>
-				<HBox alignment="CENTER" spacing="5">
-					<padding>
-						<Insets right="10" left="10" />
-					</padding>
-					<ImageView fx:id="originalFrame" />
-					<VBox alignment="CENTER" spacing="5">
-						<ImageView fx:id="processedImage1" />
-						<ImageView fx:id="processedImage2" />
+	<MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput">
+		<menus>
+			<Menu text="File">
+				<items>
+					<MenuItem text="Open" onAction="#onOpen"/>
+					<SeparatorMenuItem />
+					<MenuItem text="Quit" onAction="#onQuit"/>
+				</items>
+			</Menu>
+			<Menu text="Help">
+				<items>
+					<MenuItem text="Online Manual" onAction="#onHelp" />
+					<MenuItem text="Report Issue" onAction="#onReportIssue" />
+					<SeparatorMenuItem />
+					<MenuItem text="About" onAction="#onHelpAbout" />
+				</items>
+			</Menu>
+		</menus>
+	</MenuBar>
+
+	<SplitPane
+		dividerPositions="0.6667" maxHeight="-Infinity" maxWidth="-Infinity"
+		minHeight="-Infinity" minWidth="-Infinity" xmlns:fx="http://javafx.com/fxml">
+		<items>
+			<BorderPane>
+				<center>
+					<HBox alignment="CENTER" spacing="5">
+						<padding>
+							<Insets right="10" left="10" />
+						</padding>
+						<ImageView fx:id="originalFrame" />
+						<VBox alignment="CENTER" spacing="5">
+							<ImageView fx:id="processedImage1" />
+							<ImageView fx:id="processedImage2" />
+						</VBox>
+					</HBox>
+				</center>
+				<bottom>
+					<VBox alignment="CENTER" spacing="15">
+						<padding>
+							<Insets top="25" right="25" bottom="25" left="25" />
+						</padding>
+						<Button fx:id="cameraButton" alignment="center"
+							text="Start camera" onAction="#startCamera" />
+						<Separator />
+						<Label fx:id="currentValues" />
 					</VBox>
-				</HBox>
-			</center>
-			<bottom>
-				<VBox alignment="CENTER" spacing="15">
-					<padding>
-						<Insets top="25" right="25" bottom="25" left="25" />
-					</padding>
-					<Button fx:id="cameraButton" alignment="center"
-						text="Start camera" onAction="#startCamera" />
-					<Separator />
-					<Label fx:id="currentValues" />
-				</VBox>
-			</bottom>
-		</BorderPane>
-		<TabPane fx:id="tabPane"
-			xmlns="http://javafx.com/javafx/8.0.40"
-			xmlns:fx="http://www.w3.org/2001/XInclude">
-			<tabs>
-				<Tab fx:id="laneTab" text="Lane">
-					<fx:include fx:id="laneDetection"
-						source="lanedetection.fxml" />
-				</Tab>
-				<Tab fx:id="startTab" text="Start">
-					<fx:include fx:id="startDetection"
-						source="startlightdetection.fxml" />
-				</Tab>
-			</tabs>
-		</TabPane>
-	</items>
-</SplitPane>
+				</bottom>
+			</BorderPane>
+			<TabPane fx:id="tabPane"
+				xmlns="http://javafx.com/javafx/8.0.40"
+				xmlns:fx="http://www.w3.org/2001/XInclude">
+				<tabs>
+					<Tab fx:id="laneTab" text="Lane">
+						<fx:include fx:id="laneDetection"
+							source="lanedetection.fxml" />
+					</Tab>
+					<Tab fx:id="startTab" text="Start">
+						<fx:include fx:id="startDetection"
+							source="startlightdetection.fxml" />
+					</Tab>
+				</tabs>
+			</TabPane>
+		</items>
+	</SplitPane>
+</VBox>
