@@ -4,7 +4,7 @@
 
 var eb = null; // we start with an undefined eventbus
 var imageViewUrl = null;
-var cameraUrl = null;
+var cameraSource = null;
 var cameraFps=5;
 var streetLane = "images/StreetLane.jpg"; // default Image
 
@@ -110,6 +110,7 @@ function initDetect() {
 var powerState = false;
 
 function power() {
+	updateCamera(); // cameraSource!
 	powerState = !powerState;
 	setControlState(powerState);
 	keyPressed('power');
@@ -117,8 +118,7 @@ function power() {
 		clearLog("power on");
 		initEventBus(display, true);
 		heartBeatInterval = registerHeartBeat();
-		// TODO get url from configuration
-		registerCamera('http://pibeewifi/html/cam_get.php', cameraFps);
+		registerCamera(cameraSource, cameraFps);
 	} else {
 		clearLog("power off");
 		// switch off heartBeat
@@ -516,10 +516,15 @@ function updateDebugImages() {
 	}
 }
 
+function updateCamera() {
+  var cameraSourceInput=document.getElementById('cameraSource')
+  cameraSource=cameraSourceInput.value
+}
+
 function updateConfig() {
 	var newCameraFps=document.getElementById('cameraFpsSlider').value;
 	if (newCameraFps!=cameraFps)
-	  registerCamera(cameraUrl,newCameraFps)
+	  registerCamera(cameraSource,newCameraFps)
 	var cannyConfigThreshold1 = document
 			.getElementById('cannyConfigThreshold1Slider').value;
 	var cannyConfigThreshold2 = document

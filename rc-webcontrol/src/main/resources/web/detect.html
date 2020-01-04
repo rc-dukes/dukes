@@ -112,7 +112,7 @@
 					<fieldset>
 						<legend>Frame rates:</legend>
 						<div class='row'>
-							<div class='col-md-4'>Camera:</div>
+							<div class='col-md-2'>Camera:</div>
 							<div class='col-md-2'>
 								<input id="cameraFpsTextbox" size="2" />
 							</div>
@@ -121,6 +121,12 @@
 									max="30" step="1"
 									oninput="onSlide('cameraFpsSlider',
 								'cameraFpsTextbox')" />
+							</div>
+						</div>
+						<div class='row'>
+							<div class='col-md-2'>source:</div>
+							<div class='col-md-8'>
+								<input id="cameraSource" size="40" value="http://pibeewifi/html/cam_get.php"/>
 							</div>
 						</div>
 					</fieldset>
