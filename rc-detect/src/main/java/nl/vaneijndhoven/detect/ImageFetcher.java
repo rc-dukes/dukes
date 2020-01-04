@@ -13,62 +13,86 @@ import rx.functions.Func1;
  *
  */
 public class ImageFetcher {
+  // OpenCV video capture
+  private VideoCapture capture = new VideoCapture();
+  private String source;
+  protected int frameIndex;
 
-    private VideoCapture capture = new VideoCapture();
-    private String source;
+  public int getFrameIndex() {
+    return frameIndex;
+  }
 
-    /**
-     * fetch from the given source
-     * @param source - the source to fetch from
-     */
-    public ImageFetcher(String source) {
-        this.source = source;
+  /**
+   * fetch from the given source
+   * 
+   * @param source
+   *          - the source to fetch from
+   */
+  public ImageFetcher(String source) {
+    this.source = source;
+  }
+
+  /**
+   * try opening my source
+   * 
+   * @return true if successful
+   */
+  public boolean open() {
+    boolean ret = this.capture.open(source);
+    frameIndex=0;
+    return ret;
+  }
+
+  /**
+   * fetch an image Matrix
+   * 
+   * @return - the image fetched
+   */
+  public Mat fetch() {
+    if (!this.capture.isOpened()) {
+      boolean ret = this.open();
+      if (!ret) {
+        String msg = String.format(
+            "Trying to fetch image from unopened VideoCapture and open %s failed",
+            source);
+        throw new IllegalStateException(msg);
+      }
     }
+    final Mat frame = new Mat();
+    this.capture.read(frame);
+    frameIndex++;
+    return !frame.empty() ? frame : null;
+  }
 
-    public Mat fetch() {
-        if (!this.capture.isOpened()) {
-            this.capture.open(source);
-            throw new IllegalStateException("Trying to fetch image from unopened VideoCapture");
-        }
+  @Override
+  protected void finalize() throws Throwable {
+    super.finalize();
+  }
 
-        final Mat frame = new Mat();
+  public Observable<Mat> toObservable() {
+    // Resource creation.
+    Func0<VideoCapture> resourceFactory = () -> {
+      VideoCapture capture = new VideoCapture();
+      capture.open(source);
+      return capture;
+    };
 
-        this.capture.read(frame);
+    // Convert to observable.
+    Func1<VideoCapture, Observable<Mat>> observableFactory = capture -> Observable
+        .<Mat> create(subscription -> {
+          boolean hasNext = true;
+          while (hasNext) {
+            final Mat frame = this.fetch();
+            hasNext = frame!=null;
+            if (hasNext)
+              subscription.onNext(frame);
+          }
+          subscription.onCompleted();
+        });
 
-        return !frame.empty() ? frame : null;
-    }
+    // Disposal function.
+    Action1<VideoCapture> dispose = VideoCapture::release;
 
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-    }
-
-    public Observable<Mat> toObservable() {
-        // Resource creation.
-        Func0<VideoCapture> resourceFactory = () -> {
-            VideoCapture capture = new VideoCapture();
-            capture.open(source);
-            return capture;
-        };
-
-        // Convert to observable.
-        Func1<VideoCapture, Observable<Mat>> observableFactory =
-                capture -> Observable.<Mat>create(subscription -> {
-                    boolean hasNext = true;
-                    while (hasNext) {
-                        final Mat frame = new Mat();
-
-                        hasNext = capture.read(frame);
-
-                        subscription.onNext(frame);
-                    }
-
-                    subscription.onCompleted();
-                });//.switchMap(MemoryManagement::disposable);
-
-        // Disposal function.
-        Action1<VideoCapture> dispose = VideoCapture::release;
-
-        return Observable.using(resourceFactory, observableFactory, dispose);
-    }
+    return Observable.using(resourceFactory, observableFactory, dispose);
+  }
 }
