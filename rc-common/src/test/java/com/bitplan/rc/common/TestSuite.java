@@ -4,7 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ TestEnvironment.class, TestClusterStarter.class })
+@Suite.SuiteClasses({ TestEnvironment.class, TestRxJava.class, TestClusterStarter.class })
 /**
  * TestSuite for common aka hazard county
  * 

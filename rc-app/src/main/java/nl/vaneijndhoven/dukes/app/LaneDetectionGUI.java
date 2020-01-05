@@ -20,11 +20,14 @@ import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import javafx.fxml.FXML;
 import javafx.scene.control.Slider;
+import nl.vaneijndhoven.detect.ImageFetcher;
+import nl.vaneijndhoven.detect.ImageSubscriber;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
 import nl.vaneijndhoven.opencv.tools.MemoryManagement;
+import rx.schedulers.Schedulers;
 
 public class LaneDetectionGUI extends BaseGUI {
   @FXML
@@ -43,7 +46,6 @@ public class LaneDetectionGUI extends BaseGUI {
   private Slider lineDetectMaxLineGap;
 
   private Vertx vertx;
-  private ScheduledExecutorService timer;
   private VideoCapture capture = new VideoCapture();
   private boolean cameraActive;
 
@@ -70,50 +72,32 @@ public class LaneDetectionGUI extends BaseGUI {
 
       if (this.capture.isOpened()) {
         this.cameraActive = true;
-
-        Runnable frameGrabber = () -> {
-          try {
+        ImageFetcher imageFetcher = new ImageFetcher(
+            displayer.getLaneVideoProperty().getValue());
+        ImageSubscriber frameGrabber = new ImageSubscriber() {
+          @Override
+          public void onNext(Mat originalImage) {
+            super.onNext(originalImage);
             displayCurrentSliderValues();
             applySliderValuesToConfig();
-
-            try (MemoryManagement.ClosableMat<Mat> originalImage = closable(
-                grabFrame())) {
-              displayer.displayOriginal(originalImage.get());
-
-              ImageCollector collector = new ImageCollector();
-              controller.performLaneDetection(originalImage.get(), cannyConfig,
-                  houghLinesConfig, collector);
-              displayer.display1(collector.edges());
-              displayer.display2(collector.lines());
-            }
-          } catch (Exception e) {
-            System.out.println("Exception detected: ");
-            e.printStackTrace();
+            displayer.displayOriginal(originalImage);
+            ImageCollector collector = new ImageCollector();
+            controller.performLaneDetection(originalImage, cannyConfig,
+                houghLinesConfig, collector);
+            displayer.display1(collector.edges());
+            displayer.display2(collector.lines());
           }
         };
-
-        this.timer = Executors.newSingleThreadScheduledExecutor();
-        // this.timer = Executors.newScheduledThreadPool(100);
-        this.timer.scheduleAtFixedRate(frameGrabber, 0, 50,
-            TimeUnit.MILLISECONDS);
-
         displayer.setCameraButtonText("Stop Camera");
+        imageFetcher.toObservable()
+            .throttleFirst(500, TimeUnit.MILLISECONDS)
+            .subscribe(frameGrabber);
       } else {
         System.err.println("Failed to open the camera connection...");
       }
     } else {
       this.cameraActive = false;
       displayer.setCameraButtonText("Start Camera");
-
-      try {
-        this.timer.shutdown();
-        this.timer.awaitTermination(33, TimeUnit.MILLISECONDS);
-      } catch (InterruptedException e) {
-        System.err.println(
-            "Exception in stopping the frame capture, trying to release the camera now... "
-                + e);
-      }
-
       this.capture.release();
     }
   }

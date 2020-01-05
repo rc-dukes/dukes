@@ -51,11 +51,9 @@ public class BaseGUI {
     // preserve the image ratio
     imageView.setPreserveRatio(true);
     // set a fixed width for the given ImageView
-    imageView.setFitWidth(width);
-    
+    imageView.setFitWidth(width);   
   }
 
-  
   /**
    * Generic method for putting element running on a non-JavaFX thread on the
    * JavaFX thread, to properly update the UI

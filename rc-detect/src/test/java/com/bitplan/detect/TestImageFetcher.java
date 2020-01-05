@@ -13,11 +13,11 @@ import org.opencv.core.Mat;
 import com.bitplan.opencv.NativeLibrary;
 
 import nl.vaneijndhoven.detect.ImageFetcher;
+import nl.vaneijndhoven.detect.ImageSubscriber;
 import rx.Observable;
-import rx.Subscriber;
 
 /**
- * test the ImageFetche observable
+ * test the ImageFetcher observable
  * 
  * @author wf
  *
@@ -56,40 +56,7 @@ public class TestImageFetcher {
     }
     assertEquals(489, imageFetcher.getFrameIndex());
   }
-
-  class ImageSubscriber extends Subscriber<Mat> {
-
-    public Throwable error;
-    public int cols = 0;
-    public int rows=0;
-    public int frameIndex=0;
-    public boolean completed = false;
-    public boolean debug = false;
-
-    @Override
-    public void onCompleted() {
-      completed = true;
-    }
-
-    @Override
-    public void onError(Throwable e) {
-      error = e;
-    }
-
-    @Override
-    public void onNext(Mat mat) {
-      cols = mat.cols();
-      rows = mat.rows();
-      frameIndex++;
-      if (cols==0 || rows==0)
-        System.err.println("invalid frame "+frameIndex);
-      if (debug) {
-        String msg = String.format("%6d:%4dx%d", frameIndex, cols, rows);
-        System.out.println(msg);
-      }
-    }
-  };
-
+ 
   @Test
   public void testImageFetcherObservable() {
     ImageFetcher imageFetcher = getTestImageFetcher();
