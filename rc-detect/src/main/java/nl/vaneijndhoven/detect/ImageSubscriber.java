@@ -18,7 +18,7 @@ public class ImageSubscriber extends Subscriber<Mat> {
   public int frameIndex=0;
   public boolean completed = false;
   public boolean debug = false;
-  private String stackTraceText;
+  public String stackTraceText;
 
   @Override
   public void onCompleted() {

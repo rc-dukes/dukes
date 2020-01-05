@@ -15,6 +15,7 @@ import org.opencv.core.Mat;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
 import nl.vaneijndhoven.detect.ImageFetcher;
 import nl.vaneijndhoven.detect.ImageSubscriber;
@@ -31,6 +32,8 @@ import rx.schedulers.Schedulers;
  *
  */
 public class LaneDetectionGUI extends BaseGUI {
+  @FXML
+  private CheckBox probabilistic;
   @FXML
   private Slider cannyThreshold1;
   @FXML
@@ -62,7 +65,6 @@ public class LaneDetectionGUI extends BaseGUI {
 
   public void startCamera() throws Exception {
     configureGUI();
-
     // on start, reset default values in controller
     controller = new LaneDetectionController(vertx);
 
@@ -106,6 +108,7 @@ public class LaneDetectionGUI extends BaseGUI {
   private void applySliderValuesToConfig() {
     cannyConfig.setThreshold1(cannyThreshold1.getValue());
     cannyConfig.setThreshold2(cannyThreshold2.getValue());
+    houghLinesConfig.setProbabilistic(probabilistic.isSelected());
     houghLinesConfig.setRho(lineDetectRho.getValue());
     houghLinesConfig.setTheta(lineDetectTheta.getValue());
     houghLinesConfig
@@ -126,6 +129,7 @@ public class LaneDetectionGUI extends BaseGUI {
   }
 
   private void configureSliderDefaults() {
+    this.probabilistic.setSelected(true);
     this.cannyThreshold1.setValue(DEFAULT_CANNY_THRESHOLD_1);
     this.cannyThreshold2.setValue(DEFAULT_CANNY_THRESHOLD_2);
     this.lineDetectRho.setValue(DEFAULT_LINE_DETECT_RHO);

@@ -1,40 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" spacing="10"
-	xmlns:fx="http://javafx.com/fxml"
-	fx:controller="nl.vaneijndhoven.dukes.app.LaneDetectionGUI">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="nl.vaneijndhoven.dukes.app.LaneDetectionGUI">
 
 	<padding>
-		<Insets right="10" left="10" />
+		<Insets left="10" right="10" />
 	</padding>
+   <CheckBox fx:id="probabilistic" mnemonicParsing="false" text="probabilistic" />
 	<Label text="Canny threshold 1" />
-	<Slider fx:id="cannyThreshold1" min="0" max="2000" value="20"
-		blockIncrement="1" />
+	<Slider fx:id="cannyThreshold1" blockIncrement="1" max="2000" min="0" value="20" />
 	<Label text="Canny threshold 2" />
-	<Slider fx:id="cannyThreshold2" min="0" max="2000" value="50"
-		blockIncrement="1" />
+	<Slider fx:id="cannyThreshold2" blockIncrement="1" max="2000" min="0" value="50" />
 
 	<Label text="LineDetect rho" />
-	<Slider fx:id="lineDetectRho" min="0" max="20" value="0.5"
-		blockIncrement="0.01" />
+	<Slider fx:id="lineDetectRho" blockIncrement="0.01" max="20" min="0" value="0.5" />
 	<Label text="LineDetect theta" />
-	<Slider fx:id="lineDetectTheta" min="-5" max="5" value="0.5"
-		blockIncrement="0.01" />
+	<Slider fx:id="lineDetectTheta" blockIncrement="0.01" max="5" min="-5" value="0.5" />
 
 	<Label text="LineDetect threshold" />
-	<Slider fx:id="lineDetectThreshold" min="0" max="200" value="20"
-		blockIncrement="1" />
+	<Slider fx:id="lineDetectThreshold" blockIncrement="1" max="200" min="0" value="20" />
 	<Label text="LineDetect minLineLength" />
-	<Slider fx:id="lineDetectMinLineLength" min="0" max="200"
-		value="50" blockIncrement="1" />
+	<Slider fx:id="lineDetectMinLineLength" blockIncrement="1" max="200" min="0" value="50" />
 	<Label text="LineDetect maxLineGap" />
-	<Slider fx:id="lineDetectMaxLineGap" min="0" max="500"
-		value="50" blockIncrement="1" />
+	<Slider fx:id="lineDetectMaxLineGap" blockIncrement="1" max="500" min="0" value="50" />
 
 </VBox>
