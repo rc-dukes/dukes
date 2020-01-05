@@ -83,15 +83,18 @@ public class ImageFetcher {
 
     // Convert to observable.
     Func1<VideoCapture, Observable<Mat>> observableFactory = capture -> Observable
-        .<Mat> create(subscription -> {
+        .<Mat> create(subscriber -> {
           boolean hasNext = true;
           while (hasNext) {
             final Mat frame = this.fetch();
-            hasNext = frame!=null;
-            if (hasNext)
-              subscription.onNext(frame);
+            hasNext = frame!=null && frame.rows()>0 && frame.cols()>0;
+            if (hasNext) {
+               String msg = String.format("->%6d:%4dx%d", frameIndex, frame.cols(), frame.rows());
+               System.out.println(msg);
+               subscriber.onNext(frame);
+            }
           }
-          subscription.onCompleted();
+          subscriber.onCompleted();
         });
 
     // Disposal function.
