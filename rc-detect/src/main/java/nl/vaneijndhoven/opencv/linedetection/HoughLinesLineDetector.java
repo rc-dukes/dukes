@@ -9,7 +9,7 @@ import java.util.*;
 
 import static java.util.Optional.of;
 
-public class ProbabilisticHoughLinesLineDetector implements LineDetector {
+public class HoughLinesLineDetector implements LineDetector {
 
     private double rho = 1;
     private double theta = Math.PI/180; // By choosing this value lines sloping left to right will be < 0 radian, while lines sloping right to left will be > 0 radian.
@@ -17,10 +17,18 @@ public class ProbabilisticHoughLinesLineDetector implements LineDetector {
     private double minLineLength = 20;
     private double maxLineGap = 10;
     private Optional<ImageCollector> collector;
+    private boolean probabilistic=true;
 
-    public ProbabilisticHoughLinesLineDetector() {}
-
-    public ProbabilisticHoughLinesLineDetector(double rho, double theta, int threshold, double minLineLength, double maxLineGap) {
+    /**
+     * construct me 
+     * @param rho
+     * @param theta
+     * @param threshold
+     * @param minLineLength
+     * @param maxLineGap
+     */
+    public HoughLinesLineDetector(boolean probabilistic,double rho, double theta, int threshold, double minLineLength, double maxLineGap) {
+        this.probabilistic=probabilistic;
         this.rho = rho;
         this.theta = theta;
         this.threshold = threshold;
@@ -28,8 +36,8 @@ public class ProbabilisticHoughLinesLineDetector implements LineDetector {
         this.maxLineGap = maxLineGap;
     }
 
-    public ProbabilisticHoughLinesLineDetector(Config cfg) {
-        this(cfg.getRho(), cfg.getTheta(), cfg.getThreshold(), cfg.getMinLineLength(), cfg.getMaxLineGap());
+    public HoughLinesLineDetector(Config cfg) {
+        this(cfg.isProbabilistic(),cfg.getRho(), cfg.getTheta(), cfg.getThreshold(), cfg.getMinLineLength(), cfg.getMaxLineGap());
     }
 
     @Override
@@ -49,20 +57,29 @@ public class ProbabilisticHoughLinesLineDetector implements LineDetector {
         return lineObjects;
     }
 
+    /**
+     * detect lines
+     * @param image
+     * @return
+     */
     private Mat detectMat(Mat image) {
         Mat lines = new Mat();
-        Imgproc.HoughLinesP(image, lines, rho, theta, threshold, minLineLength, maxLineGap);
+        if (probabilistic)
+          Imgproc.HoughLinesP(image, lines, rho, theta, threshold, minLineLength, maxLineGap);
+        else
+          Imgproc.HoughLines(image, lines, rho, theta, threshold, minLineLength, maxLineGap);
         collector.ifPresent(coll -> coll.lines(lines));
         return lines;
     }
 
-    public ProbabilisticHoughLinesLineDetector withImageCollector(ImageCollector collector) {
+    public HoughLinesLineDetector withImageCollector(ImageCollector collector) {
         this.collector = of(collector);
         return this;
     }
 
     public static class Config {
 
+        private boolean probabilistic=true;
         private double rho = 1;
         private double theta = Math.PI/180; // By choosing this value lines sloping left to right will be < 0 radian, while lines sloping right to left will be > 0 radian.
         private int threshold = 70;
@@ -109,8 +126,19 @@ public class ProbabilisticHoughLinesLineDetector implements LineDetector {
             this.maxLineGap = maxLineGap;
         }
 
+        /**
+         * @return the probabilistic
+         */
+        public boolean isProbabilistic() {
+          return probabilistic;
+        }
 
-
+        /**
+         * @param probabilistic the probabilistic to set
+         */
+        public void setProbabilistic(boolean probabilistic) {
+          this.probabilistic = probabilistic;
+        }
 
     }
 }

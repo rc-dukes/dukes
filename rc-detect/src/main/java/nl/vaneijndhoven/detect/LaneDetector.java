@@ -7,7 +7,7 @@ import org.opencv.core.Mat;
 import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.lanedetection.ImageLaneDetection;
-import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
+import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
 
 /**
@@ -28,12 +28,12 @@ public class LaneDetector {
     public static final double DEFAULT_LINE_DETECT_MAX_LINE_GAP = 98d;
 
     private CannyEdgeDetector.Config cannyConfig;
-    private ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig;
+    private HoughLinesLineDetector.Config lineDetectorConfig;
     private CameraMatrix matrix;
     private ImageCollector collector;
 
 
-    public LaneDetector(CannyEdgeDetector.Config cannyConfig, ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig, CameraMatrix matrix, ImageCollector collector) {
+    public LaneDetector(CannyEdgeDetector.Config cannyConfig, HoughLinesLineDetector.Config lineDetectorConfig, CameraMatrix matrix, ImageCollector collector) {
         this.cannyConfig = cannyConfig;
         this.lineDetectorConfig = lineDetectorConfig;
         this.matrix = matrix;
@@ -54,7 +54,7 @@ public class LaneDetector {
         this.cannyConfig = cannyConfig;
     }
 
-    public void setLineDetectorConfig(ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig) {
+    public void setLineDetectorConfig(HoughLinesLineDetector.Config lineDetectorConfig) {
         this.lineDetectorConfig = lineDetectorConfig;
     }
 

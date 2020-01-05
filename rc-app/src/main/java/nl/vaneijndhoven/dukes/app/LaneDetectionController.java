@@ -11,7 +11,7 @@ import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.lanedetection.ImageLaneDetection;
-import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
+import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
 
 /**
@@ -60,7 +60,7 @@ public class LaneDetectionController {
 
   public void performLaneDetection(Mat originalImage,
       CannyEdgeDetector.Config cannyConfig,
-      ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig,
+      HoughLinesLineDetector.Config lineDetectorConfig,
       ImageCollector collector) {
     CameraMatrix matrix = CameraMatrix.DEFAULT;
     ImageLaneDetection laneDetect = new ImageLaneDetection(cannyConfig,

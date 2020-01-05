@@ -16,7 +16,7 @@ import nl.vaneijndhoven.dukes.common.Characters;
 import nl.vaneijndhoven.dukes.common.DukesVerticle;
 import nl.vaneijndhoven.dukes.common.Events;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
-import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
+import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
 import rx.Observable;
 
@@ -137,13 +137,13 @@ public class Detector extends DukesVerticle {
     return canny;
   }
 
-  private ProbabilisticHoughLinesLineDetector.Config createHoughLines() {
-    ProbabilisticHoughLinesLineDetector.Config hough = new ProbabilisticHoughLinesLineDetector.Config();
+  private HoughLinesLineDetector.Config createHoughLines() {
+    HoughLinesLineDetector.Config hough = new HoughLinesLineDetector.Config();
     JsonObject houghConfig = (JsonObject) vertx.sharedData()
         .getLocalMap(Characters.DAISY.name()).get("hough");
 
     if (houghConfig != null) {
-      hough = new ProbabilisticHoughLinesLineDetector.Config();
+      hough = new HoughLinesLineDetector.Config();
       hough.setRho(houghConfig.getDouble("rho"));
       hough.setTheta(houghConfig.getDouble("theta"));
       hough.setThreshold(houghConfig.getInteger("threshold"));
@@ -169,7 +169,7 @@ public class Detector extends DukesVerticle {
     JsonObject config = jo.getJsonObject("config");
 
     CannyEdgeDetector.Config canny = new CannyEdgeDetector.Config();
-    ProbabilisticHoughLinesLineDetector.Config hough = new ProbabilisticHoughLinesLineDetector.Config();
+    HoughLinesLineDetector.Config hough = new HoughLinesLineDetector.Config();
     long interval = LANE_DETECTION_INTERVAL;
     if (config != null) {
       JsonObject cannyCfg = config.getJsonObject("canny");
@@ -181,7 +181,7 @@ public class Detector extends DukesVerticle {
 
       JsonObject houghCfg = config.getJsonObject("hough");
       if (houghCfg != null) {
-        hough = new ProbabilisticHoughLinesLineDetector.Config();
+        hough = new HoughLinesLineDetector.Config();
         hough.setRho(houghCfg.getDouble("rho"));
         hough.setTheta(houghCfg.getDouble("theta"));
         hough.setThreshold(houghCfg.getInteger("threshold"));

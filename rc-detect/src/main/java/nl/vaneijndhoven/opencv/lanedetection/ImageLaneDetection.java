@@ -25,7 +25,7 @@ import nl.vaneijndhoven.objects.Lane;
 import nl.vaneijndhoven.objects.StoppingZone;
 import nl.vaneijndhoven.objects.ViewPort;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
-import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
+import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.objectdetection.LineExtractor;
 import nl.vaneijndhoven.opencv.stopzonedetection.DefaultStoppingZoneDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
@@ -37,7 +37,7 @@ import nl.vaneijndhoven.opencv.tools.ImageCollector;
 public class ImageLaneDetection {
 
     private final CannyEdgeDetector.Config cannyConfig;
-    private final ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig;
+    private final HoughLinesLineDetector.Config lineDetectorConfig;
     private CameraMatrix matrix;
 
     /**
@@ -46,7 +46,7 @@ public class ImageLaneDetection {
      * @param lineDetectorConfig - configuration for lineDetector
      * @param matrix - camera matrix
      */
-    public ImageLaneDetection(CannyEdgeDetector.Config cannyConfig, ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig, CameraMatrix matrix) {
+    public ImageLaneDetection(CannyEdgeDetector.Config cannyConfig, HoughLinesLineDetector.Config lineDetectorConfig, CameraMatrix matrix) {
         this.cannyConfig = cannyConfig;
         this.lineDetectorConfig = lineDetectorConfig;
         this.matrix = matrix;
@@ -82,7 +82,7 @@ public class ImageLaneDetection {
 
         LineExtractor lineExtractor = new LineExtractor(
                 new CannyEdgeDetector(cannyConfig).withImageCollector(imageCollector),
-                new ProbabilisticHoughLinesLineDetector(lineDetectorConfig).withImageCollector(imageCollector)
+                new HoughLinesLineDetector(lineDetectorConfig).withImageCollector(imageCollector)
         );
 
         Collection<Line> lines = lineExtractor.extract(image);

@@ -20,7 +20,7 @@ import nl.vaneijndhoven.detect.ImageFetcher;
 import nl.vaneijndhoven.detect.ImageSubscriber;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
-import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
+import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
@@ -49,7 +49,7 @@ public class LaneDetectionGUI extends BaseGUI {
   private Vertx vertx;
 
   private CannyEdgeDetector.Config cannyConfig = new CannyEdgeDetector.Config();
-  private ProbabilisticHoughLinesLineDetector.Config houghLinesConfig = new ProbabilisticHoughLinesLineDetector.Config();
+  private HoughLinesLineDetector.Config houghLinesConfig = new HoughLinesLineDetector.Config();
   private LaneDetectionController controller = null;
 
   private boolean configured = false;
