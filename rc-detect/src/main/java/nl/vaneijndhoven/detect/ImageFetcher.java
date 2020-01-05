@@ -13,10 +13,21 @@ import rx.functions.Func1;
  *
  */
 public class ImageFetcher {
+  public static double DEFAULT_FPS=25;
   // OpenCV video capture
   private VideoCapture capture = new VideoCapture();
   private String source;
   protected int frameIndex;
+  protected double fps=DEFAULT_FPS; // frames per second
+  private long milliTimeStamp;
+
+  public double getFps() {
+    return fps;
+  }
+
+  public void setFps(double fps) {
+    this.fps = fps;
+  }
 
   public int getFrameIndex() {
     return frameIndex;
@@ -40,6 +51,7 @@ public class ImageFetcher {
   public boolean open() {
     boolean ret = this.capture.open(source);
     frameIndex=0;
+    milliTimeStamp = System.nanoTime()/ 1000000;
     return ret;
   }
 
@@ -59,8 +71,20 @@ public class ImageFetcher {
       }
     }
     final Mat frame = new Mat();
+    long currentMillis = System.nanoTime()/ 1000000;
+    int waitMillis = (int) Math.round(1000/fps);
+    waitMillis-=currentMillis-milliTimeStamp;
+    if (waitMillis>0) {
+      System.out.println(String.format("waiting %3d msecs",waitMillis));
+      try {
+        Thread.sleep(waitMillis);
+      } catch (InterruptedException e) {
+        // ignore
+      }
+    }      
     this.capture.read(frame);
     frameIndex++;
+    milliTimeStamp = currentMillis;
     return !frame.empty() ? frame : null;
   }
 

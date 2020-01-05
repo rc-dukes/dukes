@@ -2,8 +2,14 @@ package nl.vaneijndhoven.detect;
 
 import org.opencv.core.Mat;
 
+import nl.vaneijndhoven.dukes.common.ErrorHandler;
 import rx.Subscriber;
 
+/**
+ * a subscriber for OpenCV  images
+ * @author wf
+ *
+ */
 public class ImageSubscriber extends Subscriber<Mat> {
 
   public Throwable error;
@@ -12,6 +18,7 @@ public class ImageSubscriber extends Subscriber<Mat> {
   public int frameIndex=0;
   public boolean completed = false;
   public boolean debug = false;
+  private String stackTraceText;
 
   @Override
   public void onCompleted() {
@@ -19,8 +26,9 @@ public class ImageSubscriber extends Subscriber<Mat> {
   }
 
   @Override
-  public void onError(Throwable e) {
-    error = e;
+  public void onError(Throwable th) {
+    stackTraceText=ErrorHandler.getStackTraceText(th);
+    error = th;
   }
 
   @Override

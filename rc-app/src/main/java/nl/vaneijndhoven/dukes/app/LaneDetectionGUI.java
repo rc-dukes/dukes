@@ -7,14 +7,10 @@ import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_LINE_DE
 import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_LINE_DETECT_RHO;
 import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_LINE_DETECT_THETA;
 import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_LINE_DETECT_THRESHOLD;
-import static nl.vaneijndhoven.opencv.tools.MemoryManagement.closable;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
-import org.opencv.videoio.VideoCapture;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -26,9 +22,14 @@ import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.ProbabilisticHoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
-import nl.vaneijndhoven.opencv.tools.MemoryManagement;
+import rx.Subscription;
 import rx.schedulers.Schedulers;
 
+/**
+ * Graphical user interface for lane detection
+ * @author wf
+ *
+ */
 public class LaneDetectionGUI extends BaseGUI {
   @FXML
   private Slider cannyThreshold1;
@@ -46,14 +47,13 @@ public class LaneDetectionGUI extends BaseGUI {
   private Slider lineDetectMaxLineGap;
 
   private Vertx vertx;
-  private VideoCapture capture = new VideoCapture();
-  private boolean cameraActive;
 
   private CannyEdgeDetector.Config cannyConfig = new CannyEdgeDetector.Config();
   private ProbabilisticHoughLinesLineDetector.Config houghLinesConfig = new ProbabilisticHoughLinesLineDetector.Config();
   private LaneDetectionController controller = null;
 
   private boolean configured = false;
+  private Subscription imageSubscriber=null;
 
   public LaneDetectionGUI() {
     Config.configureLogging();
@@ -66,12 +66,7 @@ public class LaneDetectionGUI extends BaseGUI {
     // on start, reset default values in controller
     controller = new LaneDetectionController(vertx);
 
-    if (!this.cameraActive) {
-      // open configured video file
-      this.capture.open(displayer.getLaneVideoProperty().getValue());
-
-      if (this.capture.isOpened()) {
-        this.cameraActive = true;
+    if (this.imageSubscriber==null) {
         ImageFetcher imageFetcher = new ImageFetcher(
             displayer.getLaneVideoProperty().getValue());
         ImageSubscriber frameGrabber = new ImageSubscriber() {
@@ -89,16 +84,15 @@ public class LaneDetectionGUI extends BaseGUI {
           }
         };
         displayer.setCameraButtonText("Stop Camera");
-        imageFetcher.toObservable()
-            .throttleFirst(500, TimeUnit.MILLISECONDS)
+        imageSubscriber = imageFetcher.toObservable()
+            .subscribeOn(Schedulers.newThread())
+            .throttleFirst(100, TimeUnit.MILLISECONDS) // 10 Frames Per second some 2.5 times slower than original ...
+            .doOnError(th->displayer.handle(th))
             .subscribe(frameGrabber);
-      } else {
-        System.err.println("Failed to open the camera connection...");
-      }
     } else {
-      this.cameraActive = false;
+      imageSubscriber.unsubscribe();
+      imageSubscriber=null;
       displayer.setCameraButtonText("Start Camera");
-      this.capture.release();
     }
   }
 
@@ -139,24 +133,6 @@ public class LaneDetectionGUI extends BaseGUI {
     this.lineDetectThreshold.setValue(DEFAULT_LINE_DETECT_THRESHOLD);
     this.lineDetectMinLineLength.setValue(DEFAULT_LINE_DETECT_MIN_LINE_LENGTH);
     this.lineDetectMaxLineGap.setValue(DEFAULT_LINE_DETECT_MAX_LINE_GAP);
-  }
-
-  private Mat grabFrame() {
-    final Mat frame = new Mat();
-    if (this.capture.isOpened()) {
-      try {
-        this.capture.read(frame);
-
-        if (!frame.empty()) {
-          return frame;
-        }
-
-      } catch (Exception e) {
-        System.err.print("ERROR");
-        e.printStackTrace();
-      }
-    }
-    return frame;
   }
 
   private void initVertx() {

@@ -12,6 +12,7 @@ import nl.vaneijndhoven.opencv.video.ImageUtils;
 
 public class BaseGUI {
   GUIDisplayer displayer;
+
   public GUIDisplayer getDisplayer() {
     return displayer;
   }
@@ -22,22 +23,24 @@ public class BaseGUI {
 
   /**
    * show the given imageFrame in the given JavaFX imageView Control
+   * 
    * @param imageView
    * @param imageFrame
    */
   protected void displayImage(ImageView imageView, byte[] imageFrame) {
-    if (imageFrame==null) return;
-    Image image= new Image(new ByteArrayInputStream(imageFrame));
-    this.onFXThread(imageView.imageProperty(),image);
+    if (imageFrame == null)
+      return;
+    Image image = new Image(new ByteArrayInputStream(imageFrame));
+    this.onFXThread(imageView.imageProperty(), image);
   }
-  
+
   protected void displayImage(ImageView fxImage, Mat openCvImage) {
-    if (openCvImage.rows()>0) {
-      Image image=ImageUtils.mat2Image(openCvImage);
+    if (openCvImage.rows() > 0) {
+      Image image = ImageUtils.mat2Image(openCvImage);
       this.onFXThread(fxImage.imageProperty(), image);
     }
   }
-  
+
   /**
    * Set typical {@link ImageView} properties: a fixed width and the information
    * to preserve the original image ration
@@ -51,7 +54,7 @@ public class BaseGUI {
     // preserve the image ratio
     imageView.setPreserveRatio(true);
     // set a fixed width for the given ImageView
-    imageView.setFitWidth(width);   
+    imageView.setFitWidth(width);
   }
 
   /**
@@ -63,7 +66,12 @@ public class BaseGUI {
    * @param value
    *          the value to set for the given {@link ObjectProperty}
    */
-  protected <T> void onFXThread(final ObjectProperty<T> property, final T value) {
-    Platform.runLater(() -> property.set(value));
+  protected <T> void onFXThread(final ObjectProperty<T> property,
+      final T value) {
+    if (Platform.isFxApplicationThread()) {
+      property.set(value);
+    } else {
+      Platform.runLater(() -> property.set(value));
+    }
   }
 }

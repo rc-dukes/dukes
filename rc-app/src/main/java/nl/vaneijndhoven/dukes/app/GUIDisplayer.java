@@ -13,6 +13,7 @@ public interface GUIDisplayer {
   void displayOriginal( Mat openCvImage);
   void display1(byte[] imageFrame);
   void display2(byte[] imageFrame);
+  void setMessageText(String text);
   void setCameraButtonText(String text);
   void showCurrentValues(String text);
   StringProperty getLaneVideoProperty();

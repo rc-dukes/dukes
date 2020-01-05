@@ -18,7 +18,7 @@ import nl.vaneijndhoven.opencv.tools.ImageCollector;
  * lane detection controller
  *
  */
-public class LaneDetectionController  {
+public class LaneDetectionController {
 
   protected static final Logger LOG = LoggerFactory
       .getLogger(LaneDetectionController.class);
@@ -60,16 +60,24 @@ public class LaneDetectionController  {
 
   public void performLaneDetection(Mat originalImage,
       CannyEdgeDetector.Config cannyConfig,
-      ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig, ImageCollector collector) {
-      CameraMatrix matrix = CameraMatrix.DEFAULT;
-      ImageLaneDetection laneDetect = new ImageLaneDetection(cannyConfig, lineDetectorConfig, matrix);
-      Map<String, Object> laneDetectResult =
-      laneDetect.detectLane(originalImage, collector);
-     
-       double distanceToStoppingZoneStart = (double) laneDetectResult.get("distanceToStoppingZone");
-       double distanceToStoppingZoneEnd = (double) laneDetectResult.get("distanceToStoppingZoneEnd");
-       double angle = (double) laneDetectResult.get("angle");
-       processLane(angle, distanceToStoppingZoneStart,distanceToStoppingZoneEnd);
+      ProbabilisticHoughLinesLineDetector.Config lineDetectorConfig,
+      ImageCollector collector) {
+    CameraMatrix matrix = CameraMatrix.DEFAULT;
+    ImageLaneDetection laneDetect = new ImageLaneDetection(cannyConfig,
+        lineDetectorConfig, matrix);
+    Map<String, Object> laneDetectResult = laneDetect.detectLane(originalImage,
+        collector);
+    if (laneDetectResult.containsKey("distanceToStoppingZone")
+        && laneDetectResult.containsKey("distanceToStoppingZoneEnd")
+        && laneDetectResult.containsKey("angle")) {
+      double distanceToStoppingZoneStart = (double) laneDetectResult
+          .get("distanceToStoppingZone");
+      double distanceToStoppingZoneEnd = (double) laneDetectResult
+          .get("distanceToStoppingZoneEnd");
+      double angle = (double) laneDetectResult.get("angle");
+      processLane(angle, distanceToStoppingZoneStart,
+          distanceToStoppingZoneEnd);
+    }
   }
 
   private void processLane(double angle, double distanceToStoppingZoneStart,
@@ -88,18 +96,18 @@ public class LaneDetectionController  {
 
     // System.out.println("prev: " + previousAngle + ", angle: " + angle + ",
     // rudderPercentage: " + rudderPercentage + ", damp: " + damp);
-    String direction="?";
+    String direction = "?";
     if (currentTime - tsLastCommand > COMMAND_LOOP_INTERVAL) {
-   
+
       if ((previousAngle != 0)
           && (!((previousAngle < 0 && angle > 0)
               || (previousAngle > 0 && angle < 0)))
           && (Math.abs(angle) < Math.abs(previousAngle))) {
-        direction=Config.POSITION_CENTER;
+        direction = Config.POSITION_CENTER;
         rudderPercentage = 0;
       } else {
         if (rudderPercentage > 0) {
-        
+
           if (angle > 0) {
             direction = Config.POSITION_LEFT;
             rudderPercentage = -rudderPercentage * 1;
@@ -107,13 +115,13 @@ public class LaneDetectionController  {
             direction = Config.POSITION_RIGHT;
             rudderPercentage = rudderPercentage * 1.3;
           }
-          
+
         }
       }
       String msg = String.format("steering %s, percentage: %3.1f %% ",
           direction, rudderPercentage);
       LOG.debug(msg);
-      
+
       eventBusSendAfterMS(0, "setwheel:" + rudderPercentage);
       tsLastCommand = currentTime;
       lastRudderPercentageSent = rudderPercentage;

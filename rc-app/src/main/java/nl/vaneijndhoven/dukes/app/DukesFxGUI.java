@@ -1,5 +1,6 @@
 package nl.vaneijndhoven.dukes.app;
 
+import nl.vaneijndhoven.dukes.common.ErrorHandler;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -24,20 +25,23 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 
 /**
  * combined GUI for detectors
  *
  */
-public class DukesFxGUI extends BaseGUI implements GUIDisplayer,Initializable {
+public class DukesFxGUI extends BaseGUI implements GUIDisplayer, Initializable {
   @FXML
   private VBox vbox;
   @FXML
@@ -45,6 +49,8 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,Initializable {
 
   @FXML
   private SplitPane splitPane;
+  @FXML 
+  private HBox videoBox;
   @FXML
   private TabPane tabPane;
   // Inject tab content.
@@ -74,7 +80,9 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,Initializable {
   protected TextField lanevideo;
   @FXML
   protected TextField startvideo;
-  
+  @FXML
+  protected TextArea messageArea;
+
   // FXML label to show the current values set with the sliders
   @FXML
   private Label currentValues;
@@ -89,7 +97,7 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,Initializable {
   private Stage primaryStage;
 
   public void init(Stage primaryStage) {
-    this.primaryStage=primaryStage;
+    this.primaryStage = primaryStage;
     tabPane.getSelectionModel().selectedItemProperty()
         .addListener((ObservableValue<? extends Tab> observable, Tab oldValue,
             Tab newValue) -> {
@@ -107,7 +115,6 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,Initializable {
     currentValuesProp = new SimpleObjectProperty<>();
     this.currentValues.textProperty().bind(currentValuesProp);
   }
-  
 
   private void configureImageDisplaySize(int fitWidth) {
     this.imageViewProperties(this.originalFrame, fitWidth);
@@ -159,22 +166,30 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,Initializable {
     System.out.println(text);
     this.onFXThread(this.currentValuesProp, text);
   }
-  
+
   /**
    * File/Open clicked
-   * @param event Event on "File/Open" menu item.
+   * 
+   * @param event
+   *          Event on "File/Open" menu item.
    */
   @FXML
   private void onOpen(final ActionEvent event) {
     final FileChooser fileChooser = new FileChooser();
+    FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
+        "Video and Image Files", "*.jpg", "*.png", "*.avi", "*.mp4", "*.m4v");
+    fileChooser.getExtensionFilters().add(extFilter);
     File file = fileChooser.showOpenDialog(primaryStage);
     if (file != null) {
+      this.lanevideo.setText(file.getPath());
     }
   }
-  
+
   /**
    * File/Quit clicked
-   * @param event Event on "File/Quit" menu item.
+   * 
+   * @param event
+   *          Event on "File/Quit" menu item.
    */
   @FXML
   private void onQuit(final ActionEvent event) {
@@ -182,28 +197,33 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,Initializable {
     System.exit(0);
   }
 
-
   /**
    * Online Manual clicked
-   * @param event Event on "Help/Online Manual" menu item.
+   * 
+   * @param event
+   *          Event on "Help/Online Manual" menu item.
    */
   @FXML
   private void onHelp(final ActionEvent event) {
     this.help();
   }
-  
+
   /**
    * Report Issue clicked
-   * @param event Event on "Help/" menu item.
+   * 
+   * @param event
+   *          Event on "Help/" menu item.
    */
   @FXML
   private void onReportIssue(final ActionEvent event) {
     this.reportIssue();
   }
-  
+
   /**
    * Help/About clicked
-   * @param event Event on "Help/About" menu item.
+   * 
+   * @param event
+   *          Event on "Help/About" menu item.
    */
   @FXML
   private void onHelpAbout(final ActionEvent event) {
@@ -241,14 +261,14 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,Initializable {
   }
 
   public void handle(Throwable th) {
-    // @TODO display properly
-    th.printStackTrace();
+    String text=ErrorHandler.getStackTraceText(th);
+    this.setMessageText(text);
   }
 
   private void help() {
     browse("http://wiki.bitplan.com/index.php/Self_Driving_RC_Car/App");
   }
-  
+
   private void reportIssue() {
     browse("https://github.com/rc-dukes/dukes/issues/new");
   }
@@ -263,9 +283,9 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,Initializable {
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     this.lanevideo.setText("http://wiki.bitplan.com/videos/full_run.mp4");
-    this.startvideo.setText("http://wiki.bitplan.com/videos/startlamp2.m4v"); 
+    this.startvideo.setText("http://wiki.bitplan.com/videos/startlamp2.m4v");
   }
-  
+
   @Override
   public StringProperty getLaneVideoProperty() {
     return this.lanevideo.textProperty();
@@ -274,5 +294,10 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,Initializable {
   @Override
   public StringProperty getStartVideoProperty() {
     return this.startvideo.textProperty();
+  }
+
+  @Override
+  public void setMessageText(String text) {
+    this.messageArea.setText(text);
   }
 }
