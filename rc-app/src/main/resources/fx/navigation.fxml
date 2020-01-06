@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
+<?import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView?>
 <VBox alignment="CENTER" spacing="10"
 	xmlns:fx="http://javafx.com/fxml/1"
 	xmlns="http://javafx.com/javafx/11.0.1"

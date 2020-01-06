@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Screen;
 import nl.vaneijndhoven.dukes.common.ErrorHandler;
 import nl.vaneijndhoven.opencv.video.ImageUtils;
 
@@ -33,6 +34,14 @@ public class BaseGUI {
 
   public void setDisplayer(GUIDisplayer displayer) {
     this.displayer = displayer;
+  }
+  
+  public static double getScreenWidth() {
+    return Screen.getPrimary().getVisualBounds().getWidth();
+  }
+
+  public static double getScreenHeight() {
+    return Screen.getPrimary().getVisualBounds().getHeight();
   }
 
   /**
@@ -110,13 +119,16 @@ public class BaseGUI {
    * set the icon for the given button
    * @param button  the button to modify
    * @param icon - the icon to use
+   * @param color - the color of the icon
+   * @param bgColor - the background color of the icon
    */
-  public void setButtonIcon(Button button,GlyphIcons icon) {
-    GlyphsDude.setIcon(button, icon, "2em");
+  public void setButtonIcon(Button button,GlyphIcons icon,String color,String bgColor) {
+    GlyphsDude.setIcon(button, icon);
     String text=button.getText();
     button.setText("");
     button.setTooltip(new Tooltip(text));
+    button.setStyle(String.format("-fx-fill: %s;-fx-background-color: %s;",color,bgColor));
     String style=button.getStyle();
-    System.out.println(style);
+    System.out.println(String.format("button %s has style %s", text,style));
   }
 }

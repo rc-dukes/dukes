@@ -32,16 +32,18 @@ public class NavigationGUI extends BaseGUI {
   
   @FXML
   public void initialize() {
-    setButtonIcon(upButton,MaterialDesignIcon.ARROW_UP_BOLD);
-    setButtonIcon(autoPilotButton,MaterialDesignIcon.CAR);
-    setButtonIcon(leftButton,MaterialDesignIcon.ARROW_LEFT_BOLD);
-    setButtonIcon(stopButton,MaterialDesignIcon.STOP);
-    setButtonIcon(rightButton,MaterialDesignIcon.ARROW_RIGHT_BOLD);
-    setButtonIcon(downButton,MaterialDesignIcon.ARROW_DOWN_BOLD);
-    setButtonIcon(manualButton,MaterialDesignIcon.ACCOUNT);
-    setButtonIcon(brakeButton, MaterialDesignIcon.CLOSE);
-    setButtonIcon(centerButton, MaterialDesignIcon.IMAGE_FILTER_CENTER_FOCUS);
-    setButtonIcon(powerButton, MaterialDesignIcon.POWER);
+    String bgColor="transparent";
+    String color="#808080";
+    setButtonIcon(upButton,MaterialDesignIcon.ARROW_UP_BOLD,color,bgColor);
+    setButtonIcon(autoPilotButton,MaterialDesignIcon.CAR,color,bgColor);
+    setButtonIcon(leftButton,MaterialDesignIcon.ARROW_LEFT_BOLD,color,bgColor);
+    setButtonIcon(stopButton,MaterialDesignIcon.STOP,color,bgColor);
+    setButtonIcon(rightButton,MaterialDesignIcon.ARROW_RIGHT_BOLD,color,bgColor);
+    setButtonIcon(downButton,MaterialDesignIcon.ARROW_DOWN_BOLD,color,bgColor);
+    setButtonIcon(manualButton,MaterialDesignIcon.ACCOUNT,color,bgColor);
+    setButtonIcon(brakeButton, MaterialDesignIcon.CLOSE,color,bgColor);
+    setButtonIcon(centerButton, MaterialDesignIcon.IMAGE_FILTER_CENTER_FOCUS,color,bgColor);
+    setButtonIcon(powerButton, MaterialDesignIcon.POWER,"blue",bgColor);
   }
   
 }

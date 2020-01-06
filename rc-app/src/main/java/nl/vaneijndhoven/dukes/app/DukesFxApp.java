@@ -1,5 +1,7 @@
 package nl.vaneijndhoven.dukes.app;
 
+import java.net.URL;
+
 import com.bitplan.opencv.NativeLibrary;
 
 import javafx.application.Application;
@@ -14,12 +16,18 @@ import javafx.stage.Stage;
  */
 public class DukesFxApp extends Application {
   
+  public URL  getResource(String path) {
+    return getClass().getClassLoader().getResource(path);
+  }
+  
   @Override
   public void start(Stage primaryStage) throws Exception {
     // see https://stackoverflow.com/questions/39164050/javafx-8-tabpanes-and-tabs-with-separate-fxml-and-controllers-for-each-tab
-    FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fx/dukes.fxml"));   
+    FXMLLoader loader = new FXMLLoader(getResource("fx/dukes.fxml"));   
     GridPane root = loader.load();
-    Scene scene = new Scene(root, 1920*2/3, 1080*2/3);
+    Scene scene = new Scene(root, BaseGUI.getScreenWidth()*3/4, BaseGUI.getScreenHeight()*3/4);
+    String css = getResource("fx/dukes.css").toExternalForm(); 
+    scene.getStylesheets().add(css);
     DukesFxGUI gui = loader.getController();
     gui.init(primaryStage);
     primaryStage.setTitle("Dukes lane detection");

@@ -124,11 +124,13 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
 
   @FXML
   public void initialize() {
-    this.setButtonIcon(homeButton, MaterialDesignIcon.HOME);
-    this.setButtonIcon(detectButton, MaterialDesignIcon.CAMERA);
-    this.setButtonIcon(githubButton, MaterialDesignIcon.GITHUB_BOX);
-    this.setButtonIcon(chatButton, MaterialDesignIcon.COMMENT_TEXT);
-    this.setButtonIcon(helpButton, FontAwesomeIcon.QUESTION_CIRCLE);
+    String color="white";
+    String bgColor="transparent";
+    this.setButtonIcon(homeButton, MaterialDesignIcon.HOME,color,bgColor);
+    this.setButtonIcon(detectButton, MaterialDesignIcon.CAMERA,color,bgColor);
+    this.setButtonIcon(githubButton, MaterialDesignIcon.GITHUB_BOX,color,bgColor);
+    this.setButtonIcon(chatButton, MaterialDesignIcon.COMMENT_TEXT,color,bgColor);
+    this.setButtonIcon(helpButton, FontAwesomeIcon.QUESTION_CIRCLE,color,bgColor);
     this.lanevideo.setText("http://wiki.bitplan.com/videos/full_run.mp4");
     this.startvideo.setText("http://wiki.bitplan.com/videos/startlamp2.m4v");
   }
