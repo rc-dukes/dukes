@@ -123,7 +123,7 @@ public class BaseGUI {
    * @param bgColor - the background color of the icon
    */
   public void setButtonIcon(Button button,GlyphIcons icon,String color,String bgColor) {
-    GlyphsDude.setIcon(button, icon);
+    GlyphsDude.setIcon(button, icon,"3em");
     String text=button.getText();
     button.setText("");
     button.setTooltip(new Tooltip(text));

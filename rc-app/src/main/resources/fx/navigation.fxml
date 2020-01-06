@@ -11,7 +11,7 @@
 	xmlns="http://javafx.com/javafx/11.0.1"
 	fx:controller="nl.vaneijndhoven.dukes.app.NavigationGUI">
 
-	<HBox style="-fx-background-color: #3F51B5;">
+	<HBox styleClass="header">
 		<padding>
 			<Insets top="4" right="4" bottom="4" left="4" />
 		</padding>

@@ -1,4 +1,6 @@
 .glyph-icon {
-  -fx-font-size: 4em;
   -fx-fill: white;
+}
+.header {
+  -fx-background-color: #3F51B5;
 }

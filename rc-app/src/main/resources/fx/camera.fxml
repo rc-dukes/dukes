@@ -11,7 +11,7 @@
 	fx:controller="nl.vaneijndhoven.dukes.app.CameraGUI">
 
 	<GridPane>
-		<HBox  GridPane.rowIndex="0"  GridPane.columnIndex="0" style="-fx-background-color: #3F51B5;">
+		<HBox  styleClass="header" GridPane.rowIndex="0"  GridPane.columnIndex="0">
 			<padding>
 				<Insets top="4" right="4" bottom="4" left="4" />
 			</padding>
