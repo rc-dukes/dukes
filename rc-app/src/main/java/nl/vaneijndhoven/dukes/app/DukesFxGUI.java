@@ -1,16 +1,15 @@
 package nl.vaneijndhoven.dukes.app;
 
-import nl.vaneijndhoven.dukes.common.ErrorHandler;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 import org.opencv.core.Mat;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -18,7 +17,6 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
@@ -31,17 +29,20 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
+import nl.vaneijndhoven.dukes.common.ErrorHandler;
 
 /**
  * combined GUI for detectors
  *
  */
-public class DukesFxGUI extends BaseGUI implements GUIDisplayer, Initializable {
+public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
+  @FXML
+  private GridPane root;
   @FXML
   private VBox vbox;
   @FXML
@@ -49,7 +50,7 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer, Initializable {
 
   @FXML
   private SplitPane splitPane;
-  @FXML 
+  @FXML
   private HBox videoBox;
   @FXML
   private TabPane tabPane;
@@ -60,6 +61,10 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer, Initializable {
   private VBox laneDetection;
   @FXML
   private LaneDetectionGUI laneDetectionController;
+  @FXML
+  private VBox navigation;
+  @FXML
+  private NavigationGUI navigationController;
 
   @FXML
   private Tab startTab;
@@ -74,6 +79,16 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer, Initializable {
   private ImageView processedImage1;
   @FXML
   private ImageView processedImage2;
+  @FXML
+  protected Button homeButton;
+  @FXML
+  protected Button detectButton;
+  @FXML
+  protected Button githubButton;
+  @FXML
+  protected Button chatButton;
+  @FXML
+  protected Button helpButton;
   @FXML
   protected Button cameraButton;
   @FXML
@@ -96,6 +111,11 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer, Initializable {
   DisplayMode displayMode = DisplayMode.Lane;
   private Stage primaryStage;
 
+  /**
+   * initialize me
+   * 
+   * @param primaryStage
+   */
   public void init(Stage primaryStage) {
     this.primaryStage = primaryStage;
     tabPane.getSelectionModel().selectedItemProperty()
@@ -114,6 +134,18 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer, Initializable {
     // bind a text property with the string containing the current Values of
     currentValuesProp = new SimpleObjectProperty<>();
     this.currentValues.textProperty().bind(currentValuesProp);
+
+  }
+
+  @FXML
+  public void initialize() {
+    this.setButtonIcon(homeButton, MaterialDesignIcon.HOME);
+    this.setButtonIcon(detectButton, MaterialDesignIcon.CAMERA);
+    this.setButtonIcon(githubButton, MaterialDesignIcon.GITHUB_BOX);
+    this.setButtonIcon(chatButton, MaterialDesignIcon.COMMENT_TEXT);
+    this.setButtonIcon(helpButton, FontAwesomeIcon.QUESTION_CIRCLE);
+    this.lanevideo.setText("http://wiki.bitplan.com/videos/full_run.mp4");
+    this.startvideo.setText("http://wiki.bitplan.com/videos/startlamp2.m4v");
   }
 
   private void configureImageDisplaySize(int fitWidth) {
@@ -220,6 +252,17 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer, Initializable {
   }
 
   /**
+   * Chat clicked
+   * 
+   * @param event
+   *          Event e.g. Button chat
+   */
+  @FXML
+  private void onChat(final ActionEvent event) {
+    this.linkToChat();
+  }
+
+  /**
    * Help/About clicked
    * 
    * @param event
@@ -252,19 +295,6 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer, Initializable {
     return keyEvent.isControlDown() && keyEvent.getCode() == keyCode;
   }
 
-  protected void browse(String url) {
-    try {
-      Desktop.getDesktop().browse(new URI(url));
-    } catch (IOException | URISyntaxException e) {
-      handle(e);
-    }
-  }
-
-  public void handle(Throwable th) {
-    String text=ErrorHandler.getStackTraceText(th);
-    this.setMessageText(text);
-  }
-
   private void help() {
     browse("http://wiki.bitplan.com/index.php/Self_Driving_RC_Car/App");
   }
@@ -280,10 +310,8 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer, Initializable {
     browse("https://github.com/rc-dukes/dukes");
   }
 
-  @Override
-  public void initialize(URL location, ResourceBundle resources) {
-    this.lanevideo.setText("http://wiki.bitplan.com/videos/full_run.mp4");
-    this.startvideo.setText("http://wiki.bitplan.com/videos/startlamp2.m4v");
+  private void linkToChat() {
+    browse("https://gitter.im/rc-dukes/community");
   }
 
   @Override

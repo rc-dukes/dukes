@@ -1,15 +1,29 @@
 package nl.vaneijndhoven.dukes.app;
 
+import java.awt.Desktop;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.opencv.core.Mat;
 
+import de.jensd.fx.glyphs.GlyphIcons;
+import de.jensd.fx.glyphs.GlyphsDude;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
+import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import nl.vaneijndhoven.dukes.common.ErrorHandler;
 import nl.vaneijndhoven.opencv.video.ImageUtils;
 
+/**
+ * base java fx GUI functionality
+ * @author wf
+ *
+ */
 public class BaseGUI {
   GUIDisplayer displayer;
 
@@ -73,5 +87,36 @@ public class BaseGUI {
     } else {
       Platform.runLater(() -> property.set(value));
     }
+  }
+  
+  /**
+   * browse the given url
+   * @param url
+   */
+  protected void browse(String url) {
+    try {
+      Desktop.getDesktop().browse(new URI(url));
+    } catch (IOException | URISyntaxException e) {
+      handle(e);
+    }
+  }
+  
+  public void handle(Throwable th) {
+    String text = ErrorHandler.getStackTraceText(th);
+    displayer.setMessageText(text);
+  }
+  
+  /**
+   * set the icon for the given button
+   * @param button  the button to modify
+   * @param icon - the icon to use
+   */
+  public void setButtonIcon(Button button,GlyphIcons icon) {
+    GlyphsDude.setIcon(button, icon, "2em");
+    String text=button.getText();
+    button.setText("");
+    button.setTooltip(new Tooltip(text));
+    String style=button.getStyle();
+    System.out.println(style);
   }
 }
