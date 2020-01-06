@@ -10,14 +10,13 @@
 	xmlns="http://javafx.com/javafx/11.0.1"
 	fx:controller="nl.vaneijndhoven.dukes.app.NavigationGUI">
 
-	<HBox GridPane.rowIndex="0" GridPane.hgrow="always"
-		style="-fx-background-color: #3F51B5;">
+	<HBox style="-fx-background-color: #3F51B5;">
 		<padding>
 			<Insets top="4" right="4" bottom="4" left="4" />
 		</padding>
 		<Text fill="white" stroke="white" text="navigation" />
 	</HBox>
-	<GridPane GridPane.rowIndex="1">
+	<GridPane>
 		<Button fx:id="upButton" text="up" GridPane.rowIndex="0"
 			GridPane.columnIndex="1" />
 		<Button fx:id="autoPilotButton" text="autopilot"
@@ -30,7 +29,7 @@
 			GridPane.columnIndex="2" />
 	    <Button fx:id="downButton" text="down" GridPane.rowIndex="2"
 			GridPane.columnIndex="1" />		
-		<Button fx:id="manualButton" text="manul" GridPane.rowIndex="2"
+		<Button fx:id="manualButton" text="manual" GridPane.rowIndex="2"
 			GridPane.columnIndex="3" />			
 		<Button fx:id="brakeButton" text="brake" GridPane.rowIndex="3"
 			GridPane.columnIndex="0" />

@@ -14,7 +14,6 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -28,7 +27,7 @@
 <GridPane maxHeight="Infinity" maxWidth="Infinity" id="root"
 	xmlns:fx="http://javafx.com/fxml"
 	fx:controller="nl.vaneijndhoven.dukes.app.DukesFxGUI">
-	<MenuBar fx:id="menuBar" GridPane.rowIndex="0"
+	<MenuBar fx:id="menuBar" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="3"
 		GridPane.hgrow="always" onKeyPressed="#handleKeyInput"
 		BorderPane.alignment="CENTER">
 		<menus>
@@ -49,7 +48,7 @@
 			</Menu>
 		</menus>
 	</MenuBar>
-	<HBox GridPane.rowIndex="1" GridPane.hgrow="always"
+	<HBox GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.hgrow="always"
 		style="-fx-background-color: #303F9F;">
 		<Button text="Home" fx:id="homeButton"
 			ButtonBar.buttonData="LEFT" />
@@ -62,7 +61,7 @@
 		<Button text="Help" fx:id="helpButton" onAction="#onHelp"
 			ButtonBar.buttonData="LEFT" />
 	</HBox>
-	<HBox GridPane.rowIndex="2" GridPane.hgrow="always"
+	<HBox GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.hgrow="always"
 		style="-fx-background-color: #3F51B5;">
 		<padding>
 			<Insets top="4" right="4" bottom="4" left="4" />
@@ -70,88 +69,105 @@
 		<Text fill="white" stroke="white"
 			text="Self Driving RC Car Desktop Control" />
 	</HBox>
-	<GridPane GridPane.hgrow="always" GridPane.rowIndex="3"
-		GridPane.vgrow="always">
+
+	<VBox GridPane.rowIndex="3" GridPane.columnIndex="0">
 		<fx:include fx:id="navigation" source="navigation.fxml" />
-		<SplitPane dividerPositions="0.6667" GridPane.hgrow="always"
-			GridPane.rowIndex="2" GridPane.vgrow="always">
-			<items>
-				<BorderPane>
-					<center>
-						<HBox fx:id="videoBox" alignment="CENTER" spacing="5">
-							<padding>
-								<Insets left="5" right="5" />
-							</padding>
+	</VBox>
+	<VBox GridPane.rowIndex="3" GridPane.columnIndex="1"
+		GridPane.columnSpan="2" GridPane.hgrow="always">
+		<fx:include fx:id="camera" source="camera.fxml" />
+	</VBox>
+	<VBox GridPane.rowIndex="4" GridPane.columnIndex="0">
+		<HBox style="-fx-background-color: #3F51B5;">
+			<padding>
+				<Insets top="4" right="4" bottom="4" left="4" />
+			</padding>
+			<Text fill="white" stroke="white" text="Events" />
+		</HBox>
+		<TextArea fx:id="messageArea" text="" GridPane.rowIndex="4"
+			GridPane.columnIndex="0" GridPane.vgrow="always"
+			GridPane.hgrow="always" />
+	</VBox>
 
-							<ImageView fx:id="originalFrame" />
-							<VBox alignment="CENTER" spacing="5">
-								<ImageView fx:id="processedImage1" />
-								<ImageView fx:id="processedImage2" />
-							</VBox>
-						</HBox>
-					</center>
-					<bottom>
-						<VBox alignment="CENTER" spacing="15">
-							<padding>
-								<Insets bottom="25" left="25" right="25" top="25" />
-							</padding>
-							<Button fx:id="cameraButton" alignment="center"
-								onAction="#startCamera" text="Start camera" />
-							<Separator />
-							<GridPane alignment="center" hgap="10" vgap="10">
-								<padding>
-									<Insets bottom="25" left="25" right="25" top="25" />
-								</padding>
+	<BorderPane GridPane.rowIndex="4" GridPane.columnIndex="1"
+		GridPane.vgrow="always">
+		<top>
+			<HBox style="-fx-background-color: #3F51B5;">
+				<padding>
+					<Insets top="4" right="4" bottom="4" left="4" />
+				</padding>
+				<Text fill="white" stroke="white" text="Imageview Config" />
+			</HBox>
+		</top>
+		<center>
+			<VBox alignment="CENTER" spacing="15">
+				<padding>
+					<Insets bottom="25" left="25" right="25" top="25" />
+				</padding>
+				<Button fx:id="cameraButton" alignment="center"
+					onAction="#startCamera" text="Start camera" />
+				<Separator />
+				<GridPane alignment="center" hgap="10" vgap="10">
+					<padding>
+						<Insets bottom="25" left="25" right="25" top="25" />
+					</padding>
 
-								<Text text="Video URLs:" GridPane.columnIndex="0"
-									GridPane.columnSpan="2" GridPane.rowIndex="0" />
+					<Text text="Video URLs:" GridPane.columnIndex="0"
+						GridPane.columnSpan="2" GridPane.rowIndex="0" />
 
-								<Label text="Lane:" GridPane.columnIndex="0"
-									GridPane.rowIndex="1" />
+					<Label text="Lane:" GridPane.columnIndex="0"
+						GridPane.rowIndex="1" />
 
-								<TextField fx:id="lanevideo" GridPane.columnIndex="1"
-									GridPane.rowIndex="1" />
+					<TextField fx:id="lanevideo" GridPane.columnIndex="1"
+						GridPane.rowIndex="1" />
 
-								<Label text="Start:" GridPane.columnIndex="0"
-									GridPane.rowIndex="2" />
+					<Label text="Start:" GridPane.columnIndex="0"
+						GridPane.rowIndex="2" />
 
-								<TextField fx:id="startvideo" GridPane.columnIndex="1"
-									GridPane.rowIndex="2" />
+					<TextField fx:id="startvideo" GridPane.columnIndex="1"
+						GridPane.rowIndex="2" />
 
-								<TextArea fx:id="messageArea" text=""
-									GridPane.columnIndex="0" GridPane.columnSpan="2"
-									GridPane.rowIndex="3" />
-								<columnConstraints>
-									<ColumnConstraints />
-									<ColumnConstraints minWidth="-Infinity"
-										prefWidth="360.0" />
-								</columnConstraints>
-								<rowConstraints>
-									<RowConstraints />
-									<RowConstraints />
-									<RowConstraints />
-									<RowConstraints prefHeight="100.0" />
-								</rowConstraints>
-							</GridPane>
-							<Label fx:id="currentValues" />
-						</VBox>
-					</bottom>
-				</BorderPane>
-				<TabPane fx:id="tabPane"
-					xmlns="http://javafx.com/javafx/8.0.40"
-					xmlns:fx="http://www.w3.org/2001/XInclude">
-					<tabs>
-						<Tab fx:id="laneTab" text="Lane">
-							<fx:include fx:id="laneDetection"
-								source="lanedetection.fxml" />
-						</Tab>
-						<Tab fx:id="startTab" text="Start">
-							<fx:include fx:id="startDetection"
-								source="startlightdetection.fxml" />
-						</Tab>
-					</tabs>
-				</TabPane>
-			</items>
-		</SplitPane>
-	</GridPane>
+
+					<columnConstraints>
+						<ColumnConstraints />
+						<ColumnConstraints minWidth="-Infinity"
+							prefWidth="360.0" />
+					</columnConstraints>
+					<rowConstraints>
+						<RowConstraints />
+						<RowConstraints />
+						<RowConstraints />
+					</rowConstraints>
+				</GridPane>
+				<Label fx:id="currentValues" />
+			</VBox>
+		</center>
+	</BorderPane>
+	<BorderPane GridPane.rowIndex="4"
+	GridPane.columnIndex="2">
+	<top>
+		<HBox style="-fx-background-color: #3F51B5;">
+			<padding>
+				<Insets top="4" right="4" bottom="4" left="4" />
+			</padding>
+			<Text fill="white" stroke="white" text="Detection Config" />
+		</HBox>
+	</top>
+		<center>
+	<TabPane fx:id="tabPane"
+		xmlns="http://javafx.com/javafx/8.0.40"
+		xmlns:fx="http://www.w3.org/2001/XInclude" >
+		<tabs>
+			<Tab fx:id="laneTab" text="Lane">
+				<fx:include fx:id="laneDetection"
+					source="lanedetection.fxml" />
+			</Tab>
+			<Tab fx:id="startTab" text="Start">
+				<fx:include fx:id="startDetection"
+					source="startlightdetection.fxml" />
+			</Tab>
+		</tabs>
+	</TabPane>
+</center>
+</BorderPane>
 </GridPane>

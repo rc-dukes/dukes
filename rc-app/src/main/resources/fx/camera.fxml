@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml/1"
+	xmlns="http://javafx.com/javafx/11.0.1"
+	fx:controller="nl.vaneijndhoven.dukes.app.CameraGUI">
+
+	<GridPane>
+		<HBox  GridPane.rowIndex="0"  GridPane.columnIndex="0" style="-fx-background-color: #3F51B5;">
+			<padding>
+				<Insets top="4" right="4" bottom="4" left="4" />
+			</padding>
+			<Text fill="white" stroke="white" text="camera" />
+		</HBox>
+		<ImageView GridPane.rowIndex="1"  GridPane.columnIndex="0" fx:id="originalFrame" />
+		<HBox GridPane.rowIndex="0"  GridPane.columnIndex="1" style="-fx-background-color: #3F51B5;">
+			<padding>
+				<Insets top="4" right="4" bottom="4" left="4" />
+			</padding>
+			<Text fill="white" stroke="white" text="edges/birdseye" />
+		</HBox>
+		<ImageView fx:id="processedImage1"  GridPane.rowIndex="1"  GridPane.columnIndex="1" />
+		<HBox GridPane.rowIndex="0"  GridPane.columnIndex="2" style="-fx-background-color: #3F51B5;">
+			<padding>
+				<Insets top="4" right="4" bottom="4" left="4" />
+			</padding>
+			<Text fill="white" stroke="white" text="lines" />
+		</HBox>
+		<ImageView fx:id="processedImage2"  GridPane.rowIndex="1"  GridPane.columnIndex="2"/>
+	</GridPane>
+</VBox>

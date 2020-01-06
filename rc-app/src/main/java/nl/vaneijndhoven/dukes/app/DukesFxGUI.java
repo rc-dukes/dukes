@@ -47,11 +47,6 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   private VBox vbox;
   @FXML
   private MenuBar menuBar;
-
-  @FXML
-  private SplitPane splitPane;
-  @FXML
-  private HBox videoBox;
   @FXML
   private TabPane tabPane;
   // Inject tab content.
@@ -65,6 +60,11 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   private VBox navigation;
   @FXML
   private NavigationGUI navigationController;
+  
+  @FXML
+  private VBox camera;
+  @FXML
+  private CameraGUI cameraController;
 
   @FXML
   private Tab startTab;
@@ -72,13 +72,6 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   private VBox startDetection;
   @FXML
   private StartLightDetectionGUI startDetectionController;
-  // the FXML area for showing the current frame
-  @FXML
-  protected ImageView originalFrame;
-  @FXML
-  private ImageView processedImage1;
-  @FXML
-  private ImageView processedImage2;
   @FXML
   protected Button homeButton;
   @FXML
@@ -127,7 +120,6 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
             displayMode = DisplayMode.Start;
           }
         });
-    this.configureImageDisplaySize(400);
     this.displayer = this;
     this.laneDetectionController.setDisplayer(this);
     this.startDetectionController.setDisplayer(this);
@@ -148,12 +140,7 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     this.startvideo.setText("http://wiki.bitplan.com/videos/startlamp2.m4v");
   }
 
-  private void configureImageDisplaySize(int fitWidth) {
-    this.imageViewProperties(this.originalFrame, fitWidth);
-    this.imageViewProperties(this.processedImage1, fitWidth);
-    this.imageViewProperties(this.processedImage2, fitWidth);
-  }
-
+ 
   @FXML
   public void startCamera() throws Exception {
     switch (displayMode) {
@@ -170,22 +157,22 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
 
   @Override
   public void displayOriginal(byte[] imageFrame) {
-    displayImage(originalFrame, imageFrame);
+    displayImage(cameraController.originalFrame, imageFrame);
   }
 
   @Override
   public void displayOriginal(Mat openCvImage) {
-    this.displayImage(originalFrame, openCvImage);
+    this.displayImage(cameraController.originalFrame, openCvImage);
   }
 
   @Override
   public void display1(byte[] imageFrame) {
-    displayImage(this.processedImage1, imageFrame);
+    displayImage(cameraController.processedImage1, imageFrame);
   }
 
   @Override
   public void display2(byte[] imageFrame) {
-    displayImage(this.processedImage2, imageFrame);
+    displayImage(cameraController.processedImage2, imageFrame);
   }
 
   @Override
