@@ -9,27 +9,25 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="Infinity" maxWidth="Infinity" id="root"
-	xmlns:fx="http://javafx.com/fxml"
+<GridPane id="root" maxHeight="Infinity" maxWidth="Infinity"
+	xmlns:fx="http://javafx.com/fxml/1"
+	xmlns="http://javafx.com/javafx/11.0.1"
 	fx:controller="nl.vaneijndhoven.dukes.app.DukesFxGUI">
-	<MenuBar fx:id="menuBar" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="3"
-		GridPane.hgrow="always" onKeyPressed="#handleKeyInput"
-		BorderPane.alignment="CENTER">
+	<MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput"
+		BorderPane.alignment="CENTER" GridPane.columnIndex="0"
+		GridPane.columnSpan="3" GridPane.hgrow="always" GridPane.rowIndex="0">
 		<menus>
 			<Menu text="File">
 				<items>
@@ -48,53 +46,55 @@
 			</Menu>
 		</menus>
 	</MenuBar>
-	<HBox GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.hgrow="always"
-		style="-fx-background-color: #303F9F;">
-		<Button text="Home" fx:id="homeButton"
+	<HBox style="-fx-background-color: #303F9F;"
+		GridPane.columnIndex="0" GridPane.columnSpan="3"
+		GridPane.hgrow="always" GridPane.rowIndex="1">
+		<Button fx:id="homeButton" text="Home"
 			ButtonBar.buttonData="LEFT" />
-		<Button text="Detect" fx:id="detectButton"
+		<Button fx:id="detectButton" text="Detect"
 			ButtonBar.buttonData="LEFT" />
-		<Button text="Github" fx:id="githubButton"
-			onAction="#onHelpAbout" ButtonBar.buttonData="LEFT" />
-		<Button text="Chat" fx:id="chatButton" onAction="#onChat"
+		<Button fx:id="githubButton" onAction="#onHelpAbout"
+			text="Github" ButtonBar.buttonData="LEFT" />
+		<Button fx:id="chatButton" onAction="#onChat" text="Chat"
 			ButtonBar.buttonData="LEFT" />
-		<Button text="Help" fx:id="helpButton" onAction="#onHelp"
+		<Button fx:id="helpButton" onAction="#onHelp" text="Help"
 			ButtonBar.buttonData="LEFT" />
 	</HBox>
-	<HBox GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.hgrow="always"
-		style="-fx-background-color: #3F51B5;">
+	<HBox style="-fx-background-color: #3F51B5;"
+		GridPane.columnIndex="0" GridPane.columnSpan="3"
+		GridPane.hgrow="always" GridPane.rowIndex="2">
 		<padding>
-			<Insets top="4" right="4" bottom="4" left="4" />
+			<Insets bottom="4" left="4" right="4" top="4" />
 		</padding>
 		<Text fill="white" stroke="white"
 			text="Self Driving RC Car Desktop Control" />
 	</HBox>
 
-	<VBox GridPane.rowIndex="3" GridPane.columnIndex="0">
+	<VBox GridPane.columnIndex="0" GridPane.rowIndex="3">
 		<fx:include fx:id="navigation" source="navigation.fxml" />
 	</VBox>
 	<VBox GridPane.rowIndex="3" GridPane.columnIndex="1"
-		GridPane.columnSpan="2" GridPane.hgrow="always">
+		GridPane.columnSpan="2">
 		<fx:include fx:id="camera" source="camera.fxml" />
 	</VBox>
-	<VBox GridPane.rowIndex="4" GridPane.columnIndex="0">
+	<VBox GridPane.columnIndex="0" GridPane.rowIndex="4">
 		<HBox style="-fx-background-color: #3F51B5;">
 			<padding>
-				<Insets top="4" right="4" bottom="4" left="4" />
+				<Insets bottom="4" left="4" right="4" top="4" />
 			</padding>
 			<Text fill="white" stroke="white" text="Events" />
 		</HBox>
-		<TextArea fx:id="messageArea" text="" GridPane.rowIndex="4"
-			GridPane.columnIndex="0" GridPane.vgrow="always"
-			GridPane.hgrow="always" />
+		<TextArea fx:id="messageArea" text=""
+			GridPane.columnIndex="0" GridPane.hgrow="always"
+			GridPane.rowIndex="4" GridPane.vgrow="always" />
 	</VBox>
 
-	<BorderPane GridPane.rowIndex="4" GridPane.columnIndex="1"
+	<BorderPane GridPane.columnIndex="1" GridPane.rowIndex="4"
 		GridPane.vgrow="always">
 		<top>
 			<HBox style="-fx-background-color: #3F51B5;">
 				<padding>
-					<Insets top="4" right="4" bottom="4" left="4" />
+					<Insets bottom="4" left="4" right="4" top="4" />
 				</padding>
 				<Text fill="white" stroke="white" text="Imageview Config" />
 			</HBox>
@@ -143,31 +143,42 @@
 			</VBox>
 		</center>
 	</BorderPane>
-	<BorderPane GridPane.rowIndex="4"
-	GridPane.columnIndex="2">
-	<top>
-		<HBox style="-fx-background-color: #3F51B5;">
-			<padding>
-				<Insets top="4" right="4" bottom="4" left="4" />
-			</padding>
-			<Text fill="white" stroke="white" text="Detection Config" />
-		</HBox>
-	</top>
+	<BorderPane GridPane.columnIndex="2" GridPane.rowIndex="4">
+		<top>
+			<HBox style="-fx-background-color: #3F51B5;">
+				<padding>
+					<Insets bottom="4" left="4" right="4" top="4" />
+				</padding>
+				<Text fill="white" stroke="white" text="Detection Config" />
+			</HBox>
+		</top>
 		<center>
-	<TabPane fx:id="tabPane"
-		xmlns="http://javafx.com/javafx/8.0.40"
-		xmlns:fx="http://www.w3.org/2001/XInclude" >
-		<tabs>
-			<Tab fx:id="laneTab" text="Lane">
-				<fx:include fx:id="laneDetection"
-					source="lanedetection.fxml" />
-			</Tab>
-			<Tab fx:id="startTab" text="Start">
-				<fx:include fx:id="startDetection"
-					source="startlightdetection.fxml" />
-			</Tab>
-		</tabs>
-	</TabPane>
-</center>
-</BorderPane>
+			<TabPane fx:id="tabPane"
+				xmlns="http://javafx.com/javafx/8.0.40"
+				xmlns:fx="http://www.w3.org/2001/XInclude">
+				<tabs>
+					<Tab fx:id="laneTab" text="Lane">
+						<fx:include fx:id="laneDetection"
+							source="lanedetection.fxml" />
+					</Tab>
+					<Tab fx:id="startTab" text="Start">
+						<fx:include fx:id="startDetection"
+							source="startlightdetection.fxml" />
+					</Tab>
+				</tabs>
+			</TabPane>
+		</center>
+	</BorderPane>
+	<columnConstraints>
+		<ColumnConstraints prefWidth="480.0" />
+		<ColumnConstraints prefWidth="640.0"/>
+		<ColumnConstraints prefWidth="640.0"/>
+	</columnConstraints>
+	<rowConstraints>
+		<RowConstraints />
+		<RowConstraints />
+		<RowConstraints />
+		<RowConstraints />
+		<RowConstraints />
+	</rowConstraints>
 </GridPane>

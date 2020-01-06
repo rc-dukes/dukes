@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.image.ImageView?>
-<VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml/1"
+<HBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml/1"
 	xmlns="http://javafx.com/javafx/11.0.1"
 	fx:controller="nl.vaneijndhoven.dukes.app.CameraGUI">
 
@@ -33,4 +33,4 @@
 		</HBox>
 		<ImageView fx:id="processedImage2"  GridPane.rowIndex="1"  GridPane.columnIndex="2"/>
 	</GridPane>
-</VBox>
+</HBox>

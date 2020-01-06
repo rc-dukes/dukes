@@ -1,10 +1,6 @@
 package nl.vaneijndhoven.dukes.app;
 
-import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.opencv.core.Mat;
 
@@ -20,12 +16,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -34,7 +28,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import nl.vaneijndhoven.dukes.common.ErrorHandler;
 
 /**
  * combined GUI for detectors
@@ -62,7 +55,7 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   private NavigationGUI navigationController;
   
   @FXML
-  private VBox camera;
+  private HBox camera;
   @FXML
   private CameraGUI cameraController;
 
