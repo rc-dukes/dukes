@@ -127,7 +127,7 @@ public class TestAction {
 	  clusterStarter.deployVerticles(action);
     action.waitStatus(Status.started,20000,10);
     clusterStarter.undeployVerticle(action);
-    action.waitStatus(Status.stopped,20000,10);
+    action.waitStatus(Status.stopped,40000,10);
 	}
 
 }
