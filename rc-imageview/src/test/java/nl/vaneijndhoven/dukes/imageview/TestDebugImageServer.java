@@ -10,13 +10,14 @@ import nl.vaneijndhoven.dukes.common.Environment;
  * @author wf
  *
  */
-public class TestImageView {
+public class TestDebugImageServer {
   @Test
-  public void testImageViewStart() throws Exception {
+  public void testDebugImageServerStart() throws Exception {
     Environment.mock();
     ClusterStarter clusterStarter=new ClusterStarter();
-    ImageView imageView=new ImageView();
-    clusterStarter.deployVerticles(imageView);
-    imageView.waitStarted(20000,10);
+    DebugImageServer imageServer=new DebugImageServer();
+    clusterStarter.deployVerticles(imageServer);
+    imageServer.waitStarted(20000,10);
   }
+  
 }

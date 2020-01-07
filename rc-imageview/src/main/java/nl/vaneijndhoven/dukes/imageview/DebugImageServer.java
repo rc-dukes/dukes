@@ -19,13 +19,13 @@ import nl.vaneijndhoven.opencv.video.ImageUtils;
  * Imageview verticle (Rosco)
  *
  */
-public class ImageView extends DukesVerticle {
+public class DebugImageServer extends DukesVerticle {
 
   /**
    * construct me with my character information
    */
-  public ImageView() {
-    super(Characters.ROSCOE);
+  public DebugImageServer() {
+    super(Characters.ROSCO);
   }
 
   protected HttpServer server;

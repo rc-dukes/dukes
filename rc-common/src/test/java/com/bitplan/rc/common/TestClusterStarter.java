@@ -6,8 +6,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.core.AbstractVerticle;
+import nl.vaneijndhoven.dukes.common.Characters;
 import nl.vaneijndhoven.dukes.common.ClusterStarter;
+import nl.vaneijndhoven.dukes.common.DukesVerticle;
 import nl.vaneijndhoven.dukes.common.Environment;
 
 /**
@@ -21,8 +22,12 @@ public class TestClusterStarter {
 
 	public static boolean debug = false;
 
-	static class TestVerticle extends AbstractVerticle {
-		int counter = 0;
+	static class TestVerticle extends DukesVerticle {
+		public TestVerticle() {
+      super(Characters.BO);
+    }
+
+    int counter = 0;
 		public static int TEST_INTERVAL_MS = 20;
 
 		@Override

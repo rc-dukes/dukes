@@ -16,7 +16,16 @@ public abstract class DukesVerticle extends AbstractVerticle {
   
   private boolean started=false;
   protected Characters  character;
+  protected String deploymentID=null;
   
+  public void setDeploymentID(String deploymentID) {
+    this.deploymentID = deploymentID;
+  }
+
+  public String getDeploymentID() {
+    return deploymentID;
+  }
+
   public DukesVerticle(Characters character) {
     this.character=character;
   }
@@ -29,11 +38,19 @@ public abstract class DukesVerticle extends AbstractVerticle {
     return started;
   }
   
+  /**
+   * actions to be done before starting the DukesVerticle
+   * e.g. logging a message with the intention to start
+   */
   public void preStart() {
     String msg=String.format("Starting %s",character.description());
     LOG.info(msg);
   }
   
+  /**
+   * actions to be done after starting the DukesVerticle
+   * e.g. logging a message with the info that the start was successful
+   */
   public void postStart() {
     this.started=true;
     String msg=String.format("%s started",character.description());

@@ -1,29 +1,48 @@
 package nl.vaneijndhoven.dukes.server;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.bitplan.error.ErrorHandler;
 
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
 import nl.vaneijndhoven.detect.Detector;
 import nl.vaneijndhoven.dukes.action.Action;
+import nl.vaneijndhoven.dukes.common.Characters;
 import nl.vaneijndhoven.dukes.common.ClusterStarter;
 import nl.vaneijndhoven.dukes.common.Config;
+import nl.vaneijndhoven.dukes.common.DukesVerticle;
 import nl.vaneijndhoven.dukes.common.Events;
-import nl.vaneijndhoven.dukes.imageview.ImageView;
+import nl.vaneijndhoven.dukes.imageview.DebugImageServer;
 import nl.vaneijndhoven.dukes.webcontrol.WebControl;
 
 /**
  * main entry point to start cluster
  *
  */
-public class CarServer {
+public class CarServer extends DukesVerticle {
 
-  private static final Logger LOG = LoggerFactory.getLogger(CarServer.class);
+  /**
+   * construct me
+   */
+  public CarServer() {
+    super(Characters.BOARS_NEST);
+  }
+
+  boolean debug = false;
+  private ClusterStarter starter;
+
+  @Override
+  public void start() throws Exception {
+    super.preStart();
+    DukesVerticle[] verticles = { new WebControl(), new DebugImageServer(),
+        new Action(), new Detector() };
+    starter.deployVerticles(verticles);
+    for (DukesVerticle verticle : verticles) {
+      verticle.waitStarted(20000, 10);
+    }
+    String cameraUrl = Config.getEnvironment().getString(Config.CAMERA_URL);
+    vertx.eventBus().send(Events.STREAMADDED.name(),
+        new JsonObject().put("source", cameraUrl));
+    super.postStart();
+  }
 
   /**
    * start the the cluster
@@ -33,52 +52,24 @@ public class CarServer {
    * @throws Exception
    *           on failure
    */
-  public static void main(String... args) {
-    Throwable error[] = { null };
+  public void mainInstance(String... args) {
+    starter = new ClusterStarter();
+    starter.prepare();
+    // bootstrap the deployment by deploying me
     try {
-      ClusterStarter starter = new ClusterStarter();
-      starter.prepare();
-
-      String cameraUrl = Config.getEnvironment().getString(Config.CAMERA_URL);
-
-      LOG.info("Firing up Car Server Boars Nest (UI runner) using cameraUrl "
-          + cameraUrl);
-      // TODO check necessity of this workaround
-      // setting check interval to 1 h
-      VertxOptions options = starter.getOptions()
-          .setBlockedThreadCheckInterval(1000 * 60 * 60);
-
-      Vertx.clusteredVertx(options, resultHandler -> {
-        Vertx vertx = resultHandler.result();
-        DeploymentOptions deploymentOptions;
-        try {
-          deploymentOptions = starter.getDeployMentOptions(true);
-          // deprecated
-          // see
-          // https://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html#setMultiThreaded-boolean-
-          // deploymentOptions.setMultiThreaded(true);
-          vertx.deployVerticle(new WebControl());
-          vertx.deployVerticle(new ImageView());
-
-          boolean enableAutoPilot = true;
-
-          if (enableAutoPilot) {
-            vertx.deployVerticle(new Action());
-            vertx.deployVerticle(new Detector(), deploymentOptions, async -> {
-              vertx.eventBus().send(Events.STREAMADDED.name(),
-                  new JsonObject().put("source", cameraUrl));
-            });
-          }
-        } catch (Exception e) {
-          error[0] = e;
-        }
-
-      });
-    } catch (Throwable th) {
-      error[0] = th;
+      starter.deployVerticles(this);
+    } catch (Exception e) {
+      ErrorHandler.getInstance().handle(e);
     }
-    if (error[0] != null)
-      ErrorHandler.getInstance().handle(error[0]);
   }
 
+  /**
+   * static main routine
+   * 
+   * @param args
+   */
+  public static void main(String... args) {
+    CarServer carServer = new CarServer();
+    carServer.mainInstance(args);
+  }
 }
