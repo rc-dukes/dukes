@@ -32,7 +32,7 @@ public class DebugImageServer extends DukesVerticle {
   // @TODO Make configurable
   // the format to be used for image encoding
   public static String ext=".png";
-  public static String defaultImage="640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3";
+  public static String defaultImage="images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3";
 
   @Override
   public void start(Future<Void> startFuture) throws Exception {
@@ -86,7 +86,8 @@ public class DebugImageServer extends DukesVerticle {
       byte[] bytes) {
     if (bytes==null) {
       try {
-        bytes=IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream(defaultImage+ext));
+        String testImagePath=defaultImage+ext;
+        bytes=IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream(testImagePath));
       } catch (IOException e) {
         LOG.trace(e.getMessage());
       }

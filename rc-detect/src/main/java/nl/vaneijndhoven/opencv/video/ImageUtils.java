@@ -30,10 +30,20 @@ public class ImageUtils {
    * @return the converted image
    */
   public static Image mat2Image(Mat frame, String ext) {
-    byte[] bytes = ImageUtils.mat2ImageBytes(frame, ext);
+    byte[] imageBytes = ImageUtils.mat2ImageBytes(frame, ext);
+    Image image = ImageUtils.imageBytes2Image(imageBytes);
+    return image;
+  }
+  
+  /**
+   * convert imageBytes to an image
+   * @param imageBytes
+   * @return image or null if imageBytes were already null
+   */
+  public static Image imageBytes2Image(byte[] imageBytes) {
     Image image = null;
-    if (bytes != null)
-      image = new Image(new ByteArrayInputStream(bytes));
+    if (imageBytes != null)
+      image = new Image(new ByteArrayInputStream(imageBytes));
     return image;
   }
 
