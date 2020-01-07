@@ -94,13 +94,7 @@ public class ClusterStarter {
 
     for (DukesVerticle verticle : verticles) {
       try {
-        vertx.deployVerticle(verticle, deploymentOptions, asyncResult -> {
-          if (asyncResult.succeeded()) {
-            verticle.setDeploymentID(asyncResult.result());
-          } else {
-            ErrorHandler.getInstance().handle(asyncResult.cause());
-          }
-        });
+        vertx.deployVerticle(verticle, deploymentOptions);
       } catch (Throwable th) {
         ErrorHandler.getInstance().handle(th);
       }
@@ -125,6 +119,19 @@ public class ClusterStarter {
       }
     }
     return options;
+  }
+
+  /**
+   * undeploy the given DukesVerticle
+   * @param verticle
+   */
+  public void undeployVerticle(DukesVerticle verticle) {
+    verticle.preStop();
+    vertx.undeploy(verticle.deploymentID(),async ->{
+      if (async.succeeded()) {
+        verticle.postStop();
+      }
+    });
   }
 
 }

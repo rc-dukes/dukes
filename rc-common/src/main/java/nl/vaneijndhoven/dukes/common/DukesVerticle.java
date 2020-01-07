@@ -14,37 +14,38 @@ import io.vertx.rxjava.core.AbstractVerticle;
 public abstract class DukesVerticle extends AbstractVerticle {
   protected static final Logger LOG = LoggerFactory.getLogger(DukesVerticle.class);
   
-  private boolean started=false;
+  public enum Status{created,started,stopped}
+  private Status status=Status.created;
+  
+  public Status getStatus() {
+    return status;
+  }
+
   protected Characters  character;
   protected String deploymentID=null;
   
-  public void setDeploymentID(String deploymentID) {
-    this.deploymentID = deploymentID;
-  }
-
-  public String getDeploymentID() {
-    return deploymentID;
-  }
-
+  /**
+   * construct me
+   * @param character
+   */
   public DukesVerticle(Characters character) {
     this.character=character;
   }
-
-  /**
-   * is this AbstractVerticle already started?
-   * @return true if started
-   */
-  public boolean isStarted() {
-    return started;
-  }
   
+  public void logStatus(String op, String status) {
+    String msg=String.format("%s %s: %s",op,status,character.description());
+    LOG.info(msg);
+  }
   /**
    * actions to be done before starting the DukesVerticle
    * e.g. logging a message with the intention to start
    */
   public void preStart() {
-    String msg=String.format("Starting %s",character.description());
-    LOG.info(msg);
+    logStatus("Starting","");
+  }
+  
+  public void preStop() {
+    logStatus("Stopping","");
   }
   
   /**
@@ -52,9 +53,13 @@ public abstract class DukesVerticle extends AbstractVerticle {
    * e.g. logging a message with the info that the start was successful
    */
   public void postStart() {
-    this.started=true;
-    String msg=String.format("%s started",character.description());
-    LOG.info(msg);
+    this.status=Status.started;
+    logStatus("Start","successful");
+  }
+  
+  public void postStop() {
+    this.status=Status.stopped;
+    logStatus("Stop","successful");
   }
   
   /**
@@ -63,13 +68,13 @@ public abstract class DukesVerticle extends AbstractVerticle {
    * @param pollTime - in msec
    * @throws Exception 
    */
-  public void waitStarted(int timeOut, int pollTime) throws Exception {
+  public void waitStatus(Status status,int timeOut, int pollTime) throws Exception {
     int leftTime=timeOut;
-    while (!this.isStarted()) {
+    while (!this.status.equals(status)) {
       Thread.sleep(pollTime);
       leftTime-=pollTime;
       if (leftTime<0) {
-        String msg=String.format("waitStarted timed out after %d msecs",timeOut);
+        String msg=String.format("wait %s timed out after %d msecs",status.name(),timeOut);
         throw new Exception(msg);
       }
     }

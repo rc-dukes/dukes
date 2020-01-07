@@ -15,6 +15,7 @@ import nl.vaneijndhoven.dukes.common.Characters;
 import nl.vaneijndhoven.dukes.common.ClusterStarter;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.dukes.common.Environment;
+import nl.vaneijndhoven.dukes.common.DukesVerticle.Status;
 import nl.vaneijndhoven.dukes.drivecontrol.Car;
 import nl.vaneijndhoven.dukes.drivecontrol.TestCar;
 import nl.vaneijndhoven.dukes.watchdog.WatchDog;
@@ -43,7 +44,7 @@ public class TestWatchDog {
 		WatchDog watchDog=new WatchDog(car);
 		
 		clusterStarter.deployVerticles(watchDog);
-		watchDog.waitStarted(20000,10);
+		watchDog.waitStatus(Status.started,20000,10);
 		Vertx vertx=clusterStarter.getVertx();
 		assertNotNull(vertx);
 		assertEquals(watchDog.getVertx(),vertx);

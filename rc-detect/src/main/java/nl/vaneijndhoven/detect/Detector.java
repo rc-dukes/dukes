@@ -164,6 +164,11 @@ public class Detector extends DukesVerticle {
         : CameraMatrix.DEFAULT;
   }
 
+  /**
+   * start the lane detection based on the given message
+   * @param msg
+   * @return
+   */
   private Observable<String> startLaneDetection(Message<JsonObject> msg) {
     JsonObject jo = msg.body();
     JsonObject config = jo.getJsonObject("config");
@@ -203,6 +208,12 @@ public class Detector extends DukesVerticle {
     });
   }
 
+  /**
+   * start lane detection
+   * @param source
+   * @param interval
+   * @return an observable
+   */
   private Observable<Object> startLaneDetection(String source, long interval) {
     ImageFetcher fetcher = new ImageFetcher(source);
 

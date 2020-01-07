@@ -13,6 +13,7 @@ import io.vertx.core.json.JsonObject;
 import nl.vaneijndhoven.dukes.action.drag.StraightLaneNavigator;
 import nl.vaneijndhoven.dukes.common.ClusterStarter;
 import nl.vaneijndhoven.dukes.common.Environment;
+import nl.vaneijndhoven.dukes.common.DukesVerticle.Status;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
@@ -124,7 +125,9 @@ public class TestAction {
 	  ClusterStarter clusterStarter=new ClusterStarter();
 	  Action action = new Action();
 	  clusterStarter.deployVerticles(action);
-    action.waitStarted(20000,10);
+    action.waitStatus(Status.started,20000,10);
+    clusterStarter.undeployVerticle(action);
+    action.waitStatus(Status.stopped,20000,10);
 	}
 
 }
