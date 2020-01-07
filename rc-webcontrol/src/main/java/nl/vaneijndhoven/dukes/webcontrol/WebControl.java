@@ -15,6 +15,9 @@ import nl.vaneijndhoven.dukes.common.DukesVerticle;
  */
 public class WebControl extends DukesVerticle {
 
+  /**
+   * construct me
+   */
   public WebControl() {
     super(Characters.BOSS_HOGG);
   }
@@ -26,26 +29,13 @@ public class WebControl extends DukesVerticle {
     LOG.info("using port "+port);
     Router router = Router.router(vertx);
     BridgeOptions options = new BridgeOptions();
-
-    // Stream.of(Characters.values()).forEach(character -> {
-    // PermittedOptions permitted = new
-    // PermittedOptions().setAddress(character.getCallsign());
-    // options.addOutboundPermitted(permitted);
-    // options.addInboundPermitted(permitted);
-    //
-    // });
-    // Stream.of(Events.values()).forEach(event -> {
-    // options.addOutboundPermitted(new
-    // PermittedOptions().setAddress(event.name()))
-    // });
-
     options.addOutboundPermitted(new PermittedOptions().setAddressRegex(".*"));
     options.addInboundPermitted(new PermittedOptions().setAddressRegex(".*"));
     router.route("/eventbus/*")
         .handler(SockJSHandler.create(vertx).bridge(options));
     router.route()
         .handler(StaticHandler.create("web").setCachingEnabled(false));
-    vertx.createHttpServer().requestHandler(router::accept).listen(port);
+    vertx.createHttpServer().requestHandler(router).listen(port);
 
     // vertx.eventBus().sendObservable(Characters.DAISY.getCallsign() +
     // "lane.start", new JsonObject().put("source",

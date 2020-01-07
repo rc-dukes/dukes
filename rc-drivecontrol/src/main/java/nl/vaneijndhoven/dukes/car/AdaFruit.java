@@ -14,7 +14,6 @@ import com.pi4j.gpio.extension.pca.PCA9685Pin;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinPwmOutput;
-import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
@@ -97,7 +96,7 @@ public class AdaFruit implements ServoCommand {
 	@Override
 	public void setServo(int ioId, int value) {
 		if ((ioId < 0) || (ioId > 15))
-			throw new IllegalArgumentException("Invalied ioId " + ioId + " ioId must be 0-15");
+			throw new IllegalArgumentException("Invalid ioId " + ioId + " ioId must be 0-15");
 		GpioPinPwmOutput output = outputs[ioId];
 		int duration = SERVO_DURATION_MIN + value * (SERVO_DURATION_MAX - SERVO_DURATION_MIN) / 256;
 		if (debug) {
