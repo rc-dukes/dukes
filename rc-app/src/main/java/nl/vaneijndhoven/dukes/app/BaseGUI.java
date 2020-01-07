@@ -59,8 +59,9 @@ public class BaseGUI {
 
   protected void displayImage(ImageView fxImage, Mat openCvImage) {
     if (openCvImage.rows() > 0) {
-      Image image = ImageUtils.mat2Image(openCvImage);
-      this.onFXThread(fxImage.imageProperty(), image);
+      Image image = ImageUtils.mat2Image(openCvImage,".png");
+      if (image!=null)
+        this.onFXThread(fxImage.imageProperty(), image);
     }
   }
 

@@ -631,6 +631,7 @@ function onSlideCam(sliderId, textbox, configKey) {
 	updateCamConfig(sliderId, configKey);
 }
 
+// update the camera configuration
 function updateCamConfig(elementId, configKey) {
 	var configValue = document.getElementById(elementId).value;
 	// FIXME - this should not be hardcoded

@@ -11,7 +11,7 @@ import io.vertx.rxjava.core.AbstractVerticle;
  * unifies handling of AbstracVerticles in rc-dukes project
  * uses the rxjava version of AbstractVerticles
  */
-public class DukesVerticle extends AbstractVerticle {
+public abstract class DukesVerticle extends AbstractVerticle {
   protected static final Logger LOG = LoggerFactory.getLogger(DukesVerticle.class);
   
   private boolean started=false;
@@ -89,6 +89,5 @@ public class DukesVerticle extends AbstractVerticle {
     String address=receiver.getCallsign();
     getVertx().eventBus().send(address,jo);
   }
-  
   
 }

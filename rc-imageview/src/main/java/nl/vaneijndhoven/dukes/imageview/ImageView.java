@@ -1,31 +1,56 @@
 package nl.vaneijndhoven.dukes.imageview;
 
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.HttpServerRequest;
-import nl.vaneijndhoven.detect.Detector;
-import nl.vaneijndhoven.dukes.common.Config;
+import java.io.IOException;
 
-import org.opencv.core.MatOfByte;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.io.IOUtils;
+
+import io.vertx.core.Future;
+import io.vertx.rxjava.core.buffer.Buffer;
+import io.vertx.rxjava.core.http.HttpServer;
+import io.vertx.rxjava.core.http.HttpServerRequest;
+import io.vertx.rxjava.core.http.HttpServerResponse;
+import nl.vaneijndhoven.detect.Detector;
+import nl.vaneijndhoven.dukes.common.Characters;
+import nl.vaneijndhoven.dukes.common.Config;
+import nl.vaneijndhoven.dukes.common.DukesVerticle;
+import nl.vaneijndhoven.opencv.video.ImageUtils;
 
 /**
- * Imageview verticle (Roscoe)
+ * Imageview verticle (Rosco)
  *
  */
-public class ImageView extends AbstractVerticle {
+public class ImageView extends DukesVerticle {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ImageView.class);
+  /**
+   * construct me with my character information
+   */
+  public ImageView() {
+    super(Characters.ROSCOE);
+  }
+
+  protected HttpServer server;
+  // @TODO Make configurable
+  // the format to be used for image encoding
+  public static String ext=".png";
+  public static String defaultImage="640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3";
 
   @Override
-  public void start() throws Exception {
+  public void start(Future<Void> startFuture) throws Exception {
+    super.preStart();
+    // @TODO - get config information from config Verticle (or shared data ...)
     int port = Config.getEnvironment().getInteger(Config.IMAGEVIEW_PORT);
-    LOG.info(
-        "Starting ImageView Rosco (lane detection debug image web server on port "
-            + port);
-    vertx.createHttpServer().requestHandler(this::sendImage).listen(port);
+    server = vertx.createHttpServer().requestHandler(this::sendImage);
+    // Now bind the server:
+    server.listen(port, res -> {
+      if (res.succeeded()) {
+        startFuture.complete();
+        super.postStart();
+        String msg=String.format("web server on port %d serving debug images in %s format",port,ext);
+        LOG.info(msg);
+      } else {
+        startFuture.fail(res.cause());
+      }
+    });
   }
 
   /**
@@ -33,45 +58,52 @@ public class ImageView extends AbstractVerticle {
    * 
    * @param request
    */
-  private void sendImage(HttpServerRequest request) {
+  public void sendImage(HttpServerRequest request) {
     String type = request.getParam("type");
-    if (type==null) type="debug";
-    byte[] bytes = new byte[] {};
+    if (type == null)
+      type = "debug";
+    byte[] bytes =null;
     switch (type) {
     case "edges":
       bytes = Detector.CANNY_IMG;
       break;
 
     case "birdseye":
-      if (Detector.BIRDS_EYE != null) {
-        MatOfByte matOfByte = new MatOfByte();
-        Imgcodecs.imencode(".png", Detector.BIRDS_EYE, matOfByte);
-        bytes = matOfByte.toArray();
-      }
-    default:
-      if (Detector.MAT != null) {
-        MatOfByte matOfByte = new MatOfByte();
-        try {
-          if (Detector.MAT.width()>0) {
-            Imgcodecs.imencode(".png", Detector.MAT, matOfByte);
-            bytes = matOfByte.toArray();
-          } else {
-            String msg=String.format("can't encode %d x %d size image",Detector.MAT.width(),Detector.MAT.height());
-            LOG.trace(msg);
-          }
-        } catch (org.opencv.core.CvException cve) {
-          LOG.warn("image encoding failed: "+cve.getMessage());
-          bytes=null;
-        }
-      }
+      bytes=ImageUtils.mat2ImageBytes(Detector.BIRDS_EYE, ext);
+      break;
+    default: // debug
+      bytes=ImageUtils.mat2ImageBytes(Detector.MAT, ext);
     }
-
-    if (bytes == null) {
-      bytes = new byte[] {};
-    }
-    request.response().putHeader("content-type", "image/png");
-    request.response().putHeader("content-length", "" + bytes.length);
-    request.response().write(Buffer.buffer().appendBytes(bytes));
+    sendImageBytesOrDefault(request,bytes);
   }
 
+  /**
+   * send the given bytes if they are not null or replace with a default image
+   * @param request - the request to respond to
+   * @param bytes  - the bytes to be send
+   */
+  private void sendImageBytesOrDefault(HttpServerRequest request,
+      byte[] bytes) {
+    if (bytes==null) {
+      try {
+        bytes=IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream(defaultImage+ext));
+      } catch (IOException e) {
+        LOG.trace(e.getMessage());
+      }
+    }
+    if (bytes!=null)
+      this.sendImageBytes(request, bytes);
+  }
+
+  /**
+   * send the given bytes as an image
+   * @param bytes
+   */
+  public void sendImageBytes(HttpServerRequest request, byte[] bytes) {
+    HttpServerResponse response = request.response();
+    response.putHeader("content-type", "image/png");
+    response.putHeader("content-length", "" + bytes.length);
+    Buffer data = Buffer.buffer().appendBytes(bytes);
+    response.write(data);
+  }
 }
