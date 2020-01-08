@@ -111,6 +111,7 @@
 		<args4j.version>2.33</args4j.version>
 		<!-- asynchttpclient -->
 		<asynchttpclient.version>2.10.4</asynchttpclient.version>
+		<commonslang3.version>3.9</commonslang3.version>
 		<!-- other settings -->
 		<main_dir>${project.parent.relativePath}/..</main_dir>
 		<!-- fix encoding -->
@@ -200,6 +201,12 @@
 				<groupId>org.asynchttpclient</groupId>
 				<artifactId>async-http-client-extras-rxjava2</artifactId>
 				<version>${asynchttpclient.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>${commonslang3.version}</version>
 			</dependency>
 
 		</dependencies>

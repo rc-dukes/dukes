@@ -17,8 +17,8 @@ public enum Characters {
   ROSCO("imageview","lane detection debug image web server","Red Dog","comical sheriff, chasing, illegal speed traps, “hot pursuit“","https://dukesofhazzard.fandom.com/wiki/Rosco_Purvis_Coltrane_(James_Best)"), 
   UNCLE_JESSE("app","JavaFX app to monitor the car","Shepherd"," guardian of main characters, wise man","https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Jesse");
 
-  private String module;
-  private String purpose;
+  public String module;
+  public String purpose;
   private String callsign;
   private String comment;
   private String url;
@@ -41,6 +41,21 @@ public enum Characters {
 
   public String getCallsign() {
     return callsign;
+  }
+  public String getModule() {
+    return module;
+  }
+
+  public String getPurpose() {
+    return purpose;
+  }
+
+  public String getComment() {
+    return comment;
+  }
+
+  public String getUrl() {
+    return url;
   }
 
   public String description() {
