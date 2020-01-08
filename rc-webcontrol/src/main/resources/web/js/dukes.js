@@ -6,6 +6,7 @@ var eb = null; // we start with an undefined eventbus
 var imageViewUrl = null;
 var cameraSource = null;
 var cameraFps=5;
+var recording=false;
 var streetLane = "images/StreetLane.jpg"; // default Image
 
 /**
@@ -160,6 +161,29 @@ function initRemoteControls() {
 	// allow keyboard input
 	registerControls();
 	setControlState(false);
+}
+
+// TODO decide wether to support SSE
+// initialize server side events
+function initSSE() {
+   var protocol = window.location.protocol;
+   if (protocol === "file:") {
+	   sseUrl = "http://localhost:8080/configsse"
+   } else {
+	   sseUrl= window.location.origin + "/configsse"
+   }
+   eventSource = new EventSource(sseUrl);
+   eventSource.onopen = () => {
+       logMessage('sse connected...' + '\n');
+   };
+
+   eventSource.onmessage = (message) => {
+       logMessage("sse:"+message.data + '\n\n');
+   };
+
+   eventSource.onerror = () => {
+       logMessage('sse error occured...' + '\n');
+   };
 }
 
 /**
@@ -402,6 +426,19 @@ function manual() {
 	stopAutoPilot();
 }
 
+var CALLSIGN_ROSCO = 'Red Dog';
+// record video
+function record() {
+	if (!recording) {
+		publish(CALLSIGN_ROSCO + ':START_RECORDING', undefined);
+		setColor("record","red")
+	} else {
+		publish(CALLSIGN_ROSCO + ':STOP_RECORDING', undefined);
+		setColor("record","blue")		
+	}
+	recording=!recording;
+}
+
 function keyPressed(id) {
 	console.log(id);
 	logMessage(id + " pressed");
@@ -635,7 +672,7 @@ function onSlideCam(sliderId, textbox, configKey) {
 function updateCamConfig(elementId, configKey) {
 	var configValue = document.getElementById(elementId).value;
 	// FIXME - this should not be hardcoded
-	var url = 'http://10.9.8.7/html/cmd_pipe.php?cmd=' + configKey + '%20'
+	var url = 'http://pibeewifi/html/cmd_pipe.php?cmd=' + configKey + '%20'
 			+ configValue;
 
 	var ajax_cmd = new XMLHttpRequest();

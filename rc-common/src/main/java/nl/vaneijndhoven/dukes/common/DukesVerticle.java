@@ -2,8 +2,10 @@ package nl.vaneijndhoven.dukes.common;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.rxjava.core.eventbus.Message;
 
 /**
  * 
@@ -110,6 +112,17 @@ public abstract class DukesVerticle extends AbstractVerticle {
     JsonObject jo = this.toJsonObject(nameValues);
     String address=receiver.getCallsign();
     getVertx().eventBus().send(address,jo);
+  }
+  
+  /**
+   * enable a consumer to handle the given event
+   * @param event
+   * @param handler
+   */
+  public <T> void consumer(Events event, Handler<Message<T>> handler) {
+    // rc-dukes convention - watch webcontrol javascript ...
+    String address=character.getCallsign() + ":"+event.name();
+    vertx.eventBus().consumer(address,handler);
   }
   
 }

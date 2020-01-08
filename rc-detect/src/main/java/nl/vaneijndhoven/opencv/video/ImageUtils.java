@@ -34,9 +34,10 @@ public class ImageUtils {
     Image image = ImageUtils.imageBytes2Image(imageBytes);
     return image;
   }
-  
+
   /**
    * convert imageBytes to an image
+   * 
    * @param imageBytes
    * @return image or null if imageBytes were already null
    */
@@ -45,6 +46,18 @@ public class ImageUtils {
     if (imageBytes != null)
       image = new Image(new ByteArrayInputStream(imageBytes));
     return image;
+  }
+
+  /**
+   * convert image bytes to Mat
+   * @param bytes
+   * @return - the Mat
+   */
+  public static Mat imageBytes2Mat(byte[] bytes) {
+    // https://stackoverflow.com/a/33930741/1497139
+    Mat mat = Imgcodecs.imdecode(new MatOfByte(bytes),
+        Imgcodecs.CV_LOAD_IMAGE_UNCHANGED);
+    return mat;
   }
 
   /**
@@ -60,7 +73,7 @@ public class ImageUtils {
     byte[] bytes = null;
     try {
       if (frame == null) {
-        String msg=String.format("can't encode null frame to %s",ext);
+        String msg = String.format("can't encode null frame to %s", ext);
         LOG.trace(msg);
       } else {
         if (frame.width() > 0) {
@@ -69,12 +82,13 @@ public class ImageUtils {
           bytes = buffer.toArray();
         } else {
           String msg = String.format("can't encode %d x %d size image to %s",
-              frame.width(), frame.height(),ext);
+              frame.width(), frame.height(), ext);
           LOG.trace(msg);
         }
       }
     } catch (org.opencv.core.CvException cve) {
-      String msg=String.format("image encoding to %s failed: %s",ext,cve.getMessage());
+      String msg = String.format("image encoding to %s failed: %s", ext,
+          cve.getMessage());
       LOG.warn(msg);
     }
     return bytes;

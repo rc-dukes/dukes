@@ -17,8 +17,6 @@ import rx.Subscription;
  */
 public class Action extends DukesVerticle {
 
-    public static final String START_DRAG_NAVIGATION = "START_DRAG_NAVIGATION";
-    public static final String STOP_NAVIGATION = "STOP_NAVIGATION";
     private Subscription laneDetection;
     private Subscription stoppingZoneDetection;
     private Subscription startLightDetection;
@@ -30,8 +28,8 @@ public class Action extends DukesVerticle {
     @Override
     public void start() throws Exception {
       super.preStart();
-      vertx.eventBus().consumer(Characters.LUKE.getCallsign() + ":" + START_DRAG_NAVIGATION, x -> startDragNavigator());
-      vertx.eventBus().consumer(Characters.LUKE.getCallsign() + ":" + STOP_NAVIGATION, x -> stopNavigator());
+      consumer(Events.START_DRAG_NAVIGATION, x -> startDragNavigator());
+      consumer(Events.STOP_NAVIGATION,x -> stopNavigator());
       super.postStart();
     }
 

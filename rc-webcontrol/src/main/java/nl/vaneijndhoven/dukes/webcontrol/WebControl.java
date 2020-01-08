@@ -33,6 +33,8 @@ public class WebControl extends DukesVerticle {
     options.addInboundPermitted(new PermittedOptions().setAddressRegex(".*"));
     router.route("/eventbus/*")
         .handler(SockJSHandler.create(vertx).bridge(options));
+    // @TODO decide about sse support for configuration
+    // router.route("/configsse/*")
     router.route()
         .handler(StaticHandler.create("web").setCachingEnabled(false));
     vertx.createHttpServer().requestHandler(router).listen(port);

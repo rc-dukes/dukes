@@ -59,7 +59,9 @@ public class ImageLaneDetection {
 
         Mat undistorted = matrix.apply(original);
         // Mat image = new RegionOfInterest(0, 0.55, 1, 0.45).region(undistorted);
-        Mat image = new RegionOfInterest(0, 0.2, 1, 0.5).region(undistorted);
+        // Mat image = new RegionOfInterest(0, 0, 1, 1).region(undistorted);
+        // Mat image = new RegionOfInterest(0, 0.2, 1, 0.5).region(undistorted);
+        Mat image = new RegionOfInterest(0, 0.5, 1, 0.5).region(undistorted);
         Size imageSize = image.size();
         ViewPort viewPort = new ViewPort(new Point(0, 0), imageSize.width, imageSize.height);
 

@@ -1,8 +1,11 @@
 package nl.vaneijndhoven.dukes.imageview;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.opencv.core.Mat;
 
 import io.vertx.core.Future;
 import io.vertx.rxjava.core.buffer.Buffer;
@@ -13,6 +16,7 @@ import nl.vaneijndhoven.detect.Detector;
 import nl.vaneijndhoven.dukes.common.Characters;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.dukes.common.DukesVerticle;
+import nl.vaneijndhoven.dukes.common.Events;
 import nl.vaneijndhoven.opencv.video.ImageUtils;
 
 /**
@@ -31,8 +35,9 @@ public class DebugImageServer extends DukesVerticle {
   protected HttpServer server;
   // @TODO Make configurable
   // the format to be used for image encoding
-  public static String ext=".png";
-  public static String defaultImage="images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3";
+  public static String ext = ".png";
+  public static String defaultImage = "images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3";
+  private static byte[] testImageBytes;
 
   @Override
   public void start(Future<Void> startFuture) throws Exception {
@@ -44,13 +49,43 @@ public class DebugImageServer extends DukesVerticle {
     server.listen(port, res -> {
       if (res.succeeded()) {
         startFuture.complete();
+        consumer(Events.START_RECORDING, x -> startRecording());
         super.postStart();
-        String msg=String.format("web server on port %d serving debug images in %s format",port,ext);
+        String msg = String.format(
+            "web server on port %d serving debug images in %s format", port,
+            ext);
         LOG.info(msg);
       } else {
         startFuture.fail(res.cause());
       }
     });
+
+  }
+
+  Map<String, VideoRecorder> recorders = new HashMap<String, VideoRecorder>();
+
+  enum ImageType {
+    camera, debug, edges, birdseye
+  }
+
+  /**
+   * start Recording
+   */
+  protected void startRecording() {
+    for (ImageType imageType : ImageType.values()) {
+      VideoRecorder recorder = new VideoRecorder(imageType.name());
+      recorders.put(recorder.name, recorder);
+    }
+  }
+
+  /**
+   * stop Recording
+   */
+  protected void stopRecording() {
+    for (VideoRecorder recorder : recorders.values()) {
+      recorder.stop();
+      recorders.remove(recorder.name);
+    }
   }
 
   /**
@@ -62,47 +97,78 @@ public class DebugImageServer extends DukesVerticle {
     String type = request.getParam("type");
     if (type == null)
       type = "debug";
-    byte[] bytes =null;
+    byte[] bytes = null;
+    Mat mat;
     switch (type) {
     case "edges":
       bytes = Detector.CANNY_IMG;
+      mat=ImageUtils.imageBytes2Mat(bytes);
       break;
 
     case "birdseye":
-      bytes=ImageUtils.mat2ImageBytes(Detector.BIRDS_EYE, ext);
+      mat=Detector.BIRDS_EYE;
+      bytes = ImageUtils.mat2ImageBytes(mat, ext);
       break;
+      
     default: // debug
-      bytes=ImageUtils.mat2ImageBytes(Detector.MAT, ext);
+      mat=Detector.MAT;
+      bytes = ImageUtils.mat2ImageBytes(mat, ext);
     }
-    sendImageBytesOrDefault(request,bytes);
+    sendImageBytesOrDefault(request, bytes);
+    if (recorders.containsKey(type)) {
+      VideoRecorder recorder = recorders.get(type);
+      if (!recorder.started) {
+        // @TODO make configurable
+        double fps=25.0;
+        recorder.start(fps,mat.size());
+      }
+      recorder.recordMat(mat);
+    }
   }
 
   /**
-   * send the given bytes if they are not null or replace with a default image
-   * @param request - the request to respond to
-   * @param bytes  - the bytes to be send
+   * supply a default testImage
+   * @return - the bytes of the test Image
    */
-  private void sendImageBytesOrDefault(HttpServerRequest request,
-      byte[] bytes) {
-    if (bytes==null) {
+  public static byte[] testImage() {
+    if (testImageBytes == null) {
       try {
-        String testImagePath=defaultImage+ext;
-        bytes=IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream(testImagePath));
+        String testImagePath = defaultImage + ext;
+        testImageBytes = IOUtils.toByteArray(DebugImageServer.class
+            .getClassLoader().getResourceAsStream(testImagePath));
       } catch (IOException e) {
         LOG.trace(e.getMessage());
       }
     }
-    if (bytes!=null)
+    return testImageBytes;
+  }
+
+  /**
+   * send the given bytes if they are not null or replace with a default image
+   * 
+   * @param request
+   *          - the request to respond to
+   * @param bytes
+   *          - the bytes to be send
+   */
+  private void sendImageBytesOrDefault(HttpServerRequest request,
+      byte[] bytes) {
+    if (bytes == null) {
+      bytes=testImage();
+    }
+    if (bytes != null)
       this.sendImageBytes(request, bytes);
   }
 
   /**
    * send the given bytes as an image
+   * 
    * @param bytes
    */
   public void sendImageBytes(HttpServerRequest request, byte[] bytes) {
     HttpServerResponse response = request.response();
-    response.putHeader("content-type", "image/png");
+    String contentType=String.format("image/%s",ext.replace(".", ""));
+    response.putHeader("content-type", contentType);
     response.putHeader("content-length", "" + bytes.length);
     Buffer data = Buffer.buffer().appendBytes(bytes);
     response.write(data);
