@@ -54,23 +54,6 @@ public class RemoteCar {
 				LOG.info("Not running on the Raspberry Pi, not activating Vert.x clustering over the network.");
 			}
 			starter.deployVerticles(new WatchDog(car), new CarVerticle());
-			/*
-			 * vertx.deployVerticle(new Daisy(), deploymentOptions);
-			 * vertx.deployVerticle(new Daisy(), deploymentOptions, async -> {
-			 * 
-			 * if (async.failed()) { return; }
-			 * 
-			 * // use example video as source // String userpath="@TODO set here" //
-			 * vertx.eventBus().send(Events.STREAMADDED.name(), new
-			 * JsonObject().put("source",
-			 * "file://"+userpath+"dukes/daisy/src/main/resources/videos/full_run.mp4" ));
-			 * }); vertx.deployVerticle(new Luke(), async -> { if (async.failed()) { return;
-			 * }
-			 * 
-			 * // vertx.eventBus().send(Characters.LUKE.getCallsign() + ":" +
-			 * Luke.START_DRAG_NAVIGATION,null); });
-			 */
-			// vertx.deployVerticle(new UncleJesse());
 		} catch (Throwable th) {
 			ErrorHandler.getInstance().handle(th);
 		}
