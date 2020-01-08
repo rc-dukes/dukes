@@ -24,20 +24,21 @@ import nl.vaneijndhoven.opencv.video.ImageUtils;
 public class TestDebugImageServer {
   private ClusterStarter clusterStarter;
   private DebugImageServer imageServer;
+  int TIME_OUT=20000;
 
   public void startImageServer() throws Exception {
     Environment.mock();
     clusterStarter=new ClusterStarter();
     imageServer = new DebugImageServer();
     clusterStarter.deployVerticles(imageServer);
-    imageServer.waitStatus(Status.started,20000,10);
+    imageServer.waitStatus(Status.started,TIME_OUT,10);
     assertNotNull(imageServer.deploymentID());
   }
   @Test
   public void testDebugImageServerStart() throws Exception {
     startImageServer();
     clusterStarter.undeployVerticle(imageServer);
-    imageServer.waitStatus(Status.stopped,20000,10);
+    imageServer.waitStatus(Status.stopped,TIME_OUT,10);
   }
   
   @Test
