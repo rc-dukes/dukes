@@ -55,7 +55,9 @@ public class ImageUtils {
    */
   public static Mat imageBytes2Mat(byte[] bytes) {
     // https://stackoverflow.com/a/33930741/1497139
-    Mat mat = Imgcodecs.imdecode(new MatOfByte(bytes),
+    Mat mat=null;
+    if (bytes!=null)
+      mat = Imgcodecs.imdecode(new MatOfByte(bytes),
         Imgcodecs.CV_LOAD_IMAGE_UNCHANGED);
     return mat;
   }

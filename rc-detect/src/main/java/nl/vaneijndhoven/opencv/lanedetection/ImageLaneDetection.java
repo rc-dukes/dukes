@@ -14,7 +14,9 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
+import nl.vaneijndhoven.detect.Detector;
 import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
+import nl.vaneijndhoven.dukes.camera.matrix.PerspectiveShift;
 import nl.vaneijndhoven.dukes.geometry.Line;
 import nl.vaneijndhoven.dukes.geometry.Point;
 import nl.vaneijndhoven.dukes.geometry.Polygon;
@@ -79,8 +81,8 @@ public class ImageLaneDetection {
                 new Point(1 * imageSize.width, 0 * imageSize.height)
         );
 
-//        PerspectiveShift perspectiveShift = new PerspectiveShift(imagePolygon, worldPolygon);
-//        Daisy.BIRDS_EYE = perspectiveShift.apply(image);
+        PerspectiveShift perspectiveShift = new PerspectiveShift(imagePolygon, worldPolygon);
+        Detector.BIRDS_EYE = perspectiveShift.apply(image);
 
         LineExtractor lineExtractor = new LineExtractor(
                 new CannyEdgeDetector(cannyConfig).withImageCollector(imageCollector),

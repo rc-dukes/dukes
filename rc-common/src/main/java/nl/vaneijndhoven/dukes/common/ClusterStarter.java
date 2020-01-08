@@ -19,7 +19,7 @@ public class ClusterStarter {
 
   private VertxOptions options;
   private boolean prepared = false;
-  private boolean debug = false;
+  private boolean debug = true;
   private Vertx vertx;
 
   public Vertx getVertx() {

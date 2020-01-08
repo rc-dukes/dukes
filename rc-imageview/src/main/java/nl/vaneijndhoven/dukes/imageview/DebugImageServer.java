@@ -115,7 +115,7 @@ public class DebugImageServer extends DukesVerticle {
       bytes = ImageUtils.mat2ImageBytes(mat, ext);
     }
     sendImageBytesOrDefault(request, bytes);
-    if (recorders.containsKey(type)) {
+    if (recorders.containsKey(type) && mat!=null) {
       VideoRecorder recorder = recorders.get(type);
       if (!recorder.started) {
         // @TODO make configurable
