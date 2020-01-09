@@ -7,6 +7,7 @@ var imageViewUrl = null;
 var cameraSource = null;
 var cameraFps=5;
 var recording=false;
+var autopiloting=false;
 var streetLane = "images/StreetLane.jpg"; // default Image
 // 'use strict'
 var URL = window.URL || window.webkitURL
@@ -415,7 +416,10 @@ function brake() {
 
 function autopilot() {
 	keyPressed("autopilot");
-	startAutoPilot();
+	if (autopiloting)
+		stopAutoPilot();
+	else
+		startAutoPilot();
 }
 
 function manual() {
@@ -486,11 +490,13 @@ var CALLSIGN_LUKE = "Lost sheep Luke";
 function startAutoPilot() {
 	publish(CALLSIGN_LUKE + ':START_DRAG_NAVIGATION', undefined);
 	setColor("autopilot","red")
+	autopiloting=true
 }
 
 function stopAutoPilot() {
 	publish(CALLSIGN_LUKE + ':STOP_NAVIGATION', undefined);
 	setColor("autopilot","blue")
+	autopiloting=false;
 }
 
 // register the function to update the debug images

@@ -16,27 +16,22 @@ import nl.vaneijndhoven.opencv.tools.ImageCollector;
  */
 public class LaneDetector {
 
-    public static double DEFAULT_LANE_BOUNDARY_ANGLE = 45;
-    public static double DEFAULT_LANE_BOUNDARY_TOLERANCE = 30;
-
-    public static final double DEFAULT_CANNY_THRESHOLD_1 = 131d;
-    public static final double DEFAULT_CANNY_THRESHOLD_2 = 397d;
-    public static final int DEFAULT_LINE_DETECT_RHO = 1;
-    public static final double DEFAULT_LINE_DETECT_THETA = Math.PI / 180;
-    public static final double DEFAULT_LINE_DETECT_THRESHOLD = 42d;
-    public static final double DEFAULT_LINE_DETECT_MIN_LINE_LENGTH = 0d;
-    public static final double DEFAULT_LINE_DETECT_MAX_LINE_GAP = 98d;
-
-    private CannyEdgeDetector.Config cannyConfig;
-    private HoughLinesLineDetector.Config lineDetectorConfig;
+    private CannyEdgeDetector edgeDetector;
+    private HoughLinesLineDetector lineDetector;
     private CameraMatrix matrix;
-    private ImageCollector collector;
+    ImageCollector collector;
 
-
-    public LaneDetector(CannyEdgeDetector.Config cannyConfig, HoughLinesLineDetector.Config lineDetectorConfig, CameraMatrix matrix, ImageCollector collector) {
-        this.cannyConfig = cannyConfig;
-        this.lineDetectorConfig = lineDetectorConfig;
-        this.matrix = matrix;
+    /**
+     * create a LaneDetector
+     * @param cannyConfig
+     * @param lineDetectorConfig
+     * @param matrix
+     * @param collector
+     */
+    public LaneDetector(CannyEdgeDetector cannyDetector, HoughLinesLineDetector lineDetector, CameraMatrix matrix, ImageCollector collector) {
+        this.setEdgeDetector(cannyDetector);
+        this.setLineDetector(lineDetector);
+        this.setMatrix(matrix);
         this.collector = collector;
     }
 
@@ -46,19 +41,50 @@ public class LaneDetector {
     }
 
     public Map<String, Object> performLaneDetection(Mat originalImage) {
-        ImageLaneDetection laneDetect = new ImageLaneDetection(cannyConfig, lineDetectorConfig, matrix);
+        ImageLaneDetection laneDetect = new ImageLaneDetection(this);
         return laneDetect.detectLane(originalImage, collector);
     }
 
-    public void setCannyConfig(CannyEdgeDetector.Config cannyConfig) {
-        this.cannyConfig = cannyConfig;
+    /**
+     * @return the matrix
+     */
+    public CameraMatrix getMatrix() {
+      return matrix;
     }
 
-    public void setLineDetectorConfig(HoughLinesLineDetector.Config lineDetectorConfig) {
-        this.lineDetectorConfig = lineDetectorConfig;
+    /**
+     * @param matrix the matrix to set
+     */
+    public void setMatrix(CameraMatrix matrix) {
+      this.matrix = matrix;
     }
 
-    public void setCollector(ImageCollector collector) {
-        this.collector = collector;
+    /**
+     * @return the edgeDetector
+     */
+    public CannyEdgeDetector getEdgeDetector() {
+      return edgeDetector;
     }
+
+    /**
+     * @param edgeDetector the edgeDetector to set
+     */
+    public void setEdgeDetector(CannyEdgeDetector edgeDetector) {
+      this.edgeDetector = edgeDetector;
+    }
+
+    /**
+     * @return the lineDetector
+     */
+    public HoughLinesLineDetector getLineDetector() {
+      return lineDetector;
+    }
+
+    /**
+     * @param lineDetector the lineDetector to set
+     */
+    public void setLineDetector(HoughLinesLineDetector lineDetector) {
+      this.lineDetector = lineDetector;
+    }
+
 }

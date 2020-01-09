@@ -35,7 +35,7 @@ public class Detector extends DukesVerticle {
   private final static String HOUGH_CONFIG_UPDATE = "HOUGH_CONFIG_UPDATE";
   private final static String CAMERA_MATRIX_UPDATE = "CAMERA_MATRIX_UPDATE";
 
-  public static Mat camera=null;
+  public static Mat camera = null;
   public static Mat MAT = null;
   public static Mat BIRDS_EYE = null;
   public static byte[] CANNY_IMG = null;
@@ -73,12 +73,12 @@ public class Detector extends DukesVerticle {
 
   private void streamAdded(Message<JsonObject> message) {
     JsonObject jo = message.body();
+    String json=jo.encodePrettily();
+    LOG.info("streamadded received:"+json);
+    vertx.eventBus()
+        .send(Characters.DAISY.getCallsign() + ":" + START_LANE_DETECTION, jo);
     vertx.eventBus().send(
-        Characters.DAISY.getCallsign() + ":" + START_LANE_DETECTION,
-        jo);
-    vertx.eventBus().send(
-        Characters.DAISY.getCallsign() + ":" + START_STARTLIGHT_DETECTION,
-        jo);
+        Characters.DAISY.getCallsign() + ":" + START_STARTLIGHT_DETECTION, jo);
   }
 
   private void startLD(Message<JsonObject> message) {
@@ -106,18 +106,15 @@ public class Detector extends DukesVerticle {
   }
 
   private void cannyConfig(Message<JsonObject> message) {
-    vertx.sharedData().getLocalMap(Characters.DAISY.name()).put("canny",
-        message.body());
+    shareData("canny", message.body());
   }
 
   private void houghConfig(Message<JsonObject> message) {
-    vertx.sharedData().getLocalMap(Characters.DAISY.name()).put("hough",
-        message.body());
+    shareData("hough", message.body());
   }
 
   private void cameraMatrix(Message<JsonObject> message) {
-    vertx.sharedData().getLocalMap(Characters.DAISY.name()).put("matrix",
-        message.body());
+    shareData("matrix", message.body());
   }
 
   private long getInterval() {
@@ -126,33 +123,24 @@ public class Detector extends DukesVerticle {
     return interval != null ? interval : LANE_DETECTION_INTERVAL;
   }
 
-  private CannyEdgeDetector.Config createCanny() {
-    CannyEdgeDetector.Config canny = new CannyEdgeDetector.Config();
-    JsonObject cannyConfig = (JsonObject) vertx.sharedData()
-        .getLocalMap(Characters.DAISY.name()).get("canny");
-
-    if (cannyConfig != null) {
-      canny.setThreshold1(cannyConfig.getDouble("threshold1"));
-      canny.setThreshold2(cannyConfig.getDouble("threshold2"));
-    }
-
+  private CannyEdgeDetector createCanny() {
+    JsonObject jo=getSharedData("canny");
+    CannyEdgeDetector canny;
+    if (jo==null)
+      canny=new CannyEdgeDetector();
+    else
+      canny=jo.mapTo(CannyEdgeDetector.class);
     return canny;
   }
 
-  private HoughLinesLineDetector.Config createHoughLines() {
-    HoughLinesLineDetector.Config hough = new HoughLinesLineDetector.Config();
-    JsonObject houghConfig = (JsonObject) vertx.sharedData()
-        .getLocalMap(Characters.DAISY.name()).get("hough");
-
-    if (houghConfig != null) {
-      hough = new HoughLinesLineDetector.Config();
-      hough.setRho(houghConfig.getDouble("rho"));
-      hough.setTheta(houghConfig.getDouble("theta"));
-      hough.setThreshold(houghConfig.getInteger("threshold"));
-      hough.setMaxLineGap(houghConfig.getDouble("maxLineGap"));
-      hough.setMinLineLength(houghConfig.getDouble("minLineLength"));
-    }
-
+  private HoughLinesLineDetector createHoughLines() {
+    JsonObject jo=getSharedData("hough");
+    
+    HoughLinesLineDetector hough;
+    if (jo==null)
+      hough=new HoughLinesLineDetector();
+    else
+      hough=jo.mapTo(HoughLinesLineDetector.class);
     return hough;
   }
 
@@ -168,39 +156,19 @@ public class Detector extends DukesVerticle {
 
   /**
    * start the lane detection based on the given message
+   * 
    * @param msg
    * @return
-   */
+   **/
   private Observable<String> startLaneDetection(Message<JsonObject> msg) {
     JsonObject jo = msg.body();
     JsonObject config = jo.getJsonObject("config");
-
-    CannyEdgeDetector.Config canny = new CannyEdgeDetector.Config();
-    HoughLinesLineDetector.Config hough = new HoughLinesLineDetector.Config();
+    shareData("canny",config.getJsonObject("canny"));
+    shareData("hough",config.getJsonObject("hough"));
     long interval = LANE_DETECTION_INTERVAL;
-    if (config != null) {
-      JsonObject cannyCfg = config.getJsonObject("canny");
-      if (cannyCfg != null) {
-        canny = new CannyEdgeDetector.Config();
-        canny.setThreshold1(cannyCfg.getDouble("threshold1"));
-        canny.setThreshold2(cannyCfg.getDouble("threshold2"));
-      }
-
-      JsonObject houghCfg = config.getJsonObject("hough");
-      if (houghCfg != null) {
-        hough = new HoughLinesLineDetector.Config();
-        hough.setRho(houghCfg.getDouble("rho"));
-        hough.setTheta(houghCfg.getDouble("theta"));
-        hough.setThreshold(houghCfg.getInteger("threshold"));
-        hough.setMaxLineGap(houghCfg.getDouble("maxLineGap"));
-        hough.setMinLineLength(houghCfg.getDouble("minLineLength"));
-      }
-
-      if (config.containsKey("interval")) {
-        interval = config.getLong("interval");
-      }
+    if (config.containsKey("interval")) {
+      interval = config.getLong("interval");
     }
-
     return startLaneDetection(jo.getString("source"), interval).map(map -> {
       try {
         return new ObjectMapper().writeValueAsString(map);
@@ -212,6 +180,7 @@ public class Detector extends DukesVerticle {
 
   /**
    * start lane detection
+   * 
    * @param source
    * @param interval
    * @return an observable
@@ -220,13 +189,11 @@ public class Detector extends DukesVerticle {
     ImageFetcher fetcher = new ImageFetcher(source);
 
     LOG.info("Started image processing for source: " + source);
-    return fetcher.toObservable()
-        .subscribeOn(Schedulers.newThread())
-        .throttleFirst(interval, TimeUnit.MILLISECONDS)
-        .doOnNext(frame -> { 
-             Detector.MAT = frame;
-             Detector.camera=frame.clone();
-          }).map(frame -> {
+    return fetcher.toObservable().subscribeOn(Schedulers.newThread())
+        .throttleFirst(interval, TimeUnit.MILLISECONDS).doOnNext(frame -> {
+          Detector.MAT = frame;
+          Detector.camera = frame.clone();
+        }).map(frame -> {
           ImageCollector collector = new ImageCollector();
           Map<String, Object> detection = new LaneDetector(createCanny(),
               createHoughLines(), createMatrix(), collector).detect(frame);

@@ -15,7 +15,7 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import nl.vaneijndhoven.detect.Detector;
-import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
+import nl.vaneijndhoven.detect.LaneDetector;
 import nl.vaneijndhoven.dukes.camera.matrix.PerspectiveShift;
 import nl.vaneijndhoven.dukes.geometry.Line;
 import nl.vaneijndhoven.dukes.geometry.Point;
@@ -26,9 +26,6 @@ import nl.vaneijndhoven.navigation.plot.StoppingZoneOrientation;
 import nl.vaneijndhoven.objects.Lane;
 import nl.vaneijndhoven.objects.StoppingZone;
 import nl.vaneijndhoven.objects.ViewPort;
-import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
-import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
-import nl.vaneijndhoven.opencv.objectdetection.LineExtractor;
 import nl.vaneijndhoven.opencv.stopzonedetection.DefaultStoppingZoneDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
 
@@ -38,20 +35,10 @@ import nl.vaneijndhoven.opencv.tools.ImageCollector;
  */
 public class ImageLaneDetection {
 
-    private final CannyEdgeDetector.Config cannyConfig;
-    private final HoughLinesLineDetector.Config lineDetectorConfig;
-    private CameraMatrix matrix;
+    private LaneDetector ld;
 
-    /**
-     * construct me from the given parameters
-     * @param cannyConfig - configuration for CannyEdgeDetector
-     * @param lineDetectorConfig - configuration for lineDetector
-     * @param matrix - camera matrix
-     */
-    public ImageLaneDetection(CannyEdgeDetector.Config cannyConfig, HoughLinesLineDetector.Config lineDetectorConfig, CameraMatrix matrix) {
-        this.cannyConfig = cannyConfig;
-        this.lineDetectorConfig = lineDetectorConfig;
-        this.matrix = matrix;
+    public ImageLaneDetection(LaneDetector laneDetector) {
+      this.ld=laneDetector;
     }
 
     public Map<String, Object> detectLane(Mat original, ImageCollector imageCollector) {
@@ -60,7 +47,7 @@ public class ImageLaneDetection {
         }
         double yFraction=0.55;
         double heightFraction=0.45;
-        Mat undistorted = matrix.apply(original);
+        Mat undistorted = ld.getMatrix().apply(original);
         // Mat image = new RegionOfInterest(0, 0.55, 1, 0.45).region(undistorted);
         // Mat image = new RegionOfInterest(0, 0, 1, 1).region(undistorted);
         // Mat image = new RegionOfInterest(0, 0.2, 1, 0.5).region(undistorted);
@@ -85,12 +72,11 @@ public class ImageLaneDetection {
         PerspectiveShift perspectiveShift = new PerspectiveShift(imagePolygon, worldPolygon);
         Detector.BIRDS_EYE = perspectiveShift.apply(image);
 
-        LineExtractor lineExtractor = new LineExtractor(
-                new CannyEdgeDetector(cannyConfig).withImageCollector(imageCollector),
-                new HoughLinesLineDetector(lineDetectorConfig).withImageCollector(imageCollector)
-        );
+        // step1 edge detection
+        Mat imgEdges = ld.getEdgeDetector().detect(image);
 
-        Collection<Line> lines = lineExtractor.extract(image);
+        // step 2 line detection
+        Collection<Line> lines = ld.getLineDetector().detect(imgEdges);
 
         Lane lane = new DefaultLaneDetector().detect(lines, viewPort);
         StoppingZone stoppingZone = new DefaultStoppingZoneDetector().detect(lines);
@@ -126,7 +112,7 @@ public class ImageLaneDetection {
 
         double courseRelativeToHorizon = laneOrientation.determineCourseRelativeToHorizon();
 
-        Map result = new HashMap<>();
+        Map<String,Object> result = new HashMap<String,Object>();
         result.put("lane", lane);
         putIfNumber("angle", angle, result);
         putIfNumber("distanceMiddle", distanceMiddle, result);
@@ -139,11 +125,10 @@ public class ImageLaneDetection {
         return result;
     }
 
-    private void putIfNumber(String key, double angle, Map result) {
+    private void putIfNumber(String key, double angle, Map<String,Object> result) {
         if (Double.isNaN(angle)) {
             return;
         }
-
         result.put(key, angle);
     }
 

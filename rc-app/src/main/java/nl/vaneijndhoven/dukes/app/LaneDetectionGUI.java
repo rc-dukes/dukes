@@ -1,13 +1,5 @@
 package nl.vaneijndhoven.dukes.app;
 
-import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_CANNY_THRESHOLD_1;
-import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_CANNY_THRESHOLD_2;
-import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_LINE_DETECT_MAX_LINE_GAP;
-import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_LINE_DETECT_MIN_LINE_LENGTH;
-import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_LINE_DETECT_RHO;
-import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_LINE_DETECT_THETA;
-import static nl.vaneijndhoven.dukes.app.LaneDetectionController.DEFAULT_LINE_DETECT_THRESHOLD;
-
 import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
@@ -19,6 +11,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
 import nl.vaneijndhoven.detect.ImageFetcher;
 import nl.vaneijndhoven.detect.ImageSubscriber;
+import nl.vaneijndhoven.detect.LaneDetector;
+import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
@@ -51,9 +45,8 @@ public class LaneDetectionGUI extends BaseGUI {
 
   private Vertx vertx;
 
-  private CannyEdgeDetector.Config cannyConfig = new CannyEdgeDetector.Config();
-  private HoughLinesLineDetector.Config houghLinesConfig = new HoughLinesLineDetector.Config();
-  private LaneDetectionController controller = null;
+  private CannyEdgeDetector edgeDetector = new CannyEdgeDetector();
+  private HoughLinesLineDetector lineDetector = new HoughLinesLineDetector();
 
   private boolean configured = false;
   private Subscription imageSubscriber=null;
@@ -65,8 +58,6 @@ public class LaneDetectionGUI extends BaseGUI {
 
   public void startCamera() throws Exception {
     configureGUI();
-    // on start, reset default values in controller
-    controller = new LaneDetectionController(vertx);
 
     if (this.imageSubscriber==null) {
         ImageFetcher imageFetcher = new ImageFetcher(
@@ -79,8 +70,9 @@ public class LaneDetectionGUI extends BaseGUI {
             applySliderValuesToConfig();
             displayer.displayOriginal(originalImage);
             ImageCollector collector = new ImageCollector();
-            controller.performLaneDetection(originalImage, cannyConfig,
-                houghLinesConfig, collector);
+            CameraMatrix cameraMatrix = CameraMatrix.DEFAULT;
+            LaneDetector laneDetector=new LaneDetector(edgeDetector,lineDetector,cameraMatrix,collector);
+            laneDetector.detect(originalImage);
             displayer.display1(collector.edges());
             displayer.display2(collector.lines());
           }
@@ -106,15 +98,15 @@ public class LaneDetectionGUI extends BaseGUI {
   }
 
   private void applySliderValuesToConfig() {
-    cannyConfig.setThreshold1(cannyThreshold1.getValue());
-    cannyConfig.setThreshold2(cannyThreshold2.getValue());
-    houghLinesConfig.setProbabilistic(probabilistic.isSelected());
-    houghLinesConfig.setRho(lineDetectRho.getValue());
-    houghLinesConfig.setTheta(lineDetectTheta.getValue());
-    houghLinesConfig
+    edgeDetector.setThreshold1(cannyThreshold1.getValue());
+    edgeDetector.setThreshold2(cannyThreshold2.getValue());
+    lineDetector.setProbabilistic(probabilistic.isSelected());
+    lineDetector.setRho(lineDetectRho.getValue());
+    lineDetector.setTheta(lineDetectTheta.getValue());
+    lineDetector
         .setThreshold(new Double(lineDetectThreshold.getValue()).intValue());
-    houghLinesConfig.setMinLineLength(lineDetectMinLineLength.getValue());
-    houghLinesConfig.setMaxLineGap(lineDetectMaxLineGap.getValue());
+    lineDetector.setMinLineLength(lineDetectMinLineLength.getValue());
+    lineDetector.setMaxLineGap(lineDetectMaxLineGap.getValue());
   }
 
   private void displayCurrentSliderValues() {
@@ -129,14 +121,16 @@ public class LaneDetectionGUI extends BaseGUI {
   }
 
   private void configureSliderDefaults() {
-    this.probabilistic.setSelected(true);
-    this.cannyThreshold1.setValue(DEFAULT_CANNY_THRESHOLD_1);
-    this.cannyThreshold2.setValue(DEFAULT_CANNY_THRESHOLD_2);
-    this.lineDetectRho.setValue(DEFAULT_LINE_DETECT_RHO);
-    this.lineDetectTheta.setValue(DEFAULT_LINE_DETECT_THETA);
-    this.lineDetectThreshold.setValue(DEFAULT_LINE_DETECT_THRESHOLD);
-    this.lineDetectMinLineLength.setValue(DEFAULT_LINE_DETECT_MIN_LINE_LENGTH);
-    this.lineDetectMaxLineGap.setValue(DEFAULT_LINE_DETECT_MAX_LINE_GAP);
+    CannyEdgeDetector ed = new CannyEdgeDetector();
+    this.cannyThreshold1.setValue(ed.getThreshold1());
+    this.cannyThreshold2.setValue(ed.getThreshold2());
+    HoughLinesLineDetector ld = new HoughLinesLineDetector();
+    this.probabilistic.setSelected(ld.isProbabilistic());
+    this.lineDetectRho.setValue(ld.getRho());
+    this.lineDetectTheta.setValue(ld.getTheta());
+    this.lineDetectThreshold.setValue(ld.getThreshold());
+    this.lineDetectMinLineLength.setValue(ld.getMinLineLength());
+    this.lineDetectMaxLineGap.setValue(ld.getMaxLineGap());
   }
 
   private void initVertx() {
@@ -146,7 +140,6 @@ public class LaneDetectionGUI extends BaseGUI {
     Vertx.clusteredVertx(options, resultHandler -> {
       Vertx vertx = resultHandler.result();
       this.vertx = vertx;
-      controller = new LaneDetectionController(vertx);
 
       Runtime.getRuntime().addShutdownHook(new Thread() {
         public void run() {
