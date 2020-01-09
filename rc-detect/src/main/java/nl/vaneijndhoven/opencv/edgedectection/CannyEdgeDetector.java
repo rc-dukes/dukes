@@ -1,8 +1,9 @@
 package nl.vaneijndhoven.opencv.edgedectection;
 
-import nl.vaneijndhoven.opencv.tools.ImageCollector;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
+
+import nl.vaneijndhoven.opencv.video.ImageCollector;
 
 import java.util.Optional;
 

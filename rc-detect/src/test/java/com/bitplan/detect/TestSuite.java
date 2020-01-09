@@ -4,7 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ TestCannyConfig.class,TestImageFetcher.class })
+@Suite.SuiteClasses({ TestCannyConfig.class,TestLaneDetection.class,TestImageFetcher.class })
 /**
  * TestSuite for detect aka daisy
  * 

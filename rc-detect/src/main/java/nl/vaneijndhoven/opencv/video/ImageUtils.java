@@ -1,14 +1,21 @@
 package nl.vaneijndhoven.opencv.video;
 
+import static nl.vaneijndhoven.opencv.mapper.PointMapper.toPoint;
+
 import java.io.ByteArrayInputStream;
+import java.util.Collection;
+import java.util.Objects;
 
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
+import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javafx.scene.image.Image;
+import nl.vaneijndhoven.dukes.geometry.Line;
 
 /**
  * Image Utilities
@@ -94,6 +101,36 @@ public class ImageUtils {
       LOG.warn(msg);
     }
     return bytes;
+  }
+  
+  String path="/tmp/";
+  String filePrefix="dukes";
+  
+  public ImageUtils() {
+  }
+
+  /**
+   * prepare writing images 
+   * @param path
+   * @param filePrefx
+   */
+  public ImageUtils(String path,String filePrefix) {
+    this.path=path;
+    this.filePrefix=filePrefix;
+  }
+ 
+  public void writeImage(Mat img, String name) {
+    String fileName = filePrefix.replace(".", "-")+ name;
+    Imgcodecs.imwrite(path + fileName, img);
+  }
+  
+  public void writeImageWithLines(Mat img, Collection<Line> lines, String name, Scalar color) {
+    String fileName = filePrefix.replace(".", "-" + name + ".");
+    Mat output = new Mat();
+    img.copyTo(output);
+    lines.stream().filter(Objects::nonNull).forEach(line -> Imgproc.line(output, toPoint(line.getPoint1()), toPoint(line.getPoint2()), color, 4));
+    Imgcodecs.imwrite(path + fileName, output);
+    output.release();
   }
 
   /**

@@ -30,14 +30,14 @@ public class TestImageFetcher {
     NativeLibrary.load();
   }
 
-  String testSource = "http://wiki.bitplan.com/videos/full_run.mp4";
+  public static String testSource = "http://wiki.bitplan.com/videos/full_run.mp4";
 
   /**
    * get an ImageFetcher based on a test video
    * 
    * @return - the imageFetcher
    */
-  public ImageFetcher getTestImageFetcher() {
+  public static ImageFetcher getTestImageFetcher() {
     ImageFetcher imageFetcher = new ImageFetcher(testSource);
     return imageFetcher;
   }

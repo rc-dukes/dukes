@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.opencv.denoise;
+package nl.vaneijndhoven.opencv.video;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Size;

@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import nl.vaneijndhoven.detect.Detector;
 import nl.vaneijndhoven.detect.LaneDetector;
 import nl.vaneijndhoven.dukes.camera.matrix.PerspectiveShift;
-import nl.vaneijndhoven.dukes.common.DukesVerticle;
 import nl.vaneijndhoven.dukes.geometry.Line;
 import nl.vaneijndhoven.dukes.geometry.Point;
 import nl.vaneijndhoven.dukes.geometry.Polygon;
@@ -30,7 +29,7 @@ import nl.vaneijndhoven.objects.Lane;
 import nl.vaneijndhoven.objects.StoppingZone;
 import nl.vaneijndhoven.objects.ViewPort;
 import nl.vaneijndhoven.opencv.stopzonedetection.DefaultStoppingZoneDetector;
-import nl.vaneijndhoven.opencv.tools.ImageCollector;
+import nl.vaneijndhoven.opencv.video.ImageCollector;
 
 /**
  * image lane detection
@@ -58,6 +57,7 @@ public class ImageLaneDetection {
       LOG.error("detectLane: original is null");
       return result;
     }
+    imageCollector.originalFrame(original);
     double yFraction = 0.55;
     double heightFraction = 0.45;
     Mat undistorted = ld.getMatrix().apply(original);

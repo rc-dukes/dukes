@@ -1,16 +1,21 @@
 package nl.vaneijndhoven.detect;
 
-import nl.vaneijndhoven.objects.StartLight;
-import nl.vaneijndhoven.opencv.tools.DebugTools;
-import nl.vaneijndhoven.opencv.tools.ImageCollector;
-import org.opencv.core.*;
-import org.opencv.imgproc.Imgproc;
+import static java.util.Optional.of;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Optional.of;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
+
+import nl.vaneijndhoven.objects.StartLight;
+import nl.vaneijndhoven.opencv.video.ImageCollector;
 
 /**
  * detector for  the start light
@@ -22,7 +27,6 @@ public class StartLightDetector {
 
     private StartLight startLight = StartLight.init();
 
-    private DebugTools debug = new DebugTools.VoidTools();
     private Mat frame;
     private Optional<ImageCollector> collector = Optional.empty();
 
@@ -129,11 +133,6 @@ public class StartLightDetector {
 
         collector.ifPresent(coll -> coll.startLight(frame));
         return startLight;
-    }
-
-    public StartLightDetector withDebug(DebugTools debug) {
-        this.debug = debug;
-        return this;
     }
 
     public Mat getFrame() {

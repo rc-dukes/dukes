@@ -2,6 +2,8 @@ package nl.vaneijndhoven.detect;
 
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -13,6 +15,10 @@ import rx.functions.Func1;
  *
  */
 public class ImageFetcher {
+  protected static final Logger LOG = LoggerFactory
+      .getLogger(ImageFetcher.class);
+
+  public boolean debug=false;
   public static double DEFAULT_FPS=25;
   // OpenCV video capture
   private VideoCapture capture = new VideoCapture();
@@ -54,6 +60,10 @@ public class ImageFetcher {
     milliTimeStamp = System.nanoTime()/ 1000000;
     return ret;
   }
+  
+  public void close() {
+    this.capture.release();
+  }
 
   /**
    * fetch an image Matrix - will block to make sure Mat is emitted
@@ -76,7 +86,8 @@ public class ImageFetcher {
     int waitMillis = (int) Math.round(1000/fps);
     waitMillis-=currentMillis-milliTimeStamp;
     if (waitMillis>0) {
-      System.out.println(String.format("waiting %3d msecs",waitMillis));
+      if (debug)
+        LOG.info(String.format("waiting %3d msecs",waitMillis));
       try {
         Thread.sleep(waitMillis);
       } catch (InterruptedException e) {

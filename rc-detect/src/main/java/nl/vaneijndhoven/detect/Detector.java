@@ -17,7 +17,7 @@ import nl.vaneijndhoven.dukes.common.DukesVerticle;
 import nl.vaneijndhoven.dukes.common.Events;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
-import nl.vaneijndhoven.opencv.tools.ImageCollector;
+import nl.vaneijndhoven.opencv.video.ImageCollector;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
