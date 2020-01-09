@@ -27,17 +27,19 @@ public class TestVideoRecorder {
 
   @Test
   public void testVideoRecorder() {
+    DebugImageServer.ext=".jpg";
     byte[] testImage = DebugImageServer.testImage();
     Mat testMat = ImageUtils.imageBytes2Mat(testImage);
     boolean isColor = true;
     for (String ext : VideoRecorder.exts) {
       for (String FOURCC : VideoRecorder.FOURCCs) {
+        FOURCC=FOURCC.toLowerCase();
         Size frameSize = new Size(testMat.width(), testMat.height());
         VideoRecorder recorder = new VideoRecorder("test", isColor);
         recorder.ext=ext;
         recorder.FOURCC=FOURCC;
-        String msg = String.format("recording: %dx%d %s video with %s",
-            testMat.width(), testMat.height(), ext, FOURCC);
+        String msg = String.format("recording: %dx%d %d channel %s video with %s",
+            testMat.width(), testMat.height(),testMat.channels(), ext, FOURCC);
         System.out.println(msg);
 
         recorder.start(25.0, frameSize);
@@ -47,6 +49,7 @@ public class TestVideoRecorder {
         recorder.stop();
         File videoFile = new File(recorder.path);
         assertTrue(videoFile.exists());
+        assertTrue(videoFile.length()>50000);
       }
     }
   }

@@ -26,7 +26,7 @@ public class VideoRecorder {
   boolean isColor;
   public static String exts[]= {"mov","avi","mpg"};
   String ext="mov";
-  public static String FOURCCs[]= { "MJPG", "X264", "H264", "MP4V", "AVC1", "FMP4", "JPEG"};
+  public static String FOURCCs[]= { "AVC1", "FMP4", "H264", "JPEG","MJPG",  "MP4V","X264","XVID" };
   String FOURCC="mp4v";
   
   /**
