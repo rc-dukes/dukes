@@ -36,9 +36,12 @@ public class DebugImageServer extends DukesVerticle {
   // @TODO Make configurable
   // the format to be used for image encoding
   // needs to be jpg to be able to record videos
-  public static String ext = ".jpg";
+  public static enum ImageFormat {png,jpg}
+  public static ImageFormat imageFormat=ImageFormat.jpg;
+  public static String exts[] = {".png",".jpg"};
+  public static String contentTypes[] = {"image/png","image/jpeg"};
   // @TODO Make configurable and adapt
-  public static double fps=25;
+  public static double fps=10;
   public static String defaultImage = "images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3";
   private static byte[] testImageBytes;
 
@@ -53,10 +56,11 @@ public class DebugImageServer extends DukesVerticle {
       if (res.succeeded()) {
         startFuture.complete();
         consumer(Events.START_RECORDING, x -> startRecording());
+        consumer(Events.STOP_RECORDING, x -> stopRecording());
         super.postStart();
         String msg = String.format(
             "web server on port %d serving debug images in %s format", port,
-            ext);
+            exts[imageFormat.ordinal()]);
         LOG.info(msg);
       } else {
         startFuture.fail(res.cause());
@@ -68,7 +72,7 @@ public class DebugImageServer extends DukesVerticle {
   Map<String, VideoRecorder> recorders = new HashMap<String, VideoRecorder>();
 
   enum ImageType {
-    camera, debug, edges, birdseye
+    camera, edges, birdseye, lines
   }
 
   /**
@@ -97,11 +101,13 @@ public class DebugImageServer extends DukesVerticle {
    * @param request
    */
   public void sendImage(HttpServerRequest request) {
+    String ext=exts[imageFormat.ordinal()];
     String type = request.getParam("type");
+    // System.out.println(type);
     if (type == null)
-      type = "debug";
+      type = "camera";
     byte[] bytes = null;
-    Mat mat;
+    Mat mat=null;
     switch (type) {
     case "edges":
       bytes = Detector.CANNY_IMG;
@@ -113,9 +119,15 @@ public class DebugImageServer extends DukesVerticle {
       bytes = ImageUtils.mat2ImageBytes(mat, ext);
       break;
       
-    default: // debug
+    case "lines":
       mat=Detector.MAT;
       bytes = ImageUtils.mat2ImageBytes(mat, ext);
+      break;
+      
+    case "camera":
+      mat=Detector.camera;
+      bytes = ImageUtils.mat2ImageBytes(mat, ext);
+      break;
     }
     sendImageBytesOrDefault(request, bytes);
     if (recorders.containsKey(type) && mat!=null) {
@@ -131,6 +143,7 @@ public class DebugImageServer extends DukesVerticle {
   public static byte[] testImage() {
     if (testImageBytes == null) {
       try {
+        String ext=exts[imageFormat.ordinal()];
         String testImagePath = defaultImage + ext;
         testImageBytes = IOUtils.toByteArray(DebugImageServer.class
             .getClassLoader().getResourceAsStream(testImagePath));
@@ -165,10 +178,11 @@ public class DebugImageServer extends DukesVerticle {
    */
   public void sendImageBytes(HttpServerRequest request, byte[] bytes) {
     HttpServerResponse response = request.response();
-    String contentType=String.format("image/%s",ext.replace(".", ""));
+    String contentType=contentTypes[imageFormat.ordinal()];
     response.putHeader("content-type", contentType);
     response.putHeader("content-length", "" + bytes.length);
     Buffer data = Buffer.buffer().appendBytes(bytes);
     response.write(data);
+    response.close();
   }
 }

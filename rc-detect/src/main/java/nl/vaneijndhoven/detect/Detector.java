@@ -19,6 +19,7 @@ import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
 import nl.vaneijndhoven.opencv.tools.ImageCollector;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * Detector aka Daisy
@@ -34,6 +35,7 @@ public class Detector extends DukesVerticle {
   private final static String HOUGH_CONFIG_UPDATE = "HOUGH_CONFIG_UPDATE";
   private final static String CAMERA_MATRIX_UPDATE = "CAMERA_MATRIX_UPDATE";
 
+  public static Mat camera=null;
   public static Mat MAT = null;
   public static Mat BIRDS_EYE = null;
   public static byte[] CANNY_IMG = null;
@@ -219,9 +221,12 @@ public class Detector extends DukesVerticle {
 
     LOG.info("Started image processing for source: " + source);
     return fetcher.toObservable()
-        // @TODO make sample interval configurable (again?)
-        // .sample(interval, TimeUnit.MILLISECONDS)
-        .doOnNext(frame -> Detector.MAT = frame).map(frame -> {
+        .subscribeOn(Schedulers.newThread())
+        .throttleFirst(interval, TimeUnit.MILLISECONDS)
+        .doOnNext(frame -> { 
+             Detector.MAT = frame;
+             Detector.camera=frame.clone();
+          }).map(frame -> {
           ImageCollector collector = new ImageCollector();
           Map<String, Object> detection = new LaneDetector(createCanny(),
               createHoughLines(), createMatrix(), collector).detect(frame);

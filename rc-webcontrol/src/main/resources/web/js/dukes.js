@@ -485,10 +485,12 @@ function sendHeartBeat() {
 var CALLSIGN_LUKE = "Lost sheep Luke";
 function startAutoPilot() {
 	publish(CALLSIGN_LUKE + ':START_DRAG_NAVIGATION', undefined);
+	setColor("autopilot","red")
 }
 
 function stopAutoPilot() {
 	publish(CALLSIGN_LUKE + ':STOP_NAVIGATION', undefined);
+	setColor("autopilot","blue")
 }
 
 // register the function to update the debug images
@@ -529,8 +531,6 @@ function registerCamera(url, fps) {
 	} else {
 		setCameraImageUrl(streetLane);
 	}
-
-	// 'http://localhost:8081?type=original&'
 }
 
 /**
@@ -545,10 +545,12 @@ function updateDebugImages() {
 				+ Math.random());
 		setImage("edgesImage", imageViewUrl + '?type=edges&' + Math.random());
 		setImage("linesImage", imageViewUrl + '?type=lines&' + Math.random());
+		setImage("cameraImageDebug", imageViewUrl + '?type=camera&' + Math.random());
 	} else {
 		setImage("birdseyeImage", "images/nolines.png");
 		setImage("edgesImage", "images/noedges.png");
 		setImage("linesImage", "images/nolines.png");
+		setImage("cameraImageDebug", "images/nolines.png");
 	}
 }
 
