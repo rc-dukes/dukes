@@ -35,7 +35,10 @@ public class DebugImageServer extends DukesVerticle {
   protected HttpServer server;
   // @TODO Make configurable
   // the format to be used for image encoding
-  public static String ext = ".png";
+  // needs to be jpg to be able to record videos
+  public static String ext = ".jpg";
+  // @TODO Make configurable and adapt
+  public static double fps=25;
   public static String defaultImage = "images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3";
   private static byte[] testImageBytes;
 
@@ -73,8 +76,7 @@ public class DebugImageServer extends DukesVerticle {
    */
   protected void startRecording() {
     for (ImageType imageType : ImageType.values()) {
-      boolean isColor=!imageType.equals(ImageType.edges);
-      VideoRecorder recorder = new VideoRecorder(imageType.name(),isColor);
+      VideoRecorder recorder = new VideoRecorder(imageType.name(),fps);
       recorders.put(recorder.name, recorder);
     }
   }
@@ -118,11 +120,6 @@ public class DebugImageServer extends DukesVerticle {
     sendImageBytesOrDefault(request, bytes);
     if (recorders.containsKey(type) && mat!=null) {
       VideoRecorder recorder = recorders.get(type);
-      if (!recorder.started) {
-        // @TODO make configurable
-        double fps=25.0;
-        recorder.start(fps,mat.size());
-      }
       recorder.recordMat(mat);
     }
   }

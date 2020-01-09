@@ -32,18 +32,18 @@ public class VideoRecorder {
   /**
    * construct me
    * @param name - the name of the video - a timestamp will be added
-   * @param isColor - true if the video is a color video
+   * @param fps - frames per second
    */
-  public VideoRecorder(String name, boolean isColor) {
+  public VideoRecorder(String name, double fps) {
     this.name=name;
-    this.isColor=isColor;
+    this.fps=fps;
     started=false;
   }
   
   // https://stackoverflow.com/questions/53158765/record-and-save-video-stream-use-opencv-in-java
-  public void start(double fps, Size frameSize) {
-    this.fps=fps;
+  public void start(Size frameSize, boolean isColor) {
     this.frameSize=frameSize;
+    this.isColor=isColor;
     int fourcc = VideoWriter.fourcc(FOURCC.charAt(0), FOURCC.charAt(1), FOURCC.charAt(2), FOURCC.charAt(3)); 
     Date now = new Date();
     String timestamp=dateFormat.format(now);
@@ -65,6 +65,10 @@ public class VideoRecorder {
    * @param mat - open cv frame to be recorded
    */
   public void recordMat(Mat mat) {
+    if (!started) {
+      isColor=mat.channels()>1;
+      this.start(mat.size(),isColor);
+    }
     save.write(mat);
   }
   
