@@ -141,6 +141,10 @@
 									value="http://pibeewifi/html/cam_get.php" />
 							</div>
 						</div>
+						<div>
+						   <input id="videoinput" type="file" accept="video/*"/>
+			               <video id="video" controls autoplay></video>
+		            	</div>	
 					</fieldset>
 				</div>
 				<div class="col-md-4">
@@ -180,9 +184,9 @@
 								<input id="houghConfigRhoTextbox" size="2" />
 							</div>
 							<div class='col-md-6'>
-								<input id="houghConfigThetaSlider" value="0.01745329251"
+								<input id="houghConfigRhoSlider" value="0.01745329251"
 									type="range" min="0.01" max="0.2" step="0.00001"
-									oninput="onSlide('houghConfigThetaSlider', 'houghConfigThetaTextbox')" />
+									oninput="onSlide('houghConfigRhoSlider', 'houghConfigRhoTextbox')" />
 							</div>
 						</div>
 						<div class='row'>
@@ -191,9 +195,9 @@
 								<input id="houghConfigThetaTextbox" size="8" />
 							</div>
 							<div class='col-md-6'>
-								<input id="houghConfigRhoSlider" value="1" type="range"
+								<input id="houghConfigThetaSlider" value="1" type="range"
 									min="0.01" max="10" step="0.01"
-									oninput="onSlide('houghConfigRhoSlider', 'houghConfigRhoTextbox')" />
+									oninput="onSlide('houghConfigThetaSlider', 'houghConfigThetaTextbox')" />
 							</div>
 						</div>
 						<div class='row'>
@@ -276,8 +280,6 @@
 				</div>
 			</div>
 			<div id="message"></div>
-			<!--<input type="file" accept="video/*"/>-->
-			<!--<video controls autoplay></video>-->
 		</div>
 		<!--  end of main content box -->
 		<div id='footerbox'></div>

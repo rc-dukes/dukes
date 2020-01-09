@@ -13,6 +13,11 @@ import com.bitplan.opencv.NativeLibrary;
 
 import nl.vaneijndhoven.opencv.video.ImageUtils;
 
+/**
+ * test the video recording functionality
+ * @author wf
+ *
+ */
 public class TestVideoRecorder {
   @BeforeClass
   public static void setup() throws Exception {
@@ -21,12 +26,16 @@ public class TestVideoRecorder {
 
   @Test
   public void testVideoRecorder() {
-    Size frameSize = new Size(640, 480);
-    VideoRecorder recorder = new VideoRecorder("test");
     byte[] testImage = DebugImageServer.testImage();
     Mat testMat = ImageUtils.imageBytes2Mat(testImage);
+    String msg=String.format("recording: %dx%d video",testMat.width(),testMat.height());
+    System.out.println(msg);
+    Size frameSize = new Size(testMat.height(),testMat.width());
+    boolean isColor=true;
+    VideoRecorder recorder = new VideoRecorder("test",isColor);
+    
     recorder.start(25.0, frameSize);
-    for (int i = 0; i < 50; i++) {
+    for (int i = 1; i <= 50; i++) {
       recorder.recordMat(testMat);
     }
     recorder.stop();

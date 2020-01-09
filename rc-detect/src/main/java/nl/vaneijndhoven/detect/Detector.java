@@ -50,7 +50,6 @@ public class Detector extends DukesVerticle {
     super.preStart();
     NativeLibrary.load();
     vertx.eventBus().consumer(Events.STREAMADDED.name(), this::streamAdded);
-
     vertx.eventBus().consumer(
         Characters.DAISY.getCallsign() + ":" + START_LANE_DETECTION,
         this::startLD);
@@ -71,12 +70,13 @@ public class Detector extends DukesVerticle {
   }
 
   private void streamAdded(Message<JsonObject> message) {
+    JsonObject jo = message.body();
     vertx.eventBus().send(
         Characters.DAISY.getCallsign() + ":" + START_LANE_DETECTION,
-        message.body());
+        jo);
     vertx.eventBus().send(
         Characters.DAISY.getCallsign() + ":" + START_STARTLIGHT_DETECTION,
-        message.body());
+        jo);
   }
 
   private void startLD(Message<JsonObject> message) {

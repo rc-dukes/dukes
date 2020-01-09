@@ -71,7 +71,7 @@ public class BaseGUI {
    *
    * @param imageView
    *          the {@link ImageView} to use
-   * @param dimension
+   * @param width
    *          the width of the image to set
    */
   protected void imageViewProperties(ImageView imageView, int width) {

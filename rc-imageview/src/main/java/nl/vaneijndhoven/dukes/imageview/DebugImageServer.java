@@ -73,7 +73,8 @@ public class DebugImageServer extends DukesVerticle {
    */
   protected void startRecording() {
     for (ImageType imageType : ImageType.values()) {
-      VideoRecorder recorder = new VideoRecorder(imageType.name());
+      boolean isColor=!imageType.equals(ImageType.edges);
+      VideoRecorder recorder = new VideoRecorder(imageType.name(),isColor);
       recorders.put(recorder.name, recorder);
     }
   }

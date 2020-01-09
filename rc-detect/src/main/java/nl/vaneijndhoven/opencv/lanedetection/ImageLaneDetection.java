@@ -58,12 +58,13 @@ public class ImageLaneDetection {
         if (original.empty()) {
             System.err.println("detectLane: empty mat?");
         }
-
+        double yFraction=0.55;
+        double heightFraction=0.45;
         Mat undistorted = matrix.apply(original);
         // Mat image = new RegionOfInterest(0, 0.55, 1, 0.45).region(undistorted);
         // Mat image = new RegionOfInterest(0, 0, 1, 1).region(undistorted);
         // Mat image = new RegionOfInterest(0, 0.2, 1, 0.5).region(undistorted);
-        Mat image = new RegionOfInterest(0, 0.5, 1, 0.5).region(undistorted);
+        Mat image = new RegionOfInterest(0, yFraction, 1, heightFraction).region(undistorted);
         Size imageSize = image.size();
         ViewPort viewPort = new ViewPort(new Point(0, 0), imageSize.width, imageSize.height);
 
@@ -75,8 +76,8 @@ public class ImageLaneDetection {
         );
 
         Polygon worldPolygon = new Polygon(
-                new Point(0.45 * imageSize.width, imageSize.height),
-                new Point(0.55 * imageSize.width, imageSize.height),
+                new Point(yFraction * imageSize.width, imageSize.height),
+                new Point(heightFraction * imageSize.width, imageSize.height),
                 new Point(0 * imageSize.width, 0 * imageSize.height),
                 new Point(1 * imageSize.width, 0 * imageSize.height)
         );

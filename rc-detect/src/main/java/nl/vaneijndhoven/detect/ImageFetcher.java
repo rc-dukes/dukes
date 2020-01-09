@@ -9,7 +9,7 @@ import rx.functions.Func0;
 import rx.functions.Func1;
 
 /**
- * fetcher for Images
+ * fetcher for Images - will block at the  given FPS rate
  *
  */
 public class ImageFetcher {
@@ -56,7 +56,8 @@ public class ImageFetcher {
   }
 
   /**
-   * fetch an image Matrix
+   * fetch an image Matrix - will block to make sure Mat is emitted
+   * at the frames per second rate configured
    * 
    * @return - the image fetched
    */

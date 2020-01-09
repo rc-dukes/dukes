@@ -4,7 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ TestDebugImageServer.class })
+@Suite.SuiteClasses({ TestVideoRecorder.class, TestDebugImageServer.class })
 /**
  * TestSuite for detect aka daisy
  * 

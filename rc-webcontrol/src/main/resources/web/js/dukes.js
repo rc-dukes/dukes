@@ -8,10 +8,12 @@ var cameraSource = null;
 var cameraFps=5;
 var recording=false;
 var streetLane = "images/StreetLane.jpg"; // default Image
+// 'use strict'
+var URL = window.URL || window.webkitURL
 
 /**
  * all publish messages should go thru this function
- *
+ * 
  * @param address
  * @param message
  * @param headers
@@ -60,7 +62,7 @@ var display = function(err, msg) {
 
 /**
  * log the given message
- *
+ * 
  * @param msg
  */
 function logMessage(msg) {
@@ -106,6 +108,12 @@ function initRemote() {
 function initDetect() {
 	initRemoteControls();
 	initialSliderValues();
+	initVideoViewer();
+}
+
+function initVideoViewer() {
+  var inputNode = document.querySelector('#videoinput')
+  inputNode.addEventListener('change', playSelectedFile, false)
 }
 
 var powerState = false;
@@ -133,7 +141,7 @@ function power() {
 
 /**
  * set the state of the power - dependent controls
- *
+ * 
  * @param powerState
  */
 function setControlState(powerState) {
@@ -188,7 +196,7 @@ function initSSE() {
 
 /**
  * init the event Bus
- *
+ * 
  * @param withDetect
  */
 function initEventBus(withDetect) {
@@ -196,7 +204,8 @@ function initEventBus(withDetect) {
 	var protocol = window.location.protocol;
 	var busUrl = "";
 	var msg = window.location.href;
-	// if we are called directly from file:// we assume we are in a development environment
+	// if we are called directly from file:// we assume we are in a development
+	// environment
 	if (protocol === "file:") {
 		busUrl = "http://localhost:8080/eventbus";
 		imageViewUrl = 'http://localhost:8081';
@@ -229,7 +238,7 @@ function initEventBus(withDetect) {
 		if (withDetect) {
 			logMessage("withDetect!");
 			eb.registerHandler("STREAMADDED", function(err, msg) {
-				var videoNode = document.querySelector('video');
+				var videoNode = document.getElementById('video');
 				videoNode.src = "blob:" + msg.body.source;
 			});
 			eb.registerHandler("CANNYCONFIG", display);
@@ -240,47 +249,35 @@ function initEventBus(withDetect) {
 	}
 }
 
-function localFileVideoPlayer() {
-	// 'use strict'
-	var URL = window.URL || window.webkitURL
-	var displayMessage = function(message, isError) {
-		var element = document.querySelector('#message')
-		element.innerHTML = message;
-		element.className = isError ? 'error' : 'info'
-	};
+// play the selected file
+function playSelectedFile(event) {
+	var file = this.files[0]
+	var type = file.type
+	var videoNode = document.querySelector('#video')
+	var canPlay = videoNode.canPlayType(type)
+	if (canPlay === '')
+		canPlay = 'no'
+	var message = 'Can play type "' + type + '": ' + canPlay
+	var isError = canPlay === 'no'
+	logMessage(message)
 
-	var playSelectedFile = function(event) {
-		var file = this.files[0]
-		var type = file.type
-		var videoNode = document.querySelector('video')
-		var canPlay = videoNode.canPlayType(type)
-		if (canPlay === '')
-			canPlay = 'no'
-		var message = 'Can play type "' + type + '": ' + canPlay
-		var isError = canPlay === 'no'
-		displayMessage(message, isError)
-
-		if (isError) {
-			return;
-		}
-
-		var fReader = new FileReader();
-		fReader.readAsDataURL(file);
-		fReader.onloadend = function(event) {
-
-			var fileURL = URL.createObjectURL(file)
-			publish("STREAMADDED", {
-				"source" : fileURL.replace(/blob:/, ''),
-				"config" : {
-					"interval" : 100
-				}
-			});
-		};
-
-		var inputNode = document.querySelector('input')
-
-		inputNode.addEventListener('change', playSelectedFile, false)
+	if (isError) {
+		return;
 	}
+
+	var fReader = new FileReader();
+	fReader.readAsDataURL(file);
+	fReader.onloadend = function(event) {
+
+		var fileURL = URL.createObjectURL(file)
+		var source=fileURL.replace(/blob:/, '');
+		publish("STREAMADDED", {
+			"source" : source,
+			"config" : {
+				"interval" : 100
+			}
+		});
+	};
 }
 
 function registerHeartBeat() {
@@ -503,6 +500,7 @@ function registerDebugImages(msecs) {
 
 /**
  * set the camera Image Url based on the given base url
+ * 
  * @param baseurl
  */
 function setCameraImageUrl(baseurl) {
@@ -513,8 +511,9 @@ function setCameraImageUrl(baseurl) {
 
 /**
  * register the camera
- *
- * @param fps - frames per second
+ * 
+ * @param fps -
+ *            frames per second
  */
 function registerCamera(url, fps) {
 	cameraFps=fps;
@@ -536,7 +535,7 @@ function registerCamera(url, fps) {
 
 /**
  * update the Debug Images based on the given imageView Url
- *
+ * 
  * @param imageViewUrl -
  *            the URL of the imageView server as configured in the Enviroment
  */
@@ -597,7 +596,7 @@ function updateConfig() {
 
 /**
  * set the color of the element with the given id
- *
+ * 
  * @param id
  * @param color
  */
@@ -607,7 +606,7 @@ function setColor(id, color) {
 
 /**
  * set the image for the given id to the given source
- *
+ * 
  * @param id
  * @param src
  */
@@ -618,7 +617,7 @@ function setImage(id, src) {
 
 /**
  * update the slider for the given sliderId from the given textbox
- *
+ * 
  * @param sliderId -
  *            the slider to update
  * @param textboxId -
@@ -637,7 +636,7 @@ function onSlide(sliderId, textbox) {
 
 /**
  * set the initial slider values
- *
+ * 
  * @returns
  */
 function initialSliderValues() {
