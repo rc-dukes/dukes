@@ -16,7 +16,7 @@ import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
-import nl.vaneijndhoven.opencv.tools.ImageCollector;
+import nl.vaneijndhoven.opencv.video.ImageCollector;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 

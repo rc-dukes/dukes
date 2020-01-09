@@ -112,7 +112,7 @@ public class ImageUtils {
   /**
    * prepare writing images 
    * @param path
-   * @param filePrefx
+   * @param filePrefix
    */
   public ImageUtils(String path,String filePrefix) {
     this.path=path;

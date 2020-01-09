@@ -21,7 +21,7 @@ import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.objects.StartLight;
 import nl.vaneijndhoven.opencv.startlightdetection.DefaultStartLightDetector;
 import nl.vaneijndhoven.opencv.startlightdetection.StartLightDetector;
-import nl.vaneijndhoven.opencv.tools.ImageCollector;
+import nl.vaneijndhoven.opencv.video.ImageCollector;
 
 /**
  * StartLight DetectionController
