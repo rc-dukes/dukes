@@ -15,6 +15,7 @@ import nl.vaneijndhoven.opencv.video.ImageUtils;
 
 /**
  * test the video recording functionality
+ * 
  * @author wf
  *
  */
@@ -28,18 +29,25 @@ public class TestVideoRecorder {
   public void testVideoRecorder() {
     byte[] testImage = DebugImageServer.testImage();
     Mat testMat = ImageUtils.imageBytes2Mat(testImage);
-    String msg=String.format("recording: %dx%d video",testMat.width(),testMat.height());
-    System.out.println(msg);
-    Size frameSize = new Size(testMat.height(),testMat.width());
-    boolean isColor=true;
-    VideoRecorder recorder = new VideoRecorder("test",isColor);
-    
-    recorder.start(25.0, frameSize);
-    for (int i = 1; i <= 50; i++) {
-      recorder.recordMat(testMat);
+    boolean isColor = true;
+    for (String ext : VideoRecorder.exts) {
+      for (String FOURCC : VideoRecorder.FOURCCs) {
+        Size frameSize = new Size(testMat.width(), testMat.height());
+        VideoRecorder recorder = new VideoRecorder("test", isColor);
+        recorder.ext=ext;
+        recorder.FOURCC=FOURCC;
+        String msg = String.format("recording: %dx%d %s video with %s",
+            testMat.width(), testMat.height(), ext, FOURCC);
+        System.out.println(msg);
+
+        recorder.start(25.0, frameSize);
+        for (int i = 1; i <= 50; i++) {
+          recorder.recordMat(testMat);
+        }
+        recorder.stop();
+        File videoFile = new File(recorder.path);
+        assertTrue(videoFile.exists());
+      }
     }
-    recorder.stop();
-    File videoFile=new File(recorder.path);
-    assertTrue(videoFile.exists());
   }
 }

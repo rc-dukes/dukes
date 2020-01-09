@@ -24,6 +24,10 @@ public class VideoRecorder {
   String path;
   boolean started;
   boolean isColor;
+  public static String exts[]= {"mov","avi","mpg"};
+  String ext="mov";
+  public static String FOURCCs[]= { "MJPG", "X264", "H264", "MP4V", "AVC1", "FMP4", "JPEG"};
+  String FOURCC="mp4v";
   
   /**
    * construct me
@@ -33,9 +37,6 @@ public class VideoRecorder {
   public VideoRecorder(String name, boolean isColor) {
     this.name=name;
     this.isColor=isColor;
-    Date now = new Date();
-    String timestamp=dateFormat.format(now);
-    path=String.format("/tmp/%s_%s.mov", name,timestamp);
     started=false;
   }
   
@@ -43,11 +44,10 @@ public class VideoRecorder {
   public void start(double fps, Size frameSize) {
     this.fps=fps;
     this.frameSize=frameSize;
-    // MJPG, X264, H264, MP4V, AVC1, FMP4
-    int fourcc = VideoWriter.fourcc('m', 'p', '4', 'v');
-    
-    // int fourcc = VideoWriter.fourcc('M', 'J', 'P', 'G');
-    // int fourcc = VideoWriter.fourcc('A', 'V', 'C', '1');
+    int fourcc = VideoWriter.fourcc(FOURCC.charAt(0), FOURCC.charAt(1), FOURCC.charAt(2), FOURCC.charAt(3)); 
+    Date now = new Date();
+    String timestamp=dateFormat.format(now);
+    path=String.format("/tmp/%s_%s_%s.%s", name,FOURCC,timestamp,ext);
     save = new VideoWriter(path,fourcc, this.fps, this.frameSize, isColor);
     started=true;
   }
