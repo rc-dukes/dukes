@@ -1,9 +1,10 @@
 package nl.vaneijndhoven.dukes.server;
 
+import org.rcdukes.detect.Detector;
+
 import com.bitplan.error.ErrorHandler;
 
 import io.vertx.core.json.JsonObject;
-import nl.vaneijndhoven.detect.Detector;
 import nl.vaneijndhoven.dukes.action.Action;
 import nl.vaneijndhoven.dukes.common.Characters;
 import nl.vaneijndhoven.dukes.common.ClusterStarter;

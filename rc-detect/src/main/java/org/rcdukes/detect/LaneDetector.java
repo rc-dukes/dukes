@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.detect;
+package org.rcdukes.detect;
 
 import java.util.Map;
 

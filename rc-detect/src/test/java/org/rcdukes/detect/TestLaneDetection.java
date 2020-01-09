@@ -1,4 +1,4 @@
-package com.bitplan.detect;
+package org.rcdukes.detect;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -8,11 +8,11 @@ import java.util.Map.Entry;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opencv.core.Mat;
+import org.rcdukes.detect.ImageFetcher;
+import org.rcdukes.detect.LaneDetector;
 
 import com.bitplan.opencv.NativeLibrary;
 
-import nl.vaneijndhoven.detect.ImageFetcher;
-import nl.vaneijndhoven.detect.LaneDetector;
 import nl.vaneijndhoven.opencv.video.ImageCollector;
 import nl.vaneijndhoven.opencv.video.ImageCollector.Image;
 import nl.vaneijndhoven.opencv.video.ImageUtils;

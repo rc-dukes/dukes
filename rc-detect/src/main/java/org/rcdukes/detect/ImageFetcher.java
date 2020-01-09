@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.detect;
+package org.rcdukes.detect;
 
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
@@ -125,8 +125,10 @@ public class ImageFetcher {
             final Mat frame = this.fetch();
             hasNext = frame!=null && frame.rows()>0 && frame.cols()>0;
             if (hasNext) {
-               String msg = String.format("->%6d:%4dx%d", frameIndex, frame.cols(), frame.rows());
-               System.out.println(msg);
+               if (debug && frameIndex%10==0) {
+                 String msg = String.format("->%6d:%4dx%d", frameIndex, frame.cols(), frame.rows());
+                 LOG.info(msg);
+               }
                subscriber.onNext(frame);
             }
           }

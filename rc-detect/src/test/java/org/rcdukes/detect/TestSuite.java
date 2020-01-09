@@ -1,4 +1,4 @@
-package com.bitplan.detect;
+package org.rcdukes.detect;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

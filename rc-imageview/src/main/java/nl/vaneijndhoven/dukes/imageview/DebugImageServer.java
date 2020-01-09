@@ -6,13 +6,13 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.opencv.core.Mat;
+import org.rcdukes.detect.Detector;
 
 import io.vertx.core.Future;
 import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.http.HttpServer;
 import io.vertx.rxjava.core.http.HttpServerRequest;
 import io.vertx.rxjava.core.http.HttpServerResponse;
-import nl.vaneijndhoven.detect.Detector;
 import nl.vaneijndhoven.dukes.common.Characters;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.dukes.common.DukesVerticle;

@@ -1,4 +1,4 @@
-package com.bitplan.detect;
+package org.rcdukes.detect;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -9,11 +9,11 @@ import java.util.concurrent.TimeUnit;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opencv.core.Mat;
+import org.rcdukes.detect.ImageFetcher;
+import org.rcdukes.detect.ImageSubscriber;
 
 import com.bitplan.opencv.NativeLibrary;
 
-import nl.vaneijndhoven.detect.ImageFetcher;
-import nl.vaneijndhoven.detect.ImageSubscriber;
 import rx.Observable;
 
 /**

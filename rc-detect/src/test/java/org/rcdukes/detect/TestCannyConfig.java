@@ -1,4 +1,4 @@
-package com.bitplan.detect;
+package org.rcdukes.detect;
 
 import static org.junit.Assert.assertEquals;
 
