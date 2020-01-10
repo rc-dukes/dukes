@@ -26,13 +26,8 @@ import rx.schedulers.Schedulers;
  */
 public class Detector extends DukesVerticle {
 
+  // @FIXME - does not belong here ...
   private final static long START_LIGHT_DETECTION_INTERVAL = 50;
-
-  private final static String START_LANE_DETECTION = "START_LANE_DETECTION";
-  private final static String START_STARTLIGHT_DETECTION = "START_STARTLIGHT_DETECTION";
-  private final static String HOUGH_CONFIG_UPDATE = "HOUGH_CONFIG_UPDATE";
-  private final static String CAMERA_MATRIX_UPDATE = "CAMERA_MATRIX_UPDATE";
-
   public static Mat camera = null;
   public static Mat MAT = null;
   public static Mat BIRDS_EYE = null;
@@ -50,18 +45,12 @@ public class Detector extends DukesVerticle {
     super.preStart();
     NativeLibrary.load();
     consumer(Events.CAMERA_CONFIG_UPDATE, this::cameraConfig);
-    vertx.eventBus().consumer(
-        Characters.DAISY.getCallsign() + ":" + START_LANE_DETECTION,
-        this::startLD);
+    consumer(Events.START_LANE_DETECTION,this::startLD);
     // vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ":" +
     // START_STARTLIGHT_DETECTION, this::startSLD);
-    consumer(Events.CANNY_CONFIG_UPDATE,this::cannyConfig);
-    vertx.eventBus().consumer(
-        Characters.DAISY.getCallsign() + ":" + HOUGH_CONFIG_UPDATE,
-        this::houghConfig);
-    vertx.eventBus().consumer(
-        Characters.DAISY.getCallsign() + ":" + CAMERA_MATRIX_UPDATE,
-        this::cameraMatrix);
+    consumer(Events.CANNY_CONFIG_UPDATE, this::cannyConfig);
+    consumer(Events.HOUGH_CONFIG_UPDATE,this::houghConfig);
+    consumer(Events.CAMERA_MATRIX_UPDATE,this::cameraMatrix);
 
     super.postStart();
   }
@@ -71,7 +60,7 @@ public class Detector extends DukesVerticle {
         // .doOnNext(detection -> LOG.trace("Image lane detection processing
         // result: " + detection))
         .subscribe(
-            lane -> vertx.eventBus().publish(Events.LANEDETECTION.name(), lane),
+            lane -> vertx.eventBus().publish(Events.START_LANE_DETECTION.name(), lane),
             error -> LOG.error("Error during lane detection image processing:",
                 error),
             () -> LOG.info("Lane detection image processing ended"));
@@ -83,20 +72,34 @@ public class Detector extends DukesVerticle {
         // result: " + detection))
         // .takeWhile()
         .subscribe(
-            light -> vertx.eventBus().publish(Events.STARTLIGHTDETECTION.name(),
+            light -> vertx.eventBus().publish(Events.START_STARTLIGHT_DETECTION.name(),
                 light),
             error -> LOG.error("Error during start light image processing:",
                 error),
             () -> LOG.info("Start light image processing ended"));
   }
-  
+
   private void cameraConfig(Message<JsonObject> message) {
-    JsonObject jo=message.body();
-    shareData("cameraConfig",jo);
-    vertx.eventBus()
-        .send(Characters.DAISY.getCallsign() + ":" + START_LANE_DETECTION, jo);
-    vertx.eventBus().send(
-        Characters.DAISY.getCallsign() + ":" + START_STARTLIGHT_DETECTION, jo);
+    JsonObject jo = message.body();
+    JsonObject currentJo = this.getSharedData("cameraConfig");
+    boolean start = false;
+    boolean restart = false;
+    if (currentJo == null) {
+      start = true;
+    } else {
+      CameraConfig currentCameraConfig = currentJo.mapTo(CameraConfig.class);
+      CameraConfig cameraConfig = jo.mapTo(CameraConfig.class);
+      restart = !cameraConfig.getSource()
+          .equals(currentCameraConfig.getSource());
+    }
+    shareData("cameraConfig", jo);
+    if (restart) {
+      // @FIXME - STOP the exiting detections
+    }
+    if (start) {
+      sendEvent(Events.START_LANE_DETECTION, jo);
+      sendEvent(Events.START_STARTLIGHT_DETECTION, jo);
+    }
   }
 
   private void cannyConfig(Message<JsonObject> message) {
@@ -172,13 +175,14 @@ public class Detector extends DukesVerticle {
         shareData("hough", config.getJsonObject("hough"));
     }
     CameraConfig cameraConfig = createCameraConfig();
-    return startLaneDetection(cameraConfig.getSource(), cameraConfig.getInterval()).map(map -> {
-      try {
-        return new ObjectMapper().writeValueAsString(map);
-      } catch (JsonProcessingException e) {
-        throw new RuntimeException(e);
-      }
-    });
+    return startLaneDetection(cameraConfig.getSource(),
+        cameraConfig.getInterval()).map(map -> {
+          try {
+            return new ObjectMapper().writeValueAsString(map);
+          } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+          }
+        });
   }
 
   /**
@@ -194,13 +198,15 @@ public class Detector extends DukesVerticle {
     LOG.info("Started image processing for source: " + source);
     return fetcher.toObservable().subscribeOn(Schedulers.newThread())
         .throttleFirst(interval, TimeUnit.MILLISECONDS).doOnNext(image -> {
-          Mat frame=image.getFrame();
+          Mat frame = image.getFrame();
           Detector.MAT = frame;
           Detector.camera = frame.clone();
         }).map(image -> {
           ImageCollector collector = new ImageCollector();
-          Map<String, Object> detection = new LaneDetector(createCanny().withImageCollector(collector),
-              createHoughLines().withImageCollector(collector), createCameraConfig(),createMatrix(), collector).detect(image);
+          Map<String, Object> detection = new LaneDetector(
+              createCanny().withImageCollector(collector),
+              createHoughLines().withImageCollector(collector),
+              createCameraConfig(), createMatrix(), collector).detect(image);
           Detector.CANNY_IMG = collector.edges();
           return detection;
         });

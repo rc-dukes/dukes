@@ -129,7 +129,37 @@ public abstract class DukesVerticle extends AbstractVerticle {
   public void send(Characters receiver, String... nameValues) {
     JsonObject jo = this.toJsonObject(nameValues);
     String address = receiver.getCallsign();
+    send(address,jo);
+  }
+    
+  /**
+   * send the given json object to the given address over the vertx event bus
+   * @param address - the address to send to
+   * @param jo - the JsonObject to send
+   */
+  public void send(String address,JsonObject jo)  {
     getVertx().eventBus().send(address, jo);
+  }
+  
+  /**
+   * get the address for the given event and my Callsigng
+   * @param event - the event
+   * @return - the address to be used
+   */
+  public String getEventAddress(Events event) {
+    // rc-dukes convention - watch webcontrol javascript ...
+    String address = character.getCallsign() + ":" + event.name();
+    return address;
+  }
+  
+  /**
+   * send the given even with the given Json Object
+   * @param event
+   * @param jo
+   */
+  public void sendEvent(Events event,JsonObject jo) {
+    String address = this.getEventAddress(event);
+    send(address,jo);
   }
 
   /**
@@ -139,8 +169,7 @@ public abstract class DukesVerticle extends AbstractVerticle {
    * @param handler
    */
   public <T> void consumer(Events event, Handler<Message<T>> handler) {
-    // rc-dukes convention - watch webcontrol javascript ...
-    String address = character.getCallsign() + ":" + event.name();
+    String address = this.getEventAddress(event);
     vertx.eventBus().consumer(address, handler);
   }
 
