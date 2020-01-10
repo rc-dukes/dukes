@@ -125,7 +125,7 @@ public class ImageFetcher {
             final Mat frame = this.fetch();
             hasNext = frame!=null && frame.rows()>0 && frame.cols()>0;
             if (hasNext) {
-               if (debug && frameIndex%10==0) {
+               if (debug && frameIndex%25==0) {
                  String msg = String.format("->%6d:%4dx%d", frameIndex, frame.cols(), frame.rows());
                  LOG.info(msg);
                }

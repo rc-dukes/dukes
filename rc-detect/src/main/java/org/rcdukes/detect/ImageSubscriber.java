@@ -38,7 +38,7 @@ public class ImageSubscriber extends Subscriber<Mat> {
     frameIndex++;
     if (cols==0 || rows==0)
       System.err.println("invalid frame "+frameIndex);
-    if (debug) {
+    if (debug && frameIndex%25==0) {
       String msg = String.format("%6d:%4dx%d", frameIndex, cols, rows);
       System.out.println(msg);
     }

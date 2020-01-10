@@ -20,7 +20,7 @@ import rx.Observable;
  *
  */
 public class TestImageFetcher {
-  boolean debug = false;
+  boolean debug = true;
 
   @BeforeClass
   public static void setup() throws Exception {
@@ -42,6 +42,7 @@ public class TestImageFetcher {
   @Test
   public void testImageFetcher() {
     ImageFetcher imageFetcher = getTestImageFetcher();
+    imageFetcher.debug=debug;
     Mat mat;
     do {
       mat = imageFetcher.fetch();
