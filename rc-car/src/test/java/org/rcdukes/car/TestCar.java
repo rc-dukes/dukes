@@ -3,9 +3,9 @@ package org.rcdukes.car;
 import org.junit.Test;
 import org.rcdukes.car.CarVerticle;
 
-import nl.vaneijndhoven.dukes.common.ClusterStarter;
-import nl.vaneijndhoven.dukes.common.Environment;
-import nl.vaneijndhoven.dukes.common.DukesVerticle.Status;
+import org.rcdukes.common.ClusterStarter;
+import org.rcdukes.common.Environment;
+import org.rcdukes.common.DukesVerticle.Status;
 
 public class TestCar {
   @Test

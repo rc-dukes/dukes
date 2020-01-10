@@ -6,10 +6,10 @@ import org.junit.Test;
 import org.rcdukes.car.SteeringHandler;
 
 import io.vertx.core.json.JsonObject;
-import nl.vaneijndhoven.dukes.car.Steering;
-import nl.vaneijndhoven.dukes.common.Config;
-import nl.vaneijndhoven.dukes.drivecontrol.Car;
-import nl.vaneijndhoven.dukes.drivecontrol.TestCar;
+import org.rcdukes.car.Steering;
+import org.rcdukes.common.Config;
+import org.rcdukes.drivecontrol.Car;
+import org.rcdukes.drivecontrol.TestCar;
 
 /**
  * test the speed and engine handlers

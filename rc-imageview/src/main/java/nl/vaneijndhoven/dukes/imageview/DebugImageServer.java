@@ -14,10 +14,10 @@ import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.http.HttpServer;
 import io.vertx.rxjava.core.http.HttpServerRequest;
 import io.vertx.rxjava.core.http.HttpServerResponse;
-import nl.vaneijndhoven.dukes.common.Characters;
-import nl.vaneijndhoven.dukes.common.Config;
-import nl.vaneijndhoven.dukes.common.DukesVerticle;
-import nl.vaneijndhoven.dukes.common.Events;
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.Config;
+import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.Events;
 
 /**
  * Imageview verticle (Rosco)

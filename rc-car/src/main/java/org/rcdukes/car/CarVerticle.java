@@ -2,9 +2,9 @@ package org.rcdukes.car;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.eventbus.Message;
-import nl.vaneijndhoven.dukes.common.Characters;
-import nl.vaneijndhoven.dukes.common.DukesVerticle;
-import nl.vaneijndhoven.dukes.drivecontrol.Car;
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.drivecontrol.Car;
 import rx.Subscription;
 
 /**

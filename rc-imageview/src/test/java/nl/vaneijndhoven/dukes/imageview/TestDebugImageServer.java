@@ -12,9 +12,9 @@ import org.junit.Test;
 import org.rcdukes.video.ImageUtils;
 
 import javafx.scene.image.Image;
-import nl.vaneijndhoven.dukes.common.ClusterStarter;
-import nl.vaneijndhoven.dukes.common.DukesVerticle.Status;
-import nl.vaneijndhoven.dukes.common.Environment;
+import org.rcdukes.common.ClusterStarter;
+import org.rcdukes.common.DukesVerticle.Status;
+import org.rcdukes.common.Environment;
 
 /**
  * test the imageView verticle

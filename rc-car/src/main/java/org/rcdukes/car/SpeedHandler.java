@@ -3,8 +3,8 @@ package org.rcdukes.car;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import nl.vaneijndhoven.dukes.car.EngineMap;
-import nl.vaneijndhoven.dukes.drivecontrol.Car;
+import org.rcdukes.car.EngineMap;
+import org.rcdukes.drivecontrol.Car;
 
 /**
  * Car speed handling

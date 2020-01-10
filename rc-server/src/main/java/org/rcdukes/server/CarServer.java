@@ -2,15 +2,15 @@ package org.rcdukes.server;
 
 import org.rcdukes.detect.Detector;
 
-import com.bitplan.error.ErrorHandler;
+import org.rcdukes.error.ErrorHandler;
 
 import io.vertx.core.json.JsonObject;
-import nl.vaneijndhoven.dukes.action.Action;
-import nl.vaneijndhoven.dukes.common.Characters;
-import nl.vaneijndhoven.dukes.common.ClusterStarter;
-import nl.vaneijndhoven.dukes.common.Config;
-import nl.vaneijndhoven.dukes.common.DukesVerticle;
-import nl.vaneijndhoven.dukes.common.Events;
+import org.rcdukes.action.Action;
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.ClusterStarter;
+import org.rcdukes.common.Config;
+import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.Events;
 import nl.vaneijndhoven.dukes.imageview.DebugImageServer;
 import nl.vaneijndhoven.dukes.webcontrol.WebControl;
 

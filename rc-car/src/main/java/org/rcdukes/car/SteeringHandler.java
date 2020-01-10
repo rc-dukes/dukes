@@ -3,9 +3,9 @@ package org.rcdukes.car;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import nl.vaneijndhoven.dukes.car.SteeringMap;
-import nl.vaneijndhoven.dukes.common.Config;
-import nl.vaneijndhoven.dukes.drivecontrol.Car;
+import org.rcdukes.car.SteeringMap;
+import org.rcdukes.common.Config;
+import org.rcdukes.drivecontrol.Car;
 
 /**
  * handle the steering of the car from given command messages

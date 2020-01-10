@@ -15,7 +15,7 @@ import io.vertx.core.VertxOptions;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
-import nl.vaneijndhoven.dukes.common.Config;
+import org.rcdukes.common.Config;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
 import rx.Subscription;

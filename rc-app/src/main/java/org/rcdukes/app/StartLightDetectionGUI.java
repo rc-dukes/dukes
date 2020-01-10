@@ -19,7 +19,7 @@ import io.vertx.core.VertxOptions;
 import javafx.fxml.FXML;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
-import nl.vaneijndhoven.dukes.common.Config;
+import org.rcdukes.common.Config;
 import nl.vaneijndhoven.objects.StartLight;
 import nl.vaneijndhoven.opencv.startlightdetection.DefaultStartLightDetector;
 

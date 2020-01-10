@@ -4,14 +4,14 @@ import org.rcdukes.car.CarVerticle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bitplan.error.ErrorHandler;
+import org.rcdukes.error.ErrorHandler;
 
 import io.vertx.core.VertxOptions;
-import nl.vaneijndhoven.dukes.common.ClusterStarter;
-import nl.vaneijndhoven.dukes.common.Config;
-import nl.vaneijndhoven.dukes.common.Environment;
-import nl.vaneijndhoven.dukes.drivecontrol.Car;
-import nl.vaneijndhoven.dukes.watchdog.WatchDog;
+import org.rcdukes.common.ClusterStarter;
+import org.rcdukes.common.Config;
+import org.rcdukes.common.Environment;
+import org.rcdukes.drivecontrol.Car;
+import org.rcdukes.watchdog.WatchDog;
 
 /**
  * Runner to start the remote cluster on the car

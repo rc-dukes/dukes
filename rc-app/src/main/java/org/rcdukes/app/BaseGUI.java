@@ -18,7 +18,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
-import nl.vaneijndhoven.dukes.common.ErrorHandler;
+import org.rcdukes.common.ErrorHandler;
 
 /**
  * base java fx GUI functionality

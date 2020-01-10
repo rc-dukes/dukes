@@ -5,9 +5,9 @@ import io.vertx.ext.web.handler.sockjs.BridgeOptions;
 import io.vertx.rxjava.ext.web.Router;
 import io.vertx.rxjava.ext.web.handler.StaticHandler;
 import io.vertx.rxjava.ext.web.handler.sockjs.SockJSHandler;
-import nl.vaneijndhoven.dukes.common.Characters;
-import nl.vaneijndhoven.dukes.common.Config;
-import nl.vaneijndhoven.dukes.common.DukesVerticle;
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.Config;
+import org.rcdukes.common.DukesVerticle;
 
 /**
  * Manual UI web based control (Boss Hogg)

@@ -1,7 +1,7 @@
 package org.rcdukes.app;
 
-import nl.vaneijndhoven.dukes.common.Characters;
-import nl.vaneijndhoven.dukes.common.DukesVerticle;
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.DukesVerticle;
 
 /**
  * JavaFx Application Verticle

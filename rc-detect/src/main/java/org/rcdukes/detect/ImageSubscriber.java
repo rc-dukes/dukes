@@ -3,7 +3,7 @@ package org.rcdukes.detect;
 import org.opencv.core.Mat;
 import org.rcdukes.video.Image;
 
-import nl.vaneijndhoven.dukes.common.ErrorHandler;
+import org.rcdukes.common.ErrorHandler;
 import rx.Subscriber;
 
 /**

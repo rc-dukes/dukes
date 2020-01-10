@@ -14,7 +14,7 @@ import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.core.http.ClientAuth;
 import io.vertx.core.net.JksOptions;
-import nl.vaneijndhoven.dukes.common.Config;
+import org.rcdukes.common.Config;
 
 /**
  * basic event bus tests see <a href=
