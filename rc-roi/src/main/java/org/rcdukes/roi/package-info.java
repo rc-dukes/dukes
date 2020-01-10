@@ -1,5 +1,5 @@
   /**
    * nl.vaneijndhoven.dukes.roi is part of the rc-roi module
-   * @TODO - add description
+   * Region of Interest handling
    */
   package org.rcdukes.roi;

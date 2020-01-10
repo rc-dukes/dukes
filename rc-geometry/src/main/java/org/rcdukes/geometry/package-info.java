@@ -5,4 +5,4 @@
  * nl.vaneijndhoven.dukes.geometry.pointinplane is part of the rc-geometry module
  * @since 0.0.1
  */
-package nl.vaneijndhoven.dukes.geometry;
+package org.rcdukes.geometry;

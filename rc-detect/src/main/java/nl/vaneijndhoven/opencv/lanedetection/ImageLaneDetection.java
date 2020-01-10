@@ -21,9 +21,9 @@ import org.rcdukes.video.ImageCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import nl.vaneijndhoven.dukes.geometry.Line;
-import nl.vaneijndhoven.dukes.geometry.Point;
-import nl.vaneijndhoven.dukes.geometry.Polygon;
+import org.rcdukes.geometry.Line;
+import org.rcdukes.geometry.Point;
+import org.rcdukes.geometry.Polygon;
 import nl.vaneijndhoven.navigation.plot.LaneOrientation;
 import nl.vaneijndhoven.navigation.plot.StoppingZoneOrientation;
 import nl.vaneijndhoven.objects.Lane;
@@ -64,7 +64,7 @@ public class ImageLaneDetection {
     // Mat image = new RegionOfInterest(0, 0.55, 1, 0.45).region(undistorted);
     // Mat image = new RegionOfInterest(0, 0, 1, 1).region(undistorted);
     // Mat image = new RegionOfInterest(0, 0.2, 1, 0.5).region(undistorted);
-    Mat image = new ROI(0, rw, 1, rh)
+    Mat image = new ROI("camera",0, rw, 1, rh)
         .region(undistorted);
     Size imageSize = image.size();
     ViewPort viewPort = new ViewPort(new Point(0, 0), imageSize.width,

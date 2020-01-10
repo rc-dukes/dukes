@@ -9,10 +9,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opencv.core.Mat;
-import org.rcdukes.detect.ImageFetcher;
-import org.rcdukes.detect.ImageSubscriber;
-
-import com.bitplan.opencv.NativeLibrary;
+import org.rcdukes.opencv.NativeLibrary;
 
 import rx.Observable;
 

@@ -8,9 +8,8 @@ import java.io.IOException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opencv.core.Mat;
+import org.rcdukes.opencv.NativeLibrary;
 import org.rcdukes.video.ImageUtils;
-
-import com.bitplan.opencv.NativeLibrary;
 
 import nl.vaneijndhoven.dukes.imageview.DebugImageServer.ImageFormat;
 

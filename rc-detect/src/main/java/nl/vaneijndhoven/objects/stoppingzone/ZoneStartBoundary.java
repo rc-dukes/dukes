@@ -1,6 +1,6 @@
 package nl.vaneijndhoven.objects.stoppingzone;
 
-import nl.vaneijndhoven.dukes.geometry.Line;
+import org.rcdukes.geometry.Line;
 import nl.vaneijndhoven.objects.Boundary;
 import nl.vaneijndhoven.opencv.linedetection.LineFilter;
 

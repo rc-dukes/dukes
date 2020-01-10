@@ -2,12 +2,21 @@ package org.rcdukes.video;
 
 import org.opencv.core.Point;
 
-import nl.vaneijndhoven.dukes.geometry.Point2D;
+import org.rcdukes.geometry.Point2D;
 
+/**
+ * map an rc dukes geometry point to an openCV point
+ *
+ */
 public class PointMapper {
 
-    public static Point toPoint(Point2D point) {
-        return new Point(point.getX(), point.getY());
-    }
+  /**
+   * convert the given rc dukes geometry 2D point to an openCV point
+   * @param point - the 2D Point
+   * @return - the corresponding openCV point
+   */
+  public static Point toPoint(Point2D point) {
+    return new Point(point.getX(), point.getY());
+  }
 
 }

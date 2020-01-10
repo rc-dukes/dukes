@@ -2,7 +2,7 @@ package nl.vaneijndhoven.objects;
 
 import java.util.Optional;
 
-import nl.vaneijndhoven.dukes.geometry.Line;
+import org.rcdukes.geometry.Line;
 
 public class StoppingZone {
 

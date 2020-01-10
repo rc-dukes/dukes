@@ -1,4 +1,4 @@
-package com.bitplan.opencv;
+package org.rcdukes.opencv;
 
 import java.io.File;
 import java.lang.reflect.Field;

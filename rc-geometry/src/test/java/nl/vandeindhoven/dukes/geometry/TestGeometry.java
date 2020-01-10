@@ -8,15 +8,14 @@ import static org.junit.Assert.fail;
 import java.util.List;
 
 import org.junit.Test;
-
-import nl.vaneijndhoven.dukes.geometry.Line;
-import nl.vaneijndhoven.dukes.geometry.Line.Vector;
-import nl.vaneijndhoven.dukes.geometry.Point;
-import nl.vaneijndhoven.dukes.geometry.Point2D;
-import nl.vaneijndhoven.dukes.geometry.Point3D;
-import nl.vaneijndhoven.dukes.geometry.Polygon;
-import nl.vaneijndhoven.dukes.geometry.pointinplane.PointInPlane;
-import nl.vaneijndhoven.dukes.geometry.pointinplane.WindingNumbers;
+import org.rcdukes.geometry.Line;
+import org.rcdukes.geometry.Point;
+import org.rcdukes.geometry.Point2D;
+import org.rcdukes.geometry.Point3D;
+import org.rcdukes.geometry.Polygon;
+import org.rcdukes.geometry.Line.Vector;
+import org.rcdukes.geometry.pointinplane.PointInPlane;
+import org.rcdukes.geometry.pointinplane.WindingNumbers;
 
 /**
  * test the Geometry functions

@@ -8,13 +8,10 @@ import java.util.Map.Entry;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opencv.core.Mat;
-import org.rcdukes.detect.ImageFetcher;
-import org.rcdukes.detect.LaneDetector;
+import org.rcdukes.opencv.NativeLibrary;
 import org.rcdukes.video.ImageCollector;
-import org.rcdukes.video.ImageUtils;
 import org.rcdukes.video.ImageCollector.Image;
-
-import com.bitplan.opencv.NativeLibrary;
+import org.rcdukes.video.ImageUtils;
 
 public class TestLaneDetection {
   @BeforeClass

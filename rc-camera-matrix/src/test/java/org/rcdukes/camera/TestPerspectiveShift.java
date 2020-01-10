@@ -8,9 +8,8 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.rcdukes.geometry.Polygon;
 import org.rcdukes.roi.ROI;
-
-import nl.vaneijndhoven.dukes.geometry.Polygon;
 
 /**
  * test the perspective shift
@@ -21,44 +20,60 @@ public class TestPerspectiveShift extends MatrixTestbase {
   @Test
   public void testChessboard() {
     CameraMatrix matrix = new CameraMatrix(7, 7);
-    Mat chessboard = Imgcodecs.imread(testPath + "chessBoard008.png");
+    Mat chessboard = Imgcodecs.imread(testPath + "dukes_chessBoard008.png");
     Point[] corners = matrix.findOuterChessBoardCornerPoints(chessboard);
     assertNotNull(corners);
-    assertEquals(4,corners.length);
+    assertEquals(4, corners.length);
+    if (debug) {
+      System.out.print("corners: ");
+      String delim = "";
+      for (int i = 0; i < 4; i++) {
+        System.out.print(
+            String.format("(%.1f,%.1f)%s", corners[i].x, corners[i].y, delim));
+        delim = ",";
+        if (i == 2)
+          delim = "\n";
+      }
+    }
     writeImage("chessBoardCorners", chessboard);
     Size size = chessboard.size();
-    Polygon imagePolygon = new ImagePolygon(size, 0, 0, 1, 0, 1, 1, 0,
-        1);
-    Polygon worldPolygon = new ImagePolygon(size,corners); 
+    Polygon imagePolygon = new ImagePolygon(size, 0, 0, 1, 0, 1, 1, 0, 1);
+    Polygon worldPolygon = new ImagePolygon(corners);
     PerspectiveShift perspectiveShift = new PerspectiveShift(imagePolygon,
         worldPolygon);
-
+    if (debug) {
+      System.out.println("image: " + perspectiveShift.imagePoints);
+      System.out.println("world: " + perspectiveShift.worldPoints);
+    }
     Mat shifted = perspectiveShift.apply(chessboard);
-    writeImage("shiftedChesBoard",shifted);
+    writeImage("shiftedChessBoard", shifted);
   }
 
   @Test
-  public void transform() throws Exception {
+  public void testTransform() throws Exception {
 
-    Mat original = Imgcodecs.imread(testPath + "chessBoard008.png");
-    // relative width and height
-    double rw = 0.55;
-    double rh = 0.45;
-    Mat image = new ROI(0, rw, 1, rh).region(original);
+    Mat original = Imgcodecs.imread(testPath + "dukes_livingroom.jpeg");
+    ROI roi = new ROI("near", 0, 0.4, 1, 0.6);
+    Mat image = roi.region(original);
 
     Polygon imagePolygon = new ImagePolygon(image.size(), 0, 0, 1, 0, 1, 1, 0,
         1);
-    Polygon worldPolygon = new ImagePolygon(image.size(), 0, 0, rw, 0, rw, rh,
-        0, rh);
+    // double ry4s[] = { 0.40,0.41,0.42,0.43,0.44,0.45,0.46};
+    // for (double ry4 : ry4s) {
+    Polygon worldPolygon = new ImagePolygon(image.size(), 0.30, 0.20, 0.80,
+        0.28, 0.96, 0.62, 0.15, 0.46);
 
     PerspectiveShift perspectiveShift = new PerspectiveShift(imagePolygon,
         worldPolygon);
 
     Mat shifted = perspectiveShift.apply(image);
     if (debug) {
+      System.out.println("worldp:" + perspectiveShift.worldPolygon);
+      System.out.println("world: " + perspectiveShift.worldPoints);
       writeImage("roiImage", image);
-      writeImage("shiftedImag", shifted);
+      writeImage("shiftedImage", shifted);
     }
+    // }
   }
 
   /**

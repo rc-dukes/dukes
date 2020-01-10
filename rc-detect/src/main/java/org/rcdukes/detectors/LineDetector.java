@@ -2,7 +2,7 @@ package org.rcdukes.detectors;
 
 import org.opencv.core.Mat;
 
-import nl.vaneijndhoven.dukes.geometry.Line;
+import org.rcdukes.geometry.Line;
 
 import java.util.Collection;
 

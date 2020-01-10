@@ -11,6 +11,7 @@ import org.opencv.core.Size;
  */
 public class ROI {
   double rx, ry, rw, rh;
+  String name;
 
   /**
    * construct me with the given relative
@@ -24,7 +25,8 @@ public class ROI {
    * @param rh
    *          - relative height 0-1
    */
-  public ROI(double rx, double ry, double rw, double rh) {
+  public ROI(String name,double rx, double ry, double rw, double rh) {
+    this.name=name;
     this.rx = rx;
     this.ry = ry;
     this.rw = rw;
@@ -38,7 +40,7 @@ public class ROI {
    *          - the base size to use
    * @return - the rectangle
    */
-  public Rect roi(Size base) {
+  public Rect roiRect(Size base) {
     double roiX = base.width * rx;
     double roiY = base.height * ry;
     double roiWidth = base.width * rw;
@@ -59,7 +61,8 @@ public class ROI {
   public Mat region(Mat image) {
     // Use 2-arg constructor to create region image backed by original image
     // data
-    return new Mat(image, roi(image.size()));
+    Rect roiRect = roiRect(image.size());
+    return new Mat(image,roiRect);
   }
 
 }

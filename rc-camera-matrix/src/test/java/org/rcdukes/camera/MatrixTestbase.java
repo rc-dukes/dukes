@@ -1,8 +1,7 @@
 package org.rcdukes.camera;
 
 import org.junit.BeforeClass;
-
-import com.bitplan.opencv.NativeLibrary;
+import org.rcdukes.opencv.NativeLibrary;
 
 /**
  * common parts of opencv Matrix based tests

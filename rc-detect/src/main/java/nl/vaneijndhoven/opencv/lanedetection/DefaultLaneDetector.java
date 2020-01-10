@@ -1,9 +1,9 @@
 package nl.vaneijndhoven.opencv.lanedetection;
 
 import nl.vaneijndhoven.objects.ViewPort;
-import nl.vaneijndhoven.dukes.geometry.Line;
-import nl.vaneijndhoven.dukes.geometry.Point;
-import nl.vaneijndhoven.dukes.geometry.Point2D;
+import org.rcdukes.geometry.Line;
+import org.rcdukes.geometry.Point;
+import org.rcdukes.geometry.Point2D;
 import nl.vaneijndhoven.objects.Lane;
 import nl.vaneijndhoven.objects.lane.LaneLeftBoundary;
 import nl.vaneijndhoven.objects.lane.LaneRightBoundary;

@@ -2,7 +2,7 @@ package nl.vaneijndhoven.dukes.app;
 
 import java.net.URL;
 
-import com.bitplan.opencv.NativeLibrary;
+import org.rcdukes.opencv.NativeLibrary;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

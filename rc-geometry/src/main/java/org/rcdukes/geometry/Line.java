@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.geometry;
+package org.rcdukes.geometry;
 
 import java.util.Collection;
 import java.util.Locale;

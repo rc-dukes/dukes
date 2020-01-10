@@ -3,7 +3,7 @@ package nl.vaneijndhoven.opencv.linedetection;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 
-import nl.vaneijndhoven.dukes.geometry.Line;
+import org.rcdukes.geometry.Line;
 
 import java.util.*;
 

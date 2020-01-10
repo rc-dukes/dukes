@@ -10,13 +10,7 @@ import org.junit.Test;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.rcdukes.roi.FarField;
-import org.rcdukes.roi.LeftField;
-import org.rcdukes.roi.NearField;
-import org.rcdukes.roi.ROI;
-import org.rcdukes.roi.RightField;
-
-import com.bitplan.opencv.NativeLibrary;
+import org.rcdukes.opencv.NativeLibrary;
 
 /**
  * Test the Region of interest handling
@@ -47,39 +41,39 @@ public class TestROI {
    */
   @Test
   public void testNativeLibrary() throws Exception {
-    //if (!isTravis()) {
+
+    if (debug)
+      System.out
+          .println(String.format("trying to load native library %s from path",
+              Core.NATIVE_LIBRARY_NAME));
+    assertTrue(NativeLibrary.getNativeLibPath().isDirectory());
+    assertTrue(NativeLibrary.getNativeLib().getCanonicalPath(),
+        NativeLibrary.getNativeLib().isFile());
+    Exception issue = null;
+    try {
+      NativeLibrary.load();
+    } catch (Exception le) {
+      issue = le;
+    }
+    for (String pathelement : NativeLibrary.getCurrentLibraryPath()) {
+      File path = new File(pathelement);
       if (debug)
-        System.out
-            .println(String.format("trying to load native library %s from path",
-                Core.NATIVE_LIBRARY_NAME));
-      assertTrue(NativeLibrary.getNativeLibPath().isDirectory());
-      assertTrue(NativeLibrary.getNativeLib().getCanonicalPath(),NativeLibrary.getNativeLib().isFile());
-      Exception issue=null;
-      try {
-        NativeLibrary.load();
-      } catch (Exception le) {
-    	  issue=le;
-      }
-      for (String pathelement : NativeLibrary.getCurrentLibraryPath()) {
-        File path = new File(pathelement);
+        System.out.print("\t" + pathelement);
+      if (path.isDirectory()) {
         if (debug)
-          System.out.print("\t" + pathelement);
-        if (path.isDirectory()) {
-          if (debug)
-            System.out.println("✓");
-          File libFile = new File(path, NativeLibrary.getLibraryFileName());
-          if (libFile.isFile() && debug) {
-            System.out.println(
-                String.format("found at %s ", libFile.getCanonicalPath()));
-          }
-        } else {
-          if (debug)
-            System.out.println();
+          System.out.println("✓");
+        File libFile = new File(path, NativeLibrary.getLibraryFileName());
+        if (libFile.isFile() && debug) {
+          System.out.println(
+              String.format("found at %s ", libFile.getCanonicalPath()));
         }
+      } else {
+        if (debug)
+          System.out.println();
       }
-      if (issue!=null)
-    	  throw issue;
-    //} isTravis
+    }
+    if (issue != null)
+      throw issue;
   }
 
   @Test
@@ -88,24 +82,32 @@ public class TestROI {
       NativeLibrary.load();
       File imgRoot = new File(testPath);
       assertTrue(imgRoot.isDirectory());
-      Mat image = Imgcodecs.imread(testPath + "/test_image.jpg");
+      Mat image = Imgcodecs.imread(testPath + "dukes_roi_test_image.jpg");
       assertNotNull(image);
       assertEquals(960, image.height());
       assertEquals(1280, image.width());
-      ROI rois[] = { new FarField(0.5), new NearField(0.5),
-          new LeftField(0.5), new RightField(0.5) };
+      ROI rois[] = { new ROI("far", 0, 0, 1, 0.5),
+          new ROI("near", 0, 0.5, 1, 0.5), new ROI("left", 0, 0, 0.5, 1),
+          new ROI("right", 0.5, 0, 0.5, 1) };
       for (ROI roi : rois) {
         Mat roiImage = roi.region(image);
         if (debug)
-          System.out.println(
-              String.format("%10s: %4d x %4d", roi.getClass().getSimpleName(),
-                  roiImage.width(), roiImage.height()));
-        assertEquals(roiImage.width(), image.width() * roi.rw,
-            0.1);
-        assertEquals(roiImage.height(),
-            image.height() * roi.rh, 0.1);
+          System.out.println(String.format("%10s: %4d x %4d", roi.name,
+              roiImage.width(), roiImage.height()));
+        assertEquals(roiImage.width(), image.width() * roi.rw, 0.1);
+        assertEquals(roiImage.height(), image.height() * roi.rh, 0.1);
+        this.writeImage("dukes_roi_"+roi.name, roiImage);
       }
     }
   }
 
+  /**
+   * write the given image
+   * 
+   * @param name
+   * @param image
+   */
+  public void writeImage(String name, Mat image) {
+    Imgcodecs.imwrite(testPath + name + ".jpg", image);
+  }
 }

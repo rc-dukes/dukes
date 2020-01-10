@@ -5,9 +5,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
 import org.rcdukes.camera.CameraMatrix;
+import org.rcdukes.opencv.NativeLibrary;
 import org.rcdukes.video.ImageCollector;
 
-import com.bitplan.opencv.NativeLibrary;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

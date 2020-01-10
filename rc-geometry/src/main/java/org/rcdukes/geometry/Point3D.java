@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.geometry;
+package org.rcdukes.geometry;
 
 /**
  * represents a 3 dimensional point

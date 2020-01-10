@@ -1,12 +1,13 @@
 package nl.vaneijndhoven.objects;
 
-import nl.vaneijndhoven.dukes.geometry.Line;
-import nl.vaneijndhoven.opencv.linedetection.LineFilter;
+import static java.util.Optional.ofNullable;
 
 import java.util.Collection;
 import java.util.Optional;
 
-import static java.util.Optional.ofNullable;
+import org.rcdukes.geometry.Line;
+
+import nl.vaneijndhoven.opencv.linedetection.LineFilter;
 
 public class Boundary {
 

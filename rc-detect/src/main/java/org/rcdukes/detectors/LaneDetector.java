@@ -1,6 +1,6 @@
 package org.rcdukes.detectors;
 
-import nl.vaneijndhoven.dukes.geometry.Line;
+import org.rcdukes.geometry.Line;
 import nl.vaneijndhoven.objects.Lane;
 import nl.vaneijndhoven.objects.ViewPort;
 
