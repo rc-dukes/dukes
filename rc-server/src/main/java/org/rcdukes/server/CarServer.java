@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.server;
+package org.rcdukes.server;
 
 import org.rcdukes.detect.Detector;
 

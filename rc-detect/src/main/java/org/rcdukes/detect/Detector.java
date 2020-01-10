@@ -73,8 +73,8 @@ public class Detector extends DukesVerticle {
 
   private void streamAdded(Message<JsonObject> message) {
     JsonObject jo = message.body();
-    String json=jo.encodePrettily();
-    LOG.info("streamadded received:"+json);
+    String json = jo.encodePrettily();
+    LOG.info("streamadded received:" + json);
     vertx.eventBus()
         .send(Characters.DAISY.getCallsign() + ":" + START_LANE_DETECTION, jo);
     vertx.eventBus().send(
@@ -124,23 +124,23 @@ public class Detector extends DukesVerticle {
   }
 
   private CannyEdgeDetector createCanny() {
-    JsonObject jo=getSharedData("canny");
+    JsonObject jo = getSharedData("canny");
     CannyEdgeDetector canny;
-    if (jo==null)
-      canny=new CannyEdgeDetector();
+    if (jo == null)
+      canny = new CannyEdgeDetector();
     else
-      canny=jo.mapTo(CannyEdgeDetector.class);
+      canny = jo.mapTo(CannyEdgeDetector.class);
     return canny;
   }
 
   private HoughLinesLineDetector createHoughLines() {
-    JsonObject jo=getSharedData("hough");
-    
+    JsonObject jo = getSharedData("hough");
+
     HoughLinesLineDetector hough;
-    if (jo==null)
-      hough=new HoughLinesLineDetector();
+    if (jo == null)
+      hough = new HoughLinesLineDetector();
     else
-      hough=jo.mapTo(HoughLinesLineDetector.class);
+      hough = jo.mapTo(HoughLinesLineDetector.class);
     return hough;
   }
 
@@ -162,12 +162,17 @@ public class Detector extends DukesVerticle {
    **/
   private Observable<String> startLaneDetection(Message<JsonObject> msg) {
     JsonObject jo = msg.body();
-    JsonObject config = jo.getJsonObject("config");
-    shareData("canny",config.getJsonObject("canny"));
-    shareData("hough",config.getJsonObject("hough"));
     long interval = LANE_DETECTION_INTERVAL;
-    if (config.containsKey("interval")) {
-      interval = config.getLong("interval");
+    // @TODO - check if this is ever transmitted ...
+    if (jo.containsKey("config")) {
+      JsonObject config = jo.getJsonObject("config");
+      if (config.containsKey("canny"))
+        shareData("canny", config.getJsonObject("canny"));
+      if (config.containsKey("hough"))
+        shareData("hough", config.getJsonObject("hough"));
+      if (config.containsKey("interval")) {
+        interval = config.getLong("interval");
+      }
     }
     return startLaneDetection(jo.getString("source"), interval).map(map -> {
       try {
@@ -214,7 +219,8 @@ public class Detector extends DukesVerticle {
     }
 
     StartLightDetectorImpl.Config config1 = new StartLightDetectorImpl.Config();
-    StartLightDetectorImpl startLightDetector = new StartLightDetectorImpl(config1);
+    StartLightDetectorImpl startLightDetector = new StartLightDetectorImpl(
+        config1);
 
     ImageFetcher fetcher = new ImageFetcher(jo.getString("source"));
 

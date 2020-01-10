@@ -1,4 +1,4 @@
-package com.bitplan.rccar.server;
+package org.rcsdukes.server;
 
 import static org.junit.Assert.assertNotNull;
 
