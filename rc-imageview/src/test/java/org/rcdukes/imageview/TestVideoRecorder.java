@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.imageview;
+package org.rcdukes.imageview;
 
 import static org.junit.Assert.assertTrue;
 
@@ -8,10 +8,11 @@ import java.io.IOException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opencv.core.Mat;
+import org.rcdukes.imageview.DebugImageServer;
+import org.rcdukes.imageview.VideoRecorder;
+import org.rcdukes.imageview.DebugImageServer.ImageFormat;
 import org.rcdukes.opencv.NativeLibrary;
 import org.rcdukes.video.ImageUtils;
-
-import nl.vaneijndhoven.dukes.imageview.DebugImageServer.ImageFormat;
 
 /**
  * test the video recording functionality

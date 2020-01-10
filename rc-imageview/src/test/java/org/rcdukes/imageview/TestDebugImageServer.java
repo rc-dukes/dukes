@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.imageview;
+package org.rcdukes.imageview;
 
 import static org.asynchttpclient.Dsl.asyncHttpClient;
 import static org.junit.Assert.assertEquals;
@@ -14,6 +14,7 @@ import org.rcdukes.video.ImageUtils;
 import javafx.scene.image.Image;
 import org.rcdukes.common.ClusterStarter;
 import org.rcdukes.common.DukesVerticle.Status;
+import org.rcdukes.imageview.DebugImageServer;
 import org.rcdukes.common.Environment;
 
 /**

@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.imageview;
+package org.rcdukes.imageview;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

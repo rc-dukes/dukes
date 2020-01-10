@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.imageview;
+package org.rcdukes.imageview;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.imageview;
+package org.rcdukes.imageview;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
