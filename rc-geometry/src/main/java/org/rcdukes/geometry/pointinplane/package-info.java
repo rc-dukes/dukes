@@ -1,5 +1,5 @@
   /**
-   * nl.vaneijndhoven.dukes.geometry.pointinplane is part of the rc-geometry module
-   * @TODO - add description
+   * org.rcdukes.geometry.pointinplane is part of the rc-geometry module
+   * Has PointIn Plane Interface
    */
   package org.rcdukes.geometry.pointinplane;

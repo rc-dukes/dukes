@@ -1,5 +1,5 @@
   /**
-   * nl.vaneijndhoven.dukes.drivecontrol is part of the rc-drivecontrol module
-   * @TODO - add description
+   * org.rcdukes.drivecontrol is part of the rc-drivecontrol module
+   * it contains the classes to control the vehicle
    */
   package org.rcdukes.drivecontrol;
