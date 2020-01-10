@@ -8,9 +8,9 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.rcdukes.roi.ROI;
 
 import nl.vaneijndhoven.dukes.geometry.Polygon;
-import nl.vaneijndhoven.dukes.roi.ROI;
 
 /**
  * test the perspective shift
