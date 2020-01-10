@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.app;
+package org.rcdukes.app;
 
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import javafx.fxml.FXML;

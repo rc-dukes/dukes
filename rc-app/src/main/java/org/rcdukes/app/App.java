@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.app;
+package org.rcdukes.app;
 
 import nl.vaneijndhoven.dukes.common.Characters;
 import nl.vaneijndhoven.dukes.common.DukesVerticle;

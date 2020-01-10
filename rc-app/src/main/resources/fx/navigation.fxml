@@ -9,7 +9,7 @@
 <VBox alignment="CENTER" spacing="10"
 	xmlns:fx="http://javafx.com/fxml/1"
 	xmlns="http://javafx.com/javafx/11.0.1"
-	fx:controller="nl.vaneijndhoven.dukes.app.NavigationGUI">
+	fx:controller="org.rcdukes.app.NavigationGUI">
 
 	<HBox styleClass="header">
 		<padding>

@@ -24,7 +24,7 @@
 <GridPane id="root" maxHeight="Infinity" maxWidth="Infinity"
 	xmlns:fx="http://javafx.com/fxml/1"
 	xmlns="http://javafx.com/javafx/11.0.1"
-	fx:controller="nl.vaneijndhoven.dukes.app.DukesFxGUI">
+	fx:controller="org.rcdukes.app.DukesFxGUI">
 	<MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput"
 		BorderPane.alignment="CENTER" GridPane.columnIndex="0"
 		GridPane.columnSpan="3" GridPane.hgrow="always" GridPane.rowIndex="0">

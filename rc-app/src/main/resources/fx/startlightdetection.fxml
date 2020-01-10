@@ -8,7 +8,7 @@
 
 <VBox alignment="CENTER" spacing="10"
 	xmlns:fx="http://javafx.com/fxml"
-	fx:controller="nl.vaneijndhoven.dukes.app.StartLightDetectionGUI">
+	fx:controller="org.rcdukes.app.StartLightDetectionGUI">
 	<padding>
 		<Insets right="10" left="10" />
 	</padding>

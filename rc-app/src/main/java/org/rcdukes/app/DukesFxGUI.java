@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.app;
+package org.rcdukes.app;
 
 import java.io.File;
 
