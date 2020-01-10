@@ -64,7 +64,7 @@ public class HoughLinesLineDetector implements LineDetector {
       Line line = new Line(lines.get(x, 0));
       lineObjects.add(line);
     }
-
+    // @TODO check
     lines.release();
     lines = null;
 

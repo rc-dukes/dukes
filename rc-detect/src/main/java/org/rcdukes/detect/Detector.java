@@ -195,13 +195,15 @@ public class Detector extends DukesVerticle {
 
     LOG.info("Started image processing for source: " + source);
     return fetcher.toObservable().subscribeOn(Schedulers.newThread())
-        .throttleFirst(interval, TimeUnit.MILLISECONDS).doOnNext(frame -> {
+        .throttleFirst(interval, TimeUnit.MILLISECONDS).doOnNext(image -> {
+          Mat frame=image.getFrame();
           Detector.MAT = frame;
           Detector.camera = frame.clone();
-        }).map(frame -> {
+        }).map(image -> {
+          Mat frame=image.getFrame();
           ImageCollector collector = new ImageCollector();
           Map<String, Object> detection = new LaneDetector(createCanny(),
-              createHoughLines(), createMatrix(), collector).detect(frame);
+              createHoughLines(), createMatrix(), collector).detect(image);
           Detector.CANNY_IMG = collector.edges();
           return detection;
         });

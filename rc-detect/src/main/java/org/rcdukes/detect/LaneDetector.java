@@ -6,6 +6,7 @@ import org.opencv.core.Mat;
 import org.rcdukes.camera.CameraMatrix;
 import org.rcdukes.detectors.EdgeDetector;
 import org.rcdukes.detectors.LineDetector;
+import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
@@ -45,13 +46,13 @@ public class LaneDetector {
         this.setCollector(collector);
     }
 
-    public Map<String, Object> detect(Mat frame) {
-        return performLaneDetection(frame);
+    public Map<String, Object> detect(Image image) {
+        return performLaneDetection(image);
     }
 
-    public Map<String, Object> performLaneDetection(Mat originalImage) {
+    public Map<String, Object> performLaneDetection(Image image) {
         ImageLaneDetection laneDetect = new ImageLaneDetection(this);
-        return laneDetect.detectLane(originalImage, getCollector());
+        return laneDetect.detectLane(image, getCollector());
     }
 
     /**

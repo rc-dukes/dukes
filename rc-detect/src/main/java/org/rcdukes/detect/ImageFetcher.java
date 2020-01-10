@@ -1,11 +1,14 @@
 package org.rcdukes.detect;
 
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
 import org.opencv.videoio.VideoCapture;
+import org.rcdukes.video.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
@@ -71,7 +74,7 @@ public class ImageFetcher {
    * 
    * @return - the image fetched
    */
-  public Mat fetch() {
+  public Image fetch() {
     if (!this.capture.isOpened()) {
       boolean ret = this.open();
       if (!ret) {
@@ -95,9 +98,13 @@ public class ImageFetcher {
       }
     }      
     this.capture.read(frame);
-    frameIndex++;
-    milliTimeStamp = currentMillis;
-    return !frame.empty() ? frame : null;
+    Image image=null;
+    if (!frame.empty()) {
+      frameIndex++;
+      milliTimeStamp = currentMillis;
+      image=new Image(frame,source,frameIndex,milliTimeStamp);
+    }
+    return image;
   }
 
   @Override
@@ -107,9 +114,9 @@ public class ImageFetcher {
 
   /**
    * convert me to an observable
-   * @return a Mat emitting Observable 
+   * @return an Image emitting Observable 
    */
-  public Observable<Mat> toObservable() {
+  public Observable<Image> toObservable() {
     // Resource creation.
     Func0<VideoCapture> resourceFactory = () -> {
       VideoCapture capture = new VideoCapture();
@@ -118,26 +125,38 @@ public class ImageFetcher {
     };
 
     // Convert to observable.
-    Func1<VideoCapture, Observable<Mat>> observableFactory = capture -> Observable
-        .<Mat> create(subscriber -> {
-          boolean hasNext = true;
-          while (hasNext) {
-            final Mat frame = this.fetch();
-            hasNext = frame!=null && frame.rows()>0 && frame.cols()>0;
-            if (hasNext) {
-               if (debug && frameIndex%25==0) {
-                 String msg = String.format("->%6d:%4dx%d", frameIndex, frame.cols(), frame.rows());
-                 LOG.info(msg);
-               }
-               subscriber.onNext(frame);
-            }
-          }
-          subscriber.onCompleted();
-        });
+    Func1<VideoCapture, Observable<Image>> observableFactory = capture -> Observable
+        .<Image> create(subscriber -> handleImage(subscriber));
 
     // Disposal function.
     Action1<VideoCapture> dispose = VideoCapture::release;
 
     return Observable.using(resourceFactory, observableFactory, dispose);
   }
+
+  /**
+   * handle a single image for the given subscriber
+   * @param subscriber
+   */
+  private void handleImage(Subscriber<? super Image> subscriber) {
+    {
+      boolean hasNext = true;
+      while (hasNext) {
+        final Image image = this.fetch();
+        final Mat frame=image!=null?image.getFrame():null;
+        final Size size=frame!=null?frame.size():new Size(0,0);
+        hasNext = image!=null && size.width>0 && size.height>0;
+        if (hasNext) {
+           if (debug && frameIndex%25==0) {     
+             String msg = String.format("->%6d:%4dx%d", frameIndex, size.width,size.height);
+             LOG.info(msg);
+           }
+           subscriber.onNext(image);
+        }
+      }
+      subscriber.onCompleted();
+    }
+  }
+  
+  
 }

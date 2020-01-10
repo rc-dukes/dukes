@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.mvel2.debug.DebugTools;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -15,6 +14,7 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.rcdukes.detectors.StartLightDetector;
+import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 
 import nl.vaneijndhoven.objects.StartLight;
@@ -48,7 +48,8 @@ public class DefaultStartLightDetector implements StartLightDetector {
     this.config = config;
   }
 
-  public StartLight detect(Mat image) {
+  public StartLight detect(Image dukesImage) {
+    Mat image=dukesImage.getFrame();
     // init
     // Mat blurredImage = new Mat();
     Mat hsvImage = new Mat();

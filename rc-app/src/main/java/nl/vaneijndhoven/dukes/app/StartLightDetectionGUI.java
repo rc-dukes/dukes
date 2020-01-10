@@ -182,6 +182,7 @@ public class StartLightDetectionGUI extends BaseGUI {
    * @param imageCollector
    */
   private StartLight detectStartLight(ImageCollector imageCollector) {
+    /* @FIXME - use ImageFetcher in calling part ...
     // init everything
     Image imageToShow = null;
     Mat frame = new Mat();
@@ -225,7 +226,7 @@ public class StartLightDetectionGUI extends BaseGUI {
         displayer.handle(e);
       }
     }
-
+  */
     return null;
   }
 

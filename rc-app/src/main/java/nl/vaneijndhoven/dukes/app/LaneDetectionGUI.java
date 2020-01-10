@@ -7,6 +7,7 @@ import org.rcdukes.camera.CameraMatrix;
 import org.rcdukes.detect.ImageFetcher;
 import org.rcdukes.detect.ImageSubscriber;
 import org.rcdukes.detect.LaneDetector;
+import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 
 import io.vertx.core.Vertx;
@@ -64,11 +65,11 @@ public class LaneDetectionGUI extends BaseGUI {
             displayer.getLaneVideoProperty().getValue());
         ImageSubscriber frameGrabber = new ImageSubscriber() {
           @Override
-          public void onNext(Mat originalImage) {
+          public void onNext(Image originalImage) {
             super.onNext(originalImage);
             displayCurrentSliderValues();
             applySliderValuesToConfig();
-            displayer.displayOriginal(originalImage);
+            displayer.displayOriginal(originalImage.getFrame());
             ImageCollector collector = new ImageCollector();
             CameraMatrix cameraMatrix = CameraMatrix.DEFAULT;
             LaneDetector laneDetector=new LaneDetector(edgeDetector,lineDetector,cameraMatrix,collector);

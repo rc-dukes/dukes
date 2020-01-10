@@ -13,10 +13,12 @@ import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.rcdukes.camera.ImagePolygon;
 import org.rcdukes.camera.PerspectiveShift;
 import org.rcdukes.detect.Detector;
 import org.rcdukes.detect.LaneDetector;
 import org.rcdukes.roi.ROI;
+import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,35 +48,31 @@ public class ImageLaneDetection {
 
   /**
    * detect the lane
-   * @param original
+   * @param image
    * @param imageCollector
    * @return a map with information
    */
-  public Map<String, Object> detectLane(Mat original,
+  public Map<String, Object> detectLane(Image image,
       ImageCollector imageCollector) {
     Map<String, Object> result = new HashMap<String, Object>();
-    if (original.empty()) {
+    if (image==null) {
       LOG.error("detectLane: original is null");
       return result;
     }
-    imageCollector.originalFrame(original);
+    Mat originalFrame = image.getFrame();
+    imageCollector.originalFrame(image);
     double rw = 0.55;
     double rh = 0.45;
-    Mat undistorted = ld.getMatrix().apply(original);
+    Mat undistorted = ld.getMatrix().apply(originalFrame);
     // Mat image = new RegionOfInterest(0, 0.55, 1, 0.45).region(undistorted);
     // Mat image = new RegionOfInterest(0, 0, 1, 1).region(undistorted);
     // Mat image = new RegionOfInterest(0, 0.2, 1, 0.5).region(undistorted);
-    Mat image = new ROI("camera",0, rw, 1, rh)
+    Mat frame = new ROI("camera",0, rw, 1, rh)
         .region(undistorted);
-    Size imageSize = image.size();
+    Size imageSize = frame.size();
     ViewPort viewPort = new ViewPort(new Point(0, 0), imageSize.width,
         imageSize.height);
-
-    Polygon imagePolygon = new Polygon(
-        new Point(0 * imageSize.width, imageSize.height),
-        new Point(1 * imageSize.width, imageSize.height),
-        new Point(0 * imageSize.width, 0 * imageSize.height),
-        new Point(1 * imageSize.width, 0 * imageSize.height));
+    Polygon imagePolygon = new ImagePolygon(frame.size(), 0, 0, 1, 0, 1, 1, 0, 1);
 
     Polygon worldPolygon = new Polygon(
         new Point(rw * imageSize.width, imageSize.height),
@@ -84,10 +82,10 @@ public class ImageLaneDetection {
 
     PerspectiveShift perspectiveShift = new PerspectiveShift(imagePolygon,
         worldPolygon);
-    Detector.BIRDS_EYE = perspectiveShift.apply(image);
+    Detector.BIRDS_EYE = perspectiveShift.apply(frame);
 
     // step1 edge detection
-    Mat imgEdges = ld.getEdgeDetector().detect(image);
+    Mat imgEdges = ld.getEdgeDetector().detect(frame);
 
     // step 2 line detection
     Collection<Line> lines = ld.getLineDetector().detect(imgEdges);
@@ -101,30 +99,30 @@ public class ImageLaneDetection {
 
     Optional<Line> middle = laneOrientation.determineLaneMiddle();
 
-    lane.getLeftBoundary().ifPresent(boundary -> drawLinesToImage(image,
+    lane.getLeftBoundary().ifPresent(boundary -> drawLinesToImage(frame,
         asList(boundary), new Scalar(0, 255, 0)));
-    lane.getRightBoundary().ifPresent(boundary -> drawLinesToImage(image,
+    lane.getRightBoundary().ifPresent(boundary -> drawLinesToImage(frame,
         asList(boundary), new Scalar(255, 128, 0)));
     middle.ifPresent(
-        line -> drawLinesToImage(image, asList(line), new Scalar(0, 0, 255)));
+        line -> drawLinesToImage(frame, asList(line), new Scalar(0, 0, 255)));
 
     double distanceToStoppingZone = -1;
     double distanceToStoppingZoneEnd = -1;
     if (stoppingZone.getEntrance() != null) {
-      stoppingZone.getEntrance().ifPresent(entrance -> drawLinesToImage(image,
+      stoppingZone.getEntrance().ifPresent(entrance -> drawLinesToImage(frame,
           asList(entrance), new Scalar(255, 255, 0)));
       distanceToStoppingZone = stoppingZoneOrientation
           .determineDistanceToStoppingZone();
     }
 
     if (stoppingZone.getExit() != null) {
-      stoppingZone.getExit().ifPresent(exit -> drawLinesToImage(image,
+      stoppingZone.getExit().ifPresent(exit -> drawLinesToImage(frame,
           asList(exit), new Scalar(0, 255, 255)));
       distanceToStoppingZoneEnd = stoppingZoneOrientation
           .determineDistanceToStoppingZoneEnd();
     }
 
-    imageCollector.lines(image);
+    imageCollector.lines(frame);
 
     double angle = laneOrientation.determineCurrentAngle();
 

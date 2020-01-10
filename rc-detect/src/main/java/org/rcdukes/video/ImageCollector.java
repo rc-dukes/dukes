@@ -10,29 +10,6 @@ import org.opencv.core.Mat;
  */
 public class ImageCollector {
 
-  public static class Image {
-    public static String ext = ".jpg";
-    Mat frame;
-    byte[] imageBytes;
-
-    public Mat getFrame() {
-      return frame;
-    }
-
-    public void setFrame(Mat frame) {
-      this.frame = frame;
-      this.imageBytes = ImageUtils.mat2ImageBytes(frame, ext);
-    }
-    /**
-     * construct me
-     * 
-     * @param frame
-     */
-    public Image(Mat frame) {
-      this.setFrame(frame);
-    }
-  }
-
   private Map<String, Image> images = new HashMap<String, Image>();
 
   /**
@@ -46,29 +23,47 @@ public class ImageCollector {
     morph(null);
     mask(null);
   }
+  
+  /**
+   * create an image
+   * @param frame
+   * @param name
+   * @return - the image
+   */
+  public Image createImage(Mat frame,String name) {
+    long milliTimeStamp=System.currentTimeMillis();
+    int frameIndex=-1; 
+    Image originalFrame=getImages().get("original");
+    if (originalFrame!=null) {
+      milliTimeStamp=originalFrame.milliTimeStamp;
+      frameIndex=originalFrame.getFrameIndex();
+    }
+    Image image=new Image(frame,name,frameIndex,milliTimeStamp);
+    return image;
+  }
 
   public void edges(Mat frame) {
-    images.put("edges",new Image(frame));
+    images.put("edges",createImage(frame,"edges"));
   }
 
   public void lines(Mat frame) {
-    images.put("lines",new Image(frame));
+    images.put("lines",createImage(frame,"lines"));
   }
 
   public void startLight(Mat frame) {
-    images.put("start", new Image(frame));
+    images.put("start", createImage(frame,"start"));
   }
 
   public void mask(Mat frame) {
-    images.put("mask", new Image(frame));
+    images.put("mask", createImage(frame,"mask"));
   }
 
   public void morph(Mat frame) {
-    images.put("morph", new Image(frame));
+    images.put("morph", createImage(frame,"morph"));
   }
 
-  public void originalFrame(Mat frame) {
-    getImages().put("original",new Image(frame));
+  public void originalFrame(Image image) {
+    getImages().put("original",image);
   }
 
   public byte[] edges() {

@@ -9,8 +9,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opencv.core.Mat;
 import org.rcdukes.opencv.NativeLibrary;
+import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
-import org.rcdukes.video.ImageCollector.Image;
 import org.rcdukes.video.ImageUtils;
 
 public class TestLaneDetection {
@@ -23,12 +23,14 @@ public class TestLaneDetection {
   public void testLaneDetection() {
     ImageFetcher imageFetcher = TestImageFetcher.getTestImageFetcher();
     imageFetcher.open();
-    Mat frame = imageFetcher.fetch();
+    Image image = imageFetcher.fetch();
+    Mat frame=image.getFrame();
+    assertEquals(1,image.getFrameIndex());
     assertEquals(768,frame.width());
     assertEquals(576,frame.height());
     assertEquals(3,frame.channels());
     LaneDetector ld=LaneDetector.getDefault();
-    ld.detect(frame);
+    ld.detect(image);
     ImageCollector c = ld.getCollector();
     assertNotNull(c);
     assertNotNull(c.edges());
@@ -36,7 +38,7 @@ public class TestLaneDetection {
     assertNotNull(c.originalFrame());
     ImageUtils imageUtils=new ImageUtils();
     for (Entry<String, Image> imageEntry:c.getImages().entrySet()) {
-      Image image = imageEntry.getValue();
+      image = imageEntry.getValue();
       if (image.getFrame()!=null)
         imageUtils.writeImage(image.getFrame(),imageEntry.getKey()+Image.ext);
     }

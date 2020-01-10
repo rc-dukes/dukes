@@ -124,6 +124,13 @@ public class ImageUtils {
     Imgcodecs.imwrite(path + fileName, img);
   }
   
+  /**
+   * write an image with the given lines
+   * @param img
+   * @param lines
+   * @param name
+   * @param color
+   */
   public void writeImageWithLines(Mat img, Collection<Line> lines, String name, Scalar color) {
     String fileName = filePrefix.replace(".", "-" + name + ".");
     Mat output = new Mat();
@@ -131,17 +138,6 @@ public class ImageUtils {
     lines.stream().filter(Objects::nonNull).forEach(line -> Imgproc.line(output, toPoint(line.getPoint1()), toPoint(line.getPoint2()), color, 4));
     Imgcodecs.imwrite(path + fileName, output);
     output.release();
-  }
-
-  /**
-   * release the given images
-   * 
-   * @param images
-   */
-  public static void releaseImages(Mat... images) {
-    for (Mat image : images) {
-      image.release();
-    }
   }
 
 }

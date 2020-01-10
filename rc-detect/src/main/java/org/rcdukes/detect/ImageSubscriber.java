@@ -1,6 +1,7 @@
 package org.rcdukes.detect;
 
 import org.opencv.core.Mat;
+import org.rcdukes.video.Image;
 
 import nl.vaneijndhoven.dukes.common.ErrorHandler;
 import rx.Subscriber;
@@ -10,12 +11,11 @@ import rx.Subscriber;
  * @author wf
  *
  */
-public class ImageSubscriber extends Subscriber<Mat> {
+public class ImageSubscriber extends Subscriber<Image> {
 
   public Throwable error;
   public int cols = 0;
   public int rows=0;
-  public int frameIndex=0;
   public boolean completed = false;
   public boolean debug = false;
   public String stackTraceText;
@@ -32,14 +32,14 @@ public class ImageSubscriber extends Subscriber<Mat> {
   }
 
   @Override
-  public void onNext(Mat mat) {
+  public void onNext(Image image) {
+    Mat mat=image.getFrame();
     cols = mat.cols();
     rows = mat.rows();
-    frameIndex++;
     if (cols==0 || rows==0)
-      System.err.println("invalid frame "+frameIndex);
-    if (debug && frameIndex%25==0) {
-      String msg = String.format("%6d:%4dx%d", frameIndex, cols, rows);
+      System.err.println("invalid frame "+image.getFrameIndex());
+    if (debug && image.getFrameIndex()%25==0) {
+      String msg = String.format("%6d:%4dx%d", image.getFrameIndex(), cols, rows);
       System.out.println(msg);
     }
   }
