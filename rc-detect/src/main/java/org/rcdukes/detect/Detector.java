@@ -202,8 +202,8 @@ public class Detector extends DukesVerticle {
         }).map(image -> {
           Mat frame=image.getFrame();
           ImageCollector collector = new ImageCollector();
-          Map<String, Object> detection = new LaneDetector(createCanny(),
-              createHoughLines(), createMatrix(), collector).detect(image);
+          Map<String, Object> detection = new LaneDetector(createCanny().withImageCollector(collector),
+              createHoughLines().withImageCollector(collector), createMatrix(), collector).detect(image);
           Detector.CANNY_IMG = collector.edges();
           return detection;
         });

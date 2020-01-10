@@ -2,7 +2,6 @@ package org.rcdukes.detect;
 
 import java.util.Map;
 
-import org.opencv.core.Mat;
 import org.rcdukes.camera.CameraMatrix;
 import org.rcdukes.detectors.EdgeDetector;
 import org.rcdukes.detectors.LineDetector;

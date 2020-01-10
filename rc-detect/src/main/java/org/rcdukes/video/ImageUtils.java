@@ -25,7 +25,8 @@ import org.rcdukes.geometry.Line;
  */
 public class ImageUtils {
   protected static final Logger LOG = LoggerFactory.getLogger(ImageUtils.class);
-
+  public static boolean debug=false;
+  
   /**
    * convert an open CV matrix to an Image this function will log messages on
    * failure an return null in case of such a failure
@@ -82,8 +83,10 @@ public class ImageUtils {
     byte[] bytes = null;
     try {
       if (frame == null) {
-        String msg = String.format("can't encode null frame to %s", ext);
-        LOG.trace(msg);
+        if (debug) {
+          String msg = String.format("can't encode null frame to %s", ext);
+          LOG.trace(msg);
+        }
       } else {
         if (frame.width() > 0) {
           MatOfByte buffer = new MatOfByte();

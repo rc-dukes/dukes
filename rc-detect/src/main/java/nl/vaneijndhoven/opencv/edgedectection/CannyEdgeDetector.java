@@ -66,11 +66,11 @@ public class CannyEdgeDetector implements EdgeDetector {
     this.l2gradient = l2gradient;
   }
 
-  public CannyEdgeDetector(Config cfg) {
-    this(cfg.getThreshold1(), cfg.getThreshold2(), cfg.getApertureSize(),
-        cfg.getL2gradient());
-  }
-
+  /**
+   * activate the image collector
+   * @param collector
+   * @return
+   */
   public CannyEdgeDetector withImageCollector(ImageCollector collector) {
     this.collector = of(collector);
     return this;
@@ -85,35 +85,4 @@ public class CannyEdgeDetector implements EdgeDetector {
     return imgEdges;
   }
 
-  public static class Config {
-
-    private double threshold1 = 60;
-    private double threshold2 = 150;
-    private int apertureSize = 3;
-    private boolean l2gradient = false;
-
-    public void setThreshold1(double threshold1) {
-      this.threshold1 = threshold1;
-    }
-
-    public void setThreshold2(double threshold2) {
-      this.threshold2 = threshold2;
-    }
-
-    public double getThreshold1() {
-      return threshold1;
-    }
-
-    public double getThreshold2() {
-      return threshold2;
-    }
-
-    public int getApertureSize() {
-      return apertureSize;
-    }
-
-    public boolean getL2gradient() {
-      return l2gradient;
-    }
-  }
 }

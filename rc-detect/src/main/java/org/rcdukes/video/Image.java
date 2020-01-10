@@ -52,7 +52,8 @@ public class Image {
    */
   public void setFrame(Mat frame) {
     this.frame = frame;
-    this.imageBytes = ImageUtils.mat2ImageBytes(frame, ext);
+    if (frame!=null)
+      this.imageBytes = ImageUtils.mat2ImageBytes(frame, ext);
   }
   
   /**

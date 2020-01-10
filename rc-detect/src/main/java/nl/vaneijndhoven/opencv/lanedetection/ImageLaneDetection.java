@@ -42,6 +42,10 @@ public class ImageLaneDetection {
       .getLogger(ImageLaneDetection.class);
   private LaneDetector ld;
 
+  /**
+   * create me for the givne LaneDetector
+   * @param laneDetector
+   */
   public ImageLaneDetection(LaneDetector laneDetector) {
     this.ld = laneDetector;
   }
@@ -74,11 +78,7 @@ public class ImageLaneDetection {
         imageSize.height);
     Polygon imagePolygon = new ImagePolygon(frame.size(), 0, 0, 1, 0, 1, 1, 0, 1);
 
-    Polygon worldPolygon = new Polygon(
-        new Point(rw * imageSize.width, imageSize.height),
-        new Point(rh * imageSize.width, imageSize.height),
-        new Point(0 * imageSize.width, 0 * imageSize.height),
-        new Point(1 * imageSize.width, 0 * imageSize.height));
+    Polygon worldPolygon = new ImagePolygon(frame.size(), 0, 0, 1, 0, 1, 1, 0, 1);
 
     PerspectiveShift perspectiveShift = new PerspectiveShift(imagePolygon,
         worldPolygon);
