@@ -1,6 +1,7 @@
-package nl.vaneijndhoven.dukes.remotecar;
+package org.rcdukes.remotecar;
 
 import org.junit.Test;
+import org.rcdukes.remotecar.RemoteCar;
 
 /**
  * test the remote car handling

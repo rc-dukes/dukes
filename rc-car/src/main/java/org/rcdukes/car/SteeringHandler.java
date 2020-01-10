@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.car;
+package org.rcdukes.car;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;

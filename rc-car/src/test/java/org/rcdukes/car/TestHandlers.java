@@ -1,10 +1,12 @@
-package nl.vaneijndhoven.dukes.car;
+package org.rcdukes.car;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.rcdukes.car.SteeringHandler;
 
 import io.vertx.core.json.JsonObject;
+import nl.vaneijndhoven.dukes.car.Steering;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.dukes.drivecontrol.Car;
 import nl.vaneijndhoven.dukes.drivecontrol.TestCar;

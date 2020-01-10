@@ -1,6 +1,7 @@
-package nl.vaneijndhoven.dukes.car;
+package org.rcdukes.car;
 
 import org.junit.Test;
+import org.rcdukes.car.CarVerticle;
 
 import nl.vaneijndhoven.dukes.common.ClusterStarter;
 import nl.vaneijndhoven.dukes.common.Environment;
