@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
+import org.rcdukes.camera.CameraMatrix;
 import org.rcdukes.video.ImageCollector;
 
 import com.bitplan.opencv.NativeLibrary;
@@ -12,7 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.eventbus.Message;
-import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
 import nl.vaneijndhoven.dukes.common.Characters;
 import nl.vaneijndhoven.dukes.common.DukesVerticle;
 import nl.vaneijndhoven.dukes.common.Events;

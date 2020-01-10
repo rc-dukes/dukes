@@ -3,11 +3,11 @@ package org.rcdukes.detect;
 import java.util.Map;
 
 import org.opencv.core.Mat;
+import org.rcdukes.camera.CameraMatrix;
 import org.rcdukes.detectors.EdgeDetector;
 import org.rcdukes.detectors.LineDetector;
 import org.rcdukes.video.ImageCollector;
 
-import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.lanedetection.ImageLaneDetection;
 import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;

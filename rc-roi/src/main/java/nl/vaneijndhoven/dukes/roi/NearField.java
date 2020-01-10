@@ -5,7 +5,7 @@ package nl.vaneijndhoven.dukes.roi;
  * image
  *
  */
-public class NearField extends RegionOfInterest {
+public class NearField extends ROI {
 
   /**
    * full width fractional height Region of Interest filtering top fraction of

@@ -13,13 +13,13 @@ import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.rcdukes.camera.PerspectiveShift;
 import org.rcdukes.detect.Detector;
 import org.rcdukes.detect.LaneDetector;
 import org.rcdukes.video.ImageCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import nl.vaneijndhoven.dukes.camera.matrix.PerspectiveShift;
 import nl.vaneijndhoven.dukes.geometry.Line;
 import nl.vaneijndhoven.dukes.geometry.Point;
 import nl.vaneijndhoven.dukes.geometry.Polygon;

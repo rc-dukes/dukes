@@ -16,7 +16,7 @@ import com.bitplan.opencv.NativeLibrary;
 import nl.vaneijndhoven.dukes.roi.FarField;
 import nl.vaneijndhoven.dukes.roi.LeftField;
 import nl.vaneijndhoven.dukes.roi.NearField;
-import nl.vaneijndhoven.dukes.roi.RegionOfInterest;
+import nl.vaneijndhoven.dukes.roi.ROI;
 import nl.vaneijndhoven.dukes.roi.RightField;
 
 /**
@@ -93,9 +93,9 @@ public class TestROI {
       assertNotNull(image);
       assertEquals(960, image.height());
       assertEquals(1280, image.width());
-      RegionOfInterest rois[] = { new FarField(0.5), new NearField(0.5),
+      ROI rois[] = { new FarField(0.5), new NearField(0.5),
           new LeftField(0.5), new RightField(0.5) };
-      for (RegionOfInterest roi : rois) {
+      for (ROI roi : rois) {
         Mat roiImage = roi.region(image);
         if (debug)
           System.out.println(

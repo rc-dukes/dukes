@@ -5,7 +5,7 @@ package nl.vaneijndhoven.dukes.roi;
  *  filtering top fraction of image
  *
  */
-public class FarField extends RegionOfInterest {
+public class FarField extends ROI {
 
     /**
      * get a full width field of view with the given fractional height

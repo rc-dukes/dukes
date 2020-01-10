@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.camera.matrix;
+package org.rcdukes.camera;
 
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint2f;

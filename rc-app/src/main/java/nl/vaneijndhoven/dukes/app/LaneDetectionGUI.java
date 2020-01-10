@@ -3,6 +3,7 @@ package nl.vaneijndhoven.dukes.app;
 import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
+import org.rcdukes.camera.CameraMatrix;
 import org.rcdukes.detect.ImageFetcher;
 import org.rcdukes.detect.ImageSubscriber;
 import org.rcdukes.detect.LaneDetector;
@@ -13,7 +14,6 @@ import io.vertx.core.VertxOptions;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
-import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;

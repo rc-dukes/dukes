@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.camera.matrix;
+package org.rcdukes.camera;
 
 import static org.opencv.imgproc.Imgproc.COLOR_BGR2GRAY;
 import static org.opencv.imgproc.Imgproc.undistort;
@@ -12,7 +12,9 @@ import org.opencv.calib3d.Calib3d;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.MatOfPoint3f;
+import org.opencv.core.Point;
 import org.opencv.core.Point3;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
@@ -88,26 +90,55 @@ public class CameraMatrix implements UnaryOperator<Mat> {
         this.rvecs = rvecs;
         this.tvecs = tvecs;
     }
+    
+    MatOfPoint2f findChessBoardCorners(Mat image) {
+      Mat grey = new Mat();
+      Imgproc.cvtColor(image, grey, COLOR_BGR2GRAY);
+
+      MatOfPoint2f corners = new MatOfPoint2f();
+      boolean patternWasFound = findCorners(grey, columns, rows, corners);
+
+      Calib3d.drawChessboardCorners(image, new Size(columns, rows), corners, patternWasFound);
+
+      if (!patternWasFound) {
+          return null;
+      }
+      return corners;
+    }
+    
+    /**
+     * find the outer chess board corners for the given image
+     * @param image
+     * @return - the outer chessboard corners
+     */
+    public Point[] findOuterChessBoardCornerPoints(Mat image) {
+      MatOfPoint2f corners = this.findChessBoardCorners(image);
+      if (corners==null)
+        return null;
+      Point[] points = corners.toArray();
+      int l=points.length;
+      Point[] outer= {points[l-1],points[l-columns], points[0],points[columns-1]};
+      Scalar blue = new Scalar(255,0,0);
+      //Scalar green = new Scalar(0,255,0);
+      //Scalar red = new Scalar(0,0,255);
+      //Scalar gray = new Scalar(128,128,128);
+      int stroke=4;
+      Imgproc.line(image, outer[0], outer[1], blue, stroke);
+      Imgproc.line(image, outer[1], outer[2], blue, stroke);
+      Imgproc.line(image, outer[2], outer[3], blue, stroke);
+      Imgproc.line(image, outer[3], outer[0], blue, stroke);
+      return outer;
+    }
 
     /**
      * add the given calibration image
      * @param image
+     * @return the corner points found
      */
-    private void addCalibrationImage(Mat image) {
-        Mat grey = new Mat();
-        Imgproc.cvtColor(image, grey, COLOR_BGR2GRAY);
-
-        columns = 8;
-        rows = 6;
-        MatOfPoint2f corners = new MatOfPoint2f();
-        boolean patternWasFound = findCorners(grey, columns, rows, corners);
-
-        Calib3d.drawChessboardCorners(image, new Size(columns, rows), corners, patternWasFound);
-
-        if (!patternWasFound) {
+    public void addCalibrationImage(Mat image) {
+        MatOfPoint2f corners = this.findChessBoardCorners(image);
+        if (corners==null)
             return;
-        }
-
         imagePoints.add(corners);
 
         MatOfPoint3f obj = new MatOfPoint3f();

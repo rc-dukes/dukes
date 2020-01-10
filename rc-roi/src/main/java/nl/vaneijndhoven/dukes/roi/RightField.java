@@ -5,7 +5,7 @@ package nl.vaneijndhoven.dukes.roi;
  * Image by a given fraction
  *
  */
-public class RightField extends RegionOfInterest {
+public class RightField extends ROI {
 
   /**
    * create a filtered left right part of the image by the given fraction
