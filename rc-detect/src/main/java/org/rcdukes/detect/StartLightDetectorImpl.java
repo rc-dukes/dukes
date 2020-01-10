@@ -13,15 +13,16 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.rcdukes.detectors.StartLightDetector;
+import org.rcdukes.video.ImageCollector;
 
 import nl.vaneijndhoven.objects.StartLight;
-import nl.vaneijndhoven.opencv.video.ImageCollector;
 
 /**
  * detector for  the start light
  *
  */
-public class StartLightDetector {
+public class StartLightDetectorImpl implements StartLightDetector {
 
     private Config config = new Config();
 
@@ -30,9 +31,9 @@ public class StartLightDetector {
     private Mat frame;
     private Optional<ImageCollector> collector = Optional.empty();
 
-    public StartLightDetector() {}
+    public StartLightDetectorImpl() {}
 
-    public StartLightDetector(int hueStart, int hueStop, int saturationStart, int saturationStop, int valueStart, int valueStop) {
+    public StartLightDetectorImpl(int hueStart, int hueStop, int saturationStart, int saturationStop, int valueStart, int valueStop) {
         this();
         config.setHueStart(hueStart);
         config.setHueStop(hueStop);
@@ -42,7 +43,7 @@ public class StartLightDetector {
         config.setValueStop(valueStop);
     }
 
-    public StartLightDetector(Config config) {
+    public StartLightDetectorImpl(Config config) {
         this();
         this.config = config;
     }
@@ -139,7 +140,7 @@ public class StartLightDetector {
         return frame;
     }
 
-    public StartLightDetector withImageCollector(ImageCollector collector) {
+    public StartLightDetectorImpl withImageCollector(ImageCollector collector) {
         this.collector = of(collector);
         return this;
     }

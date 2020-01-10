@@ -10,12 +10,11 @@ import org.junit.Test;
 import org.opencv.core.Mat;
 import org.rcdukes.detect.ImageFetcher;
 import org.rcdukes.detect.LaneDetector;
+import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.ImageUtils;
+import org.rcdukes.video.ImageCollector.Image;
 
 import com.bitplan.opencv.NativeLibrary;
-
-import nl.vaneijndhoven.opencv.video.ImageCollector;
-import nl.vaneijndhoven.opencv.video.ImageCollector.Image;
-import nl.vaneijndhoven.opencv.video.ImageUtils;
 
 public class TestLaneDetection {
   @BeforeClass

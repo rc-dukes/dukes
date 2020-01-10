@@ -1,10 +1,11 @@
 package nl.vaneijndhoven.opencv.linedetection;
 
 import nl.vaneijndhoven.dukes.geometry.Line;
-import nl.vaneijndhoven.opencv.video.ImageCollector;
 
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
+import org.rcdukes.detectors.LineDetector;
+import org.rcdukes.video.ImageCollector;
 
 import java.util.*;
 

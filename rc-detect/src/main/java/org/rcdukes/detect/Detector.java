@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
+import org.rcdukes.video.ImageCollector;
 
 import com.bitplan.opencv.NativeLibrary;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,7 +18,6 @@ import nl.vaneijndhoven.dukes.common.DukesVerticle;
 import nl.vaneijndhoven.dukes.common.Events;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
-import nl.vaneijndhoven.opencv.video.ImageCollector;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -213,8 +213,8 @@ public class Detector extends DukesVerticle {
       }
     }
 
-    StartLightDetector.Config config1 = new StartLightDetector.Config();
-    StartLightDetector startLightDetector = new StartLightDetector(config1);
+    StartLightDetectorImpl.Config config1 = new StartLightDetectorImpl.Config();
+    StartLightDetectorImpl startLightDetector = new StartLightDetectorImpl(config1);
 
     ImageFetcher fetcher = new ImageFetcher(jo.getString("source"));
 

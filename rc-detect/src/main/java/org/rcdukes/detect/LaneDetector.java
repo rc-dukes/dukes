@@ -3,12 +3,14 @@ package org.rcdukes.detect;
 import java.util.Map;
 
 import org.opencv.core.Mat;
+import org.rcdukes.detectors.EdgeDetector;
+import org.rcdukes.detectors.LineDetector;
+import org.rcdukes.video.ImageCollector;
 
 import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.lanedetection.ImageLaneDetection;
 import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
-import nl.vaneijndhoven.opencv.video.ImageCollector;
 
 /**
  * detector for lanes
@@ -16,8 +18,8 @@ import nl.vaneijndhoven.opencv.video.ImageCollector;
  */
 public class LaneDetector {
 
-    private CannyEdgeDetector edgeDetector;
-    private HoughLinesLineDetector lineDetector;
+    private EdgeDetector edgeDetector;
+    private LineDetector lineDetector;
     private CameraMatrix matrix;
     private ImageCollector collector;
 
@@ -36,7 +38,7 @@ public class LaneDetector {
      * @param matrix
      * @param collector
      */
-    public LaneDetector(CannyEdgeDetector edgeDetector, HoughLinesLineDetector lineDetector, CameraMatrix matrix, ImageCollector collector) {
+    public LaneDetector(EdgeDetector edgeDetector, LineDetector lineDetector, CameraMatrix matrix, ImageCollector collector) {
         this.setEdgeDetector(edgeDetector);
         this.setLineDetector(lineDetector);
         this.setMatrix(matrix);
@@ -69,28 +71,28 @@ public class LaneDetector {
     /**
      * @return the edgeDetector
      */
-    public CannyEdgeDetector getEdgeDetector() {
+    public EdgeDetector getEdgeDetector() {
       return edgeDetector;
     }
 
     /**
      * @param edgeDetector the edgeDetector to set
      */
-    public void setEdgeDetector(CannyEdgeDetector edgeDetector) {
+    public void setEdgeDetector(EdgeDetector edgeDetector) {
       this.edgeDetector = edgeDetector;
     }
 
     /**
      * @return the lineDetector
      */
-    public HoughLinesLineDetector getLineDetector() {
+    public LineDetector getLineDetector() {
       return lineDetector;
     }
 
     /**
      * @param lineDetector the lineDetector to set
      */
-    public void setLineDetector(HoughLinesLineDetector lineDetector) {
+    public void setLineDetector(LineDetector lineDetector) {
       this.lineDetector = lineDetector;
     }
     /**

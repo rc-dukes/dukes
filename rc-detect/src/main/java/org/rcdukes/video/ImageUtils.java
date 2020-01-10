@@ -1,6 +1,6 @@
-package nl.vaneijndhoven.opencv.video;
+package org.rcdukes.video;
 
-import static nl.vaneijndhoven.opencv.mapper.PointMapper.toPoint;
+import static org.rcdukes.video.PointMapper.toPoint;
 
 import java.io.ByteArrayInputStream;
 import java.util.Collection;

@@ -17,6 +17,12 @@ public class LineFilter {
     private final double margin;
     private boolean directional;
 
+    /**
+     * create me
+     * @param angle
+     * @param margin
+     * @param directional
+     */
     public LineFilter(double angle, double margin, boolean directional) {
         this.angle = angle;
         this.margin = margin;

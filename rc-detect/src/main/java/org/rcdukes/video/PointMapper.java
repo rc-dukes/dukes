@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.opencv.mapper;
+package org.rcdukes.video;
 
 import org.opencv.core.Point;
 

@@ -1,9 +1,9 @@
-package nl.vaneijndhoven.opencv.startlightdetection;
+package org.rcdukes.detectors;
 
 import nl.vaneijndhoven.objects.StartLight;
-import nl.vaneijndhoven.opencv.video.ImageCollector;
 
 import org.opencv.core.Mat;
+import org.rcdukes.video.ImageCollector;
 
 /**
  * start light detection

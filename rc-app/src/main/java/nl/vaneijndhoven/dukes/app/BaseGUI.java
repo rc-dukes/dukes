@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.opencv.core.Mat;
+import org.rcdukes.video.ImageUtils;
 
 import de.jensd.fx.glyphs.GlyphIcons;
 import de.jensd.fx.glyphs.GlyphsDude;
@@ -18,7 +19,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
 import nl.vaneijndhoven.dukes.common.ErrorHandler;
-import nl.vaneijndhoven.opencv.video.ImageUtils;
 
 /**
  * base java fx GUI functionality

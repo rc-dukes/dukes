@@ -1,7 +1,7 @@
 package nl.vaneijndhoven.opencv.lanedetection;
 
 import static java.util.Arrays.asList;
-import static nl.vaneijndhoven.opencv.mapper.PointMapper.toPoint;
+import static org.rcdukes.video.PointMapper.toPoint;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,6 +15,7 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.rcdukes.detect.Detector;
 import org.rcdukes.detect.LaneDetector;
+import org.rcdukes.video.ImageCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +30,6 @@ import nl.vaneijndhoven.objects.Lane;
 import nl.vaneijndhoven.objects.StoppingZone;
 import nl.vaneijndhoven.objects.ViewPort;
 import nl.vaneijndhoven.opencv.stopzonedetection.DefaultStoppingZoneDetector;
-import nl.vaneijndhoven.opencv.video.ImageCollector;
 
 /**
  * image lane detection

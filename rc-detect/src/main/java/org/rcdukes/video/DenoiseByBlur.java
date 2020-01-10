@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.opencv.video;
+package org.rcdukes.video;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Size;

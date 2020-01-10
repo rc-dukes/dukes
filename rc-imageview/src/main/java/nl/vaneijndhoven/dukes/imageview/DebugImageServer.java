@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.opencv.core.Mat;
 import org.rcdukes.detect.Detector;
+import org.rcdukes.video.ImageUtils;
 
 import io.vertx.core.Future;
 import io.vertx.rxjava.core.buffer.Buffer;
@@ -17,7 +18,6 @@ import nl.vaneijndhoven.dukes.common.Characters;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.dukes.common.DukesVerticle;
 import nl.vaneijndhoven.dukes.common.Events;
-import nl.vaneijndhoven.opencv.video.ImageUtils;
 
 /**
  * Imageview verticle (Rosco)

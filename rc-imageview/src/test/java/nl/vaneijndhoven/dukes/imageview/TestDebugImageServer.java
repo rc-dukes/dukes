@@ -1,20 +1,20 @@
 package nl.vaneijndhoven.dukes.imageview;
 
+import static org.asynchttpclient.Dsl.asyncHttpClient;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.concurrent.Future;
+
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.Response;
-import static org.asynchttpclient.Dsl.*;
 import org.junit.Test;
+import org.rcdukes.video.ImageUtils;
 
 import javafx.scene.image.Image;
-
-import java.util.concurrent.Future;
 import nl.vaneijndhoven.dukes.common.ClusterStarter;
 import nl.vaneijndhoven.dukes.common.DukesVerticle.Status;
 import nl.vaneijndhoven.dukes.common.Environment;
-import nl.vaneijndhoven.opencv.video.ImageUtils;
 
 /**
  * test the imageView verticle

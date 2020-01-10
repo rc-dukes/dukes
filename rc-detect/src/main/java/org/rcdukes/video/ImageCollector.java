@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.opencv.video;
+package org.rcdukes.video;
 
 import java.util.HashMap;
 import java.util.Map;

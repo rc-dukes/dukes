@@ -19,7 +19,6 @@ public class TestPerspectiveShift extends MatrixTestbase {
 
   @Test
   public void transform() throws Exception {
-    //if (!isTravis()) {
       NativeLibrary.load();
       // CameraMatrix matrix = new CameraMatrix(8, 6);
 
@@ -66,6 +65,5 @@ public class TestPerspectiveShift extends MatrixTestbase {
             shifted);
       }
     }
-  //}
 
 }

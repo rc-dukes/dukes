@@ -2,6 +2,7 @@ package nl.vaneijndhoven.opencv.edgedectection;
 
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
+import org.rcdukes.detectors.EdgeDetector;
 
 import static org.opencv.core.CvType.CV_32S;
 

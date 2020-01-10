@@ -6,6 +6,7 @@ import org.opencv.core.Mat;
 import org.rcdukes.detect.ImageFetcher;
 import org.rcdukes.detect.ImageSubscriber;
 import org.rcdukes.detect.LaneDetector;
+import org.rcdukes.video.ImageCollector;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -16,7 +17,6 @@ import nl.vaneijndhoven.dukes.camera.matrix.CameraMatrix;
 import nl.vaneijndhoven.dukes.common.Config;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
-import nl.vaneijndhoven.opencv.video.ImageCollector;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 

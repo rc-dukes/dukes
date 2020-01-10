@@ -11,6 +11,8 @@ import nl.vaneijndhoven.objects.lane.LaneRightBoundary;
 import java.util.Collection;
 import java.util.Optional;
 
+import org.rcdukes.detectors.LaneDetector;
+
 public class DefaultLaneDetector implements LaneDetector {
 
     @Override

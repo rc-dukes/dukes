@@ -1,9 +1,9 @@
-package nl.vaneijndhoven.opencv.edgedectection;
+package org.rcdukes.detectors;
 
 import org.opencv.core.Mat;
 
 /**
- *  interface for edge detection
+ *  detector or edges
  */
 public interface EdgeDetector {
     Mat detect(Mat image);

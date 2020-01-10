@@ -2,19 +2,17 @@ package nl.vaneijndhoven.dukes.imageview;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opencv.core.Mat;
+import org.rcdukes.video.ImageUtils;
 
 import com.bitplan.opencv.NativeLibrary;
 
 import nl.vaneijndhoven.dukes.imageview.DebugImageServer.ImageFormat;
-import nl.vaneijndhoven.opencv.video.ImageUtils;
 
 /**
  * test the video recording functionality
