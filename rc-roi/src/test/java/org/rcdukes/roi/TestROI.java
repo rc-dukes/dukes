@@ -1,4 +1,4 @@
-package com.bitplan.rc.roi;
+package org.rcdukes.roi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -10,14 +10,13 @@ import org.junit.Test;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.rcdukes.roi.FarField;
+import org.rcdukes.roi.LeftField;
+import org.rcdukes.roi.NearField;
+import org.rcdukes.roi.ROI;
+import org.rcdukes.roi.RightField;
 
 import com.bitplan.opencv.NativeLibrary;
-
-import nl.vaneijndhoven.dukes.roi.FarField;
-import nl.vaneijndhoven.dukes.roi.LeftField;
-import nl.vaneijndhoven.dukes.roi.NearField;
-import nl.vaneijndhoven.dukes.roi.ROI;
-import nl.vaneijndhoven.dukes.roi.RightField;
 
 /**
  * Test the Region of interest handling
@@ -101,10 +100,10 @@ public class TestROI {
           System.out.println(
               String.format("%10s: %4d x %4d", roi.getClass().getSimpleName(),
                   roiImage.width(), roiImage.height()));
-        assertEquals(roiImage.width(), image.width() * roi.getWidthFraction(),
+        assertEquals(roiImage.width(), image.width() * roi.rw,
             0.1);
         assertEquals(roiImage.height(),
-            image.height() * roi.getHeightFraction(), 0.1);
+            image.height() * roi.rh, 0.1);
       }
     }
   }

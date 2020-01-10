@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import nl.vaneijndhoven.dukes.geometry.Line;
 import nl.vaneijndhoven.dukes.geometry.Point;
 import nl.vaneijndhoven.dukes.geometry.Polygon;
-import nl.vaneijndhoven.dukes.roi.RegionOfInterest;
+import nl.vaneijndhoven.dukes.roi.ROI;
 import nl.vaneijndhoven.navigation.plot.LaneOrientation;
 import nl.vaneijndhoven.navigation.plot.StoppingZoneOrientation;
 import nl.vaneijndhoven.objects.Lane;
@@ -58,13 +58,13 @@ public class ImageLaneDetection {
       return result;
     }
     imageCollector.originalFrame(original);
-    double yFraction = 0.55;
-    double heightFraction = 0.45;
+    double rw = 0.55;
+    double rh = 0.45;
     Mat undistorted = ld.getMatrix().apply(original);
     // Mat image = new RegionOfInterest(0, 0.55, 1, 0.45).region(undistorted);
     // Mat image = new RegionOfInterest(0, 0, 1, 1).region(undistorted);
     // Mat image = new RegionOfInterest(0, 0.2, 1, 0.5).region(undistorted);
-    Mat image = new RegionOfInterest(0, yFraction, 1, heightFraction)
+    Mat image = new ROI(0, rw, 1, rh)
         .region(undistorted);
     Size imageSize = image.size();
     ViewPort viewPort = new ViewPort(new Point(0, 0), imageSize.width,
@@ -77,8 +77,8 @@ public class ImageLaneDetection {
         new Point(1 * imageSize.width, 0 * imageSize.height));
 
     Polygon worldPolygon = new Polygon(
-        new Point(yFraction * imageSize.width, imageSize.height),
-        new Point(heightFraction * imageSize.width, imageSize.height),
+        new Point(rw * imageSize.width, imageSize.height),
+        new Point(rh * imageSize.width, imageSize.height),
         new Point(0 * imageSize.width, 0 * imageSize.height),
         new Point(1 * imageSize.width, 0 * imageSize.height));
 

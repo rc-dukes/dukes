@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.roi;
+package org.rcdukes.roi;
 
 /**
  * full height limited width Region of Interest

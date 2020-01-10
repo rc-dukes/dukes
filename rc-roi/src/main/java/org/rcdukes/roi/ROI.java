@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.roi;
+package org.rcdukes.roi;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Point;

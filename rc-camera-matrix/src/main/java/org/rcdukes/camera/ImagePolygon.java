@@ -5,6 +5,11 @@ import org.opencv.core.Size;
 import nl.vaneijndhoven.dukes.geometry.Point;
 import nl.vaneijndhoven.dukes.geometry.Polygon;
 
+/**
+ * a polygon defined from an OpenCV image
+ * @author wf
+ *
+ */
 public class ImagePolygon extends Polygon {
 
   /**
@@ -26,5 +31,17 @@ public class ImagePolygon extends Polygon {
         new Point(rx2 * size.width, ry2 * size.height),
         new Point(rx3 * size.width, rx3 * size.height),
         new Point(rx4 * size.width, ry4 * size.height));
+  }
+  
+  /**
+   * construct me from the given size and corner points
+   * @param size - the size
+   * @param corners - corner points
+   */
+  public ImagePolygon(Size size,org.opencv.core.Point[] corners) {
+    this(size,corners[0].x/size.width, corners[0].y/size.height, 
+        corners[1].x/size.width, corners[1].y/size.height,
+        corners[2].x/size.width, corners[2].y/size.height,
+        corners[3].x/size.width, corners[3].y/size.height);
   }
 }

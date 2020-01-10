@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 
 import nl.vaneijndhoven.dukes.geometry.Polygon;
@@ -25,6 +26,15 @@ public class TestPerspectiveShift extends MatrixTestbase {
     assertNotNull(corners);
     assertEquals(4,corners.length);
     writeImage("chessBoardCorners", chessboard);
+    Size size = chessboard.size();
+    Polygon imagePolygon = new ImagePolygon(size, 0, 0, 1, 0, 1, 1, 0,
+        1);
+    Polygon worldPolygon = new ImagePolygon(size,corners); 
+    PerspectiveShift perspectiveShift = new PerspectiveShift(imagePolygon,
+        worldPolygon);
+
+    Mat shifted = perspectiveShift.apply(chessboard);
+    writeImage("shiftedChesBoard",shifted);
   }
 
   @Test

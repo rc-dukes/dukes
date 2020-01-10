@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.roi;
+package org.rcdukes.roi;
 
 /**
  * full width fractional height Region of Interest filtering lower fraction of
