@@ -10,7 +10,7 @@ import org.rcdukes.common.DukesVerticle.Status;
 public class TestCar {
   @Test
   public void testCar() throws Exception {
-    int TIME_OUT=20000;
+    int TIME_OUT=40000;
     Environment.mock();
     ClusterStarter clusterStarter=new ClusterStarter();
     CarVerticle carVerticle = new CarVerticle();
