@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.dukes.webcontrol;
+package org.rcdukes.webcontrol;
 
 import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.ext.web.handler.sockjs.BridgeOptions;

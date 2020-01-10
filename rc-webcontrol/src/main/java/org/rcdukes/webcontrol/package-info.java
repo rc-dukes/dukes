@@ -3,4 +3,4 @@
    * start/stop autopilot watch live camera screen 
    * and control engine, wheels and led
    */
-  package nl.vaneijndhoven.dukes.webcontrol;
+  package org.rcdukes.webcontrol;

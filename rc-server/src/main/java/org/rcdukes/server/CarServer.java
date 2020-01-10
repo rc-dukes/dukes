@@ -1,18 +1,17 @@
 package org.rcdukes.server;
 
-import org.rcdukes.detect.Detector;
-
-import org.rcdukes.error.ErrorHandler;
-
-import io.vertx.core.json.JsonObject;
 import org.rcdukes.action.Action;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.ClusterStarter;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.DukesVerticle;
 import org.rcdukes.common.Events;
-import nl.vaneijndhoven.dukes.imageview.DebugImageServer;
-import nl.vaneijndhoven.dukes.webcontrol.WebControl;
+import org.rcdukes.detect.Detector;
+import org.rcdukes.error.ErrorHandler;
+import org.rcdukes.imageview.DebugImageServer;
+import org.rcdukes.webcontrol.WebControl;
+
+import io.vertx.core.json.JsonObject;
 
 /**
  * main entry point to start cluster
