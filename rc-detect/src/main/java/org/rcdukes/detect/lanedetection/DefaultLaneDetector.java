@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.opencv.lanedetection;
+package org.rcdukes.detect.lanedetection;
 
 import nl.vaneijndhoven.objects.ViewPort;
 import org.rcdukes.geometry.Line;

@@ -565,10 +565,23 @@ function updateCamera() {
   cameraSource=cameraSourceInput.value
 }
 
+// update teh configuration
 function updateConfig() {
 	var newCameraFps=document.getElementById('cameraFpsSlider').value;
+	var roih=document.getElementById('roihSlider').value;
+	var roiw=document.getElementById('roiwSlider').value;
 	if (newCameraFps!=cameraFps)
 	  registerCamera(cameraSource,newCameraFps)
+	  
+	cameraConfig={}
+	cameraConfig.fps=Number(newCameraFps);
+	cameraConfig.roih=Number(roih);
+	cameraConfig.roiw=Number(roiw);
+	cameraConfig.source=cameraSource;
+	
+	console.log('update camera config',cameraConfig);
+	publish(CALLSIGN_DAISY + ':CAMERA_CONFIG_UPDATE', cameraConfig);
+	
 	var cannyConfigThreshold1 = document
 			.getElementById('cannyConfigThreshold1Slider').value;
 	var cannyConfigThreshold2 = document
@@ -624,21 +637,22 @@ function setImage(id, src) {
 }
 
 /**
- * update the slider for the given sliderId from the given textbox
+ * update the textBox for the given textboxId from the slider with the given sliderId
  * 
  * @param sliderId -
  *            the slider to update
  * @param textboxId -
  *            the id of the textbox
  */
-function updateSliderValue(sliderId, textboxId) {
+function updateTextBoxFromSlider(sliderId, textboxId) {
 	var x = document.getElementById(textboxId);
 	var y = document.getElementById(sliderId);
 	x.value = y.value;
 }
 
+// update the given slider and send the new configuration to the server
 function onSlide(sliderId, textbox) {
-	updateSliderValue(sliderId, textbox);
+	updateTextBoxFromSlider(sliderId, textbox);
 	updateConfig();
 }
 
@@ -649,29 +663,32 @@ function onSlide(sliderId, textbox) {
  */
 function initialSliderValues() {
 	// set initial values for config
-	updateSliderValue('cannyConfigThreshold1Slider',
+	updateTextBoxFromSlider('cameraFpsSlider','cameraFpsTextbox');
+	updateTextBoxFromSlider('roihSlider','roihTextbox');
+	updateTextBoxFromSlider('roiwSlider','roiwTextbox');
+	updateTextBoxFromSlider('cannyConfigThreshold1Slider',
 			'cannyConfigThreshold1Textbox');
-	updateSliderValue('cannyConfigThreshold2Slider',
+	updateTextBoxFromSlider('cannyConfigThreshold2Slider',
 			'cannyConfigThreshold2Textbox');
-	updateSliderValue('houghConfigRhoSlider', 'houghConfigRhoTextbox');
-	updateSliderValue('houghConfigThetaSlider', 'houghConfigThetaTextbox');
-	updateSliderValue('houghConfigThresholdSlider',
+	updateTextBoxFromSlider('houghConfigRhoSlider', 'houghConfigRhoTextbox');
+	updateTextBoxFromSlider('houghConfigThetaSlider', 'houghConfigThetaTextbox');
+	updateTextBoxFromSlider('houghConfigThresholdSlider',
 			'houghConfigThresholdTextbox');
-	updateSliderValue('houghConfigMinLineLengthSlider',
+	updateTextBoxFromSlider('houghConfigMinLineLengthSlider',
 			'houghConfigMinLineLengthTextbox');
-	updateSliderValue('houghConfigMaxLineGapSlider',
+	updateTextBoxFromSlider('houghConfigMaxLineGapSlider',
 			'houghConfigMaxLineGapTextbox');
-	updateSliderValue('houghConfigMaxLineGapSlider',
+	updateTextBoxFromSlider('houghConfigMaxLineGapSlider',
 			'houghConfigMaxLineGapTextbox');
 
 	// set initial values for cam config
-	updateSliderValue('camEcSlider', 'camEcTextbox');
-	updateSliderValue('camBrSlider', 'camBrTextbox');
-	updateSliderValue('camSaSlider', 'camSaTextbox');
+	updateTextBoxFromSlider('camEcSlider', 'camEcTextbox');
+	updateTextBoxFromSlider('camBrSlider', 'camBrTextbox');
+	updateTextBoxFromSlider('camSaSlider', 'camSaTextbox');
 }
 
 function onSlideCam(sliderId, textbox, configKey) {
-	updateSliderValue(sliderId, textbox);
+	updateTextBoxFromSlider(sliderId, textbox);
 	updateCamConfig(sliderId, configKey);
 }
 

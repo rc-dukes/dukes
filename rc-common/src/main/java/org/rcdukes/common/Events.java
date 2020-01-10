@@ -4,8 +4,8 @@ package org.rcdukes.common;
  *  relevant Events
  */
 public enum Events {
-    STREAMADDED,
-    CANNYCONFIG,
+    CAMERA_CONFIG_UPDATE,
+    CANNY_CONFIG_UPDATE,
     HOUGHLINESCONFIG,
     LANEDETECTION,
     STARTLIGHTDETECTION,

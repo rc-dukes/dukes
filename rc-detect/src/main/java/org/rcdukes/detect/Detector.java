@@ -26,12 +26,10 @@ import rx.schedulers.Schedulers;
  */
 public class Detector extends DukesVerticle {
 
-  private final static long LANE_DETECTION_INTERVAL = 200;
   private final static long START_LIGHT_DETECTION_INTERVAL = 50;
 
   private final static String START_LANE_DETECTION = "START_LANE_DETECTION";
   private final static String START_STARTLIGHT_DETECTION = "START_STARTLIGHT_DETECTION";
-  private final static String CANNY_CONFIG_UPDATE = "CANNY_CONFIG_UPDATE";
   private final static String HOUGH_CONFIG_UPDATE = "HOUGH_CONFIG_UPDATE";
   private final static String CAMERA_MATRIX_UPDATE = "CAMERA_MATRIX_UPDATE";
 
@@ -51,16 +49,13 @@ public class Detector extends DukesVerticle {
   public void start() throws Exception {
     super.preStart();
     NativeLibrary.load();
-    vertx.eventBus().consumer(Events.STREAMADDED.name(), this::streamAdded);
+    consumer(Events.CAMERA_CONFIG_UPDATE, this::cameraConfig);
     vertx.eventBus().consumer(
         Characters.DAISY.getCallsign() + ":" + START_LANE_DETECTION,
         this::startLD);
     // vertx.eventBus().consumer(Characters.DAISY.getCallsign() + ":" +
     // START_STARTLIGHT_DETECTION, this::startSLD);
-
-    vertx.eventBus().consumer(
-        Characters.DAISY.getCallsign() + ":" + CANNY_CONFIG_UPDATE,
-        this::cannyConfig);
+    consumer(Events.CANNY_CONFIG_UPDATE,this::cannyConfig);
     vertx.eventBus().consumer(
         Characters.DAISY.getCallsign() + ":" + HOUGH_CONFIG_UPDATE,
         this::houghConfig);
@@ -69,16 +64,6 @@ public class Detector extends DukesVerticle {
         this::cameraMatrix);
 
     super.postStart();
-  }
-
-  private void streamAdded(Message<JsonObject> message) {
-    JsonObject jo = message.body();
-    String json = jo.encodePrettily();
-    LOG.info("streamadded received:" + json);
-    vertx.eventBus()
-        .send(Characters.DAISY.getCallsign() + ":" + START_LANE_DETECTION, jo);
-    vertx.eventBus().send(
-        Characters.DAISY.getCallsign() + ":" + START_STARTLIGHT_DETECTION, jo);
   }
 
   private void startLD(Message<JsonObject> message) {
@@ -104,6 +89,15 @@ public class Detector extends DukesVerticle {
                 error),
             () -> LOG.info("Start light image processing ended"));
   }
+  
+  private void cameraConfig(Message<JsonObject> message) {
+    JsonObject jo=message.body();
+    shareData("cameraConfig",jo);
+    vertx.eventBus()
+        .send(Characters.DAISY.getCallsign() + ":" + START_LANE_DETECTION, jo);
+    vertx.eventBus().send(
+        Characters.DAISY.getCallsign() + ":" + START_STARTLIGHT_DETECTION, jo);
+  }
 
   private void cannyConfig(Message<JsonObject> message) {
     shareData("canny", message.body());
@@ -117,10 +111,14 @@ public class Detector extends DukesVerticle {
     shareData("matrix", message.body());
   }
 
-  private long getInterval() {
-    Long interval = (Long) vertx.sharedData()
-        .getLocalMap(Characters.DAISY.name()).get("interval");
-    return interval != null ? interval : LANE_DETECTION_INTERVAL;
+  private CameraConfig createCameraConfig() {
+    JsonObject jo = getSharedData("cameraConfig");
+    CameraConfig cameraConfig;
+    if (jo == null)
+      cameraConfig = new CameraConfig();
+    else
+      cameraConfig = jo.mapTo(CameraConfig.class);
+    return cameraConfig;
   }
 
   private CannyEdgeDetector createCanny() {
@@ -162,19 +160,19 @@ public class Detector extends DukesVerticle {
    **/
   private Observable<String> startLaneDetection(Message<JsonObject> msg) {
     JsonObject jo = msg.body();
-    long interval = LANE_DETECTION_INTERVAL;
     // @TODO - check if this is ever transmitted ...
     if (jo.containsKey("config")) {
       JsonObject config = jo.getJsonObject("config");
+      if (config.containsKey("cameraConfig")) {
+        shareData("cameraConfig", config.getJsonObject("cameraConfig"));
+      }
       if (config.containsKey("canny"))
         shareData("canny", config.getJsonObject("canny"));
       if (config.containsKey("hough"))
         shareData("hough", config.getJsonObject("hough"));
-      if (config.containsKey("interval")) {
-        interval = config.getLong("interval");
-      }
     }
-    return startLaneDetection(jo.getString("source"), interval).map(map -> {
+    CameraConfig cameraConfig = createCameraConfig();
+    return startLaneDetection(cameraConfig.getSource(), cameraConfig.getInterval()).map(map -> {
       try {
         return new ObjectMapper().writeValueAsString(map);
       } catch (JsonProcessingException e) {
@@ -200,10 +198,9 @@ public class Detector extends DukesVerticle {
           Detector.MAT = frame;
           Detector.camera = frame.clone();
         }).map(image -> {
-          Mat frame=image.getFrame();
           ImageCollector collector = new ImageCollector();
           Map<String, Object> detection = new LaneDetector(createCanny().withImageCollector(collector),
-              createHoughLines().withImageCollector(collector), createMatrix(), collector).detect(image);
+              createHoughLines().withImageCollector(collector), createCameraConfig(),createMatrix(), collector).detect(image);
           Detector.CANNY_IMG = collector.edges();
           return detection;
         });

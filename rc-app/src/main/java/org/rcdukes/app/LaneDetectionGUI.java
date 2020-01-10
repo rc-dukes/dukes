@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
 import org.rcdukes.camera.CameraMatrix;
+import org.rcdukes.detect.CameraConfig;
 import org.rcdukes.detect.ImageFetcher;
 import org.rcdukes.detect.ImageSubscriber;
 import org.rcdukes.detect.LaneDetector;
@@ -72,7 +73,8 @@ public class LaneDetectionGUI extends BaseGUI {
             displayer.displayOriginal(originalImage.getFrame());
             ImageCollector collector = new ImageCollector();
             CameraMatrix cameraMatrix = CameraMatrix.DEFAULT;
-            LaneDetector laneDetector=new LaneDetector(edgeDetector,lineDetector,cameraMatrix,collector);
+            CameraConfig cameraConfig=new CameraConfig();
+            LaneDetector laneDetector=new LaneDetector(edgeDetector,lineDetector,cameraConfig,cameraMatrix,collector);
             laneDetector.detect(originalImage);
             displayer.display1(collector.edges());
             displayer.display2(collector.lines());

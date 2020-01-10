@@ -39,9 +39,6 @@ public class CarServer extends DukesVerticle {
     for (DukesVerticle verticle : verticles) {
       verticle.waitStatus(Status.started,TIME_OUT, 10);
     }
-    String cameraUrl = Config.getEnvironment().getString(Config.CAMERA_URL);
-    vertx.eventBus().send(Events.STREAMADDED.name(),
-        new JsonObject().put("source", cameraUrl));
     super.postStart();
   }
 

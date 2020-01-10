@@ -101,11 +101,17 @@
 					</table>
 				</div>
 				<div class="col-md-4">
-					<img id="cameraImage"> <br> <input
-						id="cameraImageUrlBox" type="text" size=60></input>
+					<img id="cameraImage"> <br> 
+					<input id="cameraImageUrlBox" type="text" size=60/>
 				</div>
 				<div class="col-md-3">
-					<img id="edgesImage"> <br /> <img id="birdseyeImage">
+					<div  class='row'>
+						<img id="edgesImage">
+					</div>
+					<br>
+					<div  class='row'>
+						<img id="birdseyeImage">
+					</div>	
 				</div>
 				<div class="col-md-3">
 					<img id="linesImage">
@@ -121,9 +127,9 @@
 					style="overflow-y: scroll; height: 300px;"></div>
 				<div class="col-md-3">
 					<fieldset>
-						<legend>Frame rates:</legend>
+						<legend>Camera config:</legend>
 						<div class='row'>
-							<div class='col-md-2'>Camera:</div>
+							<div class='col-md-2'>FPS:</div>
 							<div class='col-md-2'>
 								<input id="cameraFpsTextbox" size="2" />
 							</div>
@@ -132,6 +138,30 @@
 									max="30" step="1"
 									oninput="onSlide('cameraFpsSlider',
 								'cameraFpsTextbox')" />
+							</div>
+						</div>
+						<div class='row'>
+							<div class='col-md-2'>ROI h:</div>
+							<div class='col-md-2'>
+								<input id="roihTextbox" size="2" />
+							</div>
+							<div class='col-md-6'>
+								<input id="roihSlider" value="0.45" type="range" min="0"
+									max="1" step="0.05"
+									oninput="onSlide('roihSlider',
+								'roihTextbox')" />
+							</div>
+						</div>
+						<div class='row'>
+							<div class='col-md-2'>ROI w:</div>
+							<div class='col-md-2'>
+								<input id="roiwTextbox" size="2" />
+							</div>
+							<div class='col-md-6'>
+								<input id="roiwSlider" value="0.55" type="range" min="0"
+									max="1" step="0.05"
+									oninput="onSlide('roihSlider',
+								'roiwTextbox')" />
 							</div>
 						</div>
 						<div class='row'>

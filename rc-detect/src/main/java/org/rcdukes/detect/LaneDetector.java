@@ -3,13 +3,13 @@ package org.rcdukes.detect;
 import java.util.Map;
 
 import org.rcdukes.camera.CameraMatrix;
+import org.rcdukes.detect.lanedetection.ImageLaneDetection;
 import org.rcdukes.detectors.EdgeDetector;
 import org.rcdukes.detectors.LineDetector;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
-import nl.vaneijndhoven.opencv.lanedetection.ImageLaneDetection;
 import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
 
 /**
@@ -18,94 +18,124 @@ import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
  */
 public class LaneDetector {
 
-    private EdgeDetector edgeDetector;
-    private LineDetector lineDetector;
-    private CameraMatrix matrix;
-    private ImageCollector collector;
+  private EdgeDetector edgeDetector;
+  private LineDetector lineDetector;
+  private CameraMatrix matrix;
+  private CameraConfig cameraConfig;
 
-    public static LaneDetector getDefault() {
-      ImageCollector collector = new ImageCollector();
-      CameraMatrix matrix=CameraMatrix.DEFAULT;
-      CannyEdgeDetector edgeDetector=new CannyEdgeDetector();
-      HoughLinesLineDetector lineDetector=new HoughLinesLineDetector();
-      LaneDetector laneDetector = new LaneDetector(edgeDetector.withImageCollector(collector),lineDetector.withImageCollector(collector),matrix,collector);
-      return laneDetector;
-    }
-    /**
-     * create a Lane Detector
-     * @param edgeDetector
-     * @param lineDetector
-     * @param matrix
-     * @param collector
-     */
-    public LaneDetector(EdgeDetector edgeDetector, LineDetector lineDetector, CameraMatrix matrix, ImageCollector collector) {
-        this.setEdgeDetector(edgeDetector);
-        this.setLineDetector(lineDetector);
-        this.setMatrix(matrix);
-        this.setCollector(collector);
-    }
+  private ImageCollector collector;
 
-    public Map<String, Object> detect(Image image) {
-        return performLaneDetection(image);
-    }
+  /**
+   * get a default lanedetector
+   * @return - the lane detector
+   */
+  public static LaneDetector getDefault() {
+    ImageCollector collector = new ImageCollector();
+    CameraMatrix matrix = CameraMatrix.DEFAULT;
+    CannyEdgeDetector edgeDetector = new CannyEdgeDetector();
+    CameraConfig cameraConfig = new CameraConfig();
+    HoughLinesLineDetector lineDetector = new HoughLinesLineDetector();
+    LaneDetector laneDetector = new LaneDetector(
+        edgeDetector.withImageCollector(collector),
+        lineDetector.withImageCollector(collector), cameraConfig, matrix,
+        collector);
+    return laneDetector;
+  }
 
-    public Map<String, Object> performLaneDetection(Image image) {
-        ImageLaneDetection laneDetect = new ImageLaneDetection(this);
-        return laneDetect.detectLane(image, getCollector());
-    }
+  /**
+   * create a Lane Detector
+   * 
+   * @param edgeDetector
+   * @param lineDetector
+   * @param cameraConfig
+   * @param matrix
+   * @param collector
+   */
+  public LaneDetector(EdgeDetector edgeDetector, LineDetector lineDetector,
+      CameraConfig cameraConfig, CameraMatrix matrix,
+      ImageCollector collector) {
+    this.setEdgeDetector(edgeDetector);
+    this.setLineDetector(lineDetector);
+    this.setCameraConfig(cameraConfig);
+    this.setMatrix(matrix);
+    this.setCollector(collector);
+  }
 
-    /**
-     * @return the matrix
-     */
-    public CameraMatrix getMatrix() {
-      return matrix;
-    }
+  public Map<String, Object> detect(Image image) {
+    return performLaneDetection(image);
+  }
 
-    /**
-     * @param matrix the matrix to set
-     */
-    public void setMatrix(CameraMatrix matrix) {
-      this.matrix = matrix;
-    }
+  public Map<String, Object> performLaneDetection(Image image) {
+    ImageLaneDetection laneDetect = new ImageLaneDetection(this);
+    return laneDetect.detectLane(image, getCollector());
+  }
 
-    /**
-     * @return the edgeDetector
-     */
-    public EdgeDetector getEdgeDetector() {
-      return edgeDetector;
-    }
+  /**
+   * @return the matrix
+   */
+  public CameraMatrix getMatrix() {
+    return matrix;
+  }
 
-    /**
-     * @param edgeDetector the edgeDetector to set
-     */
-    public void setEdgeDetector(EdgeDetector edgeDetector) {
-      this.edgeDetector = edgeDetector;
-    }
+  /**
+   * @param matrix
+   *          the matrix to set
+   */
+  public void setMatrix(CameraMatrix matrix) {
+    this.matrix = matrix;
+  }
 
-    /**
-     * @return the lineDetector
-     */
-    public LineDetector getLineDetector() {
-      return lineDetector;
-    }
+  public CameraConfig getCameraConfig() {
+    return cameraConfig;
+  }
 
-    /**
-     * @param lineDetector the lineDetector to set
-     */
-    public void setLineDetector(LineDetector lineDetector) {
-      this.lineDetector = lineDetector;
-    }
-    /**
-     * @return the collector
-     */
-    public ImageCollector getCollector() {
-      return collector;
-    }
-    /**
-     * @param collector the collector to set
-     */
-    public void setCollector(ImageCollector collector) {
-      this.collector = collector;
-    }
+  public void setCameraConfig(CameraConfig cameraConfig) {
+    this.cameraConfig = cameraConfig;
+  }
+
+  /**
+   * @return the edgeDetector
+   */
+  public EdgeDetector getEdgeDetector() {
+    return edgeDetector;
+  }
+
+  /**
+   * @param edgeDetector
+   *          the edgeDetector to set
+   */
+  public void setEdgeDetector(EdgeDetector edgeDetector) {
+    this.edgeDetector = edgeDetector;
+  }
+
+  /**
+   * @return the lineDetector
+   */
+  public LineDetector getLineDetector() {
+    return lineDetector;
+  }
+
+  /**
+   * @param lineDetector
+   *          the lineDetector to set
+   */
+  public void setLineDetector(LineDetector lineDetector) {
+    this.lineDetector = lineDetector;
+  }
+
+  /**
+   * @return the collector
+   */
+  public ImageCollector getCollector() {
+    return collector;
+  }
+
+  /**
+   * @param collector
+   *          the collector to set
+   */
+  public void setCollector(ImageCollector collector) {
+    this.collector = collector;
+  }
 
 }

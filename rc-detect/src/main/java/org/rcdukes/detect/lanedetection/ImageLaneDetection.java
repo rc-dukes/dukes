@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.opencv.lanedetection;
+package org.rcdukes.detect.lanedetection;
 
 import static java.util.Arrays.asList;
 import static org.rcdukes.video.PointMapper.toPoint;
@@ -15,6 +15,7 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.rcdukes.camera.ImagePolygon;
 import org.rcdukes.camera.PerspectiveShift;
+import org.rcdukes.detect.CameraConfig;
 import org.rcdukes.detect.Detector;
 import org.rcdukes.detect.LaneDetector;
 import org.rcdukes.roi.ROI;
@@ -63,15 +64,12 @@ public class ImageLaneDetection {
       LOG.error("detectLane: original is null");
       return result;
     }
+    CameraConfig cameraConfig=ld.getCameraConfig();
     Mat originalFrame = image.getFrame();
     imageCollector.originalFrame(image);
-    double rw = 0.55;
-    double rh = 0.45;
     Mat undistorted = ld.getMatrix().apply(originalFrame);
-    // Mat image = new RegionOfInterest(0, 0.55, 1, 0.45).region(undistorted);
-    // Mat image = new RegionOfInterest(0, 0, 1, 1).region(undistorted);
-    // Mat image = new RegionOfInterest(0, 0.2, 1, 0.5).region(undistorted);
-    Mat frame = new ROI("camera",0, rw, 1, rh)
+    // get the configured Region of interest
+    Mat frame = new ROI("camera",0, cameraConfig.getRoiw(), 1, cameraConfig.getRoih())
         .region(undistorted);
     Size imageSize = frame.size();
     ViewPort viewPort = new ViewPort(new Point(0, 0), imageSize.width,
