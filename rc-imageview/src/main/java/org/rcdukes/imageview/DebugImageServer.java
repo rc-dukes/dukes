@@ -127,7 +127,7 @@ public class DebugImageServer extends DukesVerticle {
    * @param imageType
    */
   public void sendSingleImage(HttpServerRequest request, ImageType imageType) {
-    ImageCollector collector = Detector.currentCollector;
+    ImageCollector collector = Detector.getImageCollector();
     Image image = null;
     Mat mat = null;
     image = collector.getImage(imageType, true);
@@ -218,7 +218,7 @@ public class DebugImageServer extends DukesVerticle {
       response.write("Content-Type: " + contentType + crlf);
       response.write(crlf);
       // @FIXME - still too hacky - need an Observable here
-      ImageCollector imageCollector = Detector.currentCollector;
+      ImageCollector imageCollector = Detector.getImageCollector();
       Image image = imageCollector.getImage(imageType, true);
       Mat frame = image.getFrame().clone();
       addImageInfo(frame, image);

@@ -3,8 +3,6 @@ package org.rcdukes.detect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.Map.Entry;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opencv.core.Mat;
@@ -14,6 +12,11 @@ import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageCollector.ImageType;
 import org.rcdukes.video.ImageUtils;
 
+/**
+ * test the lane detection
+ * @author wf
+ *
+ */
 public class TestLaneDetection {
   @BeforeClass
   public static void setup() throws Exception {

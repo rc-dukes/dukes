@@ -128,7 +128,7 @@ public class ImageCollector {
       image =images.get(imageType);
     if (image==null && failSafe)
       image=testImages.get(imageType);
-    return null;
+    return image;
   }
 
 }

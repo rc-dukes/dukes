@@ -7,6 +7,7 @@ import org.rcdukes.common.DukesVerticle;
 import org.rcdukes.detect.Detector;
 import org.rcdukes.error.ErrorHandler;
 import org.rcdukes.imageview.DebugImageServer;
+import org.rcdukes.opencv.NativeLibrary;
 import org.rcdukes.webcontrol.WebControl;
 
 /**
@@ -28,6 +29,7 @@ public class CarServer extends DukesVerticle {
 
   @Override
   public void start() throws Exception {
+    NativeLibrary.load();
     super.preStart();
     DukesVerticle[] verticles = { new WebControl(), new DebugImageServer(),
         new Action(), new Detector() };
