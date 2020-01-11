@@ -3,6 +3,11 @@ package org.rcdukes.action;
 import static rx.Observable.just;
 import static rx.exceptions.Exceptions.propagate;
 
+import java.util.Locale;
+
+import org.rcdukes.common.Config;
+import org.rcdukes.common.Environment;
+
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -31,16 +36,29 @@ public class StraightLaneNavigator {
 
   private boolean emergencyStopActivated = false;
 
-  public StraightLaneNavigator() {
+  /**
+   * construct me
+   */
+  public StraightLaneNavigator(String wheelOrientation) {
+    this.wheelOrientation=wheelOrientation;
     initDefaults();
   }
 
   MiniPID pid;
+  private Environment env;
+  private String wheelOrientation;
+  private int rudderFactor;
 
+  /**
+   * initialize my defaults
+   */
   private void initDefaults() {
     tsLastCommand = System.currentTimeMillis();
     lastRudderPercentageSent = 0d;
     pid = new MiniPID(1, 0, 0);
+    rudderFactor=1;
+    if (wheelOrientation.equals("-"))
+      rudderFactor=-1;
   }
 
   public Observable<JsonObject> navigate(JsonObject laneDetectResult) {
@@ -58,6 +76,12 @@ public class StraightLaneNavigator {
 
   }
 
+  /**
+   * process the laneDetectResult
+   * @param laneDetectResult
+   * @return
+   * @throws NoLinesDetected
+   */
   private Observable<JsonObject> processLane(JsonObject laneDetectResult)
       throws NoLinesDetected {
     long currentTime = System.currentTimeMillis();
@@ -83,7 +107,7 @@ public class StraightLaneNavigator {
 
     if (courseRelativeToHorizon != null) {
       // pass 1: steer on courseRelativeToHorizon
-      rudderPercentage = courseRelativeToHorizon * -1.0;
+      rudderPercentage = courseRelativeToHorizon * rudderFactor;
       // System.out.println("rudder on horizon: " + rudderPercentage);
     } else {
       // pass 2: steer on angle
@@ -115,8 +139,9 @@ public class StraightLaneNavigator {
       tsLastCommand = currentTime;
       lastRudderPercentageSent = rudderPercentage;
       previousAngle = angle;
+      String rudderPos=String.format(Locale.ENGLISH,"%3.1f",rudderPercentage);
       JsonObject message = new JsonObject().put("type", "servoDirect")
-          .put("position", String.valueOf(rudderPercentage));
+          .put("position", rudderPos);
       String debugMsg=String.format("sending servoDirect position %3.1f",rudderPercentage);
       LOG.debug(debugMsg);
       return just(message);

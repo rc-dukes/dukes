@@ -38,6 +38,7 @@ public class Detector extends DukesVerticle {
 
   private Subscription startLaneDetectionSubscription;
   private Subscription startLightDetectionSubscription;
+  private ImageFetcher fetcher;
 
   /**
    * default constructor
@@ -72,6 +73,8 @@ public class Detector extends DukesVerticle {
     // is this a restart?
     if (startLaneDetectionSubscription != null)
       startLaneDetectionSubscription.unsubscribe();
+    if (fetcher!=null)
+      fetcher.close();
     startLaneDetectionSubscription = startLaneDetection(cameraConfig)
         // .doOnNext(detection -> LOG.trace("Image lane detection processing
         // result: " + detection))
@@ -164,7 +167,7 @@ public class Detector extends DukesVerticle {
    */
   private Observable<Object> startLaneDetectionObservable(
       CameraConfig cameraConfig) {
-    ImageFetcher fetcher = new ImageFetcher(cameraConfig.getSource());
+    fetcher = new ImageFetcher(cameraConfig.getSource());
     fetcher.setFps(cameraConfig.getFps());
 
     LOG.info(
@@ -201,6 +204,7 @@ public class Detector extends DukesVerticle {
     StartLightDetectorImpl startLightDetector = new StartLightDetectorImpl(
         config1);
 
+    // @FIXME - don't create multiple image fetchers
     ImageFetcher fetcher = new ImageFetcher(jo.getString("source"));
 
     return fetcher.toObservable().sample(interval, TimeUnit.MILLISECONDS)

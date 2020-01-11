@@ -34,6 +34,7 @@ public class ImageFetcher {
   protected double fps = DEFAULT_FPS; // frames per second
   private long milliTimeStamp;
   private boolean staticImage;
+  private boolean closed=false;
 
   private Image currentImage = null;
 
@@ -96,7 +97,10 @@ public class ImageFetcher {
   }
 
   public void close() {
-    this.capture.release();
+    if (!closed) {
+      this.capture.release();
+    }
+    closed=true;
   }
 
   /**
@@ -177,18 +181,16 @@ public class ImageFetcher {
    */
   public Observable<Image> toObservable() {
     // Resource creation.
-    Func0<VideoCapture> resourceFactory = () -> {
-      VideoCapture capture = new VideoCapture();
-      capture.open(source);
-      return capture;
+    Func0<ImageFetcher> resourceFactory = () -> {
+      return this;
     };
 
     // Convert to observable.
-    Func1<VideoCapture, Observable<Image>> observableFactory = capture -> Observable
+    Func1<ImageFetcher, Observable<Image>> observableFactory = capture -> Observable
         .<Image> create(subscriber -> handleImage(subscriber));
 
     // Disposal function.
-    Action1<VideoCapture> dispose = VideoCapture::release;
+    Action1<ImageFetcher> dispose = ImageFetcher::close;
 
     return Observable.using(resourceFactory, observableFactory, dispose);
   }
@@ -201,15 +203,15 @@ public class ImageFetcher {
   private void handleImage(Subscriber<? super Image> subscriber) {
     {
       boolean hasNext = true;
-      while (hasNext) {
+      while (hasNext && !closed) {
         final Image image = this.fetch();
         final Mat frame = image != null ? image.getFrame() : null;
         final Size size = frame != null ? frame.size() : new Size(0, 0);
         hasNext = image != null && size.width > 0 && size.height > 0;
         if (hasNext) {
           if (debug && frameIndex % Math.round(getFps()) == 0) {
-            String msg = String.format("->%6d:%4.0fx%4.0f", frameIndex, size.width,
-                size.height);
+            String msg = String.format("->%6d:%4.0fx%4.0f", frameIndex,
+                size.width, size.height);
             LOG.info(msg);
           }
           subscriber.onNext(image);

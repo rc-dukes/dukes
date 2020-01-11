@@ -3,8 +3,12 @@ package org.rcdukes.action;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.eventbus.Message;
 import org.rcdukes.common.Characters;
+import org.rcdukes.common.Config;
 import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.Environment;
 import org.rcdukes.common.Events;
+import org.rcdukes.error.ErrorHandler;
+
 import rx.Observable;
 import rx.Subscription;
 
@@ -52,9 +56,15 @@ public class Action extends DukesVerticle {
 
     private void startDragNavigator() {
         LOG.info("Starting drag navigator");
-
+        Environment env = Environment.getInstance();
+        String wheelOrientation="+";
+        try {
+          wheelOrientation = env.getString(Config.WHEEL_ORIENTATION);
+        } catch (Exception e) {
+          ErrorHandler.getInstance().handle(e);
+        }
         StartLightObserver startLightObserver = new StartLightObserver();
-        StraightLaneNavigator straighLaneNavigator = new StraightLaneNavigator();
+        StraightLaneNavigator straighLaneNavigator = new StraightLaneNavigator(wheelOrientation);
         StoppingZoneDetector stoppingZoneDetector = new StoppingZoneDetector();
 
         // failsafe ?
