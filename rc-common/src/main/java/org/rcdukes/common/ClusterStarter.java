@@ -19,7 +19,7 @@ public class ClusterStarter {
 
   private VertxOptions options;
   private boolean prepared = false;
-  private boolean debug = true;
+  private boolean debug = false;
   private Vertx vertx;
 
   public Vertx getVertx() {
@@ -116,6 +116,9 @@ public class ClusterStarter {
       // setting check interval to 1 h
       if (debug) {
         options.setBlockedThreadCheckInterval(1000 * 60 * 60);
+      } else {
+        // error after 5 secs ...
+        options.setBlockedThreadCheckInterval(1000 * 5);
       }
     }
     return options;

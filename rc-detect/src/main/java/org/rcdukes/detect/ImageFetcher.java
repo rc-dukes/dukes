@@ -1,5 +1,7 @@
 package org.rcdukes.detect;
 
+import java.util.Locale;
+
 import org.apache.commons.io.FilenameUtils;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
@@ -15,24 +17,25 @@ import rx.functions.Func0;
 import rx.functions.Func1;
 
 /**
- * fetcher for Images - will block at the  given FPS rate
+ * fetcher for Images - will block at the given FPS rate
  *
  */
 public class ImageFetcher {
   protected static final Logger LOG = LoggerFactory
       .getLogger(ImageFetcher.class);
 
-  public boolean debug=false;
-  public static double DEFAULT_FPS=25;
+  public boolean debug = true;
+  public static double DEFAULT_FPS = 25;
   // OpenCV video capture
   private VideoCapture capture = new VideoCapture();
   private String source;
   protected int frameIndex;
-  protected double fps=DEFAULT_FPS; // frames per second
+  protected int failureCount=0;
+  protected double fps = DEFAULT_FPS; // frames per second
   private long milliTimeStamp;
   private boolean staticImage;
 
-  private Image currentImage=null;
+  private Image currentImage = null;
 
   public double getFps() {
     return fps;
@@ -45,7 +48,7 @@ public class ImageFetcher {
   public int getFrameIndex() {
     return frameIndex;
   }
-  
+
   /**
    * @return the staticImage
    */
@@ -54,12 +57,12 @@ public class ImageFetcher {
   }
 
   /**
-   * @param staticImage the staticImage to set
+   * @param staticImage
+   *          the staticImage to set
    */
   public void setStaticImage(boolean staticImage) {
     this.staticImage = staticImage;
   }
-  
 
   /**
    * fetch from the given source
@@ -78,7 +81,7 @@ public class ImageFetcher {
    */
   public boolean open() {
     boolean ret = this.capture.open(source);
-    String ext= FilenameUtils.getExtension(source).toLowerCase();
+    String ext = FilenameUtils.getExtension(source).toLowerCase();
     setStaticImage(false);
     switch (ext) {
     case "jpg":
@@ -86,18 +89,19 @@ public class ImageFetcher {
     case "jpeg":
       setStaticImage(true);
     }
-    frameIndex=0;
-    milliTimeStamp = System.nanoTime()/ 1000000;
+    frameIndex = 0;
+    failureCount=0;
+    milliTimeStamp = System.nanoTime() / 1000000;
     return ret;
   }
-  
+
   public void close() {
     this.capture.release();
   }
 
   /**
-   * fetch an image Matrix - will block to make sure Mat is emitted
-   * at the frames per second rate configured
+   * fetch an image Matrix - will block to make sure Mat is emitted at the
+   * frames per second rate configured
    * 
    * @return - the image fetched
    */
@@ -111,12 +115,12 @@ public class ImageFetcher {
         throw new IllegalStateException(msg);
       }
     }
-    long currentMillis = System.nanoTime()/ 1000000;
-    int waitMillis = (int) Math.round(1000/fps);
-    waitMillis-=currentMillis-milliTimeStamp;
-    if (waitMillis>0) {
+    long currentMillis = System.nanoTime() / 1000000;
+    int waitMillis = (int) Math.round(1000 / fps);
+    waitMillis -= currentMillis - milliTimeStamp;
+    if (waitMillis > 0) {
       if (debug)
-        LOG.info(String.format("waiting %3d msecs",waitMillis));
+        LOG.info(String.format(Locale.ENGLISH,"waiting %3d msecs for %.1f fps", waitMillis,getFps()));
       try {
         Thread.sleep(waitMillis);
       } catch (InterruptedException e) {
@@ -124,30 +128,40 @@ public class ImageFetcher {
       }
     }
     // shall we "replay" the latest current Image?
-    if (this.staticImage && currentImage!=null) {
-      Mat frame=currentImage.getFrame().clone();
-      currentImage=createNextImage(frame,currentMillis);
+    if (this.staticImage && currentImage != null) {
+      Mat frame = currentImage.getFrame().clone();
+      currentImage = createNextImage(frame, currentMillis);
     } else {
       Mat frame = new Mat();
       this.capture.read(frame);
-      currentImage=createNextImage(frame,currentMillis);
+      if (!frame.empty()) {
+        currentImage = createNextImage(frame, currentMillis);
+        failureCount=0;
+      } else {
+        failureCount++;
+        if (failureCount%Math.round(getFps()*2)==0) {
+          String msg=String.format("%d read failures for %s",failureCount,source);
+          LOG.info(msg);
+        }
+      }
     }
+    milliTimeStamp=currentMillis;
     return currentImage;
   }
-  
+
   /**
    * create the next Image
-   * @param frame - the frame to use
-   * @param currentMillis - the timestamp to use
+   * 
+   * @param frame
+   *          - the frame to use
+   * @param currentMillis
+   *          - the timestamp to use
    * @return the new next image
    */
   public Image createNextImage(Mat frame, long currentMillis) {
-    Image image=null;
-    if (!frame.empty()) {
-      frameIndex++;
-      milliTimeStamp = currentMillis;
-      image=new Image(frame,source,frameIndex,milliTimeStamp);
-    }
+    frameIndex++;
+    milliTimeStamp = currentMillis;
+    Image image = new Image(frame, source, frameIndex, milliTimeStamp);
     return image;
   }
 
@@ -158,7 +172,8 @@ public class ImageFetcher {
 
   /**
    * convert me to an observable
-   * @return an Image emitting Observable 
+   * 
+   * @return an Image emitting Observable
    */
   public Observable<Image> toObservable() {
     // Resource creation.
@@ -180,6 +195,7 @@ public class ImageFetcher {
 
   /**
    * handle a single image for the given subscriber
+   * 
    * @param subscriber
    */
   private void handleImage(Subscriber<? super Image> subscriber) {
@@ -187,19 +203,20 @@ public class ImageFetcher {
       boolean hasNext = true;
       while (hasNext) {
         final Image image = this.fetch();
-        final Mat frame=image!=null?image.getFrame():null;
-        final Size size=frame!=null?frame.size():new Size(0,0);
-        hasNext = image!=null && size.width>0 && size.height>0;
+        final Mat frame = image != null ? image.getFrame() : null;
+        final Size size = frame != null ? frame.size() : new Size(0, 0);
+        hasNext = image != null && size.width > 0 && size.height > 0;
         if (hasNext) {
-           if (debug && frameIndex%25==0) {     
-             String msg = String.format("->%6d:%4dx%d", frameIndex, size.width,size.height);
-             LOG.info(msg);
-           }
-           subscriber.onNext(image);
+          if (debug && frameIndex % 25 == 0) {
+            String msg = String.format("->%6d:%4dx%d", frameIndex, size.width,
+                size.height);
+            LOG.info(msg);
+          }
+          subscriber.onNext(image);
         }
       }
       subscriber.onCompleted();
     }
   }
-  
+
 }

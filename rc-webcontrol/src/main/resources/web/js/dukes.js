@@ -4,7 +4,6 @@
 
 var eb = null; // we start with an undefined eventbus
 var imageViewUrl = 'http://localhost:8081';
-var cameraSource = null;
 var cameraFps=5;
 var recording=false;
 var manualwithkeys=false;
@@ -55,11 +54,13 @@ function publishWithOutLog(address,message,headers) {
 		stateColor = "violet";
 	}
 	setColor("events", stateColor);
+	setColor("heartbeatevents", stateColor);
 }
 
 // -1 to scroll
 var NUM_LOG_LINES_VISIBLE = -1;
-var logLines = [];
+var logLinesEvent = [];
+var logLinesHeartbeat=[];
 var logIndex=0;
 /**
  * display events
@@ -69,25 +70,28 @@ var display = function(err, msg) {
 	if (eb)
 		prefix = +eb.state + '/' + EventBus.OPEN + ':';
 	var jo=msg.body;
-	var show=true;
+	var logmsg=prefix + JSON.stringify(jo);
 	if (jo.type==="heartbeat") {
 		logIndex++;
-		show=logIndex%12==0
+		if (logIndex%12==0)
+			logMessage(logmsg,'heartbeatevents',logLinesHeartbeat)
+	} else {
+		logMessage(logmsg,'events',logLinesEvent);
 	}
-	if (show)
-		logMessage(prefix + JSON.stringify(jo));
 }
 
 /**
  * log the given message
  * 
- * @param msg
+ * @param msg - the message to log
+ * @param id - the id of the div to log to
+ * @param logLines - the loglines buffer to use
  */
-function logMessage(msg) {
+function logMessage(msg,id='events',logLines=logLinesEvent) {
 	var newLine = "<p>\n"; // td
 	// var newLine = "\n"; // textarea
 
-	var elem = document.getElementById("events");
+	var elem = document.getElementById(id);
 	var now = new Date().toISOString();
 	var logLine = now + ': ' + msg + newLine;
 	logLines.push(logLine);
@@ -110,8 +114,8 @@ function logMessage(msg) {
 
 function clearLog(msg) {
 	// https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
-	logLines.length = 0;
-	logMessage(msg);
+	logLinesEvent.length = 0;
+	logMessage(msg,"events",logLinesEvent);
 }
 
 // automatic repetition of heartbeat
@@ -498,12 +502,10 @@ var CALLSIGN_DAISY = 'Bo Peep';
 // update the configuration
 function updateConfig() {
 	var cameraSource=document.getElementById('cameraSource').value;
-	updateImageSources();
+	updateImageSources(cameraSource);
 	var newCameraFps=document.getElementById('cameraFpsSlider').value;
 	var roih=document.getElementById('roihSlider').value;
 	var roiw=document.getElementById('roiwSlider').value;
-	//if (newCameraFps!=cameraFps)
-	//  registerCamera(cameraSource,newCameraFps)
 	  
 	cameraConfig={}
 	cameraConfig.fps=Number(newCameraFps);
@@ -619,7 +621,8 @@ function initialSliderValues() {
 	updateTextBoxFromSlider('camSaSlider', 'camSaTextbox');
 }
 
-function updateImageSources() {
+// update the image Sources
+function updateImageSources(cameraSource) {
 	setImage("birdseyeImage", imageViewUrl + '?type=birdseye&mode=stream');
 	setImage("edgesImage", imageViewUrl + '?type=edges&mode=stream');
 	setImage("linesImage", imageViewUrl + '?type=lines&mode=stream');

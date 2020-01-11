@@ -118,13 +118,16 @@
 				</div>
 			</div>
 			<div class='row'>
-				<div class="col-md-5 thlabel">Events</div>
+				<div class="col-md-3 thlabel">Events</div>
+				<div class="col-md-2 thlabel">Heartbeat</div>
 				<div class="col-md-3 thlabel">Imageview Config</div>
 				<div class="col-md-4 thlabel">Detection Config</div>
 			</div>
 			<div class='row'>
-				<div class="col-md-5" id='events'
-					style="overflow-y: scroll; height: 300px;"></div>
+				<div class="col-md-3" id='events'
+					style="overflow-y: scroll; height: 340px;"></div>
+				<div class="col-md-2" id='heartbeatevents'
+					style="overflow-y: scroll; height: 340px;"></div>
 				<div class="col-md-3">
 					<fieldset>
 						<legend>Camera config:</legend>
@@ -146,8 +149,8 @@
 								<input id="roihTextbox" size="2" />
 							</div>
 							<div class='col-md-6'>
-								<input id="roihSlider" value="0.45" type="range" min="0" max="1"
-									step="0.05"
+								<input id="roihSlider" value="0.44" type="range" min="0" max="1"
+									step="0.02"
 									oninput="onSlide('roihSlider',
 								'roihTextbox')" />
 							</div>
@@ -158,8 +161,8 @@
 								<input id="roiwTextbox" size="2" />
 							</div>
 							<div class='col-md-6'>
-								<input id="roiwSlider" value="0.55" type="range" min="0" max="1"
-									step="0.05"
+								<input id="roiwSlider" value="0.56" type="range" min="0" max="1"
+									step="0.02"
 									oninput="onSlide('roihSlider',
 								'roiwTextbox')" />
 							</div>
@@ -177,7 +180,7 @@
 							</div>
 						</div>
 						<div>
-							<img id="cameraImageDebug" width="200">
+							<img id="cameraImageDebug" width="300">
 						</div>
 					</fieldset>
 				</div>

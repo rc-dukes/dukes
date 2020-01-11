@@ -30,10 +30,12 @@ public class Detector extends DukesVerticle {
 
   // @FIXME - does not belong here ...
   private final static long START_LIGHT_DETECTION_INTERVAL = 50;
-  private static ImageCollector currentCollector=new ImageCollector();
+  private static ImageCollector currentCollector = new ImageCollector();
+
   public static synchronized ImageCollector getImageCollector() {
     return currentCollector;
   }
+
   private Subscription startLaneDetectionSubscription;
   private Subscription startLightDetectionSubscription;
 
@@ -49,8 +51,9 @@ public class Detector extends DukesVerticle {
     super.preStart();
     NativeLibrary.load();
     // register vert.x event handlers
-    consumer(Events.START_LANE_DETECTION,this::startLaneDetectionMessageHandler);
-    consumer(Events.START_STARTLIGHT_DETECTION,this::startSLD);
+    consumer(Events.START_LANE_DETECTION,
+        this::startLaneDetectionMessageHandler);
+    // consumer(Events.START_STARTLIGHT_DETECTION, this::startSLD); - blocking issue ..
     consumer(Events.CAMERA_CONFIG_UPDATE, this::cameraConfig);
     consumer(Events.CANNY_CONFIG_UPDATE, this::cannyConfig);
     consumer(Events.HOUGH_CONFIG_UPDATE, this::houghConfig);
@@ -67,22 +70,23 @@ public class Detector extends DukesVerticle {
     JsonObject jo = message.body();
     CameraConfig cameraConfig = super.fromJsonObject(jo, CameraConfig.class);
     // is this a restart?
-    if (startLaneDetectionSubscription!=null)
+    if (startLaneDetectionSubscription != null)
       startLaneDetectionSubscription.unsubscribe();
-    startLaneDetectionSubscription=startLaneDetection(cameraConfig)
-        // .doOnNext(detection -> LOG.trace("Image lane detection processing result: " + detection))
+    startLaneDetectionSubscription = startLaneDetection(cameraConfig)
+        // .doOnNext(detection -> LOG.trace("Image lane detection processing
+        // result: " + detection))
         .subscribe(
             lane -> vertx.eventBus().publish(Events.LANE_DETECTED.name(), lane),
             error -> LOG.error("Error during lane detection image processing:",
                 error),
             () -> LOG.info("Lane detection image processing ended"));
   }
-  
+
   private void startSLD(Message<JsonObject> message) {
     // is this a restart?
-    if ( startLightDetectionSubscription!=null) 
+    if (startLightDetectionSubscription != null)
       startLightDetectionSubscription.unsubscribe();
-    startLightDetectionSubscription=startStartLightDetection(message)
+    startLightDetectionSubscription = startStartLightDetection(message)
         // .doOnNext(detection -> LOG.trace("Image start light processing
         // result: " + detection))
         // .takeWhile()
@@ -106,7 +110,7 @@ public class Detector extends DukesVerticle {
       restart = !cameraConfig.getSource()
           .equals(currentCameraConfig.getSource());
     }
-    // update the camera Configuration 
+    // update the camera Configuration
     shareData("cameraConfig", jo);
     if (restart) {
       sendEvent(Events.START_LANE_DETECTION, jo);
@@ -125,7 +129,7 @@ public class Detector extends DukesVerticle {
   private void cameraMatrix(Message<JsonObject> message) {
     shareData("matrix", message.body());
   }
-  
+
   private CameraMatrix createMatrix() {
     String matrix = (String) vertx.sharedData()
         .getLocalMap(Characters.DAISY.name()).get("matrix");
@@ -154,12 +158,14 @@ public class Detector extends DukesVerticle {
 
   /**
    * startLaneDetectionObservable
+   * 
    * @param cameraConfig
    * @return
    */
   private Observable<Object> startLaneDetectionObservable(
       CameraConfig cameraConfig) {
     ImageFetcher fetcher = new ImageFetcher(cameraConfig.getSource());
+    fetcher.setFps(cameraConfig.getFps());
 
     LOG.info(
         "Started image processing for source: " + cameraConfig.getSource());
@@ -167,13 +173,15 @@ public class Detector extends DukesVerticle {
         .throttleFirst(cameraConfig.getInterval(), TimeUnit.MILLISECONDS)
         .map(image -> {
           currentCollector = new ImageCollector();
-          EdgeDetector edgeDetector=super.getSharedPojo("canny", CannyEdgeDetector.class);
-          LineDetector lineDetector = super.getSharedPojo("hough", HoughLinesLineDetector.class);
-          CameraConfig updatedCameraConfig=super.getSharedPojo("cameraConfig", CameraConfig.class);
-          Map<String, Object> detection = new LaneDetector(
-              edgeDetector,
-              lineDetector,
-              updatedCameraConfig, createMatrix(), currentCollector).detect(image);
+          EdgeDetector edgeDetector = super.getSharedPojo("canny",
+              CannyEdgeDetector.class);
+          LineDetector lineDetector = super.getSharedPojo("hough",
+              HoughLinesLineDetector.class);
+          CameraConfig updatedCameraConfig = super.getSharedPojo("cameraConfig",
+              CameraConfig.class);
+          Map<String, Object> detection = new LaneDetector(edgeDetector,
+              lineDetector, updatedCameraConfig, createMatrix(),
+              currentCollector).detect(image);
           return detection;
         });
   }
