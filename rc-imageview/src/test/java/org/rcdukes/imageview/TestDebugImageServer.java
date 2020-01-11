@@ -45,6 +45,7 @@ public class TestDebugImageServer {
   @Test
   public void testTestImage() throws Exception {
     startImageServer();
+    // @TODO Make configurable
     String url="http://localhost:8081";
     AsyncHttpClient asyncHttpClient = asyncHttpClient();
     Future<Response> whenResponse = asyncHttpClient.prepareGet(url).execute();

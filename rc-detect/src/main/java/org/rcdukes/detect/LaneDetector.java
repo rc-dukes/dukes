@@ -4,13 +4,13 @@ import java.util.Map;
 
 import org.rcdukes.camera.CameraMatrix;
 import org.rcdukes.detect.lanedetection.ImageLaneDetection;
+import org.rcdukes.detect.linedetection.HoughLinesLineDetector;
 import org.rcdukes.detectors.EdgeDetector;
 import org.rcdukes.detectors.LineDetector;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
-import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
 
 /**
  * detector for lanes
@@ -32,12 +32,12 @@ public class LaneDetector {
   public static LaneDetector getDefault() {
     ImageCollector collector = new ImageCollector();
     CameraMatrix matrix = CameraMatrix.DEFAULT;
-    CannyEdgeDetector edgeDetector = new CannyEdgeDetector();
+    EdgeDetector edgeDetector = new CannyEdgeDetector();
     CameraConfig cameraConfig = new CameraConfig();
-    HoughLinesLineDetector lineDetector = new HoughLinesLineDetector();
+    LineDetector lineDetector = new HoughLinesLineDetector();
     LaneDetector laneDetector = new LaneDetector(
-        edgeDetector.withImageCollector(collector),
-        lineDetector.withImageCollector(collector), cameraConfig, matrix,
+        edgeDetector,
+        lineDetector, cameraConfig, matrix,
         collector);
     return laneDetector;
   }

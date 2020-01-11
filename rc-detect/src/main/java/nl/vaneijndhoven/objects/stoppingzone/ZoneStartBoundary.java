@@ -1,8 +1,8 @@
 package nl.vaneijndhoven.objects.stoppingzone;
 
+import org.rcdukes.detect.linedetection.LineFilter;
 import org.rcdukes.geometry.Line;
 import nl.vaneijndhoven.objects.Boundary;
-import nl.vaneijndhoven.opencv.linedetection.LineFilter;
 
 import java.util.Collection;
 import java.util.Comparator;

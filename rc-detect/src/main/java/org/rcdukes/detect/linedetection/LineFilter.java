@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.opencv.linedetection;
+package org.rcdukes.detect.linedetection;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Point;

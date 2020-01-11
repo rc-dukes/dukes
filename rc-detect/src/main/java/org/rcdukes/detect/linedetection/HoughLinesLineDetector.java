@@ -1,15 +1,13 @@
-package nl.vaneijndhoven.opencv.linedetection;
+package org.rcdukes.detect.linedetection;
 
-import org.rcdukes.geometry.Line;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
+import org.rcdukes.detectors.LineDetectionResult;
 import org.rcdukes.detectors.LineDetector;
-import org.rcdukes.video.ImageCollector;
-
-import java.util.*;
-
-import static java.util.Optional.of;
+import org.rcdukes.geometry.Line;
 
 /**
  * Hough Lines Line Detector
@@ -26,8 +24,7 @@ public class HoughLinesLineDetector implements LineDetector {
   double minLineLength = 20;
   double maxLineGap = 10;
   boolean probabilistic = true;
-  transient private Optional<ImageCollector> collector;
-
+ 
   /**
    * default constructor
    */
@@ -55,17 +52,19 @@ public class HoughLinesLineDetector implements LineDetector {
   }
 
   @Override
-  public Collection<Line> detect(Mat image) {
-    Mat lines = detectMat(image);
+  public LineDetectionResult detect(Mat image) {
+    LineDetectionResult result=new LineDetectionResult();
+    Mat linesImage=detectMat(image);
 
-    Set<Line> lineObjects = new HashSet<>();
+    Set<Line> lines = new HashSet<>();
 
-    for (int x = 0; x < lines.rows(); x++) {
-      Line line = new Line(lines.get(x, 0));
-      lineObjects.add(line);
+    for (int x = 0; x < linesImage.rows(); x++) {
+      Line line = new Line(linesImage.get(x, 0));
+      lines.add(line);
     }
-
-    return lineObjects;
+    result.setLinesImage(linesImage);
+    result.setLines(lines);
+    return result;
   }
 
   /**
@@ -84,13 +83,7 @@ public class HoughLinesLineDetector implements LineDetector {
     } else {
       Imgproc.HoughLines(image, lines, rho, theta, threshold);
     }
-    collector.ifPresent(coll -> coll.lines(lines));
     return lines;
-  }
-
-  public HoughLinesLineDetector withImageCollector(ImageCollector collector) {
-    this.collector = of(collector);
-    return this;
   }
 
   public double getRho() {

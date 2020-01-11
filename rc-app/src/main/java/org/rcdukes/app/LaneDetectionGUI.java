@@ -2,12 +2,13 @@ package org.rcdukes.app;
 
 import java.util.concurrent.TimeUnit;
 
-import org.opencv.core.Mat;
 import org.rcdukes.camera.CameraMatrix;
+import org.rcdukes.common.Config;
 import org.rcdukes.detect.CameraConfig;
 import org.rcdukes.detect.ImageFetcher;
 import org.rcdukes.detect.ImageSubscriber;
 import org.rcdukes.detect.LaneDetector;
+import org.rcdukes.detect.linedetection.HoughLinesLineDetector;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 
@@ -16,9 +17,7 @@ import io.vertx.core.VertxOptions;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
-import org.rcdukes.common.Config;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
-import nl.vaneijndhoven.opencv.linedetection.HoughLinesLineDetector;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 

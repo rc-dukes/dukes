@@ -3,12 +3,6 @@ package nl.vaneijndhoven.opencv.edgedectection;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 import org.rcdukes.detectors.EdgeDetector;
-import org.rcdukes.video.ImageCollector;
-
-import java.util.Optional;
-
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 
 /**
  * Canny edge detector
@@ -20,7 +14,6 @@ public class CannyEdgeDetector implements EdgeDetector {
   double threshold2 = 150;
   int apertureSize = 3;
   boolean l2gradient = false;
-  transient private Optional<ImageCollector> collector = empty();
   
   public double getThreshold1() {
     return threshold1;
@@ -66,22 +59,11 @@ public class CannyEdgeDetector implements EdgeDetector {
     this.l2gradient = l2gradient;
   }
 
-  /**
-   * activate the image collector
-   * @param collector
-   * @return
-   */
-  public CannyEdgeDetector withImageCollector(ImageCollector collector) {
-    this.collector = of(collector);
-    return this;
-  }
-
   @Override
   public Mat detect(Mat image) {
     Mat imgEdges = new Mat();
     Imgproc.Canny(image, imgEdges, threshold1, threshold2, apertureSize,
         l2gradient);
-    collector.ifPresent(coll -> coll.edges(imgEdges));
     return imgEdges;
   }
 

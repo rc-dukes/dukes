@@ -5,9 +5,8 @@ import static java.util.Optional.ofNullable;
 import java.util.Collection;
 import java.util.Optional;
 
+import org.rcdukes.detect.linedetection.LineFilter;
 import org.rcdukes.geometry.Line;
-
-import nl.vaneijndhoven.opencv.linedetection.LineFilter;
 
 public class Boundary {
 

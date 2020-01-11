@@ -197,5 +197,40 @@ public abstract class DukesVerticle extends AbstractVerticle {
         .getLocalMap(character.getCallsign()).get(key);
     return jo;
   }
+  
+  /**
+   * get a pojo from the shared data
+   * @param key
+   * @param clazz
+   * @return - the pojo
+   */
+  public <T> T getSharedPojo(String key, Class<T> clazz) {
+    JsonObject jo=getSharedData(key);
+    T result=fromJsonObject(jo,clazz);
+    return result;
+  }
+  
+  
+  /**
+   * construct a Pojo from the given JsonObject
+   * @param jo - the JsonObject
+   * @param clazz - the type to use
+   * @return - the mapped instance or a default instance from a no-args constructor if jo is null
+   */
+  public <T> T fromJsonObject(JsonObject jo,
+      Class<T> clazz)  {
+    T result;
+    if (jo==null) {
+      try {
+        result=clazz.newInstance();
+      } catch (InstantiationException | IllegalAccessException e) {
+        LOG.trace(e.getMessage());
+        result=null;
+      }
+    } else {
+      result=jo.mapTo(clazz);
+    }
+    return result;
+  }
 
 }

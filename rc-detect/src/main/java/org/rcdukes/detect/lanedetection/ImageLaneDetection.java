@@ -18,6 +18,7 @@ import org.rcdukes.camera.PerspectiveShift;
 import org.rcdukes.detect.CameraConfig;
 import org.rcdukes.detect.Detector;
 import org.rcdukes.detect.LaneDetector;
+import org.rcdukes.detectors.LineDetectionResult;
 import org.rcdukes.roi.ROI;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
@@ -80,15 +81,17 @@ public class ImageLaneDetection {
 
     PerspectiveShift perspectiveShift = new PerspectiveShift(imagePolygon,
         worldPolygon);
-    Detector.BIRDS_EYE = perspectiveShift.apply(originalFrame);
+    Detector.BIRDS_EYE = perspectiveShift.apply(frame);
     imageCollector.morph(Detector.BIRDS_EYE);
 
     // step1 edge detection
     Mat imgEdges = ld.getEdgeDetector().detect(frame);
+    imageCollector.edges(imgEdges);
 
     // step 2 line detection
-    Collection<Line> lines = ld.getLineDetector().detect(imgEdges);
-
+    LineDetectionResult ldResult = ld.getLineDetector().detect(imgEdges);
+    imageCollector.lines(ldResult.getLinesImage());
+    Collection<Line> lines = ldResult.getLines();
     Lane lane = new DefaultLaneDetector().detect(lines, viewPort);
     StoppingZone stoppingZone = new DefaultStoppingZoneDetector().detect(lines);
 
