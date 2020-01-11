@@ -4,7 +4,6 @@ import static org.rcdukes.video.PointMapper.toPoint;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Objects;
@@ -16,11 +15,11 @@ import org.opencv.core.MatOfByte;
 import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import org.rcdukes.geometry.Line;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javafx.scene.image.Image;
-import org.rcdukes.geometry.Line;
 
 /**
  * Image Utilities

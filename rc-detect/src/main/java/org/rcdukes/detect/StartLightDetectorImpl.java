@@ -16,6 +16,7 @@ import org.opencv.imgproc.Imgproc;
 import org.rcdukes.detectors.StartLightDetector;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.ImageCollector.ImageType;
 
 import nl.vaneijndhoven.objects.StartLight;
 
@@ -89,7 +90,7 @@ public class StartLightDetectorImpl implements StartLightDetector {
     // threshold HSV image to select tennis balls
     Core.inRange(hsvImage, minValues, maxValues, mask);
     // show the partial output
-    collector.ifPresent(coll -> coll.mask(mask));
+    collector.ifPresent(coll -> coll.addImage(mask, ImageType.mask));
 
     // morphological operators
     // dilate with large element, erode with small ones
@@ -105,7 +106,7 @@ public class StartLightDetectorImpl implements StartLightDetector {
     Imgproc.dilate(mask, morphOutput, dilateElement);
 
     // show the partial output
-    collector.ifPresent(coll -> coll.morph(morphOutput));
+    collector.ifPresent(coll -> coll.addImage(morphOutput, ImageType.morph));
 
     // find the tennis ball(s) contours and show them
     return this.detect(morphOutput, frame);
@@ -147,7 +148,7 @@ public class StartLightDetectorImpl implements StartLightDetector {
       startLight = startLight.off();
     }
 
-    collector.ifPresent(coll -> coll.startLight(frame));
+    collector.ifPresent(coll -> coll.addImage(frame, ImageType.startlight));
     return startLight;
   }
 

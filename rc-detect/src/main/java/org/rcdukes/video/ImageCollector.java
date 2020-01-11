@@ -9,92 +9,58 @@ import org.opencv.core.Mat;
  * a set of images to be used for display/debugging
  */
 public class ImageCollector {
-
-  private Map<String, Image> images = new HashMap<String, Image>();
+  public static enum ImageType {
+    camera, edges, birdseye, lines, startlight, mask, morph
+  }
+  private Map<ImageType, Image> images = new HashMap<ImageType, Image>();
 
   /**
    * construct me
    */
   public ImageCollector() {
-    edges(null);
-    lines(null);
-    originalFrame(null);
-    startLight(null);
-    morph(null);
-    mask(null);
+    // @FIXME - load default images here ...
+    // this.addImage(null,ImageType.edges);
   }
   
   /**
-   * create an image
-   * @param frame
-   * @param name
+   * add the given image
+   * @param frame - the frame to add
+   * @param - the imageType to use
    * @return - the image
    */
-  public Image createImage(Mat frame,String name) {
+  public Image createImage(Mat frame,ImageType imageType) {
     long milliTimeStamp=System.currentTimeMillis();
     int frameIndex=-1; 
-    Image originalFrame=getImages().get("original");
+    Image originalFrame=getImages().get(ImageType.camera);
     if (originalFrame!=null) {
       milliTimeStamp=originalFrame.milliTimeStamp;
       frameIndex=originalFrame.getFrameIndex();
     }
-    Image image=new Image(frame,name,frameIndex,milliTimeStamp);
+    Image image=new Image(frame,imageType.name(),frameIndex,milliTimeStamp);
     return image;
   }
-
-  public void edges(Mat frame) {
-    images.put("edges",createImage(frame,"edges"));
-  }
-
-  public void lines(Mat frame) {
-    images.put("lines",createImage(frame,"lines"));
-  }
-
-  public void startLight(Mat frame) {
-    images.put("start", createImage(frame,"start"));
-  }
-
-  public void mask(Mat frame) {
-    images.put("mask", createImage(frame,"mask"));
-  }
-
-  public void morph(Mat frame) {
-    images.put("morph", createImage(frame,"morph"));
-  }
-
-  public void originalFrame(Image image) {
-    getImages().put("original",image);
-  }
-
-  public byte[] edges() {
-    return getImages().get("edges").imageBytes;
-  }
-
-  public byte[] lines() {
-    return getImages().get("lines").imageBytes;
-  }
-
-  public byte[] startLight() {
-    return getImages().get("start").imageBytes;
-  }
-
-  public byte[] mask() {
-    return getImages().get("mask").imageBytes;
-  }
-
-  public byte[] morph() {
-    return getImages().get("morph").imageBytes;
-  }
-
-  public byte[] originalFrame() {
-    return getImages().get("original").imageBytes;
+   
+  /**
+   * add the given frame as an image with the given imageType
+   * @param frame
+   * @param imageType
+   * @return - the Image
+   */
+  public Image addImage(Mat frame, ImageType imageType) {  
+    Image image=createImage(frame,imageType);
+    images.put(imageType, image);
+    return image;
   }
 
   /**
    * @return the images
    */
-  public Map<String, Image> getImages() {
+  public Map<ImageType, Image> getImages() {
     return images;
+  }
+
+  public Image getImage(ImageType imageType) {
+    return images.get(imageType);
   }
 
 }

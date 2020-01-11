@@ -16,18 +16,17 @@ import org.opencv.imgproc.Imgproc;
 import org.rcdukes.camera.ImagePolygon;
 import org.rcdukes.camera.PerspectiveShift;
 import org.rcdukes.detect.CameraConfig;
-import org.rcdukes.detect.Detector;
 import org.rcdukes.detect.LaneDetector;
-import org.rcdukes.detectors.LineDetectionResult;
-import org.rcdukes.roi.ROI;
-import org.rcdukes.video.Image;
-import org.rcdukes.video.ImageCollector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.rcdukes.geometry.Line;
 import org.rcdukes.geometry.Point;
 import org.rcdukes.geometry.Polygon;
+import org.rcdukes.roi.ROI;
+import org.rcdukes.video.Image;
+import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.ImageCollector.ImageType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import nl.vaneijndhoven.navigation.plot.LaneOrientation;
 import nl.vaneijndhoven.navigation.plot.StoppingZoneOrientation;
 import nl.vaneijndhoven.objects.Lane;
@@ -66,8 +65,8 @@ public class ImageLaneDetection {
       return result;
     }
     CameraConfig cameraConfig=ld.getCameraConfig();
-    Mat originalFrame = image.getFrame();
-    imageCollector.originalFrame(image);
+    Mat originalFrame = image.getFrame().clone();
+    imageCollector.addImage(originalFrame, ImageType.camera);
     Mat undistorted = ld.getMatrix().apply(originalFrame);
     // get the configured Region of interest
     Mat frame = new ROI("camera",0, cameraConfig.getRoiw(), 1, cameraConfig.getRoih())
@@ -81,17 +80,15 @@ public class ImageLaneDetection {
 
     PerspectiveShift perspectiveShift = new PerspectiveShift(imagePolygon,
         worldPolygon);
-    Detector.BIRDS_EYE = perspectiveShift.apply(frame);
-    imageCollector.morph(Detector.BIRDS_EYE);
+    Mat birdseye = perspectiveShift.apply(frame);
+    imageCollector.addImage(birdseye, ImageType.birdseye);
 
     // step1 edge detection
     Mat imgEdges = ld.getEdgeDetector().detect(frame);
-    imageCollector.edges(imgEdges);
+    imageCollector.addImage(imgEdges, ImageType.edges);
 
     // step 2 line detection
-    LineDetectionResult ldResult = ld.getLineDetector().detect(imgEdges);
-    imageCollector.lines(ldResult.getLinesImage());
-    Collection<Line> lines = ldResult.getLines();
+    Collection<Line> lines = ld.getLineDetector().detect(imgEdges);
     Lane lane = new DefaultLaneDetector().detect(lines, viewPort);
     StoppingZone stoppingZone = new DefaultStoppingZoneDetector().detect(lines);
 
@@ -123,8 +120,8 @@ public class ImageLaneDetection {
       distanceToStoppingZoneEnd = stoppingZoneOrientation
           .determineDistanceToStoppingZoneEnd();
     }
-
-    imageCollector.lines(frame);
+    imageCollector.addImage(frame, ImageType.lines);
+    
 
     double angle = laneOrientation.determineCurrentAngle();
 

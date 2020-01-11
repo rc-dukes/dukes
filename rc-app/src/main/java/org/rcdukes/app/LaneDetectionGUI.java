@@ -11,6 +11,7 @@ import org.rcdukes.detect.LaneDetector;
 import org.rcdukes.detect.linedetection.HoughLinesLineDetector;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.ImageCollector.ImageType;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -75,8 +76,8 @@ public class LaneDetectionGUI extends BaseGUI {
             CameraConfig cameraConfig=new CameraConfig();
             LaneDetector laneDetector=new LaneDetector(edgeDetector,lineDetector,cameraConfig,cameraMatrix,collector);
             laneDetector.detect(originalImage);
-            displayer.display1(collector.edges());
-            displayer.display2(collector.lines());
+            displayer.display1(collector.getImage(ImageType.edges));
+            displayer.display2(collector.getImage(ImageType.lines));
           }
         };
         displayer.setCameraButtonText("Stop Camera");

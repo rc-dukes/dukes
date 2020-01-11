@@ -6,18 +6,20 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.opencv.core.Mat;
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.Config;
+import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.Events;
 import org.rcdukes.detect.Detector;
-import org.rcdukes.video.ImageUtils;
+import org.rcdukes.video.Image;
+import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.ImageCollector.ImageType;
 
 import io.vertx.core.Future;
 import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.http.HttpServer;
 import io.vertx.rxjava.core.http.HttpServerRequest;
 import io.vertx.rxjava.core.http.HttpServerResponse;
-import org.rcdukes.common.Characters;
-import org.rcdukes.common.Config;
-import org.rcdukes.common.DukesVerticle;
-import org.rcdukes.common.Events;
 
 /**
  * Imageview verticle (Rosco)
@@ -71,10 +73,6 @@ public class DebugImageServer extends DukesVerticle {
 
   Map<String, VideoRecorder> recorders = new HashMap<String, VideoRecorder>();
 
-  enum ImageType {
-    camera, edges, birdseye, lines
-  }
-
   /**
    * start Recording
    */
@@ -101,33 +99,21 @@ public class DebugImageServer extends DukesVerticle {
    * @param request
    */
   public void sendImage(HttpServerRequest request) {
-    String ext=exts[imageFormat.ordinal()];
     String type = request.getParam("type");
     // System.out.println(type);
     if (type == null)
       type = "camera";
+    ImageType imageType=ImageType.valueOf(type);
+    ImageCollector collector=Detector.currentCollector;
+    Image image=null;
     byte[] bytes = null;
     Mat mat=null;
-    switch (type) {
-    case "edges":
-      bytes = Detector.CANNY_IMG;
-      mat=ImageUtils.imageBytes2Mat(bytes);
-      break;
-
-    case "birdseye":
-      mat=Detector.BIRDS_EYE;
-      bytes = ImageUtils.mat2ImageBytes(mat, ext);
-      break;
-      
-    case "lines":
-      mat=Detector.MAT;
-      bytes = ImageUtils.mat2ImageBytes(mat, ext);
-      break;
-      
-    case "camera":
-      mat=Detector.camera;
-      bytes = ImageUtils.mat2ImageBytes(mat, ext);
-      break;
+    if (collector!=null) {
+      image=collector.getImages().get(imageType);
+      if (image!=null) {
+        mat=image.getFrame();
+        bytes = image.getImageBytes();
+      }
     }
     sendImageBytesOrDefault(request, bytes);
     if (recorders.containsKey(type) && mat!=null) {

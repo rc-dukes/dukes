@@ -1,5 +1,6 @@
 package org.rcdukes.detect;
 
+import org.apache.commons.io.FilenameUtils;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.videoio.VideoCapture;
@@ -29,6 +30,9 @@ public class ImageFetcher {
   protected int frameIndex;
   protected double fps=DEFAULT_FPS; // frames per second
   private long milliTimeStamp;
+  private boolean staticImage;
+
+  private Image currentImage=null;
 
   public double getFps() {
     return fps;
@@ -41,6 +45,21 @@ public class ImageFetcher {
   public int getFrameIndex() {
     return frameIndex;
   }
+  
+  /**
+   * @return the staticImage
+   */
+  public boolean isStaticImage() {
+    return staticImage;
+  }
+
+  /**
+   * @param staticImage the staticImage to set
+   */
+  public void setStaticImage(boolean staticImage) {
+    this.staticImage = staticImage;
+  }
+  
 
   /**
    * fetch from the given source
@@ -59,6 +78,14 @@ public class ImageFetcher {
    */
   public boolean open() {
     boolean ret = this.capture.open(source);
+    String ext= FilenameUtils.getExtension(source).toLowerCase();
+    setStaticImage(false);
+    switch (ext) {
+    case "jpg":
+    case "png":
+    case "jpeg":
+      setStaticImage(true);
+    }
     frameIndex=0;
     milliTimeStamp = System.nanoTime()/ 1000000;
     return ret;
@@ -79,12 +106,11 @@ public class ImageFetcher {
       boolean ret = this.open();
       if (!ret) {
         String msg = String.format(
-            "Trying to fetch image from unopened VideoCapture and open %s failed",
+            "Trying to fetch image from unopened VideoCapture and open '%s' failed",
             source);
         throw new IllegalStateException(msg);
       }
     }
-    final Mat frame = new Mat();
     long currentMillis = System.nanoTime()/ 1000000;
     int waitMillis = (int) Math.round(1000/fps);
     waitMillis-=currentMillis-milliTimeStamp;
@@ -96,8 +122,26 @@ public class ImageFetcher {
       } catch (InterruptedException e) {
         // ignore
       }
-    }      
-    this.capture.read(frame);
+    }
+    // shall we "replay" the latest current Image?
+    if (this.staticImage && currentImage!=null) {
+      Mat frame=currentImage.getFrame().clone();
+      currentImage=createNextImage(frame,currentMillis);
+    } else {
+      Mat frame = new Mat();
+      this.capture.read(frame);
+      currentImage=createNextImage(frame,currentMillis);
+    }
+    return currentImage;
+  }
+  
+  /**
+   * create the next Image
+   * @param frame - the frame to use
+   * @param currentMillis - the timestamp to use
+   * @return the new next image
+   */
+  public Image createNextImage(Mat frame, long currentMillis) {
     Image image=null;
     if (!frame.empty()) {
       frameIndex++;
@@ -157,6 +201,5 @@ public class ImageFetcher {
       subscriber.onCompleted();
     }
   }
-  
   
 }

@@ -1,6 +1,7 @@
 package org.rcdukes.detect;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -8,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opencv.core.Mat;
 import org.rcdukes.opencv.NativeLibrary;
 import org.rcdukes.video.Image;
 
@@ -81,6 +81,19 @@ public class TestImageFetcher {
     assertTrue(imageUser.completed);
     assertEquals(768,imageUser.cols);
     assertEquals(576,imageUser.rows);
+  }
+  
+  @Test
+  public void testStaticImage() {
+    String source="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg/1280px-4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg";
+    ImageFetcher imageFetcher=new ImageFetcher(source);
+    assertTrue(imageFetcher.open());
+    assertTrue(imageFetcher.isStaticImage());
+    for (int i=0;i<=10;i++) {
+      Image image=imageFetcher.fetch();
+      assertNotNull(image);
+    }
+    
   }
 
 }

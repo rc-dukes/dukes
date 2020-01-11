@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Handler;
+import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.Message;
@@ -138,7 +139,7 @@ public abstract class DukesVerticle extends AbstractVerticle {
    * @param jo - the JsonObject to send
    */
   public void send(String address,JsonObject jo)  {
-    getVertx().eventBus().send(address, jo);
+    getVertx().eventBus().publish(address, jo);
   }
   
   /**

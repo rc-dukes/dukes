@@ -3,8 +3,13 @@ package org.rcdukes.detect;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.opencv.core.Mat;
 import org.rcdukes.camera.CameraMatrix;
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.Events;
+import org.rcdukes.detect.linedetection.HoughLinesLineDetector;
+import org.rcdukes.detectors.EdgeDetector;
+import org.rcdukes.detectors.LineDetector;
 import org.rcdukes.opencv.NativeLibrary;
 import org.rcdukes.video.ImageCollector;
 
@@ -13,15 +18,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.eventbus.Message;
-import org.rcdukes.common.Characters;
-import org.rcdukes.common.DukesVerticle;
-import org.rcdukes.common.Events;
-import org.rcdukes.detect.linedetection.HoughLinesLineDetector;
-import org.rcdukes.detectors.EdgeDetector;
-import org.rcdukes.detectors.LineDetector;
-
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import rx.Observable;
+import rx.Subscription;
 import rx.schedulers.Schedulers;
 
 /**
@@ -31,10 +30,9 @@ public class Detector extends DukesVerticle {
 
   // @FIXME - does not belong here ...
   private final static long START_LIGHT_DETECTION_INTERVAL = 50;
-  public static Mat camera = null;
-  public static Mat MAT = null;
-  public static Mat BIRDS_EYE = null;
-  public static byte[] CANNY_IMG = null;
+  public static ImageCollector currentCollector;
+  private Subscription startLaneDetectionSubscription;
+  private Subscription startLightDetectionSubscription;
 
   /**
    * default constructor
@@ -48,7 +46,7 @@ public class Detector extends DukesVerticle {
     super.preStart();
     NativeLibrary.load();
     // register vert.x event handlers
-    consumer(Events.START_LANE_DETECTION, this::startLD);
+    consumer(Events.START_LANE_DETECTION,this::startLaneDetectionMessageHandler);
     consumer(Events.START_STARTLIGHT_DETECTION,this::startSLD);
     consumer(Events.CAMERA_CONFIG_UPDATE, this::cameraConfig);
     consumer(Events.CANNY_CONFIG_UPDATE, this::cannyConfig);
@@ -58,25 +56,30 @@ public class Detector extends DukesVerticle {
   }
 
   /**
-   * startLane Detection
+   * start Lane Detection
    * 
    * @param message
    */
-  private void startLD(Message<JsonObject> message) {
+  private void startLaneDetectionMessageHandler(Message<JsonObject> message) {
     JsonObject jo = message.body();
     CameraConfig cameraConfig = super.fromJsonObject(jo, CameraConfig.class);
-    startLaneDetection(cameraConfig)
-        // .doOnNext(detection -> LOG.trace("Image lane detection processing
-        // result: " + detection))
+    // is this a restart?
+    if (startLaneDetectionSubscription!=null)
+      startLaneDetectionSubscription.unsubscribe();
+    startLaneDetectionSubscription=startLaneDetection(cameraConfig)
+        .doOnNext(detection -> LOG.trace("Image lane detection processing result: " + detection))
         .subscribe(
             lane -> vertx.eventBus().publish(Events.LANE_DETECTED.name(), lane),
             error -> LOG.error("Error during lane detection image processing:",
                 error),
             () -> LOG.info("Lane detection image processing ended"));
   }
-
+  
   private void startSLD(Message<JsonObject> message) {
-    startStartLightDetection(message)
+    // is this a restart?
+    if ( startLightDetectionSubscription!=null) 
+      startLightDetectionSubscription.unsubscribe();
+    startLightDetectionSubscription=startStartLightDetection(message)
         // .doOnNext(detection -> LOG.trace("Image start light processing
         // result: " + detection))
         // .takeWhile()
@@ -91,10 +94,9 @@ public class Detector extends DukesVerticle {
   private void cameraConfig(Message<JsonObject> message) {
     JsonObject jo = message.body();
     JsonObject currentJo = this.getSharedData("cameraConfig");
-    boolean start = false;
     boolean restart = false;
     if (currentJo == null) {
-      start = true;
+      restart = true;
     } else {
       CameraConfig currentCameraConfig = currentJo.mapTo(CameraConfig.class);
       CameraConfig cameraConfig = jo.mapTo(CameraConfig.class);
@@ -103,9 +105,6 @@ public class Detector extends DukesVerticle {
     }
     shareData("cameraConfig", jo);
     if (restart) {
-      // @FIXME - STOP the exiting detections
-    }
-    if (start) {
       sendEvent(Events.START_LANE_DETECTION, jo);
       sendEvent(Events.START_STARTLIGHT_DETECTION, jo);
     }
@@ -150,11 +149,9 @@ public class Detector extends DukesVerticle {
   }
 
   /**
-   * start lane detection
-   * 
-   * @param source
-   * @param interval
-   * @return an observable
+   * startLaneDetectionObservable
+   * @param cameraConfig
+   * @return
    */
   private Observable<Object> startLaneDetectionObservable(
       CameraConfig cameraConfig) {
@@ -164,19 +161,14 @@ public class Detector extends DukesVerticle {
         "Started image processing for source: " + cameraConfig.getSource());
     return fetcher.toObservable().subscribeOn(Schedulers.newThread())
         .throttleFirst(cameraConfig.getInterval(), TimeUnit.MILLISECONDS)
-        .doOnNext(image -> {
-          Mat frame = image.getFrame();
-          Detector.MAT = frame;
-          Detector.camera = frame.clone();
-        }).map(image -> {
-          ImageCollector collector = new ImageCollector();
+        .doOnNext(image -> {}).map(image -> {
+          currentCollector = new ImageCollector();
           EdgeDetector edgeDetector=super.getSharedPojo("canny", CannyEdgeDetector.class);
           LineDetector lineDetector = super.getSharedPojo("hough", HoughLinesLineDetector.class);
           Map<String, Object> detection = new LaneDetector(
               edgeDetector,
               lineDetector,
-              cameraConfig, createMatrix(), collector).detect(image);
-          Detector.CANNY_IMG = collector.edges();
+              cameraConfig, createMatrix(), currentCollector).detect(image);
           return detection;
         });
   }

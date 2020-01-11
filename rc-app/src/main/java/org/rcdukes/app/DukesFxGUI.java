@@ -3,6 +3,7 @@ package org.rcdukes.app;
 import java.io.File;
 
 import org.opencv.core.Mat;
+import org.rcdukes.video.Image;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
@@ -151,8 +152,8 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   }
 
   @Override
-  public void displayOriginal(byte[] imageFrame) {
-    displayImage(cameraController.originalFrame, imageFrame);
+  public void displayOriginal(Image image) {
+    displayImage(cameraController.originalFrame, image);
   }
 
   @Override
@@ -161,13 +162,13 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   }
 
   @Override
-  public void display1(byte[] imageFrame) {
-    displayImage(cameraController.processedImage1, imageFrame);
+  public void display1(Image image) {
+    displayImage(cameraController.processedImage1, image);
   }
 
   @Override
-  public void display2(byte[] imageFrame) {
-    displayImage(cameraController.processedImage2, imageFrame);
+  public void display2(Image image) {
+    displayImage(cameraController.processedImage2, image);
   }
 
   @Override

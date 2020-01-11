@@ -56,6 +56,15 @@ public class BaseGUI {
     Image image = new Image(new ByteArrayInputStream(imageFrame));
     this.onFXThread(imageView.imageProperty(), image);
   }
+  
+  /**
+   * display the given dukes Image in the given imageView
+   * @param imageView
+   * @param dukesImage
+   */
+  protected void displayImage(ImageView imageView, org.rcdukes.video.Image dukesImage) {
+    displayImage(imageView,dukesImage.getImageBytes());
+  }
 
   protected void displayImage(ImageView fxImage, Mat openCvImage) {
     if (openCvImage.rows() > 0) {

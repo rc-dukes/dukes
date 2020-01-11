@@ -7,6 +7,7 @@ var imageViewUrl = null;
 var cameraSource = null;
 var cameraFps=5;
 var recording=false;
+var manualwithkeys=false;
 var autopiloting=false;
 var streetLane = "images/StreetLane.jpg"; // default Image
 // 'use strict'
@@ -123,6 +124,7 @@ function power() {
 		initEventBus(display, true);
 		heartBeatInterval = registerHeartBeat();
 		registerCamera(cameraSource, cameraFps);
+		updateConfig()
 	} else {
 		clearLog("power off");
 		// switch off heartBeat
@@ -252,6 +254,8 @@ function registerHeartBeat() {
 function registerControls() {
 
 	document.onkeydown = function(e) {
+		if (!manualwithkeys)
+			return;
 		e = e || window.event;
 		// ignore Command key ⌘
 		if (e.metaKey)
@@ -386,8 +390,14 @@ function autopilot() {
 }
 
 function manual() {
-	keyPressed("manual");
-	stopAutoPilot();
+	manualwithkeys=!manualwithkeys;
+	if (manualwithkeys) {
+		keyPressed("manual");
+		stopAutoPilot();
+		setColor("manual","red")
+	} else {
+		setColor("manual","blue")		
+	}
 }
 
 var CALLSIGN_ROSCO = 'Red Dog';

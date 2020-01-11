@@ -11,6 +11,7 @@ import org.opencv.core.Mat;
 import org.rcdukes.opencv.NativeLibrary;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.ImageCollector.ImageType;
 import org.rcdukes.video.ImageUtils;
 
 public class TestLaneDetection {
@@ -24,11 +25,8 @@ public class TestLaneDetection {
     ld.detect(image);
     ImageCollector c = ld.getCollector();
     assertNotNull(c);
-    assertNotNull(c.edges());
-    assertNotNull(c.lines());
-    assertNotNull(c.originalFrame());
     ImageUtils imageUtils=new ImageUtils();
-    for (Entry<String, Image> imageEntry:c.getImages().entrySet()) {
+    for (Entry<ImageType, Image> imageEntry:c.getImages().entrySet()) {
       image = imageEntry.getValue();
       if (image.getFrame()!=null)
         imageUtils.writeImage(image.getFrame(),prefix+imageEntry.getKey()+Image.ext);

@@ -19,7 +19,7 @@ public class Image {
   public static String ext = ".jpg";
   private String name;
   Mat frame;
-  byte[] imageBytes;
+  private byte[] imageBytes;
   private int frameIndex;
   long milliTimeStamp;
   private Date timeStamp;
@@ -53,7 +53,7 @@ public class Image {
   public void setFrame(Mat frame) {
     this.frame = frame;
     if (frame!=null)
-      this.imageBytes = ImageUtils.mat2ImageBytes(frame, ext);
+      this.setImageBytes(ImageUtils.mat2ImageBytes(frame, ext));
   }
   
   /**
@@ -95,6 +95,20 @@ public class Image {
    */
   public void setName(String name) {
     this.name = name;
+  }
+
+  /**
+   * @return the imageBytes
+   */
+  public byte[] getImageBytes() {
+    return imageBytes;
+  }
+
+  /**
+   * @param imageBytes the imageBytes to set
+   */
+  public void setImageBytes(byte[] imageBytes) {
+    this.imageBytes = imageBytes;
   }
 
   

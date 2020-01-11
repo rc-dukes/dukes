@@ -13,6 +13,7 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 import org.rcdukes.detectors.StartLightDetector;
 import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.ImageCollector.ImageType;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -97,9 +98,9 @@ public class StartLightDetectionGUI extends BaseGUI {
           ImageCollector imageCollector = new ImageCollector();
           // detector.withImageCollector(imageCollector);
           StartLight startLight = detectStartLight(imageCollector);
-          displayer.displayOriginal(imageCollector.originalFrame());
-          displayer.display1(imageCollector.mask());
-          displayer.display2(imageCollector.morph());
+          displayer.displayOriginal(imageCollector.getImage(ImageType.camera));
+          displayer.display1(imageCollector.getImage(ImageType.mask));
+          displayer.display2(imageCollector.getImage(ImageType.morph));
           // displayer.displayOriginal(imageCollector.startLight());
           if (this.vertx != null) {
 

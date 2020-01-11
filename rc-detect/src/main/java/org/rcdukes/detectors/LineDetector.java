@@ -1,6 +1,9 @@
 package org.rcdukes.detectors;
 
+import java.util.Collection;
+
 import org.opencv.core.Mat;
+import org.rcdukes.geometry.Line;
 
 /**
  * detector for lines
@@ -12,5 +15,5 @@ public interface LineDetector {
    * @param image
    * @return - the lines found
    */
-  LineDetectionResult detect(Mat image);
+  Collection<Line> detect(Mat image);
 }

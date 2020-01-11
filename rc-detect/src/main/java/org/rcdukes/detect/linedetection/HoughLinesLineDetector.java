@@ -1,11 +1,11 @@
 package org.rcdukes.detect.linedetection;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
-import org.rcdukes.detectors.LineDetectionResult;
 import org.rcdukes.detectors.LineDetector;
 import org.rcdukes.geometry.Line;
 
@@ -52,19 +52,17 @@ public class HoughLinesLineDetector implements LineDetector {
   }
 
   @Override
-  public LineDetectionResult detect(Mat image) {
-    LineDetectionResult result=new LineDetectionResult();
-    Mat linesImage=detectMat(image);
+  public Collection<Line> detect(Mat image) {
+    Mat houghLines=detectMat(image);
 
     Set<Line> lines = new HashSet<>();
 
-    for (int x = 0; x < linesImage.rows(); x++) {
-      Line line = new Line(linesImage.get(x, 0));
+    for (int x = 0; x < houghLines.rows(); x++) {
+      Line line = new Line(houghLines.get(x, 0));
       lines.add(line);
     }
-    result.setLinesImage(linesImage);
-    result.setLines(lines);
-    return result;
+    houghLines.release();
+    return lines;
   }
 
   /**
