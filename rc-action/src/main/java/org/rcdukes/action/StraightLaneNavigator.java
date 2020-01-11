@@ -5,7 +5,6 @@ import static rx.exceptions.Exceptions.propagate;
 
 import java.util.Locale;
 
-import org.rcdukes.common.Config;
 import org.rcdukes.common.Environment;
 
 import io.vertx.core.json.JsonObject;
@@ -45,7 +44,6 @@ public class StraightLaneNavigator {
   }
 
   MiniPID pid;
-  private Environment env;
   private String wheelOrientation;
   private int rudderFactor;
 
