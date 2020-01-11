@@ -61,11 +61,12 @@ public class LaneDetector {
     this.setCollector(collector);
   }
 
+  /**
+   * detect the lane for the given image
+   * @param image
+   * @return - the laneDetection result
+   */
   public Map<String, Object> detect(Image image) {
-    return performLaneDetection(image);
-  }
-
-  public Map<String, Object> performLaneDetection(Image image) {
     ImageLaneDetection laneDetect = new ImageLaneDetection(this);
     return laneDetect.detectLane(image, getCollector());
   }

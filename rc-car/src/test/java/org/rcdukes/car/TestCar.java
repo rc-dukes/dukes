@@ -16,9 +16,9 @@ public class TestCar {
     CarVerticle carVerticle = new CarVerticle();
     clusterStarter.deployVerticles(carVerticle);
     carVerticle.waitStatus(Status.started,TIME_OUT,10);
-    //if (!TestSuite.isTravis()) {
+    if (!TestSuite.isTravis()) {
       clusterStarter.undeployVerticle(carVerticle);
       carVerticle.waitStatus(Status.stopped,TIME_OUT,10);
-    //}
+    }
   }
 }

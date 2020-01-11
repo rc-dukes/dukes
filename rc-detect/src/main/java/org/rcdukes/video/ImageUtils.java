@@ -3,9 +3,14 @@ package org.rcdukes.video;
 import static org.rcdukes.video.PointMapper.toPoint;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Objects;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.core.Scalar;
@@ -141,6 +146,27 @@ public class ImageUtils {
     lines.stream().filter(Objects::nonNull).forEach(line -> Imgproc.line(output, toPoint(line.getPoint1()), toPoint(line.getPoint2()), color, 4));
     Imgcodecs.imwrite(path + fileName, output);
     output.release();
+  }
+
+  /**
+   * read an image from the given source
+   * @param source
+   * @return the image
+   * @throws Exception 
+   */
+  public static Mat read(String source) throws Exception {
+    File tmpFile=null;
+    if (source.startsWith("http")) {
+      String suffix = FilenameUtils.getExtension(source);
+      tmpFile = File.createTempFile("image",suffix);
+      URL url=new URL(source);
+      FileUtils.copyURLToFile(url, tmpFile);
+      source=tmpFile.getPath();
+    }
+    Mat frame=Imgcodecs.imread(source);
+    if (tmpFile!=null)
+      tmpFile.delete();
+    return frame;
   }
 
 }

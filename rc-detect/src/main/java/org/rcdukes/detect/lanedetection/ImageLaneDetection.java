@@ -80,7 +80,8 @@ public class ImageLaneDetection {
 
     PerspectiveShift perspectiveShift = new PerspectiveShift(imagePolygon,
         worldPolygon);
-    Detector.BIRDS_EYE = perspectiveShift.apply(frame);
+    Detector.BIRDS_EYE = perspectiveShift.apply(originalFrame);
+    imageCollector.morph(Detector.BIRDS_EYE);
 
     // step1 edge detection
     Mat imgEdges = ld.getEdgeDetector().detect(frame);

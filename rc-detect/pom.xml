@@ -1,52 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>nl.vaneijndhoven</groupId>
-        <artifactId>dukes</artifactId>
-        <version>0.0.2</version>
-    </parent>
+	<parent>
+		<groupId>nl.vaneijndhoven</groupId>
+		<artifactId>dukes</artifactId>
+		<version>0.0.2</version>
+	</parent>
 
-    <groupId>nl.vaneijndhoven.dukes</groupId>
-    <artifactId>rc-detect</artifactId>
-    <description>Detectors - e.g. Lane and StartLight</description>
+	<groupId>nl.vaneijndhoven.dukes</groupId>
+	<artifactId>rc-detect</artifactId>
+	<description>Detectors - e.g. Lane and StartLight</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>nl.vaneijndhoven.dukes</groupId>
-            <artifactId>rc-common</artifactId>
-            <version>0.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>nl.vaneijndhoven.dukes</groupId>
-            <artifactId>rc-geometry</artifactId>
-            <version>0.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>nl.vaneijndhoven.dukes</groupId>
-            <artifactId>rc-roi</artifactId>
-            <version>0.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>nl.vaneijndhoven.dukes</groupId>
-            <artifactId>rc-camera-matrix</artifactId>
-            <version>0.0.2</version>
-        </dependency>
-        <dependency>
-          <groupId>org.opencv</groupId>
-          <artifactId>opencv-jar</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-rx-java</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-        </dependency>
-    </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<artifactId>rc-common</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<artifactId>rc-geometry</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<artifactId>rc-roi</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<artifactId>rc-camera-matrix</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.opencv</groupId>
+			<artifactId>opencv-jar</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-rx-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+	</dependencies>
 
 </project>

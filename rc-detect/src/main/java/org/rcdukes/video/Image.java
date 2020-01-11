@@ -17,7 +17,7 @@ public class Image {
 
   public static boolean debug=true;
   public static String ext = ".jpg";
-  String name;
+  private String name;
   Mat frame;
   byte[] imageBytes;
   private int frameIndex;
@@ -65,7 +65,7 @@ public class Image {
    */
   public Image(Mat frame, String name,int frameIndex, long milliTimeStamp) {
     this.setFrame(frame);
-    this.name=name;
+    this.setName(name);
     this.setFrameIndex(frameIndex);
     this.milliTimeStamp=milliTimeStamp;
     this.timeStamp=new Date(milliTimeStamp);
@@ -76,11 +76,25 @@ public class Image {
    */
   public void finalize() {
     if (debug) {
-      String msg=String.format("releasing image %s %d of %s",name,getFrameIndex(),dateFormat.format(timeStamp));
+      String msg=String.format("releasing image %s %d of %s",getName(),getFrameIndex(),dateFormat.format(timeStamp));
       System.out.println(msg);     
     }
     // this.frame.release();
     // this.frame=null;
+  }
+
+  /**
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
+
+  /**
+   * @param name the name to set
+   */
+  public void setName(String name) {
+    this.name = name;
   }
 
   

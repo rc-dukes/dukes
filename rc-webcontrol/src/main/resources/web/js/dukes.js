@@ -109,12 +109,6 @@ function initRemote() {
 function initDetect() {
 	initRemoteControls();
 	initialSliderValues();
-	initVideoViewer();
-}
-
-function initVideoViewer() {
-  var inputNode = document.querySelector('#videoinput')
-  inputNode.addEventListener('change', playSelectedFile, false)
 }
 
 var powerState = false;
@@ -248,37 +242,6 @@ function initEventBus(withDetect) {
 			eb.registerHandler("STARTLIGHTDETECTION", display);
 		}
 	}
-}
-
-// play the selected file
-function playSelectedFile(event) {
-	var file = this.files[0]
-	var type = file.type
-	var videoNode = document.querySelector('#video')
-	var canPlay = videoNode.canPlayType(type)
-	if (canPlay === '')
-		canPlay = 'no'
-	var message = 'Can play type "' + type + '": ' + canPlay
-	var isError = canPlay === 'no'
-	logMessage(message)
-
-	if (isError) {
-		return;
-	}
-
-	var fReader = new FileReader();
-	fReader.readAsDataURL(file);
-	fReader.onloadend = function(event) {
-
-		var fileURL = URL.createObjectURL(file)
-		var source=fileURL.replace(/blob:/, '');
-		publish("STREAMADDED", {
-			"source" : source,
-			"config" : {
-				"interval" : 100
-			}
-		});
-	};
 }
 
 function registerHeartBeat() {
