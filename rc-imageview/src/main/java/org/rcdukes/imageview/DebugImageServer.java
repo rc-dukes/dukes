@@ -1,11 +1,9 @@
 package org.rcdukes.imageview;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.io.IOUtils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -41,16 +39,19 @@ public class DebugImageServer extends DukesVerticle {
   }
 
   protected HttpServer server;
+
   // @TODO Make configurable
   // the format to be used for image encoding
   // needs to be jpg to be able to record videos
-  public static enum ImageFormat {png,jpg}
-  public static ImageFormat imageFormat=ImageFormat.jpg;
-  public static String exts[] = {".png",".jpg"};
-  public static String contentTypes[] = {"image/png","image/jpeg"};
+  public static enum ImageFormat {
+    png, jpg
+  }
+
+  public static ImageFormat imageFormat = ImageFormat.jpg;
+  public static String exts[] = { ".png", ".jpg" };
+  public static String contentTypes[] = { "image/png", "image/jpeg" };
   // @TODO Make configurable and adapt
-  public static double fps=10;
-  public static String defaultImage = "images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3";
+  public static double fps = 10;
   private static byte[] testImageBytes;
 
   @Override
@@ -84,7 +85,7 @@ public class DebugImageServer extends DukesVerticle {
    */
   protected void startRecording() {
     for (ImageType imageType : ImageType.values()) {
-      VideoRecorder recorder = new VideoRecorder(imageType.name(),fps);
+      VideoRecorder recorder = new VideoRecorder(imageType.name(), fps);
       recorders.put(imageType, recorder);
     }
   }
@@ -93,9 +94,9 @@ public class DebugImageServer extends DukesVerticle {
    * stop Recording
    */
   protected void stopRecording() {
-    for (Entry<ImageType, VideoRecorder> entry:recorders.entrySet()) {
-      VideoRecorder recorder=entry.getValue();
-      ImageType imageType=entry.getKey();
+    for (Entry<ImageType, VideoRecorder> entry : recorders.entrySet()) {
+      VideoRecorder recorder = entry.getValue();
+      ImageType imageType = entry.getKey();
       recorder.stop();
       recorders.remove(imageType);
     }
@@ -111,71 +112,33 @@ public class DebugImageServer extends DukesVerticle {
     String mode = request.getParam("mode");
     if (type == null)
       type = "camera";
-    ImageType imageType=ImageType.valueOf(type);
-    if (mode!=null && mode.equals("stream")) {
-       sendStream(request,imageType);
+    ImageType imageType = ImageType.valueOf(type);
+    if (mode != null && mode.equals("stream")) {
+      sendStream(request, imageType);
     } else {
-      sendSingleImage(request,imageType);
+      sendSingleImage(request, imageType);
     }
   }
 
   /**
    * send a single Image
+   * 
    * @param request
    * @param imageType
    */
   public void sendSingleImage(HttpServerRequest request, ImageType imageType) {
-    ImageCollector collector=Detector.currentCollector;
-    Image image=null;
-    byte[] bytes = null;
-    Mat mat=null;
-    if (collector!=null) {
-      image=collector.getImages().get(imageType);
-      if (image!=null) {
-        mat=image.getFrame();
-        bytes = image.getImageBytes();
-      }
+    ImageCollector collector = Detector.currentCollector;
+    Image image = null;
+    Mat mat = null;
+    image = collector.getImage(imageType, true);
+    if (image != null) {
+      mat = image.getFrame();
+      this.sendImageBytes(request, image.getImageBytes());
     }
-    sendImageBytesOrDefault(request, bytes);
-    if (recorders.containsKey(imageType) && mat!=null) {
+    if (recorders.containsKey(imageType) && mat != null) {
       VideoRecorder recorder = recorders.get(imageType);
       recorder.recordMat(mat);
     }
-  }
-
-  /**
-   * supply a default testImage
-   * @return - the bytes of the test Image
-   */
-  public static byte[] testImage() {
-    if (testImageBytes == null) {
-      try {
-        String ext=exts[imageFormat.ordinal()];
-        String testImagePath = defaultImage + ext;
-        testImageBytes = IOUtils.toByteArray(DebugImageServer.class
-            .getClassLoader().getResourceAsStream(testImagePath));
-      } catch (IOException e) {
-        LOG.trace(e.getMessage());
-      }
-    }
-    return testImageBytes;
-  }
-
-  /**
-   * send the given bytes if they are not null or replace with a default image
-   * 
-   * @param request
-   *          - the request to respond to
-   * @param bytes
-   *          - the bytes to be send
-   */
-  private void sendImageBytesOrDefault(HttpServerRequest request,
-      byte[] bytes) {
-    if (bytes == null) {
-      bytes=testImage();
-    }
-    if (bytes != null)
-      this.sendImageBytes(request, bytes);
   }
 
   /**
@@ -185,60 +148,114 @@ public class DebugImageServer extends DukesVerticle {
    */
   public void sendImageBytes(HttpServerRequest request, byte[] bytes) {
     HttpServerResponse response = request.response();
-    String contentType=contentTypes[imageFormat.ordinal()];
+    String contentType = contentTypes[imageFormat.ordinal()];
     response.putHeader("content-type", contentType);
-    response.putHeader("content-length", "" + bytes.length);   
+    response.putHeader("content-length", "" + bytes.length);
     Buffer data = Buffer.buffer().appendBytes(bytes);
     response.write(data);
     response.close();
   }
-  
+
   /**
-   * stream images 
+   * stream images
+   * 
    * @param request
    * @param imageType
    */
   private void sendStream(HttpServerRequest request, ImageType imageType) {
     HttpServerResponse response = request.response();
-    // initiate a multipart response
-    response.setChunked(true); // ! important
-    String boundary="frame";
-    String contentType="multipart/x-mixed-replace; boundary="+boundary;
-    response.putHeader("content-type", contentType);
-    String crlf="\r\n";
-    response.write(crlf);
-    response.write("--"+boundary+crlf);
-    byte[] testImage= testImage();
-    // stream images
-    int frameIndex=0;
-    int fontFace = Core.FONT_HERSHEY_SIMPLEX;
-    int fontScale=1;
-    Scalar color=new Scalar(255,0,0);
-    // @FIXME - this is a blocking version that is only good a proof of concept
-    while (true) {
-      System.out.println("serving frame "+frameIndex);
-      contentType=contentTypes[imageFormat.ordinal()];
-      response.write("Content-Type: " + contentType+crlf);
-      response.write(crlf);
-      Mat frame=ImageUtils.imageBytes2Mat(testImage).clone();
-      String text=String.format("%5d", frameIndex++);
-      Point pos = new Point(frame.width()-100,25);
-           
+    Runnable multipartStreamer = new MultipartStreamer(response, imageType);
+    Thread streamThread = new Thread(multipartStreamer);
+    streamThread.start();
+  }
+
+  /**
+   * Streamer for multipart images
+   * 
+   * @author wf
+   *
+   */
+  static class MultipartStreamer implements Runnable {
+    String crlf = "\r\n";
+    boolean running = false;
+    private HttpServerResponse response;
+    private ImageType imageType;
+    String boundary = "frame";
+
+    /**
+     * create a MultipartStream for the given imageType
+     * 
+     * @param response
+     * @param imageType
+     */
+    public MultipartStreamer(HttpServerResponse response, ImageType imageType) {
+      this.response = response;
+      this.imageType = imageType;
+    }
+
+    /**
+     * add the info from the image to the given frame
+     * 
+     * @param frame
+     *          - the openCV frame
+     * @param image
+     *          - the rcdukes image
+     */
+    public void addImageInfo(Mat frame, Image image) {
+      int fontFace = Core.FONT_HERSHEY_SIMPLEX;
+      int fontScale = 1;
+      Scalar color = new Scalar(255, 0, 0);
+      String text = String.format("%5d", image.getFrameIndex());
+      Point pos = new Point(frame.width() - 100, 25);
       Imgproc.putText(frame, text, pos, fontFace, fontScale, color);
-      byte[] bytes = ImageUtils.mat2ImageBytes(frame, exts[imageFormat.ordinal()]);
+    }
+
+    /**
+     * serve the next image
+     */
+    public void streamNextImage() {
+      String contentType = contentTypes[imageFormat.ordinal()];
+      response.write("Content-Type: " + contentType + crlf);
+      response.write(crlf);
+      // @FIXME - still too hacky - need an Observable here
+      ImageCollector imageCollector = Detector.currentCollector;
+      Image image = imageCollector.getImage(imageType, true);
+      Mat frame = image.getFrame().clone();
+      addImageInfo(frame, image);
+      byte[] bytes = ImageUtils.mat2ImageBytes(frame,
+          exts[imageFormat.ordinal()]);
       Buffer data = Buffer.buffer().appendBytes(bytes);
       response.write(data);
       // boundary
       response.write(crlf);
-      response.write("--"+boundary+crlf);
-      
-      // 1 image per second 
+      response.write("--" + boundary + crlf);
+
+      // 1 image per second
       try {
         Thread.sleep(1000);
       } catch (InterruptedException e) {
         // ...
       }
     }
+
+    public void preamble() {
+      // initiate a multipart response
+      response.setChunked(true); // ! important
+
+      String contentType = "multipart/x-mixed-replace; boundary=" + boundary;
+      response.putHeader("content-type", contentType);
+
+      response.write(crlf);
+      response.write("--" + boundary + crlf);
+    }
+
+    @Override
+    public void run() {
+      preamble();
+      running = true;
+      while (running) {
+        this.streamNextImage();
+      }
+    }
   }
-  
 }

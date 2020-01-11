@@ -98,9 +98,9 @@ public class StartLightDetectionGUI extends BaseGUI {
           ImageCollector imageCollector = new ImageCollector();
           // detector.withImageCollector(imageCollector);
           StartLight startLight = detectStartLight(imageCollector);
-          displayer.displayOriginal(imageCollector.getImage(ImageType.camera));
-          displayer.display1(imageCollector.getImage(ImageType.mask));
-          displayer.display2(imageCollector.getImage(ImageType.morph));
+          displayer.displayOriginal(imageCollector.getImage(ImageType.camera,true));
+          displayer.display1(imageCollector.getImage(ImageType.mask,true));
+          displayer.display2(imageCollector.getImage(ImageType.morph,true));
           // displayer.displayOriginal(imageCollector.startLight());
           if (this.vertx != null) {
 

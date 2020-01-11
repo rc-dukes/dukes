@@ -21,7 +21,7 @@ public class Image {
   Mat frame;
   private byte[] imageBytes;
   private int frameIndex;
-  long milliTimeStamp;
+  private long milliTimeStamp;
   private Date timeStamp;
   
   /**
@@ -56,33 +56,7 @@ public class Image {
       this.setImageBytes(ImageUtils.mat2ImageBytes(frame, ext));
   }
   
-  /**
-   * construct me
-   * 
-   * @param frame
-   * @param milliTimeStamp 
-   * @param frameIndex 
-   */
-  public Image(Mat frame, String name,int frameIndex, long milliTimeStamp) {
-    this.setFrame(frame);
-    this.setName(name);
-    this.setFrameIndex(frameIndex);
-    this.milliTimeStamp=milliTimeStamp;
-    this.timeStamp=new Date(milliTimeStamp);
-  }
-
-  /**
-   * make sure we release our frame when we are garbage collected
-   */
-  public void finalize() {
-    if (debug) {
-      String msg=String.format("releasing image %s %d of %s",getName(),getFrameIndex(),dateFormat.format(timeStamp));
-      System.out.println(msg);     
-    }
-    // this.frame.release();
-    // this.frame=null;
-  }
-
+  
   /**
    * @return the name
    */
@@ -110,6 +84,46 @@ public class Image {
   public void setImageBytes(byte[] imageBytes) {
     this.imageBytes = imageBytes;
   }
-
   
+  /**
+   * @return the milliTimeStamp
+   */
+  public long getMilliTimeStamp() {
+    return milliTimeStamp;
+  }
+
+  /**
+   * @param milliTimeStamp the milliTimeStamp to set
+   */
+  public void setMilliTimeStamp(long milliTimeStamp) {
+    this.milliTimeStamp = milliTimeStamp;
+  }
+
+  /**
+   * construct me
+   * 
+   * @param frame
+   * @param milliTimeStamp 
+   * @param frameIndex 
+   */
+  public Image(Mat frame, String name,int frameIndex, long milliTimeStamp) {
+    this.setFrame(frame);
+    this.setName(name);
+    this.setFrameIndex(frameIndex);
+    this.setMilliTimeStamp(milliTimeStamp);
+    this.timeStamp=new Date(milliTimeStamp);
+  }
+
+  /**
+   * make sure we release our frame when we are garbage collected
+   */
+  public void finalize() {
+    if (debug) {
+      String msg=String.format("releasing image %s %d of %s",getName(),getFrameIndex(),dateFormat.format(timeStamp));
+      System.out.println(msg);     
+    }
+    // this.frame.release();
+    // this.frame=null;
+  }
+
 }

@@ -12,7 +12,10 @@ import org.rcdukes.imageview.DebugImageServer;
 import org.rcdukes.imageview.VideoRecorder;
 import org.rcdukes.imageview.DebugImageServer.ImageFormat;
 import org.rcdukes.opencv.NativeLibrary;
+import org.rcdukes.video.Image;
+import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageUtils;
+import org.rcdukes.video.ImageCollector.ImageType;
 
 /**
  * test the video recording functionality
@@ -30,8 +33,9 @@ public class TestVideoRecorder {
   @Test
   public void testVideoRecorder() throws IOException {
     DebugImageServer.imageFormat=ImageFormat.jpg;
-    byte[] testImage = DebugImageServer.testImage();
-    Mat testMat = ImageUtils.imageBytes2Mat(testImage);
+    ImageCollector imageCollector=new ImageCollector();
+    Image testImage=imageCollector.getImage(ImageType.camera,true);
+    Mat testMat = testImage.getFrame();
 
     for (String ext : VideoRecorder.exts) {
       for (String FOURCC : VideoRecorder.FOURCCs) {

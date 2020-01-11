@@ -76,8 +76,8 @@ public class LaneDetectionGUI extends BaseGUI {
             CameraConfig cameraConfig=new CameraConfig();
             LaneDetector laneDetector=new LaneDetector(edgeDetector,lineDetector,cameraConfig,cameraMatrix,collector);
             laneDetector.detect(originalImage);
-            displayer.display1(collector.getImage(ImageType.edges));
-            displayer.display2(collector.getImage(ImageType.lines));
+            displayer.display1(collector.getImage(ImageType.edges,true));
+            displayer.display2(collector.getImage(ImageType.lines,true));
           }
         };
         displayer.setCameraButtonText("Stop Camera");

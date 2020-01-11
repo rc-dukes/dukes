@@ -30,7 +30,7 @@ public class Detector extends DukesVerticle {
 
   // @FIXME - does not belong here ...
   private final static long START_LIGHT_DETECTION_INTERVAL = 50;
-  public static ImageCollector currentCollector;
+  public static ImageCollector currentCollector=new ImageCollector();
   private Subscription startLaneDetectionSubscription;
   private Subscription startLightDetectionSubscription;
 

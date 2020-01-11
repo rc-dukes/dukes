@@ -26,10 +26,10 @@ public class TestLaneDetection {
     ImageCollector c = ld.getCollector();
     assertNotNull(c);
     ImageUtils imageUtils=new ImageUtils();
-    for (Entry<ImageType, Image> imageEntry:c.getImages().entrySet()) {
-      image = imageEntry.getValue();
-      if (image.getFrame()!=null)
-        imageUtils.writeImage(image.getFrame(),prefix+imageEntry.getKey()+Image.ext);
+    for (ImageType imageType:ImageType.values()) {
+      Image cimage=c.getImage(imageType, true);
+      if (cimage.getFrame()!=null)
+        imageUtils.writeImage(cimage.getFrame(),prefix+cimage.getName()+Image.ext);
     }
   }
   
