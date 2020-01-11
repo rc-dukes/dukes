@@ -14,15 +14,27 @@ var streetLane = "images/StreetLane.jpg"; // default Image
 var URL = window.URL || window.webkitURL
 
 /**
+ * most publish messages should go thru this function
+ * except the high frequency heartbeat
+ * @param address
+ * @param messageObject
+ * @param headers
+ */
+function publish(address, messageObject, headers) {
+  var json=JSON.stringify(messageObject)	
+  logMessage(address + "->" + json);
+  publishWithOutLog(address,messageObject,headers);
+}
+
+/**
  * all publish messages should go thru this function
  * 
  * @param address
  * @param message
  * @param headers
  */
-function publish(address, message, headers) {
+function publishWithOutLog(address,message,headers) {	
 	var stateColor = "black";
-	// logMessage(address + "->" + message);
 	if (eb) {
 		switch (eb.state) {
 		case EventBus.CONNECTING:
@@ -45,21 +57,25 @@ function publish(address, message, headers) {
 	setColor("events", stateColor);
 }
 
-var NUM_LOG_LINES_VISIBLE = 7;
+// -1 to scroll
+var NUM_LOG_LINES_VISIBLE = -1;
 var logLines = [];
-var logIndex = 0;
+var logIndex=0;
 /**
  * display events
  */
 var display = function(err, msg) {
-	// TODO make filter configurable
-	// currently we only show one out of a 100 events
-	if (logIndex++ % 100 == 0) {
-		var prefix = "";
-		if (eb)
-			prefix = +eb.state + '/' + EventBus.OPEN + ':';
-		logMessage(prefix + JSON.stringify(msg.body));
+	var prefix = "";
+	if (eb)
+		prefix = +eb.state + '/' + EventBus.OPEN + ':';
+	var jo=msg.body;
+	var show=true;
+	if (jo.type==="heartbeat") {
+		logIndex++;
+		show=logIndex%12==0
 	}
+	if (show)
+		logMessage(prefix + JSON.stringify(jo));
 }
 
 /**
@@ -76,8 +92,10 @@ function logMessage(msg) {
 	var logLine = now + ': ' + msg + newLine;
 	logLines.push(logLine);
 
-	if (logLines.length > NUM_LOG_LINES_VISIBLE) {
+	if (NUM_LOG_LINES_VISIBLE>0) {
+	  if (logLines.length > NUM_LOG_LINES_VISIBLE) {
 		logLines = logLines.splice(-NUM_LOG_LINES_VISIBLE);
+	  }
 	}
 
 	var allLogs = '';
@@ -85,6 +103,9 @@ function logMessage(msg) {
 		allLogs += logLines[i];
 	}
 	elem.innerHTML = allLogs;
+	if (NUM_LOG_LINES_VISIBLE<0) {
+		elem.scrollTop = elem.scrollHeight;
+	}
 };
 
 function clearLog(msg) {
@@ -93,9 +114,8 @@ function clearLog(msg) {
 	logMessage(msg);
 }
 
+// automatic repetition of heartbeat
 var heartBeatInterval;
-// var debugImagesInterval;
-// var cameraInterval;
 
 /**
  * init remote Screen
@@ -123,16 +143,11 @@ function power() {
 		clearLog("power on");
 		initEventBus(display, true);
 		heartBeatInterval = registerHeartBeat();
-		// registerCamera(cameraSource, cameraFps);
 		updateConfig();
 	} else {
 		clearLog("power off");
 		// switch off heartBeat
-		// @TODO - check if this is problematic
 		clearInterval(heartBeatInterval);
-		// imageViewUrl = null;
-		// registerCamera(null, 0);
-		// clearInterval(debugImagesInterval);
 	}
 }
 
@@ -244,6 +259,7 @@ function initEventBus(withDetect) {
 }
 
 function registerHeartBeat() {
+	// send a heart beat every 150 millisecs
 	return window.setInterval(sendHeartBeat, 150);
 }
 
@@ -421,10 +437,7 @@ function keyPressed(id) {
 }
 
 var CALLSIGN_BO = 'Lost sheep Bo';
-var CALLSIGN_DAISY = 'Bo Peep';
-
 function sendWheelCommand(position) {
-
 	data = {
 		type : 'servo',
 		position : position
@@ -453,7 +466,7 @@ function sendHeartBeat() {
 	data = {
 		type : 'heartbeat'
 	};
-	publish(CALLSIGN_FLASH, data);
+	publishWithOutLog(CALLSIGN_FLASH, data);
 }
 
 var CALLSIGN_LUKE = "Lost sheep Luke";
@@ -469,14 +482,6 @@ function stopAutoPilot() {
 	autopiloting=false;
 }
 
-// register the function to update the debug images
-/*
-function registerDebugImages(msecs) {
-	logMessage('updateDebugImages at ' + imageViewUrl + ' every ' + msecs
-			+ ' msecs')
-	return window.setInterval(updateDebugImages, msecs);
-}*/
-
 /**
  * set the camera Image Url based on the given base url
  * 
@@ -488,55 +493,9 @@ function setCameraImageUrl(baseurl) {
 	cameraImageUrlBox.value = url;
 }
 
-/**
- * register the camera
- * 
- * @param fps -
- *            frames per second
- *
-function registerCamera(url, fps) {
-	cameraFps=fps;
-	cameraUrl = url;
-	if (cameraInterval)
-		clearInterval(cameraInterval);
-	if (url) {
-		var msecs=1000/fps;
-		logMessage('camera image ' + url + ' every ' + msecs + ' msecs');
-		cameraInterval = setInterval(function() {
-			setCameraImageUrl(cameraUrl);
-		}, msecs);
-	} else {
-		setCameraImageUrl(streetLane);
-	}
-}
-*/
+var CALLSIGN_DAISY = 'Bo Peep';
 
-/**
- * update the Debug Images based on the given imageView Url
- * 
- * @param imageViewUrl -
- *            the URL of the imageView server as configured in the Enviroment
- */
-function updateDebugImages() {
-	if (imageViewUrl) {
-		setImage("birdseyeImage", imageViewUrl + '?type=birdseye&'
-				+ Math.random());
-		setImage("edgesImage", imageViewUrl + '?type=edges&' + Math.random());
-		setImage("linesImage", imageViewUrl + '?type=lines&' + Math.random());
-		setImage("cameraImageDebug", imageViewUrl + '?type=camera&' + Math.random());
-	} else {
-		setImage("birdseyeImage", "images/nolines.png");
-		setImage("edgesImage", "images/noedges.png");
-		setImage("linesImage", "images/nolines.png");
-		setImage("cameraImageDebug", "images/nolines.png");
-	}
-}
-
-function updateCamera() {
- 
-}
-
-// update teh configuration
+// update the configuration
 function updateConfig() {
 	var cameraSource=document.getElementById('cameraSource').value;
 	updateImageSources();

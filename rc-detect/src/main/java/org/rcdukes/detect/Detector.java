@@ -106,6 +106,7 @@ public class Detector extends DukesVerticle {
       restart = !cameraConfig.getSource()
           .equals(currentCameraConfig.getSource());
     }
+    // update the camera Configuration 
     shareData("cameraConfig", jo);
     if (restart) {
       sendEvent(Events.START_LANE_DETECTION, jo);
@@ -168,10 +169,11 @@ public class Detector extends DukesVerticle {
           currentCollector = new ImageCollector();
           EdgeDetector edgeDetector=super.getSharedPojo("canny", CannyEdgeDetector.class);
           LineDetector lineDetector = super.getSharedPojo("hough", HoughLinesLineDetector.class);
+          CameraConfig updatedCameraConfig=super.getSharedPojo("cameraConfig", CameraConfig.class);
           Map<String, Object> detection = new LaneDetector(
               edgeDetector,
               lineDetector,
-              cameraConfig, createMatrix(), currentCollector).detect(image);
+              updatedCameraConfig, createMatrix(), currentCollector).detect(image);
           return detection;
         });
   }

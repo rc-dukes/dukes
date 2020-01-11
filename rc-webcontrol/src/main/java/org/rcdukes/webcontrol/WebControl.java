@@ -4,12 +4,10 @@ import org.rcdukes.common.Characters;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.DukesVerticle;
 
-import io.vertx.core.Handler;
 import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.ext.web.handler.sockjs.BridgeOptions;
 import io.vertx.rxjava.ext.web.Router;
 import io.vertx.rxjava.ext.web.handler.StaticHandler;
-import io.vertx.rxjava.ext.web.handler.sockjs.BridgeEvent;
 import io.vertx.rxjava.ext.web.handler.sockjs.SockJSHandler;
 
 /**
@@ -35,12 +33,11 @@ public class WebControl extends DukesVerticle {
     options.addOutboundPermitted(new PermittedOptions().setAddressRegex(".*"));
     options.addInboundPermitted(new PermittedOptions().setAddressRegex(".*"));
     // upto 3.7.1 
-    // router.route("/eventbus/*").handler(SockJSHandler.create(vertx).bridge(options));
+    router.route("/eventbus/*").handler(SockJSHandler.create(vertx).bridge(options));
     // 3.8.2 up
     // https://github.com/vert-x3/wiki/wiki/3.8.2-Deprecations-and-breaking-changes#sockjshandler-changes
     // https://stackoverflow.com/questions/58940327/vert-x-sockjshandler-class
-    SockJSHandler sockJSHandler = SockJSHandler.create(vertx);
-    router.mountSubRouter("/eventbus", sockJSHandler.bridge(options));
+    // router.mountSubRouter("/eventbus", SockJSHandler.create(vertx).bridge(options));
     // @TODO decide about sse support for configuration
     // router.route("/configsse/*")
     router.route()

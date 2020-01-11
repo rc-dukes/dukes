@@ -56,7 +56,8 @@ public class VideoRecorder {
    * stop the recording
    */
   public void stop() {
-    save.release();
+    if (save!=null)
+      save.release();
     started=false;
   }
 
