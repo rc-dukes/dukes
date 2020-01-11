@@ -181,6 +181,8 @@ public class DebugImageServer extends DukesVerticle {
     private HttpServerResponse response;
     private ImageType imageType;
     String boundary = "frame";
+    private Buffer currentData;
+    static int streamCounter = 0;
 
     /**
      * create a MultipartStream for the given imageType
@@ -219,20 +221,24 @@ public class DebugImageServer extends DukesVerticle {
       response.write(crlf);
       // @FIXME - still too hacky - need an Observable here
       ImageCollector imageCollector = Detector.getImageCollector();
-      Image image = imageCollector.getImage(imageType, true);
-      Mat frame = image.getFrame().clone();
-      addImageInfo(frame, image);
-      byte[] bytes = ImageUtils.mat2ImageBytes(frame,
-          exts[imageFormat.ordinal()]);
-      Buffer data = Buffer.buffer().appendBytes(bytes);
-      response.write(data);
-      // boundary
-      response.write(crlf);
-      response.write("--" + boundary + crlf);
-
+      Image image = imageCollector.getImage(imageType, false);
+      if (image != null) {
+        Mat frame = image.getFrame().clone();
+        addImageInfo(frame, image);
+        byte[] bytes = ImageUtils.mat2ImageBytes(frame,
+            exts[imageFormat.ordinal()]);
+        currentData = Buffer.buffer().appendBytes(bytes);
+      }
+      if (currentData != null) {
+        response.write(currentData);
+        // boundary
+        response.write(crlf);
+        response.write("--" + boundary + crlf);
+      }
       // 1 image per second
+      // @TODO change to emitter to make configurable
       try {
-        Thread.sleep(1000);
+        Thread.sleep(500);
       } catch (InterruptedException e) {
         // ...
       }
@@ -243,6 +249,11 @@ public class DebugImageServer extends DukesVerticle {
       response.setChunked(true); // ! important
 
       String contentType = "multipart/x-mixed-replace; boundary=" + boundary;
+      // switch of caching
+      // https://stackoverflow.com/a/2068407/1497139
+      response.putHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+      response.putHeader("Pragma", "no-cache"); // HTTP 1.0.
+      response.putHeader("Expires", "0"); // Proxies.
       response.putHeader("content-type", contentType);
 
       response.write(crlf);
@@ -251,11 +262,16 @@ public class DebugImageServer extends DukesVerticle {
 
     @Override
     public void run() {
+      int streamIndex = ++streamCounter;
+      System.out.println("Starting image stream " + streamIndex);
       preamble();
       running = true;
       while (running) {
-        this.streamNextImage();
+        running=!response.ended() || response.closed();
+        if (running)
+          this.streamNextImage();
       }
+      System.out.println("Image stream " + streamIndex + " ended or closed");
     }
   }
 }

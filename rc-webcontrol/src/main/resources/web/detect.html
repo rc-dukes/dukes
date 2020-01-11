@@ -167,12 +167,13 @@
 						<div class='row'>
 							<div class='col-md-2'>source:</div>
 							<div class='col-md-8'>
-								<input id="cameraSource" size="40"  list="cameraSources" />
+								<input id="cameraSource" size="40"  list="cameraSources"/>
 								<datalist id="cameraSources">
 									<option value="http://pibeewifi/html/cam_get.php">PI Camera</option>
 									<option value="http://wiki.bitplan.com/videos/full_run.mp4">Testvideo</option>
 									<option value="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg/1280px-4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg">Test-Image</option>
 								</datalist>
+								<button id='reconfigure' onclick="updateConfig();">go</button>
 							</div>
 						</div>
 						<div>

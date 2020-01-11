@@ -3,7 +3,7 @@
  */
 
 var eb = null; // we start with an undefined eventbus
-var imageViewUrl = null;
+var imageViewUrl = 'http://localhost:8081';
 var cameraSource = null;
 var cameraFps=5;
 var recording=false;
@@ -94,8 +94,8 @@ function clearLog(msg) {
 }
 
 var heartBeatInterval;
-var debugImagesInterval;
-var cameraInterval;
+// var debugImagesInterval;
+// var cameraInterval;
 
 /**
  * init remote Screen
@@ -110,12 +110,12 @@ function initRemote() {
 function initDetect() {
 	initRemoteControls();
 	initialSliderValues();
+	updateImageSources();
 }
 
 var powerState = false;
 
 function power() {
-	updateCamera(); // cameraSource!
 	powerState = !powerState;
 	setControlState(powerState);
 	keyPressed('power');
@@ -123,15 +123,15 @@ function power() {
 		clearLog("power on");
 		initEventBus(display, true);
 		heartBeatInterval = registerHeartBeat();
-		registerCamera(cameraSource, cameraFps);
-		updateConfig()
+		// registerCamera(cameraSource, cameraFps);
+		updateConfig();
 	} else {
 		clearLog("power off");
 		// switch off heartBeat
 		// @TODO - check if this is problematic
 		clearInterval(heartBeatInterval);
-		imageViewUrl = null;
-		registerCamera(null, 0);
+		// imageViewUrl = null;
+		// registerCamera(null, 0);
 		// clearInterval(debugImagesInterval);
 	}
 }
@@ -207,14 +207,14 @@ function initEventBus(withDetect) {
 		busUrl = "http://localhost:8080/eventbus";
 		imageViewUrl = 'http://localhost:8081';
 		// 10 fps
-		debugImagesInterval = registerDebugImages(100);
+		// debugImagesInterval = registerDebugImages(100);
 	} else {
 		busUrl = window.location.origin + "/eventbus";
 		// TODO port should be configurable
 		imageViewUrl = 'http://' + window.location.hostname + ':8081'
 		// TODO debug image fps should be configurable
 		// here it is 5 fps
-		debugImagesInterval = registerDebugImages(200);
+		// debugImagesInterval = registerDebugImages(200);
 		msg = window.location.origin;
 	}
 	logMessage("server is " + msg + "\n busUrl=" + busUrl + "\nimageViewUrl="
@@ -234,10 +234,7 @@ function initEventBus(withDetect) {
 		logMessage("with no detect finished ...")
 		if (withDetect) {
 			logMessage("withDetect!");
-			eb.registerHandler("STREAMADDED", function(err, msg) {
-				var videoNode = document.getElementById('video');
-				videoNode.src = "blob:" + msg.body.source;
-			});
+			// @TODO check
 			eb.registerHandler("CANNYCONFIG", display);
 			eb.registerHandler("HOUGHLINESCONFIG", display);
 			eb.registerHandler("LANEDETECTION", display);
@@ -473,11 +470,12 @@ function stopAutoPilot() {
 }
 
 // register the function to update the debug images
+/*
 function registerDebugImages(msecs) {
 	logMessage('updateDebugImages at ' + imageViewUrl + ' every ' + msecs
 			+ ' msecs')
 	return window.setInterval(updateDebugImages, msecs);
-}
+}*/
 
 /**
  * set the camera Image Url based on the given base url
@@ -485,7 +483,7 @@ function registerDebugImages(msecs) {
  * @param baseurl
  */
 function setCameraImageUrl(baseurl) {
-	var url = baseurl + '?time=' + new Date().getTime();
+	var url = baseurl; // + '?time=' + new Date().getTime();
 	document.getElementById("cameraImage").src = url;
 	cameraImageUrlBox.value = url;
 }
@@ -495,7 +493,7 @@ function setCameraImageUrl(baseurl) {
  * 
  * @param fps -
  *            frames per second
- */
+ *
 function registerCamera(url, fps) {
 	cameraFps=fps;
 	cameraUrl = url;
@@ -511,6 +509,7 @@ function registerCamera(url, fps) {
 		setCameraImageUrl(streetLane);
 	}
 }
+*/
 
 /**
  * update the Debug Images based on the given imageView Url
@@ -534,17 +533,18 @@ function updateDebugImages() {
 }
 
 function updateCamera() {
-  var cameraSourceInput=document.getElementById('cameraSource')
-  cameraSource=cameraSourceInput.value
+ 
 }
 
 // update teh configuration
 function updateConfig() {
+	var cameraSource=document.getElementById('cameraSource').value;
+	updateImageSources();
 	var newCameraFps=document.getElementById('cameraFpsSlider').value;
 	var roih=document.getElementById('roihSlider').value;
 	var roiw=document.getElementById('roiwSlider').value;
-	if (newCameraFps!=cameraFps)
-	  registerCamera(cameraSource,newCameraFps)
+	//if (newCameraFps!=cameraFps)
+	//  registerCamera(cameraSource,newCameraFps)
 	  
 	cameraConfig={}
 	cameraConfig.fps=Number(newCameraFps);
@@ -658,6 +658,14 @@ function initialSliderValues() {
 	updateTextBoxFromSlider('camEcSlider', 'camEcTextbox');
 	updateTextBoxFromSlider('camBrSlider', 'camBrTextbox');
 	updateTextBoxFromSlider('camSaSlider', 'camSaTextbox');
+}
+
+function updateImageSources() {
+	setImage("birdseyeImage", imageViewUrl + '?type=birdseye&mode=stream');
+	setImage("edgesImage", imageViewUrl + '?type=edges&mode=stream');
+	setImage("linesImage", imageViewUrl + '?type=lines&mode=stream');
+	setImage("cameraImageDebug", cameraSource);
+	setImage("cameraImage", imageViewUrl + '?type=camera&mode=stream');
 }
 
 function onSlideCam(sliderId, textbox, configKey) {

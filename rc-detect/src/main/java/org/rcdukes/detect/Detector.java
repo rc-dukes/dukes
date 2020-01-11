@@ -70,7 +70,7 @@ public class Detector extends DukesVerticle {
     if (startLaneDetectionSubscription!=null)
       startLaneDetectionSubscription.unsubscribe();
     startLaneDetectionSubscription=startLaneDetection(cameraConfig)
-        .doOnNext(detection -> LOG.trace("Image lane detection processing result: " + detection))
+        // .doOnNext(detection -> LOG.trace("Image lane detection processing result: " + detection))
         .subscribe(
             lane -> vertx.eventBus().publish(Events.LANE_DETECTED.name(), lane),
             error -> LOG.error("Error during lane detection image processing:",
@@ -164,7 +164,7 @@ public class Detector extends DukesVerticle {
         "Started image processing for source: " + cameraConfig.getSource());
     return fetcher.toObservable().subscribeOn(Schedulers.newThread())
         .throttleFirst(cameraConfig.getInterval(), TimeUnit.MILLISECONDS)
-        .doOnNext(image -> {}).map(image -> {
+        .map(image -> {
           currentCollector = new ImageCollector();
           EdgeDetector edgeDetector=super.getSharedPojo("canny", CannyEdgeDetector.class);
           LineDetector lineDetector = super.getSharedPojo("hough", HoughLinesLineDetector.class);

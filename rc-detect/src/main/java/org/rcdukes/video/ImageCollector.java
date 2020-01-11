@@ -105,6 +105,17 @@ public class ImageCollector {
    */
   public Image addImage(Mat frame, ImageType imageType) {
     Image image = createImage(frame, imageType);
+    this.addImage(image, imageType);
+    return image;
+  }
+   
+  /**
+   * add the given image with the given Image type
+   * @param image
+   * @param imageType
+   * @return
+   */
+  public Image addImage(Image image,ImageType imageType) {  
     images.put(imageType, image);
     return image;
   }

@@ -15,7 +15,7 @@ public class Image {
   public static transient final String DATE_FORMAT="HH:mm:ss.SSS";
   public static transient final DateFormat dateFormat=new SimpleDateFormat(DATE_FORMAT);
 
-  public static boolean debug=true;
+  public static boolean debug=false;
   public static String ext = ".jpg";
   private String name;
   Mat frame;

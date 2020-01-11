@@ -65,9 +65,11 @@ public class ImageLaneDetection {
       return result;
     }
     CameraConfig cameraConfig=ld.getCameraConfig();
-    Mat originalFrame = image.getFrame().clone();
-    imageCollector.addImage(originalFrame, ImageType.camera);
-    Mat undistorted = ld.getMatrix().apply(originalFrame);
+    imageCollector.addImage(image, ImageType.camera);
+    // ! important - create a copy of the image because debug info will be
+    // written on it
+    Mat imageCopy=image.getFrame().clone(); 
+    Mat undistorted = ld.getMatrix().apply(imageCopy);
     // get the configured Region of interest
     Mat frame = new ROI("camera",0, cameraConfig.getRoiw(), 1, cameraConfig.getRoih())
         .region(undistorted);
