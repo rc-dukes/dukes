@@ -1,13 +1,16 @@
 package org.rcdukes.webcontrol;
 
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.Config;
+import org.rcdukes.common.DukesVerticle;
+
+import io.vertx.core.Handler;
 import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.ext.web.handler.sockjs.BridgeOptions;
 import io.vertx.rxjava.ext.web.Router;
 import io.vertx.rxjava.ext.web.handler.StaticHandler;
+import io.vertx.rxjava.ext.web.handler.sockjs.BridgeEvent;
 import io.vertx.rxjava.ext.web.handler.sockjs.SockJSHandler;
-import org.rcdukes.common.Characters;
-import org.rcdukes.common.Config;
-import org.rcdukes.common.DukesVerticle;
 
 /**
  * Manual UI web based control (Boss Hogg)
@@ -31,8 +34,13 @@ public class WebControl extends DukesVerticle {
     BridgeOptions options = new BridgeOptions();
     options.addOutboundPermitted(new PermittedOptions().setAddressRegex(".*"));
     options.addInboundPermitted(new PermittedOptions().setAddressRegex(".*"));
-    router.route("/eventbus/*")
-        .handler(SockJSHandler.create(vertx).bridge(options));
+    // upto 3.7.1 
+    // router.route("/eventbus/*").handler(SockJSHandler.create(vertx).bridge(options));
+    // 3.8.2 up
+    // https://github.com/vert-x3/wiki/wiki/3.8.2-Deprecations-and-breaking-changes#sockjshandler-changes
+    // https://stackoverflow.com/questions/58940327/vert-x-sockjshandler-class
+    SockJSHandler sockJSHandler = SockJSHandler.create(vertx);
+    router.mountSubRouter("/eventbus", sockJSHandler.bridge(options));
     // @TODO decide about sse support for configuration
     // router.route("/configsse/*")
     router.route()
