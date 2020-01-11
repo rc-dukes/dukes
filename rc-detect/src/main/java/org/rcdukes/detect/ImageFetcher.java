@@ -207,8 +207,8 @@ public class ImageFetcher {
         final Size size = frame != null ? frame.size() : new Size(0, 0);
         hasNext = image != null && size.width > 0 && size.height > 0;
         if (hasNext) {
-          if (debug && frameIndex % 25 == 0) {
-            String msg = String.format("->%6d:%4dx%d", frameIndex, size.width,
+          if (debug && frameIndex % Math.round(getFps()) == 0) {
+            String msg = String.format("->%6d:%4.0fx%4.0f", frameIndex, size.width,
                 size.height);
             LOG.info(msg);
           }
