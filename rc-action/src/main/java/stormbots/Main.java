@@ -1,5 +1,7 @@
 package stormbots;
 
+import java.util.Locale;
+
 public class Main {
 
 	/**
@@ -23,9 +25,9 @@ public class Main {
 		miniPID.setSetpoint(0);
 		miniPID.setSetpoint(target);
 		
-		System.err.printf("Target\tActual\tOutput\tError\n");
+		System.err.printf("Target | Actual | Output | Error\n");
 		//System.err.printf("Output\tP\tI\tD\n");
-
+	  System.err.println("=======+========+========+========"); 
 		// Position based test code
 		for (int i = 0; i < 100; i++){
 			
@@ -40,9 +42,9 @@ public class Main {
 			output = miniPID.getOutput(actual, target);
 			actual = actual + output;
 			
-			//System.out.println("=========================="); 
 			//System.out.printf("Current: %3.2f , Actual: %3.2f, Error: %3.2f\n",actual, output, (target-actual));
-			System.err.printf("%3.2f\t%3.2f\t%3.2f\t%3.2f\n", target, actual, output, (target-actual));
+			String line=String.format(Locale.ENGLISH,"%6.2f | %6.2f | %6.2f | %6.2f", target, actual, output, (target-actual));
+			System.err.println(line);
 			
 			//if(i>80 && i%5==0)actual+=(Math.random()-.5)*20;
 		}		

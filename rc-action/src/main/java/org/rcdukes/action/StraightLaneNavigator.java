@@ -1,4 +1,4 @@
-package org.rcdukes.action.drag;
+package org.rcdukes.action;
 
 import static rx.Observable.just;
 import static rx.exceptions.Exceptions.propagate;

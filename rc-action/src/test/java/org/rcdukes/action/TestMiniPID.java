@@ -1,6 +1,11 @@
 package org.rcdukes.action;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 
 import org.junit.Test;
 
@@ -39,9 +44,45 @@ public class TestMiniPID {
 	}
 	
 	@Test
-	public void testMain() {
+	public void testMain() throws IOException {
+	  redirectStdErr();
 		String args[]= {};
 		Main.main(args);
+	  String stderr = restoreStdErr();
+    // System.err.println(stderr);
+    assertTrue(stderr.startsWith("Target | Actual | Output | Error\n" + 
+        "=======+========+========+========\n" + 
+        "100.00 |  10.00 |  10.00 |  90.00\n" + 
+        "100.00 |  16.40 |   6.40 |  83.60\n" + 
+        "100.00 |  24.64 |   8.24 |  75.36\n" + 
+        "100.00 |  32.54 |   7.90 |  67.46\n" + 
+        "100.00 |  40.98 |   8.44 |  59.02\n" + 
+        "100.00 |  49.61 |   8.62 |  50.39\n" + 
+        "100.00 |  58.56 |   8.95 |  41.44"));
 	}
+
+  static PrintStream err;
+  static ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+  // static PrintStream out;
+
+  public static void redirectStdErr() {
+    err = System.err;
+    System.setErr(new PrintStream(errContent));
+    // System.err.println("Catching messages on System.err ...");
+  }
+
+  /**
+   * restore std err and return the catched result
+   * 
+   * @return the string content of the grabbed stderr
+   * @throws IOException
+   */
+  public static String restoreStdErr() throws IOException {
+    errContent.flush();
+    String stderr = new String(errContent.toByteArray(), "utf-8");
+    // restore original error handling
+    System.setErr(err);
+    return stderr;
+  }
 
 }

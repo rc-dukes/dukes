@@ -60,7 +60,7 @@ public class Detector extends DukesVerticle {
         // .doOnNext(detection -> LOG.trace("Image lane detection processing
         // result: " + detection))
         .subscribe(
-            lane -> vertx.eventBus().publish(Events.START_LANE_DETECTION.name(), lane),
+            lane -> vertx.eventBus().publish(Events.LANE_DETECTED.name(), lane),
             error -> LOG.error("Error during lane detection image processing:",
                 error),
             () -> LOG.info("Lane detection image processing ended"));

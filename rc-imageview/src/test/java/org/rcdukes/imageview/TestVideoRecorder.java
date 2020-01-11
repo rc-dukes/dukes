@@ -23,33 +23,9 @@ import org.rcdukes.video.ImageUtils;
 public class TestVideoRecorder {
   @BeforeClass
   public static void setup() throws Exception {
-    //redirectStdErr();
     NativeLibrary.load();
   }
-  /*
-  static PrintStream err;
-  static ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-  // static PrintStream out;
-
-  public static void redirectStdErr() {
-    err = System.err;
-    System.setErr(new PrintStream(errContent));
-    System.err.println("Catching messages on System.err ...");
-  }
-
-  /**
-   * restore std err and return the catched result
-   * 
-   * @return the string content of the grabbed stderr
-   * @throws IOException
-   /
-  public static String restoreStdErr() throws IOException {
-    errContent.flush();
-    String stderr = new String(errContent.toByteArray(), "utf-8");
-    // restore original error handling
-    System.setErr(err);
-    return stderr;
-  }*/
+  
 
   @Test
   public void testVideoRecorder() throws IOException {
@@ -77,7 +53,5 @@ public class TestVideoRecorder {
       }
     }
 
-    //String stderr = restoreStdErr();
-    // System.err.println(stderr);
   }
 }

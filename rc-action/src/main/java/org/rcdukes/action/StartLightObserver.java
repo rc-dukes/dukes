@@ -1,4 +1,4 @@
-package org.rcdukes.action.drag;
+package org.rcdukes.action;
 
 import io.vertx.core.json.JsonObject;
 import rx.Observable;

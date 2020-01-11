@@ -1,9 +1,5 @@
 package org.rcdukes.action;
 
-import org.rcdukes.action.drag.StartLightObserver;
-import org.rcdukes.action.drag.StoppingZoneDetector;
-import org.rcdukes.action.drag.StraightLaneNavigator;
-
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.eventbus.Message;
 import org.rcdukes.common.Characters;
@@ -22,6 +18,9 @@ public class Action extends DukesVerticle {
     private Subscription stoppingZoneDetection;
     private Subscription startLightDetection;
     
+    /**
+     * construct me
+     */
     public Action() {
       super(Characters.LUKE);
     }
@@ -59,7 +58,7 @@ public class Action extends DukesVerticle {
         StoppingZoneDetector stoppingZoneDetector = new StoppingZoneDetector();
 
         // failsafe ?
-        laneDetection = vertx.eventBus().consumer(Events.LANEDETECTION.name()).toObservable()
+        laneDetection = vertx.eventBus().consumer(Events.LANE_DETECTED.name()).toObservable()
 //                .doOnNext(evt -> LOG.trace("Received lane detection event (straight lane navigator): {}", evt.body()))
                 .map(Message::body)
                 .cast(String.class)
@@ -87,7 +86,7 @@ public class Action extends DukesVerticle {
                         error -> LOG.error("Error stopping zone detection", error),
                         () -> LOG.info("Completed stopping zone detection"));
         */
-        startLightDetection = vertx.eventBus().consumer(Events.STARTLIGHTDETECTION.name()).toObservable()
+        startLightDetection = vertx.eventBus().consumer(Events.STARTLIGHT_DETECTED.name()).toObservable()
                 .doOnNext(evt -> LOG.trace("Received start light detection event: {}", evt))
                 .map(Message::body)
                 .cast(String.class)
@@ -96,5 +95,4 @@ public class Action extends DukesVerticle {
                 .subscribe(instruction -> vertx.eventBus().publish(Characters.BO.getCallsign(), instruction));
         LOG.info("drag navigator started");
     }
-
 }

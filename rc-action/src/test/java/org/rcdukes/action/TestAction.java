@@ -2,14 +2,13 @@ package org.rcdukes.action;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.rcdukes.action.drag.StraightLaneNavigator.COMMAND_LOOP_INTERVAL;
+import static org.rcdukes.action.StraightLaneNavigator.COMMAND_LOOP_INTERVAL;
 
 import java.util.concurrent.TimeUnit;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rcdukes.action.Action;
-import org.rcdukes.action.drag.StraightLaneNavigator;
 
 import io.vertx.core.json.JsonObject;
 import org.rcdukes.common.ClusterStarter;
