@@ -3,9 +3,14 @@ package org.rcdukes.imageview;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.io.IOUtils;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.DukesVerticle;
@@ -14,6 +19,7 @@ import org.rcdukes.detect.Detector;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageCollector.ImageType;
+import org.rcdukes.video.ImageUtils;
 
 import io.vertx.core.Future;
 import io.vertx.rxjava.core.buffer.Buffer;
@@ -71,7 +77,7 @@ public class DebugImageServer extends DukesVerticle {
 
   }
 
-  Map<String, VideoRecorder> recorders = new HashMap<String, VideoRecorder>();
+  Map<ImageType, VideoRecorder> recorders = new HashMap<ImageType, VideoRecorder>();
 
   /**
    * start Recording
@@ -79,7 +85,7 @@ public class DebugImageServer extends DukesVerticle {
   protected void startRecording() {
     for (ImageType imageType : ImageType.values()) {
       VideoRecorder recorder = new VideoRecorder(imageType.name(),fps);
-      recorders.put(recorder.name, recorder);
+      recorders.put(imageType, recorder);
     }
   }
 
@@ -87,9 +93,11 @@ public class DebugImageServer extends DukesVerticle {
    * stop Recording
    */
   protected void stopRecording() {
-    for (VideoRecorder recorder : recorders.values()) {
+    for (Entry<ImageType, VideoRecorder> entry:recorders.entrySet()) {
+      VideoRecorder recorder=entry.getValue();
+      ImageType imageType=entry.getKey();
       recorder.stop();
-      recorders.remove(recorder.name);
+      recorders.remove(imageType);
     }
   }
 
@@ -100,10 +108,23 @@ public class DebugImageServer extends DukesVerticle {
    */
   public void sendImage(HttpServerRequest request) {
     String type = request.getParam("type");
-    // System.out.println(type);
+    String mode = request.getParam("mode");
     if (type == null)
       type = "camera";
     ImageType imageType=ImageType.valueOf(type);
+    if (mode!=null && mode.equals("stream")) {
+       sendStream(request,imageType);
+    } else {
+      sendSingleImage(request,imageType);
+    }
+  }
+
+  /**
+   * send a single Image
+   * @param request
+   * @param imageType
+   */
+  public void sendSingleImage(HttpServerRequest request, ImageType imageType) {
     ImageCollector collector=Detector.currentCollector;
     Image image=null;
     byte[] bytes = null;
@@ -116,8 +137,8 @@ public class DebugImageServer extends DukesVerticle {
       }
     }
     sendImageBytesOrDefault(request, bytes);
-    if (recorders.containsKey(type) && mat!=null) {
-      VideoRecorder recorder = recorders.get(type);
+    if (recorders.containsKey(imageType) && mat!=null) {
+      VideoRecorder recorder = recorders.get(imageType);
       recorder.recordMat(mat);
     }
   }
@@ -166,9 +187,58 @@ public class DebugImageServer extends DukesVerticle {
     HttpServerResponse response = request.response();
     String contentType=contentTypes[imageFormat.ordinal()];
     response.putHeader("content-type", contentType);
-    response.putHeader("content-length", "" + bytes.length);
+    response.putHeader("content-length", "" + bytes.length);   
     Buffer data = Buffer.buffer().appendBytes(bytes);
     response.write(data);
     response.close();
   }
+  
+  /**
+   * stream images 
+   * @param request
+   * @param imageType
+   */
+  private void sendStream(HttpServerRequest request, ImageType imageType) {
+    HttpServerResponse response = request.response();
+    // initiate a multipart response
+    response.setChunked(true); // ! important
+    String boundary="frame";
+    String contentType="multipart/x-mixed-replace; boundary="+boundary;
+    response.putHeader("content-type", contentType);
+    String crlf="\r\n";
+    response.write(crlf);
+    response.write("--"+boundary+crlf);
+    byte[] testImage= testImage();
+    // stream images
+    int frameIndex=0;
+    int fontFace = Core.FONT_HERSHEY_SIMPLEX;
+    int fontScale=1;
+    Scalar color=new Scalar(255,0,0);
+    // @FIXME - this is a blocking version that is only good a proof of concept
+    while (true) {
+      System.out.println("serving frame "+frameIndex);
+      contentType=contentTypes[imageFormat.ordinal()];
+      response.write("Content-Type: " + contentType+crlf);
+      response.write(crlf);
+      Mat frame=ImageUtils.imageBytes2Mat(testImage).clone();
+      String text=String.format("%5d", frameIndex++);
+      Point pos = new Point(frame.width()-100,25);
+           
+      Imgproc.putText(frame, text, pos, fontFace, fontScale, color);
+      byte[] bytes = ImageUtils.mat2ImageBytes(frame, exts[imageFormat.ordinal()]);
+      Buffer data = Buffer.buffer().appendBytes(bytes);
+      response.write(data);
+      // boundary
+      response.write(crlf);
+      response.write("--"+boundary+crlf);
+      
+      // 1 image per second 
+      try {
+        Thread.sleep(1000);
+      } catch (InterruptedException e) {
+        // ...
+      }
+    }
+  }
+  
 }
