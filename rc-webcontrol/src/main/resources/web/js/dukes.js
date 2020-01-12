@@ -505,12 +505,12 @@ function updateConfig() {
 	updateImageSources(cameraSource);
 	var newCameraFps=document.getElementById('cameraFpsSlider').value;
 	var roih=document.getElementById('roihSlider').value;
-	var roiw=document.getElementById('roiwSlider').value;
+	var roiy=document.getElementById('roiySlider').value;
 	  
 	cameraConfig={}
 	cameraConfig.fps=Number(newCameraFps);
 	cameraConfig.roih=Number(roih);
-	cameraConfig.roiw=Number(roiw);
+	cameraConfig.roiy=Number(roiy);
 	cameraConfig.source=cameraSource;
 	
 	console.log('update camera config',cameraConfig);
@@ -599,7 +599,7 @@ function initialSliderValues() {
 	// set initial values for config
 	updateTextBoxFromSlider('cameraFpsSlider','cameraFpsTextbox');
 	updateTextBoxFromSlider('roihSlider','roihTextbox');
-	updateTextBoxFromSlider('roiwSlider','roiwTextbox');
+	updateTextBoxFromSlider('roiySlider','roiyTextbox');
 	updateTextBoxFromSlider('cannyConfigThreshold1Slider',
 			'cannyConfigThreshold1Textbox');
 	updateTextBoxFromSlider('cannyConfigThreshold2Slider',

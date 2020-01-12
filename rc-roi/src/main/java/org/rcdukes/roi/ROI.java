@@ -1,5 +1,7 @@
 package org.rcdukes.roi;
 
+import java.util.Locale;
+
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
@@ -63,6 +65,11 @@ public class ROI {
     // data
     Rect roiRect = roiRect(image.size());
     return new Mat(image,roiRect);
+  }
+  
+  public String toString() {
+    String text=String.format(Locale.ENGLISH,"pos (%.1f x %.1f) - size (%.1f x %.1f)",rx,ry,rw,rh);
+    return text;
   }
 
 }

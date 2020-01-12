@@ -10,15 +10,15 @@ import org.rcdukes.common.Config;
 public class CameraConfig {
   private String source;
   private double roih;
-  private double roiw;
+  private double roiy;
   private double fps;
   /**
    * construct me
    */
   public CameraConfig() {
     fps=10.0;
-    setRoiw(0.55);
-    setRoih(0.45);
+    setRoiy(44);  // 44% offset
+    setRoih(100); // full rest height
     try {
       source = Config.getEnvironment().getString(Config.CAMERA_URL);
     } catch (Exception e) {
@@ -31,17 +31,17 @@ public class CameraConfig {
   }
 
   /**
-   * @return the roiw
+   * @return the roiy
    */
-  public double getRoiw() {
-    return roiw;
+  public double getRoiy() {
+    return roiy;
   }
 
   /**
-   * @param roiw the roiw to set
+   * @param roiy the roiy to set
    */
-  public void setRoiw(double roiw) {
-    this.roiw = roiw;
+  public void setRoiy(double roiy) {
+    this.roiy = roiy;
   }
 
   /**

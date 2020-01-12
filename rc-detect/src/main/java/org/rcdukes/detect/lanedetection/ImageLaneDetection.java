@@ -68,13 +68,14 @@ public class ImageLaneDetection {
     Mat imageCopy=image.getFrame().clone(); 
     Mat undistorted = ld.getMatrix().apply(imageCopy);
     // get the configured Region of interest
-    Mat frame = new ROI("camera",0, cameraConfig.getRoiw(), 1, cameraConfig.getRoih())
+    double ry=cameraConfig.getRoiy()/100.0;
+    double rh=(1-ry)*cameraConfig.getRoih()/100.0;
+    Mat frame = new ROI("camera",0, ry, 1, rh)
         .region(undistorted);
     Size imageSize = frame.size();
     ViewPort viewPort = new ViewPort(new Point(0, 0), imageSize.width,
         imageSize.height);
     Polygon imagePolygon = new ImagePolygon(frame.size(), 0, 0, 1, 0, 1, 1, 0, 1);
-
     Polygon worldPolygon = new ImagePolygon(frame.size(), 0, 0, 1, 0, 1, 1, 0, 1);
 
     PerspectiveShift perspectiveShift = new PerspectiveShift(imagePolygon,

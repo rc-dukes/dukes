@@ -86,17 +86,18 @@ public class TestROI {
       assertNotNull(image);
       assertEquals(960, image.height());
       assertEquals(1280, image.width());
-      ROI rois[] = { new ROI("far", 0, 0, 1, 0.5),
+      ROI rois[] = { new ROI("all",0,0,1,1), new ROI("far", 0, 0, 1, 0.5),
           new ROI("near", 0, 0.5, 1, 0.5), new ROI("left", 0, 0, 0.5, 1),
           new ROI("right", 0.5, 0, 0.5, 1) };
       for (ROI roi : rois) {
+        System.out.println(roi);
         Mat roiImage = roi.region(image);
         if (debug)
           System.out.println(String.format("%10s: %4d x %4d", roi.name,
               roiImage.width(), roiImage.height()));
         assertEquals(roiImage.width(), image.width() * roi.rw, 0.1);
         assertEquals(roiImage.height(), image.height() * roi.rh, 0.1);
-        this.writeImage("dukes_roi_"+roi.name, roiImage);
+        this.writeImage("dukes_roi_" + roi.name, roiImage);
       }
     }
   }
