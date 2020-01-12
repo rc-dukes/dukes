@@ -168,21 +168,20 @@ public class DebugImageServer extends DukesVerticle {
     Thread streamThread = new Thread(multipartStreamer);
     streamThread.start();
   }
-
+  static int streamCounter = 0;
   /**
    * Streamer for multipart images
    * 
    * @author wf
    *
    */
-  static class MultipartStreamer implements Runnable {
+  class MultipartStreamer implements Runnable {
     String crlf = "\r\n";
     boolean running = false;
     private HttpServerResponse response;
     private ImageType imageType;
     String boundary = "frame";
     private Buffer currentData;
-    static int streamCounter = 0;
 
     /**
      * create a MultipartStream for the given imageType
@@ -228,6 +227,10 @@ public class DebugImageServer extends DukesVerticle {
         byte[] bytes = ImageUtils.mat2ImageBytes(frame,
             exts[imageFormat.ordinal()]);
         currentData = Buffer.buffer().appendBytes(bytes);
+        if (recorders.containsKey(imageType) && frame != null) {
+          VideoRecorder recorder = recorders.get(imageType);
+          recorder.recordMat(frame);
+        }
       }
       if (currentData != null) {
         response.write(currentData);

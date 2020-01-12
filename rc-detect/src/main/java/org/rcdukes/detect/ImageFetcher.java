@@ -24,7 +24,7 @@ public class ImageFetcher {
   protected static final Logger LOG = LoggerFactory
       .getLogger(ImageFetcher.class);
 
-  public boolean debug = true;
+  public boolean debug = false;
   public static double DEFAULT_FPS = 25;
   // OpenCV video capture
   private VideoCapture capture = new VideoCapture();
