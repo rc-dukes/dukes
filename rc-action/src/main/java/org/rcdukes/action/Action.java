@@ -53,6 +53,16 @@ public class Action extends DukesVerticle {
         }
 
     }
+    
+    /**
+     * return an emergencyStopCommand
+     * @return - the emergency stop command
+     */
+    public static JsonObject emergencyStopCommand() {
+      JsonObject cmd=new JsonObject().put("type", "motor").put("speed",
+          "stop");
+      return cmd;
+    }
 
     private void startDragNavigator() {
         LOG.info("Starting drag navigator");
@@ -75,12 +85,12 @@ public class Action extends DukesVerticle {
                 .map(JsonObject::new)
                 .flatMap(straighLaneNavigator::navigate)
                 // failsafe ?
-                .switchIfEmpty(Observable.just(new JsonObject().put("speed", "stop")))
+                .switchIfEmpty(Observable.just(emergencyStopCommand()))
                 .subscribe(
                         instruction -> vertx.eventBus().publish(Characters.BO.getCallsign(), instruction),
                         error -> {
                             LOG.error("Error navigating, stopping", error);
-                            vertx.eventBus().publish(Characters.BO.getCallsign(), new JsonObject().put("type", "motor").put("speed", "stop"));
+                            vertx.eventBus().publish(Characters.BO.getCallsign(), emergencyStopCommand());
                         },
                         () -> LOG.info("Completed navigating"));
 

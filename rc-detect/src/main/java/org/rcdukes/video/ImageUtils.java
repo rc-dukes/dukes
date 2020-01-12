@@ -32,6 +32,19 @@ public class ImageUtils {
   public static boolean debug=false;
   
   /**
+   * OpenCV BGR color scheme
+   * @author wf
+   */
+  public static class CVColor {
+    public static final Scalar red=new Scalar(0, 0, 255);
+    public static final Scalar lightgreen=new Scalar(10,250,20);
+    public static final Scalar green=new Scalar(0, 255, 0);
+    public static final Scalar dodgerblue=new Scalar(255, 128, 0);
+    public static final Scalar cyan=new Scalar(255, 255, 0);
+    public static final Scalar yellow=new Scalar(0, 255, 255);
+    public static final Scalar indigo=new Scalar(130,0,75);
+  }
+  /**
    * convert an open CV matrix to an Image this function will log messages on
    * failure an return null in case of such a failure
    * 
@@ -142,9 +155,21 @@ public class ImageUtils {
     String fileName = filePrefix.replace(".", "-" + name + ".");
     Mat output = new Mat();
     img.copyTo(output);
-    lines.stream().filter(Objects::nonNull).forEach(line -> Imgproc.line(output, toPoint(line.getPoint1()), toPoint(line.getPoint2()), color, 4));
+    drawLinesToImage(output,lines,color);
     Imgcodecs.imwrite(path + fileName, output);
     output.release();
+  }
+ 
+  /**
+   * draw the given lines to the given image with the given color
+   * @param image - the image to draw to 
+   * @param lines - the lines to draw
+   * @param color - the color to use
+   */
+  public void drawLinesToImage(Mat image, Collection<Line> lines,
+      Scalar color) {
+    lines.stream().filter(Objects::nonNull).forEach(line -> Imgproc.line(image,
+        toPoint(line.getPoint1()), toPoint(line.getPoint2()), color, 4));
   }
 
   /**

@@ -1,18 +1,15 @@
 package org.rcdukes.detect.lanedetection;
 
 import static java.util.Arrays.asList;
-import static org.rcdukes.video.PointMapper.toPoint;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
 import org.rcdukes.camera.ImagePolygon;
 import org.rcdukes.camera.PerspectiveShift;
 import org.rcdukes.detect.CameraConfig;
@@ -24,6 +21,8 @@ import org.rcdukes.roi.ROI;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageCollector.ImageType;
+import org.rcdukes.video.ImageUtils;
+import org.rcdukes.video.ImageUtils.CVColor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,25 +99,26 @@ public class ImageLaneDetection {
 
     Optional<Line> middle = laneOrientation.determineLaneMiddle();
 
-    lane.getLeftBoundary().ifPresent(boundary -> drawLinesToImage(frame,
-        asList(boundary), new Scalar(0, 255, 0)));
-    lane.getRightBoundary().ifPresent(boundary -> drawLinesToImage(frame,
-        asList(boundary), new Scalar(255, 128, 0)));
+    ImageUtils iu=new ImageUtils();
+    lane.getLeftBoundary().ifPresent(boundary -> iu.drawLinesToImage(frame,
+        asList(boundary), CVColor.green));
+    lane.getRightBoundary().ifPresent(boundary -> iu.drawLinesToImage(frame,
+        asList(boundary), CVColor.dodgerblue));
     middle.ifPresent(
-        line -> drawLinesToImage(frame, asList(line), new Scalar(0, 0, 255)));
+        line -> iu.drawLinesToImage(frame, asList(line), CVColor.red));
 
     double distanceToStoppingZone = -1;
     double distanceToStoppingZoneEnd = -1;
     if (stoppingZone.getEntrance() != null) {
-      stoppingZone.getEntrance().ifPresent(entrance -> drawLinesToImage(frame,
-          asList(entrance), new Scalar(255, 255, 0)));
+      stoppingZone.getEntrance().ifPresent(entrance -> iu.drawLinesToImage(frame,
+          asList(entrance), CVColor.cyan));
       distanceToStoppingZone = stoppingZoneOrientation
           .determineDistanceToStoppingZone();
     }
 
     if (stoppingZone.getExit() != null) {
-      stoppingZone.getExit().ifPresent(exit -> drawLinesToImage(frame,
-          asList(exit), new Scalar(0, 255, 255)));
+      stoppingZone.getExit().ifPresent(exit -> iu.drawLinesToImage(frame,
+          asList(exit), CVColor.yellow));
       distanceToStoppingZoneEnd = stoppingZoneOrientation
           .determineDistanceToStoppingZoneEnd();
     }
@@ -154,10 +154,6 @@ public class ImageLaneDetection {
     result.put(key, angle);
   }
 
-  private void drawLinesToImage(Mat image, Collection<Line> lines,
-      Scalar color) {
-    lines.stream().filter(Objects::nonNull).forEach(line -> Imgproc.line(image,
-        toPoint(line.getPoint1()), toPoint(line.getPoint2()), color, 4));
-  }
+  
 
 }

@@ -5,8 +5,6 @@ import static rx.exceptions.Exceptions.propagate;
 
 import java.util.Locale;
 
-import org.rcdukes.common.Environment;
-
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -64,9 +62,7 @@ public class StraightLaneNavigator {
       // Convert No Lines Detected situation into stop command.
       if (throwable instanceof NoLinesDetected) {
         emergencyStopActivated = true;
-        JsonObject message = new JsonObject().put("type", "motor").put("speed",
-            "stop");
-        return just(message);
+        return just(Action.emergencyStopCommand());
       } else {
         return Observable.error(propagate(throwable));
       }

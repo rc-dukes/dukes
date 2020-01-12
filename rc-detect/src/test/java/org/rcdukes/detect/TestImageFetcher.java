@@ -21,7 +21,7 @@ import rx.Observable;
  *
  */
 public class TestImageFetcher {
-  boolean debug = true;
+  boolean debug = false;
 
   @BeforeClass
   public static void setup() throws Exception {

@@ -17,6 +17,7 @@ import org.rcdukes.detectors.StartLightDetector;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageCollector.ImageType;
+import org.rcdukes.video.ImageUtils.CVColor;
 
 import nl.vaneijndhoven.objects.StartLight;
 
@@ -135,12 +136,11 @@ public class StartLightDetectorImpl implements StartLightDetector {
     StartLight startLight = this.startLight;
     // if any contour exist...
     if (hierarchy.size().height > 0 && hierarchy.size().width > 0) {
-      // for each contour, display it in blue
+      // for each contour, display it in light green
       for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0]) {
 
         // Imgproc.drawMarker(frame, , new Scalar(250, 0, 0));
-        // Imgproc.drawContours(frame, contours, idx, new Scalar(0, 0, 255));
-        Imgproc.drawContours(frame, contours, idx, new Scalar(10, 250, 20), 10);
+        Imgproc.drawContours(frame, contours, idx, CVColor.lightgreen, 10);
       }
 
       startLight = startLight.on();

@@ -18,6 +18,7 @@ import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageCollector.ImageType;
 import org.rcdukes.video.ImageUtils;
+import org.rcdukes.video.ImageUtils.CVColor;
 
 import io.vertx.core.Future;
 import io.vertx.rxjava.core.buffer.Buffer;
@@ -52,7 +53,6 @@ public class DebugImageServer extends DukesVerticle {
   public static String contentTypes[] = { "image/png", "image/jpeg" };
   // @TODO Make configurable and adapt
   public static double fps = 10;
-  private static byte[] testImageBytes;
 
   @Override
   public void start(Future<Void> startFuture) throws Exception {
@@ -135,9 +135,19 @@ public class DebugImageServer extends DukesVerticle {
       mat = image.getFrame();
       this.sendImageBytes(request, image.getImageBytes());
     }
-    if (recorders.containsKey(imageType) && mat != null) {
+    // optionally record
+    recordFrame(mat,imageType);
+  }
+  
+  /**
+   * record the given frame if the videorecorder for it's imageType is active
+   * @param frame
+   * @param imageType
+   */
+  public void recordFrame(Mat frame,ImageType imageType) {
+    if (recorders.containsKey(imageType) && frame != null) {
       VideoRecorder recorder = recorders.get(imageType);
-      recorder.recordMat(mat);
+      recorder.recordMat(frame);
     }
   }
 
@@ -205,7 +215,7 @@ public class DebugImageServer extends DukesVerticle {
     public void addImageInfo(Mat frame, Image image) {
       int fontFace = Core.FONT_HERSHEY_SIMPLEX;
       int fontScale = 1;
-      Scalar color = new Scalar(255, 0, 0);
+      Scalar color = CVColor.dodgerblue;
       String text = String.format("%5d", image.getFrameIndex());
       Point pos = new Point(frame.width() - 100, 25);
       Imgproc.putText(frame, text, pos, fontFace, fontScale, color);
@@ -227,10 +237,7 @@ public class DebugImageServer extends DukesVerticle {
         byte[] bytes = ImageUtils.mat2ImageBytes(frame,
             exts[imageFormat.ordinal()]);
         currentData = Buffer.buffer().appendBytes(bytes);
-        if (recorders.containsKey(imageType) && frame != null) {
-          VideoRecorder recorder = recorders.get(imageType);
-          recorder.recordMat(frame);
-        }
+        recordFrame(frame,imageType);
       }
       if (currentData != null) {
         response.write(currentData);
