@@ -1,6 +1,7 @@
 package org.rcdukes.imageview;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -94,13 +95,15 @@ public class DebugImageServer extends DukesVerticle {
    * stop Recording
    */
   protected void stopRecording() {
-    for (Entry<ImageType, VideoRecorder> entry : recorders.entrySet()) {
-      VideoRecorder recorder = entry.getValue();
-      ImageType imageType = entry.getKey();
-      recorder.stop();
-      recorders.remove(imageType);
+    Iterator<Entry<ImageType, VideoRecorder>> it = recorders.entrySet().iterator();
+    while (it.hasNext())
+    {
+       Entry<ImageType, VideoRecorder> entry= it.next();
+       VideoRecorder recorder = entry.getValue();
+       recorder.stop();
+       it.remove();
     }
-  }
+   }
 
   /**
    * send an image for the given request
