@@ -4,11 +4,11 @@ import static java.util.Optional.of;
 
 import java.util.Optional;
 
+import org.rcdukes.geometry.Lane;
 import org.rcdukes.geometry.Line;
 import org.rcdukes.geometry.Point;
 import org.rcdukes.geometry.Point2D;
 
-import nl.vaneijndhoven.objects.Lane;
 import nl.vaneijndhoven.objects.ViewPort;
 
 public class LaneOrientation {

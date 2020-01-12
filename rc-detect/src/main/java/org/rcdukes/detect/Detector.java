@@ -10,6 +10,7 @@ import org.rcdukes.common.Events;
 import org.rcdukes.detect.linedetection.HoughLinesLineDetector;
 import org.rcdukes.detectors.EdgeDetector;
 import org.rcdukes.detectors.LineDetector;
+import org.rcdukes.geometry.LaneDetectionResult;
 import org.rcdukes.opencv.NativeLibrary;
 import org.rcdukes.video.ImageCollector;
 
@@ -150,8 +151,10 @@ public class Detector extends DukesVerticle {
    * @return
    **/
   private Observable<String> startLaneDetection(CameraConfig cameraConfig) {
-    return startLaneDetectionObservable(cameraConfig).map(map -> {
+    return startLaneDetectionObservable(cameraConfig).map(ldr -> {
       try {
+        // @TODO further simplify by using pojo handling ...
+        Map<String, Object> map = ldr.toMap();
         return new ObjectMapper().writeValueAsString(map);
       } catch (JsonProcessingException e) {
         throw new RuntimeException(e);
@@ -165,7 +168,7 @@ public class Detector extends DukesVerticle {
    * @param cameraConfig
    * @return
    */
-  private Observable<Object> startLaneDetectionObservable(
+  private Observable<LaneDetectionResult> startLaneDetectionObservable(
       CameraConfig cameraConfig) {
     fetcher = new ImageFetcher(cameraConfig.getSource());
     fetcher.setFps(cameraConfig.getFps());
@@ -182,7 +185,7 @@ public class Detector extends DukesVerticle {
               HoughLinesLineDetector.class);
           CameraConfig updatedCameraConfig = super.getSharedPojo("cameraConfig",
               CameraConfig.class);
-          Map<String, Object> detection = new LaneDetector(edgeDetector,
+          LaneDetectionResult detection = new LaneDetector(edgeDetector,
               lineDetector, updatedCameraConfig, createMatrix(),
               currentCollector).detect(image);
           return detection;

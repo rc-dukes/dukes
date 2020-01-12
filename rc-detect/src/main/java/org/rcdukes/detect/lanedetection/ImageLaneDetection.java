@@ -3,17 +3,16 @@ package org.rcdukes.detect.lanedetection;
 import static java.util.Arrays.asList;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import org.opencv.core.Mat;
-import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.rcdukes.camera.ImagePolygon;
 import org.rcdukes.camera.PerspectiveShift;
 import org.rcdukes.detect.CameraConfig;
 import org.rcdukes.detect.LaneDetector;
+import org.rcdukes.geometry.Lane;
+import org.rcdukes.geometry.LaneDetectionResult;
 import org.rcdukes.geometry.Line;
 import org.rcdukes.geometry.Point;
 import org.rcdukes.geometry.Polygon;
@@ -28,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import nl.vaneijndhoven.navigation.plot.LaneOrientation;
 import nl.vaneijndhoven.navigation.plot.StoppingZoneOrientation;
-import nl.vaneijndhoven.objects.Lane;
 import nl.vaneijndhoven.objects.StoppingZone;
 import nl.vaneijndhoven.objects.ViewPort;
 import nl.vaneijndhoven.opencv.stopzonedetection.DefaultStoppingZoneDetector;
@@ -56,12 +54,12 @@ public class ImageLaneDetection {
    * @param imageCollector
    * @return a map with information
    */
-  public Map<String, Object> detectLane(Image image,
+  public LaneDetectionResult detectLane(Image image,
       ImageCollector imageCollector) {
-    Map<String, Object> result = new HashMap<String, Object>();
+    LaneDetectionResult ldr=new LaneDetectionResult();
     if (image==null) {
       LOG.error("detectLane: original is null");
-      return result;
+      return ldr;
     }
     CameraConfig cameraConfig=ld.getCameraConfig();
     imageCollector.addImage(image, ImageType.camera);
@@ -107,53 +105,31 @@ public class ImageLaneDetection {
     middle.ifPresent(
         line -> iu.drawLinesToImage(frame, asList(line), CVColor.red));
 
-    double distanceToStoppingZone = -1;
-    double distanceToStoppingZoneEnd = -1;
+    ldr.distanceToStoppingZone = -1.0;
+    ldr.distanceToStoppingZoneEnd = -1.0;
     if (stoppingZone.getEntrance() != null) {
       stoppingZone.getEntrance().ifPresent(entrance -> iu.drawLinesToImage(frame,
           asList(entrance), CVColor.cyan));
-      distanceToStoppingZone = stoppingZoneOrientation
+      ldr.distanceToStoppingZone = stoppingZoneOrientation
           .determineDistanceToStoppingZone();
     }
 
     if (stoppingZone.getExit() != null) {
       stoppingZone.getExit().ifPresent(exit -> iu.drawLinesToImage(frame,
           asList(exit), CVColor.yellow));
-      distanceToStoppingZoneEnd = stoppingZoneOrientation
+      ldr.distanceToStoppingZoneEnd = stoppingZoneOrientation
           .determineDistanceToStoppingZoneEnd();
     }
     imageCollector.addImage(frame, ImageType.lines);
     
-
-    double angle = laneOrientation.determineCurrentAngle();
-
-    double distanceMiddle = laneOrientation.determineDistanceToMiddle();
-    double distanceLeft = laneOrientation.distanceFromLeftBoundary();
-    double distanceRight = laneOrientation.distanceFromRightBoundary();
-
-    double courseRelativeToHorizon = laneOrientation
+    ldr.angle = laneOrientation.determineCurrentAngle();
+    ldr.distanceMiddle = laneOrientation.determineDistanceToMiddle();
+    ldr.distanceLeft = laneOrientation.distanceFromLeftBoundary();
+    ldr.distanceRight = laneOrientation.distanceFromRightBoundary();
+    ldr.courseRelativeToHorizon = laneOrientation
         .determineCourseRelativeToHorizon();
-
-    result.put("lane", lane);
-    putIfNumber("angle", angle, result);
-    putIfNumber("distanceMiddle", distanceMiddle, result);
-    putIfNumber("distanceLeft", distanceLeft, result);
-    putIfNumber("distanceRight", distanceRight, result);
-    putIfNumber("distanceToStoppingZone", distanceToStoppingZone, result);
-    putIfNumber("distanceToStoppingZoneEnd", distanceToStoppingZoneEnd, result);
-    putIfNumber("courseRelativeToHorizon", courseRelativeToHorizon, result);
-
-    return result;
+    ldr.lane=lane;
+   
+    return ldr;
   }
-
-  private void putIfNumber(String key, double angle,
-      Map<String, Object> result) {
-    if (Double.isNaN(angle)) {
-      return;
-    }
-    result.put(key, angle);
-  }
-
-  
-
 }

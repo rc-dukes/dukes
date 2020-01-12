@@ -31,6 +31,7 @@ public class ImageFetcher {
   private String source;
   protected int frameIndex;
   protected int failureCount=0;
+  protected int maxFailureCount=3;
   protected double fps = DEFAULT_FPS; // frames per second
   private long milliTimeStamp;
   private boolean staticImage;
@@ -143,10 +144,12 @@ public class ImageFetcher {
         failureCount=0;
       } else {
         failureCount++;
-        if (failureCount%Math.round(getFps()*2)==0) {
+        if (maxFailureCount<getFps() && failureCount%Math.round(getFps()*2)==0) {
           String msg=String.format("%d read failures for %s",failureCount,source);
           LOG.info(msg);
         }
+        if (failureCount>maxFailureCount)
+          return null;
       }
     }
     milliTimeStamp=currentMillis;

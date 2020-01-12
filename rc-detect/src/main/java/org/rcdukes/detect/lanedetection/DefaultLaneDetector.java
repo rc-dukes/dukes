@@ -1,17 +1,17 @@
 package org.rcdukes.detect.lanedetection;
 
-import nl.vaneijndhoven.objects.ViewPort;
-import org.rcdukes.geometry.Line;
-import org.rcdukes.geometry.Point;
-import org.rcdukes.geometry.Point2D;
-import nl.vaneijndhoven.objects.Lane;
-import nl.vaneijndhoven.objects.lane.LaneLeftBoundary;
-import nl.vaneijndhoven.objects.lane.LaneRightBoundary;
-
 import java.util.Collection;
 import java.util.Optional;
 
 import org.rcdukes.detectors.LaneDetector;
+import org.rcdukes.geometry.Lane;
+import org.rcdukes.geometry.Line;
+import org.rcdukes.geometry.Point;
+import org.rcdukes.geometry.Point2D;
+
+import nl.vaneijndhoven.objects.ViewPort;
+import nl.vaneijndhoven.objects.lane.LaneLeftBoundary;
+import nl.vaneijndhoven.objects.lane.LaneRightBoundary;
 
 public class DefaultLaneDetector implements LaneDetector {
 

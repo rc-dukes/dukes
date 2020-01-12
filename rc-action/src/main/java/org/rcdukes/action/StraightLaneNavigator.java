@@ -5,6 +5,8 @@ import static rx.exceptions.Exceptions.propagate;
 
 import java.util.Locale;
 
+import org.rcdukes.geometry.LaneDetectionResult;
+
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -37,7 +39,7 @@ public class StraightLaneNavigator {
    * construct me
    */
   public StraightLaneNavigator(String wheelOrientation) {
-    this.wheelOrientation=wheelOrientation;
+    this.wheelOrientation = wheelOrientation;
     initDefaults();
   }
 
@@ -52,9 +54,9 @@ public class StraightLaneNavigator {
     tsLastCommand = System.currentTimeMillis();
     lastRudderPercentageSent = 0d;
     pid = new MiniPID(1, 0, 0);
-    rudderFactor=1;
+    rudderFactor = 1;
     if (wheelOrientation.equals("-"))
-      rudderFactor=-1;
+      rudderFactor = -1;
   }
 
   public Observable<JsonObject> navigate(JsonObject laneDetectResult) {
@@ -70,47 +72,50 @@ public class StraightLaneNavigator {
 
   }
 
+  private LaneDetectionResult fromJsonObject(JsonObject jo) {
+    LaneDetectionResult ldr = new LaneDetectionResult();
+    if (jo.containsKey("angle")) {
+      ldr.angle = jo.getDouble("angle");
+    }
+
+    if (jo.containsKey("courseRelativeToHorizon")) {
+      ldr.courseRelativeToHorizon = jo.getDouble("courseRelativeToHorizon");
+    }
+    return ldr;
+  }
+
   /**
    * process the laneDetectResult
+   * 
    * @param laneDetectResult
    * @return
    * @throws NoLinesDetected
    */
-  private Observable<JsonObject> processLane(JsonObject laneDetectResult)
+  private Observable<JsonObject> processLane(JsonObject jo)
       throws NoLinesDetected {
     long currentTime = System.currentTimeMillis();
+    LaneDetectionResult ldr = fromJsonObject(jo);
 
-    Double angle = null;
-    if (laneDetectResult.containsKey("angle")) {
-      angle = laneDetectResult.getDouble("angle");
-    }
+    verifyAngleFound(ldr.angle, currentTime);
 
-    Double courseRelativeToHorizon = null;
-    if (laneDetectResult.containsKey("courseRelativeToHorizon")) {
-      courseRelativeToHorizon = laneDetectResult
-          .getDouble("courseRelativeToHorizon");
-    }
-
-    verifyAngleFound(angle, currentTime);
-
-    if (angle == null) {
+    if (ldr.angle == null) {
       return Observable.empty();
     }
 
     Double rudderPercentage;
 
-    if (courseRelativeToHorizon != null) {
+    if (ldr.courseRelativeToHorizon != null) {
       // pass 1: steer on courseRelativeToHorizon
-      rudderPercentage = courseRelativeToHorizon * rudderFactor;
+      rudderPercentage = ldr.courseRelativeToHorizon * rudderFactor;
       // System.out.println("rudder on horizon: " + rudderPercentage);
     } else {
       // pass 2: steer on angle
-      if (angle < 0) {
+      if (ldr.angle < 0) {
         // left
-        rudderPercentage = 4 * angle;
+        rudderPercentage = 4 * ldr.angle;
       } else {
         // right
-        rudderPercentage = 6 * angle;
+        rudderPercentage = 6 * ldr.angle;
       }
       // System.out.println("rudder on angle: " + rudderPercentage);
 
@@ -132,11 +137,13 @@ public class StraightLaneNavigator {
 
       tsLastCommand = currentTime;
       lastRudderPercentageSent = rudderPercentage;
-      previousAngle = angle;
-      String rudderPos=String.format(Locale.ENGLISH,"%3.1f",rudderPercentage);
+      previousAngle = ldr.angle;
+      String rudderPos = String.format(Locale.ENGLISH, "%3.1f",
+          rudderPercentage);
       JsonObject message = new JsonObject().put("type", "servoDirect")
           .put("position", rudderPos);
-      String debugMsg=String.format("sending servoDirect position %3.1f",rudderPercentage);
+      String debugMsg = String.format("sending servoDirect position %3.1f",
+          rudderPercentage);
       LOG.debug(debugMsg);
       return just(message);
     }

@@ -1,9 +1,10 @@
 package nl.vaneijndhoven.navigation.plot;
 
+import org.rcdukes.geometry.Lane;
 import org.rcdukes.geometry.Line;
 import org.rcdukes.geometry.Point;
 import org.rcdukes.geometry.Point2D;
-import nl.vaneijndhoven.objects.Lane;
+
 import nl.vaneijndhoven.objects.StoppingZone;
 import nl.vaneijndhoven.objects.ViewPort;
 

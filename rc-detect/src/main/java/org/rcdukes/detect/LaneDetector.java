@@ -7,6 +7,7 @@ import org.rcdukes.detect.lanedetection.ImageLaneDetection;
 import org.rcdukes.detect.linedetection.HoughLinesLineDetector;
 import org.rcdukes.detectors.EdgeDetector;
 import org.rcdukes.detectors.LineDetector;
+import org.rcdukes.geometry.LaneDetectionResult;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 
@@ -66,7 +67,7 @@ public class LaneDetector {
    * @param image
    * @return - the laneDetection result
    */
-  public Map<String, Object> detect(Image image) {
+  public LaneDetectionResult detect(Image image) {
     ImageLaneDetection laneDetect = new ImageLaneDetection(this);
     return laneDetect.detectLane(image, getCollector());
   }

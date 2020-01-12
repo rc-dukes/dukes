@@ -1,8 +1,6 @@
-package nl.vaneijndhoven.objects;
+package org.rcdukes.geometry;
 
 import java.util.Optional;
-
-import org.rcdukes.geometry.Line;
 
 public class Lane {
 
