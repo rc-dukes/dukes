@@ -4,7 +4,6 @@
  -->
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <!-- Required meta tags -->
 <meta charset="utf-8">
 <meta name="viewport"
@@ -21,6 +20,8 @@
 <link href="css/materialdesignicons.min.css" media="all"
 	rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="css/dukes.css">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
 </head>
 <body>
 	<!--  common menu -->
@@ -29,66 +30,93 @@
 		<a href='index.html' title='Home'><i
 			class='mdi mdi-home headerboxicon'></i> <!-- home --></a> <a
 			href='detect.html' title='Detect'><i
-			class='mdi mdi-camera headerboxicon'></i> <!-- home --></a> <a
-			href='https://github.com/rc-dukes/dukes' title='Dukes on GitHub'><i
-			class='mdi mdi-github-box headerboxicon'></i> <!-- home --></a>
+			class='mdi mdi-highway headerboxicon'></i> <!-- detect --></a> <a
+			href='/media' title='media'><i
+			class='mdi mdi-folder headerboxicon'></i> <!-- media --></a> <a
+			href='https://github.com/rc-dukes/dukes' title='Home'><i
+			class='mdi mdi-github-box headerboxicon'></i> <!-- github --></a> <a
+			href='https://gitter.im/rc-dukes/community' title='Chat'><i
+			class='mdi mdi-comment-text headerboxicon'></i> <!-- chat --></a> <a
+			href='http://wiki.bitplan.com/index.php/Self_Driving_RC_Car/App'
+			title='Help'><i class='mdi mdi-help headerboxicon'></i> <!-- help --></a>
 	</div>
 	<div id='navigationbox' title='Self Driving RC Car WebControl'>Self
 		Driving RC Car WebControl</div>
 	<div id='contentbox'>
-		<table id="navigationcontrols">
-			<tr>
-				<td></td>
-				<td><i id="up" class='mdi mdi-arrow-up-bold bigicon'
-					title="up/u" onclick="up();"></i></td>
-				<td></td>
-				<td><i id="autopilot" class='mdi mdi-car bigicon'
-					title="autopilot/+" onclick="autopilot();"></i></td>
-				<td rowspan='4'><img id="cameraImage"><br>
-				<input id="cameraImageUrlBox" type="text" size=60></input</td>
-				</td>
-			</tr>
-			<tr>
-				<td><i id="left" class='mdi mdi-arrow-left-bold bigicon'
-					title="left/l" onclick="left();"></i></td>
-				<td><i id="stop" class='mdi mdi-stop bigicon'
-					title="stop/space" onclick="stop();"></i></td>
-				<td><i id="right" class='mdi mdi-arrow-right-bold bigicon'
-					title="right/r" onclick="right();"></i></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><i id="down" class='mdi mdi-arrow-down-bold bigicon'
-					title="down/d" onclick="down();"></i></td>
-				<td></td>
-				<td><i id="manual" class='mdi mdi-account bigicon'
-					title="manual/-" onclick="manual();"></i></td>
-			</tr>
-			<tr>
-				<td><i id="brake" class='mdi mdi-close bigicon'
-					title="brake/b/s" onclick="brake();"></i></td>
-				<td><i id="center"
-					class='mdi mdi-image-filter-center-focus bigicon'
-					title='center/c/z' onclick="center();"></i></td>
-				<td></td>
-				<td><i id="power" class='mdi mdi-power bigicon' title="p"
-					onclick="power();"></i></td>
-			</tr>
-			<tr>
-				<th id='eventslabel' colspan='5'>Events</th>
-			</tr>
-			<tr>
-				<td id='events' colspan='5'></td>
-			</tr>
-		</table>
-		<!--<div id="message"></div>-->
-		<!--<input type="file" accept="video/*"/>-->
-		<!--<video controls autoplay></video>-->
+		<div class='row'>
+			<div class="col-md-2 thlabel">navigation</div>
+			<div class="col-md-10 thlabel">camera</div>
+		</div>
+		<div class='row'>
+			<div class="col-md-2">
+				<table id="navigationcontrols" width='100%'>
+					<tr>
+						<td></td>
+						<td><i id="up" class='mdi mdi-arrow-up-bold mediumicon'
+							title="up/u" onclick="up();"></i></td>
+						<td></td>
+						<td><i id="autopilot" class='mdi mdi-car mediumicon'
+							title="autopilot/+" onclick="autopilot();"></i></td>
+					</tr>
+					<tr>
+						<td><i id="left" class='mdi mdi-arrow-left-bold mediumicon'
+							title="left/l" onclick="left();"></i></td>
+						<td><i id="stop" class='mdi mdi-stop mediumicon'
+							title="stop/space" onclick="stop();"></i></td>
+						<td><i id="right" class='mdi mdi-arrow-right-bold mediumicon'
+							title="right/r" onclick="right();"></i></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><i id="down" class='mdi mdi-arrow-down-bold mediumicon'
+							title="down/d" onclick="down();"></i></td>
+						<td></td>
+						<td><i id="manual" class='mdi mdi-account mediumicon'
+							title="manual/-" onclick="manual();"></i></td>
+					</tr>
+					<tr>
+						<td><i id="brake" class='mdi mdi-close mediumicon'
+							title="brake/b/s" onclick="brake();"></i></td>
+						<td><i id="center"
+							class='mdi mdi-image-filter-center-focus mediumicon'
+							title='center/c/z' onclick="center();"></i></td>
+						<td></td>
+						<td><i id="power" class='mdi mdi-power mediumicon' title="p"
+							onclick="power();"></i></td>
+					</tr>
+					<tr>
+						<td><i id="photo" class='mdi mdi-camera mediumicon'
+							title="photo" onclick="photo();"></i></td>
+						<td><i id="record" class='mdi mdi-record mediumicon'
+							title="record" onclick="record();"></i></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-md-10">
+				<img id="cameraImage"> <br> <input id="cameraImageUrlBox"
+					type="text" size=60 />
+			</div>
+		</div>
+		<div class='row'>
+			<div class="col-md-3 thlabel">Events</div>
+			<div class="col-md-3 thlabel">Heartbeat</div>
+			<div class="col-md-6 thlabel"></div>
+		</div>
+		<div class='row'>
+			<div class="col-md-3" id='events'
+				style="overflow-y: scroll; height: 340px;"></div>
+			<div class="col-md-3" id='heartbeatevents'
+				style="overflow-y: scroll; height: 340px;"></div>
+			<div class="col-md-6"></div>
+		</div>
+		<div id="message"></div>
 	</div>
-	<div id="message"></div>
 	<!--  end of main content box -->
 	<div id='footerbox'></div>
+	</div>
 	<script type="text/javascript">
 		// reset the global eventbus variable
 		initRemote();

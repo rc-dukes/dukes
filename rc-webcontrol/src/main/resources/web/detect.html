@@ -21,10 +21,7 @@
 	rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="css/dukes.css">
 <!-- Bootstrap CSS -->
-<link rel="stylesheet"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-	crossorigin="anonymous">
+<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
 
 </head>
 <body>
@@ -35,9 +32,11 @@
 			<a href='index.html' title='Home'><i
 				class='mdi mdi-home headerboxicon'></i> <!-- home --></a> <a
 				href='detect.html' title='Detect'><i
-				class='mdi mdi-camera headerboxicon'></i> <!-- home --></a> <a
+				class='mdi mdi-highway headerboxicon'></i> <!-- detect --></a> <a
+				href='/media' title='media'><i
+				class='mdi mdi-folder headerboxicon'></i> <!-- media --></a> <a
 				href='https://github.com/rc-dukes/dukes' title='Home'><i
-				class='mdi mdi-github-box headerboxicon'></i> <!-- home --></a> <a
+				class='mdi mdi-github-box headerboxicon'></i> <!-- github --></a> <a
 				href='https://gitter.im/rc-dukes/community' title='Chat'><i
 				class='mdi mdi-comment-text headerboxicon'></i> <!-- chat --></a> <a
 				href='http://wiki.bitplan.com/index.php/Self_Driving_RC_Car/App'
@@ -151,8 +150,7 @@
 							</div>
 							<div class='col-md-6'>
 								<input id="roiySlider" value="44" type="range" min="0" max="90"
-									step="1"
-									oninput="onSlide('roiySlider',
+									step="1" oninput="onSlide('roiySlider',
 								'roiyTextbox')" />
 							</div>
 						</div>
@@ -162,8 +160,8 @@
 								<input id="roihTextbox" size="2" />%
 							</div>
 							<div class='col-md-6'>
-								<input id="roihSlider" value="100" type="range" min="0" max="100"
-									step="1"
+								<input id="roihSlider" value="100" type="range" min="0"
+									max="100" step="1"
 									oninput="onSlide('roihSlider',
 								'roihTextbox')" />
 							</div>
@@ -171,11 +169,13 @@
 						<div class='row'>
 							<div class='col-md-2'>source:</div>
 							<div class='col-md-8'>
-								<input id="cameraSource" size="40"  list="cameraSources"/>
+								<input id="cameraSource" size="40" list="cameraSources" />
 								<datalist id="cameraSources">
-									<option value="http://pibeewifi/html/cam_pic_new.php">PI Camera</option>
+									<option value="http://pibeewifi/html/cam_pic_new.php">PI
+										Camera</option>
 									<option value="http://wiki.bitplan.com/videos/full_run.mp4">Testvideo</option>
-									<option value="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg/1280px-4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg">Test-Image</option>
+									<option
+										value="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg/1280px-4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg">Test-Image</option>
 								</datalist>
 								<button id='reconfigure' onclick="updateConfig();">go</button>
 							</div>

@@ -47,7 +47,7 @@ public class WebControl extends DukesVerticle {
         .handler(StaticHandler.create("web").setCachingEnabled(false));
     String media=Environment.dukesHome+"media";
     router.route("/media/*")
-        .handler(StaticHandler.create("media").setCachingEnabled(false).setDirectoryListing(true));
+        .handler(StaticHandler.create().setAllowRootFileSystemAccess(true).setWebRoot(media).setCachingEnabled(false).setDirectoryListing(true));
 
     vertx.createHttpServer().requestHandler(router).listen(port);
 
