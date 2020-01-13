@@ -8,13 +8,10 @@ import java.io.IOException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opencv.core.Mat;
-import org.rcdukes.imageview.DebugImageServer;
-import org.rcdukes.imageview.VideoRecorder;
 import org.rcdukes.imageview.DebugImageServer.ImageFormat;
 import org.rcdukes.opencv.NativeLibrary;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
-import org.rcdukes.video.ImageUtils;
 import org.rcdukes.video.ImageCollector.ImageType;
 
 /**
@@ -51,7 +48,7 @@ public class TestVideoRecorder {
           recorder.recordMat(testMat);
         }
         recorder.stop();
-        File videoFile = new File(recorder.path);
+        File videoFile = new File(recorder.getPath());
         assertTrue(videoFile.exists());
         assertTrue(videoFile.length() > 50000);
       }

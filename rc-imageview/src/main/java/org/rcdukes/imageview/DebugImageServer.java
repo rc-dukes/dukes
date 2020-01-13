@@ -63,7 +63,7 @@ public class DebugImageServer extends DukesVerticle {
     // @TODO - get config information from config Verticle (or shared data ...)
     File mediaPath=new File(Environment.dukesHome+"media");
     mediaPath.mkdirs();
-    VideoRecorder.path=mediaPath.getPath();
+    VideoRecorder.MEDIA_PATH=mediaPath.getPath();
     int port = Config.getEnvironment().getInteger(Config.IMAGEVIEW_PORT);
     server = vertx.createHttpServer().requestHandler(this::sendImage);
     // Now bind the server:

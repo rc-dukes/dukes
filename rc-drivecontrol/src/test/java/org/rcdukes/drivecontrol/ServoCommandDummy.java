@@ -7,6 +7,11 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSo
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import org.rcdukes.car.ServoCommand;
 
+/**
+ * ServoCommand Dummy
+ * @author wf
+ *
+ */
 public class ServoCommandDummy implements ServoCommand {
     // we'll remember the values in an in-memory graph database
     private TinkerGraph graph;

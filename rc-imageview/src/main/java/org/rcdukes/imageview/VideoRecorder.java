@@ -16,7 +16,7 @@ import org.opencv.videoio.VideoWriter;
 public class VideoRecorder {
   public static transient final String DATE_FORMAT="yyyy-MM-ddHHmmss";
   public static transient final DateFormat dateFormat=new SimpleDateFormat(DATE_FORMAT);
-  public static String path="/tmp";
+  public static String MEDIA_PATH="/tmp";
   
   String name;
   private VideoWriter save;
@@ -27,6 +27,7 @@ public class VideoRecorder {
   boolean isColor;
   public static String exts[]= {".mov",".avi",".mpg"};
   String ext=".avi";
+  private String path;
   public static String FOURCCs[]= { "AVC1", "FMP4", "H264", "JPEG","MJPG",  "MP4V","X264","XVID" };
   public static String FOURCC="mp4v";
   
@@ -46,8 +47,8 @@ public class VideoRecorder {
     this.frameSize=frameSize;
     this.isColor=isColor;
     int fourcc = VideoWriter.fourcc(FOURCC.charAt(0), FOURCC.charAt(1), FOURCC.charAt(2), FOURCC.charAt(3)); 
-    String videopath=filePath(name+"_"+FOURCC,ext);
-    save = new VideoWriter(videopath,fourcc, this.fps, this.frameSize, isColor);
+    setPath(filePath(name+"_"+FOURCC,ext));
+    save = new VideoWriter(getPath(),fourcc, this.fps, this.frameSize, isColor);
     started=true;
   }
   
@@ -61,7 +62,7 @@ public class VideoRecorder {
   public static String filePath(String name, String ext) {
     Date now = new Date();
     String timestamp=dateFormat.format(now);
-    String filepath=String.format("%s/%s_%s%s", path,name,timestamp,ext);
+    String filepath=String.format("%s/%s_%s%s", MEDIA_PATH,name,timestamp,ext);
     return filepath;
   }
   
@@ -85,6 +86,20 @@ public class VideoRecorder {
       this.start(mat.size(),isColor);
     }
     save.write(mat);
+  }
+
+  /**
+   * @return the path
+   */
+  public String getPath() {
+    return path;
+  }
+
+  /**
+   * @param path the path to set
+   */
+  public void setPath(String path) {
+    this.path = path;
   }
   
 }
