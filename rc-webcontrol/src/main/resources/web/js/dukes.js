@@ -430,6 +430,11 @@ function record() {
 	recording=!recording;
 }
 
+// create a single photo
+function photo() {
+	publish(CALLSIGN_ROSCO + ':PHOTO_SHOOT', undefined);
+}
+
 function keyPressed(id) {
 	console.log(id);
 	logMessage(id + " pressed");

@@ -31,8 +31,8 @@ import io.vertx.core.json.JsonObject;
 public class Environment {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Environment.class);
-
-	public static String propFilePath = System.getProperty("user.home") + "/.dukes/dukes.ini";;
+  public static String dukesHome= System.getProperty("user.home") + "/.dukes/";
+	public static String propFilePath =dukesHome+"dukes.ini";;
 
 	private static Environment instance;
 	private boolean runningOnRaspberryPi;

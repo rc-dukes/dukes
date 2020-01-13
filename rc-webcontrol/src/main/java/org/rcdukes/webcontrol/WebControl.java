@@ -3,6 +3,7 @@ package org.rcdukes.webcontrol;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.Environment;
 
 import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.ext.web.handler.sockjs.BridgeOptions;
@@ -22,26 +23,32 @@ public class WebControl extends DukesVerticle {
   public WebControl() {
     super(Characters.BOSS_HOGG);
   }
-  
+
   @Override
   public void start() throws Exception {
     super.preStart();
-    int port=Config.getEnvironment().getInteger(Config.WEBCONTROL_PORT);
-    LOG.info("using port "+port);
+    int port = Config.getEnvironment().getInteger(Config.WEBCONTROL_PORT);
+    LOG.info("using port " + port);
     Router router = Router.router(vertx);
     BridgeOptions options = new BridgeOptions();
     options.addOutboundPermitted(new PermittedOptions().setAddressRegex(".*"));
     options.addInboundPermitted(new PermittedOptions().setAddressRegex(".*"));
-    // upto 3.7.1 
-    router.route("/eventbus/*").handler(SockJSHandler.create(vertx).bridge(options));
+    // upto 3.7.1
+    router.route("/eventbus/*")
+        .handler(SockJSHandler.create(vertx).bridge(options));
     // 3.8.2 up
     // https://github.com/vert-x3/wiki/wiki/3.8.2-Deprecations-and-breaking-changes#sockjshandler-changes
     // https://stackoverflow.com/questions/58940327/vert-x-sockjshandler-class
-    // router.mountSubRouter("/eventbus", SockJSHandler.create(vertx).bridge(options));
+    // router.mountSubRouter("/eventbus",
+    // SockJSHandler.create(vertx).bridge(options));
     // @TODO decide about sse support for configuration
     // router.route("/configsse/*")
     router.route()
         .handler(StaticHandler.create("web").setCachingEnabled(false));
+    String media=Environment.dukesHome+"media";
+    router.route("/media/*")
+        .handler(StaticHandler.create("media").setCachingEnabled(false).setDirectoryListing(true));
+
     vertx.createHttpServer().requestHandler(router).listen(port);
 
     // vertx.eventBus().sendObservable(Characters.DAISY.getCallsign() +

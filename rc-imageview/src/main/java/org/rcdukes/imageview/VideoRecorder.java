@@ -16,18 +16,19 @@ import org.opencv.videoio.VideoWriter;
 public class VideoRecorder {
   public static transient final String DATE_FORMAT="yyyy-MM-ddHHmmss";
   public static transient final DateFormat dateFormat=new SimpleDateFormat(DATE_FORMAT);
-
+  public static String path="/tmp";
+  
   String name;
   private VideoWriter save;
   private Size frameSize;
   private double fps;
-  String path;
+
   boolean started;
   boolean isColor;
-  public static String exts[]= {"mov","avi","mpg"};
-  String ext="avi";
+  public static String exts[]= {".mov",".avi",".mpg"};
+  String ext=".avi";
   public static String FOURCCs[]= { "AVC1", "FMP4", "H264", "JPEG","MJPG",  "MP4V","X264","XVID" };
-  String FOURCC="mp4v";
+  public static String FOURCC="mp4v";
   
   /**
    * construct me
@@ -45,12 +46,25 @@ public class VideoRecorder {
     this.frameSize=frameSize;
     this.isColor=isColor;
     int fourcc = VideoWriter.fourcc(FOURCC.charAt(0), FOURCC.charAt(1), FOURCC.charAt(2), FOURCC.charAt(3)); 
-    Date now = new Date();
-    String timestamp=dateFormat.format(now);
-    path=String.format("/tmp/%s_%s_%s.%s", name,FOURCC,timestamp,ext);
-    save = new VideoWriter(path,fourcc, this.fps, this.frameSize, isColor);
+    String videopath=filePath(name+"_"+FOURCC,ext);
+    save = new VideoWriter(videopath,fourcc, this.fps, this.frameSize, isColor);
     started=true;
   }
+  
+  
+  /**
+   * get a filePath for the given name and extension by adding a timeStamp
+   * @param name
+   * @param ext
+   * @return - the filePath
+   */
+  public static String filePath(String name, String ext) {
+    Date now = new Date();
+    String timestamp=dateFormat.format(now);
+    String filepath=String.format("%s/%s_%s%s", path,name,timestamp,ext);
+    return filepath;
+  }
+  
   
   /**
    * stop the recording

@@ -15,6 +15,7 @@ import org.opencv.core.MatOfByte;
 import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import org.rcdukes.common.Environment;
 import org.rcdukes.geometry.Line;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,7 +124,7 @@ public class ImageUtils {
     return bytes;
   }
   
-  String path="/tmp/";
+  String path=Environment.dukesHome+"media";
   String filePrefix="dukes";
   
   public ImageUtils() {
@@ -139,9 +140,23 @@ public class ImageUtils {
     this.filePrefix=filePrefix;
   }
  
+  /**
+   * write an Image
+   * @param img
+   * @param name
+   */
   public void writeImage(Mat img, String name) {
     String fileName = filePrefix.replace(".", "-")+ name;
-    Imgcodecs.imwrite(path + fileName, img);
+    writeImageToFilepath(img,path + fileName);
+  }
+  
+  /**
+   * write the given image to the given filepath
+   * @param img
+   * @param filepath
+   */
+  public static void writeImageToFilepath(Mat img,String filepath) {  
+    Imgcodecs.imwrite(filepath, img);
   }
   
   /**

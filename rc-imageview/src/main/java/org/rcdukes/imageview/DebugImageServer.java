@@ -1,5 +1,6 @@
 package org.rcdukes.imageview;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.opencv.imgproc.Imgproc;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.Environment;
 import org.rcdukes.common.Events;
 import org.rcdukes.detect.Detector;
 import org.rcdukes.video.Image;
@@ -59,6 +61,9 @@ public class DebugImageServer extends DukesVerticle {
   public void start(Future<Void> startFuture) throws Exception {
     super.preStart();
     // @TODO - get config information from config Verticle (or shared data ...)
+    File mediaPath=new File(Environment.dukesHome+"media");
+    mediaPath.mkdirs();
+    VideoRecorder.path=mediaPath.getPath();
     int port = Config.getEnvironment().getInteger(Config.IMAGEVIEW_PORT);
     server = vertx.createHttpServer().requestHandler(this::sendImage);
     // Now bind the server:
@@ -67,6 +72,7 @@ public class DebugImageServer extends DukesVerticle {
         startFuture.complete();
         consumer(Events.START_RECORDING, x -> startRecording());
         consumer(Events.STOP_RECORDING, x -> stopRecording());
+        consumer(Events.PHOTO_SHOOT,x->shootPhoto());
         super.postStart();
         String msg = String.format(
             "web server on port %d serving debug images in %s format", port,
@@ -88,6 +94,19 @@ public class DebugImageServer extends DukesVerticle {
     for (ImageType imageType : ImageType.values()) {
       VideoRecorder recorder = new VideoRecorder(imageType.name(), fps);
       recorders.put(imageType, recorder);
+    }
+  }
+  
+  /**
+   * create a single shot video
+   */
+  protected void shootPhoto() {
+    ImageCollector imageCollector = Detector.getImageCollector();
+    for (ImageType imageType : ImageType.values()) {
+      String filepath=VideoRecorder.filePath(imageType.name(), ".jpg");
+      Image image=imageCollector.getImage(imageType, false);
+      if (image!=null)
+        ImageUtils.writeImageToFilepath(image.getFrame(), filepath);
     }
   }
 
