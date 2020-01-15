@@ -2,11 +2,16 @@ package org.rcdukes.video;
 
 import static org.rcdukes.video.PointMapper.toPoint;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Objects;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -16,6 +21,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.rcdukes.common.Environment;
+import org.rcdukes.error.ErrorHandler;
 import org.rcdukes.geometry.Line;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,6 +92,23 @@ public class ImageUtils {
       mat = Imgcodecs.imdecode(new MatOfByte(bytes),
         Imgcodecs.CV_LOAD_IMAGE_UNCHANGED);
     return mat;
+  }
+  
+  /**
+   * convert the given buffered Image to a byte array
+   * @param image
+   * @return - the byte array
+   */
+  public static byte[] bufferedImage2ImageBytes(BufferedImage image, String ext) {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    ext=ext.replace(".", "");
+    try {
+      ImageIO.write(image, ext, baos);
+    } catch (IOException e) {
+      ErrorHandler.getInstance().handle(e);
+    }
+    byte[] bytes = baos.toByteArray();
+    return bytes;
   }
 
   /**

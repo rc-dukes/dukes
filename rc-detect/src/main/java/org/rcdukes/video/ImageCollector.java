@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ImageCollector {
   public static enum ImageType {
-    camera, edges, birdseye, lines, startlight, mask, morph
+    camera, edges, birdseye, lines, startlight, mask, morph, simulator
   }
 
   protected static final Logger LOG = LoggerFactory
@@ -30,7 +30,8 @@ public class ImageCollector {
       "images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3",
       "images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3",
       "images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3",
-      "images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3" };
+      "images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3",
+      "images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3"};
 
   /**
    * supply a default testImage

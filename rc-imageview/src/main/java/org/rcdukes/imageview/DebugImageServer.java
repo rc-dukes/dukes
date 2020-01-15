@@ -1,10 +1,16 @@
 package org.rcdukes.imageview;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.imageio.ImageIO;
+import javax.xml.bind.DatatypeConverter;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -17,6 +23,7 @@ import org.rcdukes.common.DukesVerticle;
 import org.rcdukes.common.Environment;
 import org.rcdukes.common.Events;
 import org.rcdukes.detect.Detector;
+import org.rcdukes.error.ErrorHandler;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageCollector.ImageType;
@@ -25,6 +32,7 @@ import org.rcdukes.video.ImageUtils.CVColor;
 
 import io.vertx.core.Future;
 import io.vertx.rxjava.core.buffer.Buffer;
+import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.http.HttpServer;
 import io.vertx.rxjava.core.http.HttpServerRequest;
 import io.vertx.rxjava.core.http.HttpServerResponse;
@@ -72,6 +80,7 @@ public class DebugImageServer extends DukesVerticle {
         startFuture.complete();
         consumer(Events.START_RECORDING, x -> startRecording());
         consumer(Events.STOP_RECORDING, x -> stopRecording());
+        consumer(Events.SIMULATOR_IMAGE, this::receiveSimulatorImage);
         consumer(Events.PHOTO_SHOOT,x->shootPhoto());
         super.postStart();
         String msg = String.format(
@@ -82,7 +91,38 @@ public class DebugImageServer extends DukesVerticle {
         startFuture.fail(res.cause());
       }
     });
-
+  }
+  
+  /**
+   * receive an image from the simulator
+   */
+  protected void receiveSimulatorImage(Message<String> message) {
+    String imgData = message.body(); // in DataURL format ...
+    // https://stackoverflow.com/a/34424596/1497139
+    imgData=imgData.substring(imgData.indexOf(",") + 1);
+    // FIXME - read from data url;
+    String ext="jpg";
+    byte[] imageEncodedBytes = DatatypeConverter.parseBase64Binary(imgData);
+    try {
+      BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageEncodedBytes));
+      ImageCollector imageCollector = Detector.getImageCollector();
+      byte[] imageBytes = ImageUtils.bufferedImage2ImageBytes(image, ext);
+      Mat imageMat=ImageUtils.imageBytes2Mat(imageBytes);
+      imageCollector.addImage(imageMat, ImageType.simulator);
+    } catch (IOException e) {
+      ErrorHandler.getInstance().handle(e);
+    }
+  }
+  
+  /**
+   * // @FIXME - still too hacky - need an Observable here
+   * @param imageType
+   * @return
+   */
+  public Image getNextImage(ImageType imageType) {
+    ImageCollector imageCollector = Detector.getImageCollector();
+    Image image = imageCollector.getImage(imageType, false);
+    return image;
   }
 
   Map<ImageType, VideoRecorder> recorders = new HashMap<ImageType, VideoRecorder>();
@@ -149,10 +189,8 @@ public class DebugImageServer extends DukesVerticle {
    * @param imageType
    */
   public void sendSingleImage(HttpServerRequest request, ImageType imageType) {
-    ImageCollector collector = Detector.getImageCollector();
-    Image image = null;
     Mat mat = null;
-    image = collector.getImage(imageType, true);
+    Image image=this.getNextImage(imageType);
     if (image != null) {
       mat = image.getFrame();
       this.sendImageBytes(request, image.getImageBytes());
@@ -200,6 +238,7 @@ public class DebugImageServer extends DukesVerticle {
     Thread streamThread = new Thread(multipartStreamer);
     streamThread.start();
   }
+  
   static int streamCounter = 0;
   /**
    * Streamer for multipart images
@@ -250,9 +289,7 @@ public class DebugImageServer extends DukesVerticle {
       String contentType = contentTypes[imageFormat.ordinal()];
       response.write("Content-Type: " + contentType + crlf);
       response.write(crlf);
-      // @FIXME - still too hacky - need an Observable here
-      ImageCollector imageCollector = Detector.getImageCollector();
-      Image image = imageCollector.getImage(imageType, false);
+      Image image=DebugImageServer.this.getNextImage(imageType);
       if (image != null) {
         Mat frame = image.getFrame().clone();
         addImageInfo(frame, image);
