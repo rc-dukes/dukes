@@ -20,11 +20,7 @@ import org.rcdukes.video.ImageCollector.ImageType;
  * @author wf
  *
  */
-public class TestVideoRecorder {
-  @BeforeClass
-  public static void setup() throws Exception {
-    NativeLibrary.load();
-  }
+public class TestVideoRecorder extends OpenCVBasedTest {
   
 
   @Test

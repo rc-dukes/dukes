@@ -22,7 +22,7 @@ import org.rcdukes.common.Environment;
  * @author wf
  *
  */
-public class TestDebugImageServer {
+public class TestDebugImageServer extends OpenCVBasedTest {
   private ClusterStarter clusterStarter;
   private DebugImageServer imageServer;
   int TIME_OUT=20000;
