@@ -42,6 +42,7 @@ import io.vertx.rxjava.core.http.HttpServerResponse;
  *
  */
 public class DebugImageServer extends DukesVerticle {
+  public static boolean SERVE_TEST_IMAGES=false;
 
   /**
    * construct me with my character information
@@ -121,7 +122,7 @@ public class DebugImageServer extends DukesVerticle {
    */
   public Image getNextImage(ImageType imageType) {
     ImageCollector imageCollector = Detector.getImageCollector();
-    Image image = imageCollector.getImage(imageType, false);
+    Image image = imageCollector.getImage(imageType, SERVE_TEST_IMAGES);
     return image;
   }
 

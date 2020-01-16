@@ -35,6 +35,7 @@ public class TestDebugImageServer extends OpenCVBasedTest {
     imageServer.waitStatus(Status.started,TIME_OUT,10);
     assertNotNull(imageServer.deploymentID());
   }
+  
   @Test
   public void testDebugImageServerStart() throws Exception {
     startImageServer();
@@ -45,6 +46,7 @@ public class TestDebugImageServer extends OpenCVBasedTest {
   @Test
   public void testTestImage() throws Exception {
     startImageServer();
+    DebugImageServer.SERVE_TEST_IMAGES=true;
     // @TODO Make configurable
     String url="http://localhost:8081";
     AsyncHttpClient asyncHttpClient = asyncHttpClient();
