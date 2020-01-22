@@ -644,7 +644,7 @@ function onSlideCam(sliderId, textbox, configKey) {
 function updateCamConfig(elementId, configKey) {
 	var configValue = document.getElementById(elementId).value;
 	// FIXME - this should not be hardcoded
-	var url = 'http://pibeewifi/html/cmd_pipe.php?cmd=' + configKey + '%20'
+	var url = 'http://picaro/html/cmd_pipe.php?cmd=' + configKey + '%20'
 			+ configValue;
 
 	var ajax_cmd = new XMLHttpRequest();
