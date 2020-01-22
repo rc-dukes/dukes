@@ -56,6 +56,7 @@ public class Config {
   public static final String POSITION_LEFT = "left";
   public static final String POSITION_RIGHT = "right";
   public static final String POSITION_CENTER = "center";
+  public static final String SERVO_COMMAND = "servo.command";
 
   /**
    * configure the logging

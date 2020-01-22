@@ -1,5 +1,5 @@
   /**
    * org.rcdukes.car is part of the rc-drivecontrol module
-   * @TODO - add description
+   * it controls the servos for the vehicle e.g. Motor and Steering
    */
   package org.rcdukes.car;

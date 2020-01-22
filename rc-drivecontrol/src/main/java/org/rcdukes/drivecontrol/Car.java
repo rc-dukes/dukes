@@ -1,10 +1,14 @@
 package org.rcdukes.drivecontrol;
 
+import org.rcdukes.car.AdaFruit;
 import org.rcdukes.car.Engine;
 import org.rcdukes.car.Led;
 import org.rcdukes.car.ServoBlaster;
 import org.rcdukes.car.ServoCommand;
 import org.rcdukes.car.Steering;
+import org.rcdukes.common.Config;
+import org.rcdukes.common.Environment;
+import org.rcdukes.error.ErrorHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +17,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Car {
   private static final Logger LOG = LoggerFactory.getLogger(Car.class);
-  public static ServoCommand servoCommand=null;
+  public static ServoCommand servoCommand = null;
   private boolean powerIsOn = false;
   Engine engine;
   Steering steering;
@@ -24,12 +28,31 @@ public class Car {
    */
   private Car() {
     // if nobody configured the servoCommand
-    // then we'll use the default ServoBlaster
-    if (servoCommand==null) 
-      servoCommand = new ServoBlaster();
-    engine=new Engine(this,new EngineMap(servoCommand));
-    steering=new Steering(this,new SteeringMap(servoCommand));
-    led=new Led(new LedMap(servoCommand));
+    // then we'll use the ServoBlaster
+    if (servoCommand == null) {
+      Environment env = Config.getEnvironment();
+      String servo_CommandConfig="servoblaster";
+      try {
+        servo_CommandConfig = env.getString(Config.SERVO_COMMAND);
+      } catch (Exception e) {
+        ErrorHandler.getInstance().handle(e);
+      }
+      switch (servo_CommandConfig) {
+      case "adafruit":
+        try {
+          servoCommand=new AdaFruit();
+          LOG.info("using AdaFruit ServoCommand handling");
+        } catch (Exception e) {
+          ErrorHandler.getInstance().handle(e);
+        }
+        break;
+      default:
+        servoCommand = new ServoBlaster();
+      }
+    }
+    engine = new Engine(this, new EngineMap(servoCommand));
+    steering = new Steering(this, new SteeringMap(servoCommand));
+    led = new Led(new LedMap(servoCommand));
   }
 
   /**
@@ -45,7 +68,7 @@ public class Car {
     this.steering = steering;
     this.led = led;
   }
-  
+
   /**
    * set the power on
    */
@@ -91,25 +114,26 @@ public class Car {
   public Steering getSteering() {
     return steering;
   }
-  
+
   public Led getLed() {
     return led;
   }
-  
-  private static Car instance=null;
-  
+
+  private static Car instance = null;
+
   /**
    * get the car instance
+   * 
    * @return - the car instance
    */
   public static Car getInstance() {
-    if (instance==null)
-      instance=new Car();
+    if (instance == null)
+      instance = new Car();
     return instance;
   }
 
   public static void resetInstance() {
-    instance=null;
+    instance = null;
   }
-  
+
 }

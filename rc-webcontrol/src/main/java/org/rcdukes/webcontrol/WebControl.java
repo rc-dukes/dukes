@@ -34,13 +34,13 @@ public class WebControl extends DukesVerticle {
     options.addOutboundPermitted(new PermittedOptions().setAddressRegex(".*"));
     options.addInboundPermitted(new PermittedOptions().setAddressRegex(".*"));
     // upto 3.7.1
-    router.route("/eventbus/*")
-        .handler(SockJSHandler.create(vertx).bridge(options));
+    // router.route("/eventbus/*")
+    //    .handler(SockJSHandler.create(vertx).bridge(options));
     // 3.8.2 up
     // https://github.com/vert-x3/wiki/wiki/3.8.2-Deprecations-and-breaking-changes#sockjshandler-changes
     // https://stackoverflow.com/questions/58940327/vert-x-sockjshandler-class
-    // router.mountSubRouter("/eventbus",
-    // SockJSHandler.create(vertx).bridge(options));
+    router.mountSubRouter("/eventbus",
+    SockJSHandler.create(vertx).bridge(options));
     // @TODO decide about sse support for configuration
     // router.route("/configsse/*")
     router.route()
