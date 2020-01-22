@@ -1,0 +1,16 @@
+#!/bin/bash
+# WF 2020-01-22
+# test servo with AdaFruit from commandline
+jar=target/rc-drivecontrol-0.0.2.jar
+cp=$jar
+m2rep=$HOME/.m2/repository
+for pkg in com/pi4j args4j  org/slf4j/slf4j-api/1.7.16
+do
+  for jar in $(find $m2rep/$pkg/ -name *.jar)
+  do
+    echo $jar
+    cp="$cp:$jar"
+  done
+done
+echo $cp
+java -cp $cp org.rcdukes.car.AdaFruit $@
