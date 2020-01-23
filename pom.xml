@@ -111,6 +111,7 @@
 		<args4j.version>2.33</args4j.version>
 		<!-- asynchttpclient -->
 		<asynchttpclient.version>2.10.4</asynchttpclient.version>
+		<rxjava-string.version>1.1.1</rxjava-string.version>
 		<commonslang3.version>3.9</commonslang3.version>
 		<!-- other settings -->
 		<main_dir>${project.parent.relativePath}/..</main_dir>
@@ -207,6 +208,12 @@
 				<groupId>org.asynchttpclient</groupId>
 				<artifactId>async-http-client-extras-rxjava2</artifactId>
 				<version>${asynchttpclient.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/io.reactivex/rxjava-string -->
+			<dependency>
+			    <groupId>io.reactivex</groupId>
+			    <artifactId>rxjava-string</artifactId>
+			    <version>${rxjava-string.version}</version>
 			</dependency>
 			<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
 			<dependency>

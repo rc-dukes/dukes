@@ -17,6 +17,12 @@
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-rx-java</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.reactivex/rxjava-string -->
+		<dependency>
+				<groupId>io.reactivex</groupId>
+				<artifactId>rxjava-string</artifactId>
+				<version>${rxjava-string.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>nl.vaneijndhoven.dukes</groupId>
 			<artifactId>rc-common</artifactId>
