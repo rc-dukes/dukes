@@ -64,8 +64,8 @@ public class TestDebugImageServer extends OpenCVBasedTest {
   public void testMJpegStream() throws Exception {
     // Dorf Appenzell
     String url="http://213.193.89.202/axis-cgi/mjpg/video.cgi";
-    url="http://localhost:8081?type=simulator&mode=stream";
-    url="http://picarford:8080/?action=stream";
+    //url="http://localhost:8081?type=simulator&mode=stream";
+    //url="http://picarford:8080/?action=stream";
     MJpegHandler mjpegHandler=new MJpegHandler(url);
     MJpegDecoder.debug=true;
     int bufferSize = 1024 * 64; // 64 KByte Buffer
