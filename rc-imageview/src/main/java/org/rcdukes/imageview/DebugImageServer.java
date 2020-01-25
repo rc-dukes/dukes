@@ -287,9 +287,6 @@ public class DebugImageServer extends DukesVerticle {
      * serve the next image
      */
     public void streamNextImage() {
-      String contentType = contentTypes[imageFormat.ordinal()];
-      response.write("Content-Type: " + contentType + crlf);
-      response.write(crlf);
       Image image=DebugImageServer.this.getNextImage(imageType);
       if (image != null) {
         Mat frame = image.getFrame().clone();
@@ -297,13 +294,10 @@ public class DebugImageServer extends DukesVerticle {
         byte[] bytes = ImageUtils.mat2ImageBytes(frame,
             exts[imageFormat.ordinal()]);
         currentData = Buffer.buffer().appendBytes(bytes);
-        recordFrame(frame,imageType);
-      }
-      if (currentData != null) {
-        response.write(currentData);
-        // boundary
-        response.write(crlf);
-        response.write("--" + boundary + crlf);
+        if (currentData!=null) {
+          this.writeMultiPartFrame(currentData);
+          recordFrame(frame,imageType);
+        }
       }
       // 1 image per second
       // @TODO change to emitter to make configurable
@@ -312,6 +306,19 @@ public class DebugImageServer extends DukesVerticle {
       } catch (InterruptedException e) {
         // ...
       }
+    }
+    
+    /**
+     * write a multipart frame
+     * @param imageBytes
+     */
+    public void writeMultiPartFrame(Buffer imageBytes) {
+      String contentType = contentTypes[imageFormat.ordinal()];
+      response.write("--" + boundary + crlf);
+      response.write("Content-Type: " + contentType + crlf);
+      response.write("Content-Length: " + imageBytes.length() + crlf);
+      response.write(crlf);
+      response.write(imageBytes);
     }
 
     public void preamble() {
@@ -325,9 +332,6 @@ public class DebugImageServer extends DukesVerticle {
       response.putHeader("Pragma", "no-cache"); // HTTP 1.0.
       response.putHeader("Expires", "0"); // Proxies.
       response.putHeader("content-type", contentType);
-
-      response.write(crlf);
-      response.write("--" + boundary + crlf);
     }
 
     @Override

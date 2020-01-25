@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.rcdukes.common.ClusterStarter;
 import org.rcdukes.common.DukesVerticle.Status;
 import org.rcdukes.common.Environment;
+import org.rcdukes.detect.ImageFetcher;
 import org.rcdukes.video.ImageUtils;
 
 import javafx.scene.image.Image;
@@ -63,13 +64,24 @@ public class TestDebugImageServer extends OpenCVBasedTest {
   public void testMJpegStream() throws Exception {
     // Dorf Appenzell
     String url="http://213.193.89.202/axis-cgi/mjpg/video.cgi";
-    // url="http://picarford:8090/stream/video.mjpeg";
+    url="http://localhost:8081?type=simulator&mode=stream";
+    url="http://picarford:8080/?action=stream";
     MJpegHandler mjpegHandler=new MJpegHandler(url);
     MJpegDecoder.debug=true;
     int bufferSize = 1024 * 64; // 64 KByte Buffer
     MJpegDecoder mjpegDecoder = mjpegHandler.open(bufferSize);
-    Thread.sleep(2000);
+    Thread.sleep(1000);
     mjpegDecoder.close();
+  }
+  
+  @Test
+  public void testOpenCV() {
+    String url="http://213.193.89.202/axis-cgi/mjpg/video.cgi";
+    ImageFetcher imageFetcher=new ImageFetcher(url);
+    for (int frame=0;frame<=50;frame++) {
+      imageFetcher.fetch();
+    }
+    imageFetcher.close();
   }
   
 }
