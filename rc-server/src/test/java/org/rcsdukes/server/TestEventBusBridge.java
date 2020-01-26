@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.ClusterStarter;
 import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.Environment;
 import org.rcdukes.common.DukesVerticle.Status;
 
 import io.vertx.core.Future;
@@ -57,6 +58,7 @@ public class TestEventBusBridge {
 
   @Test
   public void testEventBusBridge() throws Exception {
+    Environment.mock();
     ClusterStarter starter = new ClusterStarter();
     starter.prepare();
     EchoServer echoVerticle = new EchoServer(Characters.COY);
