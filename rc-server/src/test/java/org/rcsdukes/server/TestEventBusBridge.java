@@ -66,7 +66,8 @@ public class TestEventBusBridge {
     starter.deployVerticles(echoVerticle);
     echoVerticle.waitStatus(Status.started, 15000, 10);
     starter.undeployVerticle(echoVerticle);
-    echoVerticle.waitStatus(Status.stopped, 15000, 10);
+    if (!TestSuite.isTravis())
+      echoVerticle.waitStatus(Status.stopped, 15000, 10);
   }
 
 }
