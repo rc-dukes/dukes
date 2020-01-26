@@ -45,6 +45,10 @@
 			<artifactId>vertx-tcp-eventbus-bridge</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.tinkerpop</groupId>
+			<artifactId>tinkergraph-gremlin</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>nl.vaneijndhoven.dukes</groupId>
 			<artifactId>rc-common</artifactId>
 			<version>0.0.2</version>

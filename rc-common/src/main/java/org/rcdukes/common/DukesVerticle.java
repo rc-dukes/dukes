@@ -27,6 +27,7 @@ public abstract class DukesVerticle extends AbstractVerticle {
     return status;
   }
 
+  public static boolean debug = false;
   protected Characters character;
   protected String deploymentID = null;
 
@@ -79,8 +80,9 @@ public abstract class DukesVerticle extends AbstractVerticle {
    * @param pollTime
    *          - in msec
    * @throws Exception
+   * @return the number of milliseconds the wait took
    */
-  public void waitStatus(Status status, int timeOut, int pollTime)
+  public int waitStatus(Status status, int timeOut, int pollTime)
       throws Exception {
     int leftTime = timeOut;
     while (!this.status.equals(status)) {
@@ -92,6 +94,12 @@ public abstract class DukesVerticle extends AbstractVerticle {
         throw new Exception(msg);
       }
     }
+    if (debug) {
+      String msg = String.format("wait %s success after %d msecs",
+          status.name(), timeOut - leftTime);
+      LOG.info(msg);
+    }
+    return timeOut - leftTime;
   }
 
   /**
@@ -129,21 +137,26 @@ public abstract class DukesVerticle extends AbstractVerticle {
   public void send(Characters receiver, String... nameValues) {
     JsonObject jo = this.toJsonObject(nameValues);
     String address = receiver.getCallsign();
-    send(address,jo);
+    send(address, jo);
   }
-    
+
   /**
    * send the given json object to the given address over the vertx event bus
-   * @param address - the address to send to
-   * @param jo - the JsonObject to send
+   * 
+   * @param address
+   *          - the address to send to
+   * @param jo
+   *          - the JsonObject to send
    */
-  public void send(String address,JsonObject jo)  {
+  public void send(String address, JsonObject jo) {
     getVertx().eventBus().publish(address, jo);
   }
-  
+
   /**
    * get the address for the given event and my Callsigng
-   * @param event - the event
+   * 
+   * @param event
+   *          - the event
    * @return - the address to be used
    */
   public String getEventAddress(Events event) {
@@ -151,15 +164,16 @@ public abstract class DukesVerticle extends AbstractVerticle {
     String address = character.getCallsign() + ":" + event.name();
     return address;
   }
-  
+
   /**
    * send the given even with the given Json Object
+   * 
    * @param event
    * @param jo
    */
-  public void sendEvent(Events event,JsonObject jo) {
+  public void sendEvent(Events event, JsonObject jo) {
     String address = this.getEventAddress(event);
-    send(address,jo);
+    send(address, jo);
   }
 
   /**
@@ -174,13 +188,16 @@ public abstract class DukesVerticle extends AbstractVerticle {
   }
 
   /**
-   * share the data for the given jsonobject under the given key
-   * - if the json 
-   * @param key - the key for the JsonObject
-   * @param jo   the json object
+   * share the data for the given jsonobject under the given key - if the json
+   * 
+   * @param key
+   *          - the key for the JsonObject
+   * @param jo
+   *          the json object
    */
   public void shareData(String key, JsonObject jo) {
-    if (jo==null) return;
+    if (jo == null)
+      return;
     String msg = String.format("sharing %s: %s", key, jo.encodePrettily());
     LOG.info(msg);
     vertx.sharedData().getLocalMap(character.getCallsign()).put(key, jo);
@@ -197,38 +214,41 @@ public abstract class DukesVerticle extends AbstractVerticle {
         .getLocalMap(character.getCallsign()).get(key);
     return jo;
   }
-  
+
   /**
    * get a pojo from the shared data
+   * 
    * @param key
    * @param clazz
    * @return - the pojo
    */
   public <T> T getSharedPojo(String key, Class<T> clazz) {
-    JsonObject jo=getSharedData(key);
-    T result=fromJsonObject(jo,clazz);
+    JsonObject jo = getSharedData(key);
+    T result = fromJsonObject(jo, clazz);
     return result;
   }
-  
-  
+
   /**
    * construct a Pojo from the given JsonObject
-   * @param jo - the JsonObject
-   * @param clazz - the type to use
-   * @return - the mapped instance or a default instance from a no-args constructor if jo is null
+   * 
+   * @param jo
+   *          - the JsonObject
+   * @param clazz
+   *          - the type to use
+   * @return - the mapped instance or a default instance from a no-args
+   *         constructor if jo is null
    */
-  public <T> T fromJsonObject(JsonObject jo,
-      Class<T> clazz)  {
+  public <T> T fromJsonObject(JsonObject jo, Class<T> clazz) {
     T result;
-    if (jo==null) {
+    if (jo == null) {
       try {
-        result=clazz.newInstance();
+        result = clazz.newInstance();
       } catch (InstantiationException | IllegalAccessException e) {
         LOG.trace(e.getMessage());
-        result=null;
+        result = null;
       }
     } else {
-      result=jo.mapTo(clazz);
+      result = jo.mapTo(clazz);
     }
     return result;
   }

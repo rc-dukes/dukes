@@ -8,6 +8,7 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
+import io.vertx.rxjava.core.AbstractVerticle;
 
 /**
  * starter for VertxCluster
@@ -63,12 +64,12 @@ public class ClusterStarter {
   }
 
   /**
-   * deploy the given array of DukesVerticle instances
+   * deploy the given array of verticle instances
    * 
    * @param verticles
    * @throws Exception
    */
-  public void deployVerticles(DukesVerticle... verticles) throws Exception {
+  public void deployVerticles(AbstractVerticle... verticles) throws Exception {
     DeploymentOptions deploymentOptions = this.getDeployMentOptions(true);
     if (vertx == null) {
       this.clusteredVertx(resultHandler -> {
@@ -90,9 +91,9 @@ public class ClusterStarter {
    * @param verticles
    */
   private void deployVerticles(DeploymentOptions deploymentOptions,
-      DukesVerticle[] verticles) {
+      AbstractVerticle[] verticles) {
 
-    for (DukesVerticle verticle : verticles) {
+    for (AbstractVerticle verticle : verticles) {
       try {
         vertx.deployVerticle(verticle, deploymentOptions);
       } catch (Throwable th) {

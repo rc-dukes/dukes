@@ -10,6 +10,7 @@ public enum Characters {
   BOSS_HOGG("webcontrol","Application to provide manual inputs","Little fat buddy","villain, rich, fat, food lover “get them duke boys“","https://dukesofhazzard.fandom.com/wiki/Boss_Hogg_(Sorrell_Booke)"), 
   CLETUS("roi","Region of Interest","Cletus","roscoes sidekick, loves daisy","https://dukesofhazzard.fandom.com/wiki/Cletus_Hogg"),
   COOTER("camera-matrix","CameraMatrix and PerspectiveShift","Crazy Cooter","Mechanic, supports main characters, ”Breaker one, Breaker one, I might be crazy but I ain't dumb, Craaaazy Cooter comin' atcha, come on.”","https://dukesofhazzard.fandom.com/wiki/Cooter_Davenport_(Ben_Jones)"), 
+  COY("test","Dummy character to be used in tests","Replacement BO","Unpopular blond haired cousin of BO","https://dukesofhazzard.fandom.com/wiki/Coy_Duke"),
   DAISY("detect","Detectors - e.g. Lane and StartLight", "Bo Peep","sister of main characters, pretty, gathers intel","https://en.wikipedia.org/wiki/Daisy_Duke"), 
   ENOS("geometry","Dipstick","Geometry","roscoes sidekick, loves daisy, helps the dukes","https://dukesofhazzard.fandom.com/wiki/Enos_Strate_(Sonny_Shroyer)"), 
   FLASH("watchdog","Heartbeat controller watchdog","Velvet ears","Roscoes dog","https://dukesofhazzard.fandom.com/wiki/Flash"), 

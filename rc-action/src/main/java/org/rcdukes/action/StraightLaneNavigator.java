@@ -60,7 +60,7 @@ public class StraightLaneNavigator {
   }
 
   public Observable<JsonObject> navigate(JsonObject laneDetectResult) {
-    return processLane(laneDetectResult).onErrorResumeNext(throwable -> {
+    return processLane(fromJsonObject(laneDetectResult)).onErrorResumeNext(throwable -> {
       // Convert No Lines Detected situation into stop command.
       if (throwable instanceof NoLinesDetected) {
         emergencyStopActivated = true;
@@ -87,14 +87,13 @@ public class StraightLaneNavigator {
   /**
    * process the laneDetectResult
    * 
-   * @param laneDetectResult
-   * @return
+   * @param ldr - the lane detection result
+   * @return - a message to be sent to the vehicle
    * @throws NoLinesDetected
    */
-  private Observable<JsonObject> processLane(JsonObject jo)
+  private Observable<JsonObject> processLane(LaneDetectionResult ldr)
       throws NoLinesDetected {
     long currentTime = System.currentTimeMillis();
-    LaneDetectionResult ldr = fromJsonObject(jo);
 
     verifyAngleFound(ldr.angle, currentTime);
 
@@ -138,17 +137,27 @@ public class StraightLaneNavigator {
       tsLastCommand = currentTime;
       lastRudderPercentageSent = rudderPercentage;
       previousAngle = ldr.angle;
-      String rudderPos = String.format(Locale.ENGLISH, "%3.1f",
-          rudderPercentage);
-      JsonObject message = new JsonObject().put("type", "servoDirect")
-          .put("position", rudderPos);
-      String debugMsg = String.format("sending servoDirect position %3.1f",
-          rudderPercentage);
-      LOG.debug(debugMsg);
+      JsonObject message=steerCommand(rudderPercentage);
       return just(message);
     }
 
     return Observable.empty();
+  }
+  
+  /**
+   * get the command to steer the vehicle
+   * @param rudderPercentage
+   * @return - the command message
+   */
+  public JsonObject steerCommand( Double rudderPercentage) {
+    String rudderPos = String.format(Locale.ENGLISH, "%3.1f",
+        rudderPercentage);
+    JsonObject message = new JsonObject().put("type", "servoDirect")
+        .put("position", rudderPos);
+    String debugMsg = String.format("sending servoDirect position %3.1f",
+        rudderPercentage);
+    LOG.debug(debugMsg);
+    return message;
   }
 
   /// TODO rewrite to throw exception so calling class can act on specific error

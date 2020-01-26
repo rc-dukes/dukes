@@ -19,6 +19,10 @@ public class LaneDetectionResult {
   public Double distanceToStoppingZoneEnd;
   public Lane lane;
 
+  /**
+   * convert me to a Map
+   * @return a map with my values
+   */
   public Map<String, Object> toMap() {
     Map<String, Object> map = new HashMap<String, Object>();
     map.put("lane", lane);
