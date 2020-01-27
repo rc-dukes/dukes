@@ -12,6 +12,11 @@ import org.asynchttpclient.Response;
 import org.asynchttpclient.handler.BodyDeferringAsyncHandler;
 import org.asynchttpclient.handler.BodyDeferringAsyncHandler.BodyDeferringInputStream;
 
+/**
+ * handler for MJPeg Streams
+ * @author wf
+ *
+ */
 public class MJpegHandler {
 
   AsyncHttpClient asyncHttpClient;
