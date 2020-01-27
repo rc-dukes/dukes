@@ -29,6 +29,8 @@ public class CarServer extends DukesVerticle {
 
   @Override
   public void start() throws Exception {
+    // see https://stackoverflow.com/questions/59907813/how-to-filter-opencv-error-messages-in-java
+    NativeLibrary.logStdErr();
     NativeLibrary.load();
     super.preStart();
     DukesVerticle[] verticles = { new WebControl(), new DebugImageServer(),

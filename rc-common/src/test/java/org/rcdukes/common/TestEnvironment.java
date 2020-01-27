@@ -14,6 +14,8 @@ import org.junit.Test;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.Environment;
 
+import io.vertx.core.json.JsonObject;
+
 /**
  * test the Environment
  * 
@@ -82,6 +84,14 @@ public class TestEnvironment {
     assertTrue(ips.size()>1);
     //for (String ip:ips)
     //  System.out.println(ip);
+  }
+  
+  @Test
+  public void testMock() throws Exception {
+    Environment.mock();
+    JsonObject jo = Environment.getInstance().asJsonObject();
+    String json=jo.toString();
+    System.out.println(json);
   }
 
 }
