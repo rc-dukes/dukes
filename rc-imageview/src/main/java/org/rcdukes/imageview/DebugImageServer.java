@@ -235,5 +235,4 @@ public class DebugImageServer extends DukesVerticle {
     streamThread.start();
   }
   
-  static int streamCounter = 0;
 }

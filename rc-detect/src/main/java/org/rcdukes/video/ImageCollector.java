@@ -1,13 +1,19 @@
 package org.rcdukes.video;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+
 
 /**
  * a set of images to be used for display/debugging
@@ -22,6 +28,7 @@ public class ImageCollector {
 
   private Map<ImageType, Image> images = new HashMap<ImageType, Image>();
   private static Map<ImageType, Image> testImages = new HashMap<ImageType, Image>();
+  private Map<ImageType, List<ObservableEmitter<Image>>> emitterMap=new HashMap<ImageType,List<ObservableEmitter<Image>>>();
   private String ext;
   public static String[] testImagePaths = {
       "images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3",
@@ -31,7 +38,7 @@ public class ImageCollector {
       "images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3",
       "images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3",
       "images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3",
-      "images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3"};
+      "images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3" };
 
   /**
    * supply a default testImage
@@ -44,8 +51,9 @@ public class ImageCollector {
       try {
         byte[] testImageBytes = IOUtils.toByteArray(this.getClass()
             .getClassLoader().getResourceAsStream(testImagePath));
-        Mat frame=ImageUtils.imageBytes2Mat(testImageBytes);
-        Image image = new Image(frame,imageType.name(),0,System.currentTimeMillis());
+        Mat frame = ImageUtils.imageBytes2Mat(testImageBytes);
+        Image image = new Image(frame, imageType.name(), 0,
+            System.currentTimeMillis());
         testImages.put(imageType, image);
       } catch (IOException e) {
         LOG.trace(e.getMessage());
@@ -109,15 +117,21 @@ public class ImageCollector {
     this.addImage(image, imageType);
     return image;
   }
-   
+
   /**
    * add the given image with the given Image type
+   * 
    * @param image
    * @param imageType
    * @return
    */
-  public Image addImage(Image image,ImageType imageType) {  
+  public Image addImage(Image image, ImageType imageType) {
     images.put(imageType, image);
+    if (this.emitterMap.containsKey(imageType)) {
+      List<ObservableEmitter<Image>> emitterList = emitterMap.get(imageType);
+      for (ObservableEmitter<Image> emitter:emitterList)
+        emitter.onNext(image);
+    }
     return image;
   }
 
@@ -130,17 +144,36 @@ public class ImageCollector {
 
   /**
    * get the image for the given imageType
+   * 
    * @param imageType
-   * @param failSafe - if true return a test Image if the image is not available
+   * @param failSafe
+   *          - if true return a test Image if the image is not available
    * @return the Image
    */
   public Image getImage(ImageType imageType, boolean failSafe) {
-    Image image=null;
+    Image image = null;
     if (images.containsKey(imageType))
-      image =images.get(imageType);
-    if (image==null && failSafe)
-      image=testImages.get(imageType);
+      image = images.get(imageType);
+    if (image == null && failSafe)
+      image = testImages.get(imageType);
     return image;
+  }
+  
+  
+  /**
+   * create an observable for the given Image type
+   * @param imageType
+   * @return the observable
+   */
+  public Observable<Image> createObservable(ImageType imageType) {
+    Observable<Image> imageObservable=Observable.create(emitter->{
+       if (!emitterMap.containsKey(imageType)) {
+         emitterMap.put(imageType, new ArrayList<ObservableEmitter<Image>>());
+       }
+       List<ObservableEmitter<Image>> emitterList = emitterMap.get(imageType);
+       emitterList.add(emitter);     
+    });
+    return imageObservable;
   }
 
 }

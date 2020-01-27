@@ -30,7 +30,8 @@ public class MultipartStreamer implements Runnable {
   private ImageType imageType;
   String boundary = "frame";
   private Buffer currentData;
-
+  static int streamCounter = 0;
+  
   /**
    * create a MultipartStream for the given imageType
    * 
@@ -114,7 +115,7 @@ public class MultipartStreamer implements Runnable {
 
   @Override
   public void run() {
-    int streamIndex = ++DebugImageServer.streamCounter;
+    int streamIndex = ++streamCounter;
     System.out.println("Starting image stream " + streamIndex);
     preamble();
     running = true;
