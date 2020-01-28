@@ -24,7 +24,7 @@ public class TestCar {
 
 	public static Car getCar() throws Exception {
 		// Let's fake a car instance with some properties
-		Environment.propFilePath = "../rc-drivecontrol/src/test/resources/dukes/dukes.ini";
+		Environment.mock();
 		Environment env = Config.getEnvironment();
 		assertEquals("pi.doe.com", env.getString(Config.REMOTECAR_HOST));
 		// Let's fake a ServoCommand

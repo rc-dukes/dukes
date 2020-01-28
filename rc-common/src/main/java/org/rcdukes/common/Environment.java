@@ -32,7 +32,7 @@ public class Environment {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Environment.class);
   public static String dukesHome= System.getProperty("user.home") + "/.dukes/";
-	public static String propFilePath =dukesHome+"dukes.ini";;
+	public String propFilePath =dukesHome+"dukes.ini";
 
 	private static Environment instance;
 	private boolean runningOnRaspberryPi;
@@ -87,9 +87,18 @@ public class Environment {
 		return osRelease != null && osRelease.contains("Raspbian");
 	}
 
-	// do not instantiate
+	// do not externally instantiate with out params
 	private Environment() {
 		runningOnRaspberryPi = isPi(); // getMyIpAddresses().contains(RASPBERRY_PI_IP);
+	}
+	
+	/**
+	 * configure me from the given propertyFile Path
+	 * @param propFilePath
+	 */
+	public Environment(String propFilePath) {
+	  this();
+	  this.propFilePath=propFilePath;
 	}
 
 	/**
@@ -114,11 +123,11 @@ public class Environment {
 	}
 
 	/**
-	 * get the properties
+	 * get the properties from the given path
 	 * 
-	 * @return - the properties
-	 * @throws Exception
-	 *             if propfile can't be read
+   * @return - the properties
+   * @throws Exception
+   *             if propfile can't be read
 	 */
 	public Properties getProperties() throws Exception {
 		if (props == null) {
@@ -201,8 +210,9 @@ public class Environment {
 
   public static void mock() {
     // Let's fake a configuration
-    Environment.propFilePath = "../rc-drivecontrol/src/test/resources/dukes/dukes.ini";
     Environment.reset();
+    Environment env = Environment.getInstance();
+    env.propFilePath = "../rc-drivecontrol/src/test/resources/dukes/dukes.ini";
   }
 
 }

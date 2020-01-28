@@ -106,7 +106,7 @@
 		<junit.version>4.12</junit.version>
 		<commons-io.version>2.6</commons-io.version>
 		<!-- Gremlin/Tinkerpop -->
-		<tinkerpop.version>3.3.1</tinkerpop.version>
+		<tinkerpop.version>3.4.4</tinkerpop.version>
 		<!-- args4j command line parser -->
 		<args4j.version>2.33</args4j.version>
 		<!-- asynchttpclient -->
@@ -190,6 +190,12 @@
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
 				<version>${commons-io.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.apache.tinkerpop/gremlin-core -->
+			<dependency>
+				<groupId>org.apache.tinkerpop</groupId>
+				<artifactId>gremlin-core</artifactId>
+				<version>${tinkerpop.version}</version>
 			</dependency>
 			<!-- in memory graph database -->
 			<dependency>
