@@ -13,7 +13,7 @@ public class TestCar {
     int TIME_OUT=40000;
     Environment.mock();
     ClusterStarter clusterStarter=new ClusterStarter();
-    CarVerticle carVerticle = new CarVerticle();
+    CarVerticle carVerticle = new CarVerticle("localhost");
     clusterStarter.deployVerticles(carVerticle);
     carVerticle.waitStatus(Status.started,TIME_OUT,10);
     if (!TestSuite.isTravis()) {

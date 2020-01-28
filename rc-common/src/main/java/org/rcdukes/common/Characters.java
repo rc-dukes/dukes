@@ -14,6 +14,7 @@ public enum Characters {
   DAISY("detect","Detectors - e.g. Lane and StartLight", "Bo Peep","sister of main characters, pretty, gathers intel","https://en.wikipedia.org/wiki/Daisy_Duke"), 
   ENOS("geometry","Dipstick","Geometry","roscoes sidekick, loves daisy, helps the dukes","https://dukesofhazzard.fandom.com/wiki/Enos_Strate_(Sonny_Shroyer)"), 
   FLASH("watchdog","Heartbeat controller watchdog","Velvet ears","Roscoes dog","https://dukesofhazzard.fandom.com/wiki/Flash"), 
+  GENERAL_LEE("remotecar","The car to be self driven","Jump again","The 1969 Dodge charger car","https://en.wikipedia.org/wiki/General_Lee_(car)"),
   LUKE("action","Proc Image analysis results into actions","Lost sheep Luke","main character, sidekick, planner","https://en.wikipedia.org/wiki/Luke_Duke"), 
   ROSCO("imageview","lane detection debug image web server","Red Dog","comical sheriff, chasing, illegal speed traps, “hot pursuit“","https://dukesofhazzard.fandom.com/wiki/Rosco_Purvis_Coltrane_(James_Best)"), 
   UNCLE_JESSE("app","JavaFX app to monitor the car","Shepherd"," guardian of main characters, wise man","https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Jesse");

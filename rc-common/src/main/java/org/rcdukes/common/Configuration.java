@@ -1,6 +1,9 @@
 package org.rcdukes.common;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -59,7 +62,7 @@ public class Configuration {
    * construct me
    */
   public Configuration() {
-    this(Environment.dukesHome + "config" + STORE_EXTENSION,true);
+    this(Environment.dukesHome + "config" + STORE_EXTENSION, true);
   }
 
   /**
@@ -135,10 +138,38 @@ public class Configuration {
     getGraph().traversal().io(graphFile.getPath()).with(IO.writer, STORE_MODE)
         .write().iterate();
   }
-  
+
   public String asString() throws Exception {
-    String text=FileUtils.readFileToString(getGraphFile(), "utf-8");
+    String text = FileUtils.readFileToString(getGraphFile(), "utf-8");
     return text;
+  }
+
+  /**
+   * get the environments
+   * @return
+   * @throws Exception
+   */
+  public Map<String, Environment> getEnvironments()  {
+    Map<String, Environment> envMap = new HashMap<String, Environment>();
+    List<Vertex> envNodes = g().V().has(Config.REMOTECAR_HOST).toList();
+    for (Vertex envNode : envNodes) {
+      Environment env=getEnvironmentFromVertex(envNode);
+      try {
+        envMap.put(env.getString(Config.REMOTECAR_HOST),env);
+      } catch (Exception e) {
+        // bad luck
+      }
+    }
+    return envMap;
+  }
+  
+  public Environment getEnvironmentFromVertex(Vertex v) {
+    Environment env=new Environment(null);
+    env.props=new Properties();
+    for (String key : v.keys()) {
+      env.props.put(key, v.property(key).value());
+    }
+    return env;
   }
 
   /**

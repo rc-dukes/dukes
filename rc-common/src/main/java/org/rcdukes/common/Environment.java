@@ -37,7 +37,7 @@ public class Environment {
 	private static Environment instance;
 	private boolean runningOnRaspberryPi;
 
-	private Properties props;
+	Properties props;
 
 	/**
 	 * read the first line from the given file

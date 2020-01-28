@@ -4,11 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.tinkerpop.gremlin.structure.Vertex;
+import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 import org.junit.Test;
-import org.rcdukes.common.Configuration;
-import org.rcdukes.common.Environment;
 
 /**
  * test the configuration handling
@@ -44,7 +46,10 @@ public class TestConfiguration {
   public void testQuery() throws Exception {
     Configuration config=getMockConfiguration();
     config.write();
-    System.out.println(config.asString());
+    Map<String, Environment> envMap = config.getEnvironments();    
+    assertEquals(1,envMap.size());
+    Environment env = envMap.values().iterator().next();
+    assertEquals("pi.doe.com",env.getString(Config.REMOTECAR_HOST));
     // clean up
     config.getGraphFile().delete();
   }

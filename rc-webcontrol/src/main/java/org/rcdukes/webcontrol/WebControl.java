@@ -57,7 +57,6 @@ public class WebControl extends DukesVerticle {
     httpServerOptions.setMaxWebsocketFrameSize(1024*1024);
     HttpServer server = vertx.createHttpServer(httpServerOptions); 
     server.requestHandler(router).listen(port);
-
     // vertx.eventBus().sendObservable(Characters.DAISY.getCallsign() +
     // "lane.start", new JsonObject().put("source",
     // "file://Users/jpoint/Repositories/opencv-playground/src/main/resources/videos/full_run.mp4"));
