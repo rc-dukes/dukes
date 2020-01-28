@@ -20,13 +20,14 @@ public class TestRemoteCar {
 
   @Test
   public void testRemoteCar() throws Exception {
+    Environment.mock();
     ClusterStarter clusterStarter = new ClusterStarter();
     clusterStarter.prepare();
     RemoteCar remoteCar = new RemoteCar();
     clusterStarter.deployVerticles(remoteCar);
     DukesVerticle.debug=true;
     remoteCar.waitStatus(Status.started, ClusterStarter.MAX_START_TIME, 10);
-    Environment.mock();
+  
     JsonObject configJo=Config.getEnvironment().asJsonObject();
     remoteCar.send(Characters.GENERAL_LEE,configJo);
     Thread.sleep(ClusterStarter.MAX_START_TIME);
