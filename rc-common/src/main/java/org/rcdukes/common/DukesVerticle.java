@@ -136,6 +136,16 @@ public abstract class DukesVerticle extends AbstractVerticle {
    */
   public void send(Characters receiver, String... nameValues) {
     JsonObject jo = this.toJsonObject(nameValues);
+    this.send(receiver, jo);
+  }
+
+  /**
+   * send a message with the given JsonObject to the given receiver
+   * 
+   * @param receiver
+   * @param jo
+   */
+  public void send(Characters receiver, JsonObject jo) {
     String address = receiver.getCallsign();
     send(address, jo);
   }
@@ -153,7 +163,7 @@ public abstract class DukesVerticle extends AbstractVerticle {
   }
 
   /**
-   * get the address for the given event and my Callsigng
+   * get the address for the given event and my Callsign
    * 
    * @param event
    *          - the event
@@ -184,6 +194,16 @@ public abstract class DukesVerticle extends AbstractVerticle {
    */
   public <T> void consumer(Events event, Handler<Message<T>> handler) {
     String address = this.getEventAddress(event);
+    this.consumer(address, handler);
+  }
+
+  /**
+   * enable a consumer to handle the given address
+   * 
+   * @param address
+   * @param handler
+   */
+  public <T> void consumer(String address, Handler<Message<T>> handler) {
     vertx.eventBus().consumer(address, handler);
   }
 

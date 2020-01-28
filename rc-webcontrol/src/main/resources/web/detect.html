@@ -12,7 +12,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="js/sockjs.0.3.4.min.js"></script>
 <script src="js/vertx-eventbus.js"></script>
-<script src="js/dukes.js"></script>
 <!--  Material Design Lite -->
 <script src="md/material.min.js"></script>
 <link rel="stylesheet" href="md/material.min.css">
@@ -57,48 +56,49 @@
 						<tr>
 							<td></td>
 							<td><i id="up" class='mdi mdi-arrow-up-bold mediumicon'
-								title="up/u" onclick="up();"></i></td>
+								title="up/u"></i></td>
 							<td></td>
 							<td><i id="autopilot" class='mdi mdi-car mediumicon'
-								title="autopilot/+" onclick="autopilot();"></i></td>
+								title="autopilot/+"></i></td>
 						</tr>
 						<tr>
 							<td><i id="left" class='mdi mdi-arrow-left-bold mediumicon'
-								title="left/l" onclick="left();"></i></td>
+								title="left/l"></i></td>
 							<td><i id="stop" class='mdi mdi-stop mediumicon'
-								title="stop/space" onclick="stop();"></i></td>
+								title="stop/space"></i></td>
 							<td><i id="right"
 								class='mdi mdi-arrow-right-bold mediumicon' title="right/r"
-								onclick="right();"></i></td>
+								></i></td>
 							<td></td>
 						</tr>
 						<tr>
 							<td></td>
 							<td><i id="down" class='mdi mdi-arrow-down-bold mediumicon'
-								title="down/d" onclick="down();"></i></td>
+								title="down/d"></i></td>
 							<td></td>
 							<td><i id="manual" class='mdi mdi-account mediumicon'
-								title="manual/-" onclick="manual();"></i></td>
+								title="manual/-"></i></td>
 						</tr>
 						<tr>
 							<td><i id="brake" class='mdi mdi-close mediumicon'
-								title="brake/b/s" onclick="brake();"></i></td>
+								title="brake/b/s"></i></td>
 							<td><i id="center"
 								class='mdi mdi-image-filter-center-focus mediumicon'
-								title='center/c/z' onclick="center();"></i></td>
+								title='center/c/z'></i></td>
 							<td></td>
-							<td><i id="power" class='mdi mdi-power mediumicon' title="power/p"
-								onclick="power();"></i></td>
+							<td><i id="power" class='mdi mdi-power mediumicon' title="power/p"></i></td>
 						</tr>
 						<tr>
 							<td><i id="photo" class='mdi mdi-camera mediumicon'
-								title="photo" onclick="photo();"></i></td>
+								title="photo"></i></td>
 							<td><i id="record" class='mdi mdi-record mediumicon'
-								title="record" onclick="record();"></i></td>
+								title="record"></i></td>
 							<td></td>
 							<td></td>
 						</tr>
 					</table>
+					<button id='startCar'>Car</button>
+					<button id='requestConfig'>Config</button>
 				</div>
 				<div class="col-md-4">
 					<img id="cameraImage"> <br> <input
@@ -180,7 +180,7 @@
 									<option
 										value="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg/1280px-4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg">Test-Image</option>
 								</datalist>
-								<button id='reconfigure' onclick="updateConfig();">go</button>
+								<button id='reconfigure'>go</button>
 							</div>
 						</div>
 						<div>
@@ -325,9 +325,6 @@
 		<!--  end of main content box -->
 		<div id='footerbox'></div>
 	</div>
-	<script type="text/javascript">
-		// reset the global event bus variable
-		initDetect();
-	</script>
+	<script type="module" src="js/dukes.js"></script>
 </body>
 </html>

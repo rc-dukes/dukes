@@ -3,12 +3,17 @@ package org.rcdukes.server;
 import org.rcdukes.action.Action;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.ClusterStarter;
+import org.rcdukes.common.Config;
 import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.Events;
 import org.rcdukes.detect.Detector;
 import org.rcdukes.error.ErrorHandler;
 import org.rcdukes.imageview.DebugImageServer;
 import org.rcdukes.opencv.NativeLibrary;
 import org.rcdukes.webcontrol.WebControl;
+
+import io.vertx.core.json.JsonObject;
+import io.vertx.rxjava.core.eventbus.Message;
 
 /**
  * main entry point to start cluster
@@ -33,13 +38,30 @@ public class CarServer extends DukesVerticle {
     NativeLibrary.logStdErr();
     NativeLibrary.load();
     super.preStart();
-    DukesVerticle[] verticles = { new WebControl(), new DebugImageServer(),
-        new Action(), new Detector() };
+    super.consumer(Events.REQUEST_CONFIG, this::requestConfig);
+    super.consumer(this.character.getCallsign(), this::messageHandler);
+    DukesVerticle[] verticles = { new WebControl() };
     starter.deployVerticles(verticles);
     for (DukesVerticle verticle : verticles) {
       verticle.waitStatus(Status.started,TIME_OUT, 10);
     }
     super.postStart();
+  }
+  
+  private void requestConfig(Message<JsonObject> message) {
+    try {
+      JsonObject configJo=Config.getEnvironment().asJsonObject();
+      super.send(Characters.BOSS_HOGG, configJo);
+    } catch (Exception e) {
+      ErrorHandler.getInstance().handle(e);
+    }
+  }
+  
+  private void messageHandler(Message<JsonObject> message) {
+    JsonObject configJo = message.body();
+    System.out.println(configJo);
+    // , new DebugImageServer(),
+    // new Action(), new Detector()
   }
 
   /**

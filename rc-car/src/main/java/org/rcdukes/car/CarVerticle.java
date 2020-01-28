@@ -15,6 +15,10 @@ public class CarVerticle extends DukesVerticle {
 
   private String hostname;
 
+  /**
+   * start the car verticle for the given hostname
+   * @param hostname
+   */
   public CarVerticle(String hostname) {
     super(Characters.BO);
     this.hostname=hostname;

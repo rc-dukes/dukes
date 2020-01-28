@@ -1,11 +1,14 @@
+import Starter from "./starter.js";
 /**
  * rc-dukes webcontrol javascript functions
  */
-
 var eb = null; // we start with an undefined eventbus
 var imageViewUrl = 'http://localhost:8081';
 var cameraFps=5;
-var recording=false;
+var recorder=new Starter('Red Dog','START_RECORDING','STOP_RECORDING','record',publish);
+var carStarter=new Starter('Jump again','START_CAR','STOP_CAR','startCar',publish);
+var configStarter=new Starter('Country music','REQUEST_CONFIG','?','requestConfig',publish);
+
 var manualwithkeys=false;
 var autopiloting=false;
 var streetLane = "images/StreetLane.jpg"; // default Image
@@ -103,7 +106,7 @@ function logMessage(msg,id='events',logLines=logLinesEvent) {
 	}
 
 	var allLogs = '';
-	for (i = 0; i < logLines.length; i++) {
+	for (var  i = 0; i < logLines.length; i++) {
 		allLogs += logLines[i];
 	}
 	elem.innerHTML = allLogs;
@@ -145,7 +148,7 @@ function power() {
 	keyPressed('power');
 	if (powerState) {
 		clearLog("power on");
-		initEventBus(display, true);
+		initEventBus(true);
 		heartBeatInterval = registerHeartBeat();
 		updateConfig();
 	} else {
@@ -243,8 +246,10 @@ function initEventBus(withDetect) {
 		eb.registerHandler("Lost sheep Bo", display); // car
 		eb.registerHandler("Lost sheep Luke", display); // action
 		eb.registerHandler("Bo Peep", display); // detect
+		eb.registerHandler("Country music",display); // car-server
 		eb.registerHandler("Shepherd", display); // app
 		eb.registerHandler("Red Dog", display); // imageview
+		eb.registerHandler("Jump again",display); // remote-car
 		eb.registerHandler("Velvet ears", display); // watchdog
 		eb.registerHandler("Little fat buddy", display); // webcontrol
 		eb.registerHandler("Crazy Cooter", display); // camera-matrix
@@ -417,22 +422,22 @@ function manual() {
 	}
 }
 
-var CALLSIGN_ROSCO = 'Red Dog';
+function startCar() {
+   carStarter.toggle();
+}
+
+function requestConfig() {
+   configStarter.start();
+}
+
 // record video
 function record() {
-	if (!recording) {
-		publish(CALLSIGN_ROSCO + ':START_RECORDING', undefined);
-		setColor("record","red")
-	} else {
-		publish(CALLSIGN_ROSCO + ':STOP_RECORDING', undefined);
-		setColor("record","blue")		
-	}
-	recording=!recording;
+   recorder.toggle();
 }
 
 // create a single photo
 function photo() {
-	publish(CALLSIGN_ROSCO + ':PHOTO_SHOOT', undefined);
+   recorder.send('PHOTO_SHOOT');
 }
 
 function keyPressed(id) {
@@ -472,7 +477,7 @@ function sendSpeedDirectCommand(speed) {
 
 var CALLSIGN_FLASH = "Velvet ears";
 function sendHeartBeat() {
-	data = {
+	var data = {
 		type : 'heartbeat'
 	};
 	publishWithOutLog(CALLSIGN_FLASH, data);
@@ -512,7 +517,7 @@ function updateConfig() {
 	var roih=document.getElementById('roihSlider').value;
 	var roiy=document.getElementById('roiySlider').value;
 	  
-	cameraConfig={}
+	var cameraConfig={}
 	cameraConfig.fps=Number(newCameraFps);
 	cameraConfig.roih=Number(roih);
 	cameraConfig.roiy=Number(roiy);
@@ -526,7 +531,7 @@ function updateConfig() {
 	var cannyConfigThreshold2 = document
 			.getElementById('cannyConfigThreshold2Slider').value;
 
-	cannyConfig = {};
+	var cannyConfig = {};
 	cannyConfig.threshold1 = Number(cannyConfigThreshold1);
 	cannyConfig.threshold2 = Number(cannyConfigThreshold2);
 
@@ -543,7 +548,7 @@ function updateConfig() {
 	var houghConfigMinLineLength = document
 			.getElementById('houghConfigMinLineLengthSlider').value;
 
-	houghConfig = {};
+	var houghConfig = {};
 	houghConfig.rho = Number(houghConfigRho);
 	houghConfig.theta = Number(houghConfigTheta);
 	houghConfig.threshold = Number(houghConfigThreshold);
@@ -651,3 +656,28 @@ function updateCamConfig(elementId, configKey) {
 	ajax_cmd.open("GET", url, true);
 	ajax_cmd.send();
 }
+
+function addHandler(id,func) {
+  var elem = document.getElementById(id);
+  elem.addEventListener('click',func);
+}
+
+// global handling
+// see https://stackoverflow.com/a/53630402/1497139
+initDetect();
+addHandler("power",power);
+addHandler("photo",photo);
+addHandler("record",record);
+addHandler("up",up);
+addHandler("left",left);
+addHandler("right",right);
+addHandler("down",down);
+addHandler("stop",stop);
+addHandler("brake",brake);
+addHandler("center",center);
+addHandler("autopilot",autopilot);
+addHandler("manual",manual);
+addHandler("reconfigure",updateConfig);
+addHandler("requestConfig",requestConfig);
+addHandler("startCar",startCar);
+

@@ -17,7 +17,8 @@ import io.vertx.rxjava.core.AbstractVerticle;
  *
  */
 public class ClusterStarter {
-
+  public static final int MAX_START_TIME = 20000;
+  
   private VertxOptions options;
   private boolean prepared = false;
   private boolean debug = false;
