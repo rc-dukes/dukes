@@ -7,7 +7,6 @@ import org.apache.tinkerpop.gremlin.process.traversal.IO;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
-import org.rcdukes.common.Config;
 import org.rcdukes.common.Environment;
 
 /**
@@ -19,50 +18,77 @@ import org.rcdukes.common.Environment;
 public class Configuration {
 
   private TinkerGraph graph;
-  
+
   public static String STORE_MODE = IO.graphson;
   public static String STORE_EXTENSION = ".json";
-  
+  private String graphFilePath;
+
+  /**
+   * @return the graphFilePath
+   */
+  public String getGraphFilePath() {
+    return graphFilePath;
+  }
+
+  /**
+   * @param graphFilePath
+   *          the graphFilePath to set
+   */
+  public void setGraphFilePath(String graphFilePath) {
+    this.graphFilePath = graphFilePath;
+  }
+
   /**
    * construct me
    */
-  public Configuration() {
+  public Configuration(String graphFilePath, boolean readInis) {
+    this.graphFilePath = graphFilePath;
     setGraph(TinkerGraph.open());
-    File graphFile=getGraphFile();
-    if (graphFile.exists()) {
-      read(graphFile);
-    } else {
+    File graphFile = getGraphFile();
+    if (readInis) {
       fromIni();
       write();
+    } else {
+      if (graphFile.exists()) {
+        read(graphFile);
+      }
     }
   }
-  
+
+  public Configuration() {
+    this(Environment.dukesHome + "config" + STORE_EXTENSION,true);
+  }
+
   /**
    * get my values from the "*.ini" property files in dukesHome
    */
   public void fromIni() {
-    File dukesHome=new File(Environment.dukesHome);
+    File dukesHome = new File(Environment.dukesHome);
     String[] homeFiles = dukesHome.list();
-    for (String homeFile:homeFiles) {
+    for (String homeFile : homeFiles) {
       if (homeFile.endsWith(".ini")) {
-        String iniPath=dukesHome+"/"+homeFile;
-        Environment env=new Environment(iniPath);
-        try {
-          Vertex v = graph.addVertex("config");
-          v.property("inipath",homeFile);
-          Properties lprops = env.getProperties();
-          for (Object keyo:lprops.keySet()) {
-            String key=keyo.toString();
-            String value = lprops.getProperty(key);
-            v.property(key,value);
-          }
-        } catch (Exception e) {
-          // bad luck
-        }
+        String iniPath = dukesHome + "/" + homeFile;
+        Environment env = new Environment(iniPath);
+        this.addEnv(env);
       }
     }
   }
-  
+
+  public void addEnv(Environment env) {
+    try {
+      Vertex v = graph.addVertex("config");
+      v.property("inipath", env.propFilePath);
+      Properties lprops = env.getProperties();
+      for (Object keyo : lprops.keySet()) {
+        String key = keyo.toString();
+        String value = lprops.getProperty(key);
+        v.property(key, value);
+      }
+    } catch (Exception e) {
+      // bad luck
+    }
+  }
+
   public TinkerGraph getGraph() {
     return graph;
   }
@@ -70,21 +96,21 @@ public class Configuration {
   public void setGraph(TinkerGraph graph) {
     this.graph = graph;
   }
-  
+
   public GraphTraversalSource g() {
     return graph.traversal();
   }
-  
+
   /**
    * get the GraphFile
+   * 
    * @return - the GraphFile
    */
-  public static File getGraphFile() {
-    String graphFilePath = Environment.dukesHome + "config" + STORE_EXTENSION;
-    File graphFile = new File(graphFilePath);
+  public File getGraphFile() {
+    File graphFile = new File(getGraphFilePath());
     return graphFile;
   }
-  
+
   /**
    * read my data from the given graphFile
    * 
@@ -92,8 +118,8 @@ public class Configuration {
    */
   public void read(File graphFile) {
     // http://tinkerpop.apache.org/docs/3.4.0/reference/#io-step
-    getGraph().traversal().io(graphFile.getPath()).with(IO.reader, STORE_MODE).read()
-        .iterate();
+    getGraph().traversal().io(graphFile.getPath()).with(IO.reader, STORE_MODE)
+        .read().iterate();
   }
 
   /**
@@ -108,7 +134,7 @@ public class Configuration {
   }
 
   public void write() {
-    File graphFile=getGraphFile();
+    File graphFile = getGraphFile();
     if (!graphFile.getParentFile().exists()) {
       graphFile.getParentFile().mkdirs();
     }
