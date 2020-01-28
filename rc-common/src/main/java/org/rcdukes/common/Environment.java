@@ -208,11 +208,22 @@ public class Environment {
 		instance = null;
 	}
 
-  public static void mock() {
+	/**
+	 * get the current environment from the given path
+	 * @param propFilePath
+	 */
+  public static void from(String propFilePath) {
     // Let's fake a configuration
     Environment.reset();
     Environment env = Environment.getInstance();
-    env.propFilePath = "../rc-drivecontrol/src/test/resources/dukes/dukes.ini";
+    env.propFilePath = propFilePath;
+  }
+  
+  /**
+   * mock a test enviroment
+   */
+  public static void mock() {
+    Environment.from("../rc-drivecontrol/src/test/resources/dukes/dukes.ini");
   }
 
 }

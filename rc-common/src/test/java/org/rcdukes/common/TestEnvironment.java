@@ -38,9 +38,8 @@ public class TestEnvironment {
       props += nameValues[i] + "=" + nameValues[i + 1] + "\n";
     }
     FileUtils.writeStringToFile(propFile, props, "UTF-8");
-    Environment.propFilePath = propFile.getPath();
     // make sure the properties are read again
-    Environment.reset();
+    Environment.from(propFile.getPath());
     return propFile;
   }
 
@@ -67,7 +66,7 @@ public class TestEnvironment {
   @Test
   public void testCameraUrl() throws Exception {
     String url="http://5.6.7.8/html/cam_pic_new.php";
-    Environment.propFilePath = File.createTempFile("dukes", ".ini").getAbsolutePath();
+    Environment.from(File.createTempFile("dukes", ".ini").getAbsolutePath());
     File propFile = setProperties(Config.CAMERA_URL, url);
     assertEquals(url,
         Config.getEnvironment().getString(Config.CAMERA_URL));
