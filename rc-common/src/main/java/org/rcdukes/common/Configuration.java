@@ -1,13 +1,13 @@
-package org.rcdukes.server;
+package org.rcdukes.common;
 
 import java.io.File;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.tinkerpop.gremlin.process.traversal.IO;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
-import org.rcdukes.common.Environment;
 
 /**
  * configuration handler
@@ -55,6 +55,9 @@ public class Configuration {
     }
   }
 
+  /**
+   * construct me
+   */
   public Configuration() {
     this(Environment.dukesHome + "config" + STORE_EXTENSION,true);
   }
@@ -132,7 +135,15 @@ public class Configuration {
     getGraph().traversal().io(graphFile.getPath()).with(IO.writer, STORE_MODE)
         .write().iterate();
   }
+  
+  public String asString() throws Exception {
+    String text=FileUtils.readFileToString(getGraphFile(), "utf-8");
+    return text;
+  }
 
+  /**
+   * write me
+   */
   public void write() {
     File graphFile = getGraphFile();
     if (!graphFile.getParentFile().exists()) {

@@ -1,4 +1,4 @@
-package org.rcsdukes.server;
+package org.rcdukes.common;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -7,8 +7,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.rcdukes.common.Configuration;
 import org.rcdukes.common.Environment;
-import org.rcdukes.server.Configuration;
 
 /**
  * test the configuration handling
@@ -16,9 +16,8 @@ import org.rcdukes.server.Configuration;
  *
  */
 public class TestConfiguration {
-
-  @Test
-  public void testConfiguration() throws Exception {
+  
+  public Configuration getMockConfiguration() throws Exception {
     Environment.mock();
     File tempConfig=File.createTempFile("config",".json");
     // make sure the config does not exist so we do not read it
@@ -27,11 +26,26 @@ public class TestConfiguration {
     Configuration config=new Configuration(tempConfig.getAbsolutePath(),false);
     // add the mock environment
     config.addEnv(Environment.getInstance());
+    return config;
+  }
+
+  @Test
+  public void testConfiguration() throws Exception {
+    Configuration config=getMockConfiguration();
     long nodeCount = config.g().V().count().next().longValue();
     assertEquals(1,nodeCount);
     config.write();
-    assertTrue(tempConfig.canRead());
+    assertTrue(config.getGraphFile().canRead());
     // clean up
-    tempConfig.delete();
+    config.getGraphFile().delete();
+  }
+  
+  @Test
+  public void testQuery() throws Exception {
+    Configuration config=getMockConfiguration();
+    config.write();
+    System.out.println(config.asString());
+    // clean up
+    config.getGraphFile().delete();
   }
 }

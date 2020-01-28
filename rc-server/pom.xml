@@ -44,16 +44,7 @@
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-tcp-eventbus-bridge</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.tinkerpop/gremlin-core -->
-		<dependency>
-			<groupId>org.apache.tinkerpop</groupId>
-			<artifactId>gremlin-core</artifactId>
-		</dependency>
-		<!-- in memory graph database -->
-		<dependency>
-			<groupId>org.apache.tinkerpop</groupId>
-			<artifactId>tinkergraph-gremlin</artifactId>
-		</dependency>
+
 		<dependency>
 			<groupId>nl.vaneijndhoven.dukes</groupId>
 			<artifactId>rc-common</artifactId>

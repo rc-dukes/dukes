@@ -56,6 +56,16 @@
 			<groupId>org.asynchttpclient</groupId>
 			<artifactId>async-http-client-extras-rxjava2</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.tinkerpop/gremlin-core -->
+		<dependency>
+			<groupId>org.apache.tinkerpop</groupId>
+			<artifactId>gremlin-core</artifactId>
+		</dependency>
+		<!-- in memory graph database -->
+		<dependency>
+			<groupId>org.apache.tinkerpop</groupId>
+			<artifactId>tinkergraph-gremlin</artifactId>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
