@@ -1,11 +1,14 @@
 package org.rcdukes.server;
 
+import org.rcdukes.action.Action;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.ClusterStarter;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.DukesVerticle;
 import org.rcdukes.common.Events;
+import org.rcdukes.detect.Detector;
 import org.rcdukes.error.ErrorHandler;
+import org.rcdukes.imageview.DebugImageServer;
 import org.rcdukes.opencv.NativeLibrary;
 import org.rcdukes.webcontrol.WebControl;
 
@@ -28,6 +31,7 @@ public class CarServer extends DukesVerticle {
   boolean debug = false;
   private ClusterStarter starter;
   int TIME_OUT=20000;
+  boolean verticlesStarted=false;
 
   @Override
   public void start() throws Exception {
@@ -49,6 +53,10 @@ public class CarServer extends DukesVerticle {
     try {
       JsonObject configJo=Config.getEnvironment().asJsonObject();
       super.send(Characters.BOSS_HOGG, configJo);
+      if (!verticlesStarted) {
+        starter.deployVerticles(new DebugImageServer(),new Action(), new Detector());
+        verticlesStarted=true;
+      }
     } catch (Exception e) {
       ErrorHandler.getInstance().handle(e);
     }
@@ -57,8 +65,7 @@ public class CarServer extends DukesVerticle {
   private void messageHandler(Message<JsonObject> message) {
     JsonObject configJo = message.body();
     System.out.println(configJo);
-    // , new DebugImageServer(),
-    // new Action(), new Detector()
+    // , 
   }
 
   /**

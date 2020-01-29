@@ -9,6 +9,7 @@ var recorder=new Starter('Red Dog','START_RECORDING','STOP_RECORDING','record',p
 var autopilotStarter=new Starter('Lost sheep Luke','START_DRAG_NAVIGATION','STOP_NAVIGATION','autopilot',publish);
 var carStarter=new Starter('Jump again','START_CAR','STOP_CAR','startCar',publish);
 var configStarter=new Starter('Country music','REQUEST_CONFIG','?','requestConfig',publish);
+var powerStarter=new Starter('Country music','START_VERTICLES','STOP_VERTICLES','power',publish);
 var config=undefined;
 
 var manualwithkeys=false;
@@ -61,10 +62,23 @@ function publishWithOutLog(address,message,headers) {
 	setColor("heartbeatevents", stateColor);
 }
 
-// receive a new configuration
+// handle configuration negotiation
 var handleConfig = function(err,msg) {
 	display(err,msg);
-	config=msg.body;
+	var jo=msg.body;
+	// is this a request from the car?
+	if (jo.REQUEST_CONFIG) {
+	  // the car wants to be started
+	  // is there a configuration available?
+	  if (config)
+		startCar();
+	  else
+		// request an Environment configuration from the Car Server
+		requestConfig();
+	} else {
+	  // it's a reply with a configuration then
+	  config=msg.body;
+	}
 };
 
 // -1 to scroll
@@ -147,13 +161,11 @@ function initDetect() {
 	updateImageSources();
 }
 
-var powerState = false;
-
 function power() {
-	powerState = !powerState;
-	setControlState(powerState);
+	powerStarter.toggle();
+	setControlState(powerStarter.started);
 	keyPressed('power');
-	if (powerState) {
+	if (powerStarter.started) {
 		clearLog("power on");
 		initEventBus(true);
 		heartBeatInterval = registerHeartBeat();
@@ -162,6 +174,8 @@ function power() {
 		clearLog("power off");
 		// switch off heartBeat
 		clearInterval(heartBeatInterval);
+		// carStarter.stop();
+		// configStarter.stop();
 	}
 }
 
@@ -183,6 +197,8 @@ function setControlState(powerState) {
 	setColor("center", color);
 	setColor("stop", color);
 	setColor("brake", color);
+	setColor("photo",color);
+	setColor("record",color);
 }
 
 /**
@@ -427,7 +443,7 @@ function manual() {
 }
 
 function startCar() {
-   carStarter.toggle();
+   carStarter.toggle(config);
 }
 
 function requestConfig() {

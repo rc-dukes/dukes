@@ -1,4 +1,8 @@
+// a Starter keeps a state of a verticle and send the given start and
+// stop messages when requested via the given publish function
+// the button with the given buttonid changes it's color according to the state
 export default class Starter {
+	// construct me
 	constructor(callsign,startMessage,stopMessage,buttonid,publish) {
 		this.callsign=callsign;
 		this.startMessage=startMessage;
@@ -8,28 +12,32 @@ export default class Starter {
 		this.started=false;
 	}
 	
-	start() {
-		this.send(this.startMessage);
+	// start me potentially sending a json object
+	start(jo=undefined) {
+		this.send(this.startMessage,jo);
 		this.setColor(this.buttonid,"red")
 		this.started=true;
 	}
 	
-	stop() {
-		this.send(this.stopMessage);
+	// stop me potentially sending a json object
+	stop(jo=undefined) {
+		this.send(this.stopMessage,jo);
 		this.setColor(this.buttonid,"blue");
-		this.started=true;
+		this.started=false;
 	}
 	
-	toggle() {
+	// toggle my state potentially sending a json object
+	toggle(jo=undefined) {
 		if (!this.started) {
-			this.start();
+			this.start(jo);
 		} else {
-			this.stop();	
+			this.stop(jo);	
 		}
 	}
 	
-	send(msg) {
-	   this.publish(this.callsign + ':'+msg, undefined);
+	// send a message to my callsign potentially with a json object
+	send(msg,jo=undefined) {
+	   this.publish(this.callsign + ':'+msg,jo);
 	}
 	
 	/**
