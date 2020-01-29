@@ -59,8 +59,6 @@ public class ClusterStarter {
       throws Exception {
     DeploymentOptions deploymentOptions = new DeploymentOptions();
     deploymentOptions.setWorker(worker);
-    JsonObject config = Config.getEnvironment().asJsonObject();
-    deploymentOptions.setConfig(config);
     return deploymentOptions;
   }
 

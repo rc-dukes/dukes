@@ -6,11 +6,12 @@ var eb = null; // we start with an undefined eventbus
 var imageViewUrl = 'http://localhost:8081';
 var cameraFps=5;
 var recorder=new Starter('Red Dog','START_RECORDING','STOP_RECORDING','record',publish);
+var autopilotStarter=new Starter('Lost sheep Luke','START_DRAG_NAVIGATION','STOP_NAVIGATION','autopilot',publish);
 var carStarter=new Starter('Jump again','START_CAR','STOP_CAR','startCar',publish);
 var configStarter=new Starter('Country music','REQUEST_CONFIG','?','requestConfig',publish);
+var config=undefined;
 
 var manualwithkeys=false;
-var autopiloting=false;
 var streetLane = "images/StreetLane.jpg"; // default Image
 // 'use strict'
 var URL = window.URL || window.webkitURL
@@ -59,6 +60,12 @@ function publishWithOutLog(address,message,headers) {
 	setColor("events", stateColor);
 	setColor("heartbeatevents", stateColor);
 }
+
+// receive a new configuration
+var handleConfig = function(err,msg) {
+	display(err,msg);
+	config=msg.body;
+};
 
 // -1 to scroll
 var NUM_LOG_LINES_VISIBLE = -1;
@@ -251,7 +258,7 @@ function initEventBus(withDetect) {
 		eb.registerHandler("Red Dog", display); // imageview
 		eb.registerHandler("Jump again",display); // remote-car
 		eb.registerHandler("Velvet ears", display); // watchdog
-		eb.registerHandler("Little fat buddy", display); // webcontrol
+		eb.registerHandler("Little fat buddy", handleConfig); // webcontrol
 		eb.registerHandler("Crazy Cooter", display); // camera-matrix
 		eb.registerHandler("Dipstick", display); // geometry
 		eb.registerHandler("Cletus", display); // roi
@@ -405,17 +412,14 @@ function brake() {
 
 function autopilot() {
 	keyPressed("autopilot");
-	if (autopiloting)
-		stopAutoPilot();
-	else
-		startAutoPilot();
+	autopilotStarter.toggle();
 }
 
 function manual() {
 	manualwithkeys=!manualwithkeys;
 	if (manualwithkeys) {
 		keyPressed("manual");
-		stopAutoPilot();
+		autopilotStarter.stop();
 		setColor("manual","red")
 	} else {
 		setColor("manual","blue")		
@@ -481,19 +485,6 @@ function sendHeartBeat() {
 		type : 'heartbeat'
 	};
 	publishWithOutLog(CALLSIGN_FLASH, data);
-}
-
-var CALLSIGN_LUKE = "Lost sheep Luke";
-function startAutoPilot() {
-	publish(CALLSIGN_LUKE + ':START_DRAG_NAVIGATION', undefined);
-	setColor("autopilot","red")
-	autopiloting=true
-}
-
-function stopAutoPilot() {
-	publish(CALLSIGN_LUKE + ':STOP_NAVIGATION', undefined);
-	setColor("autopilot","blue")
-	autopiloting=false;
 }
 
 /**
