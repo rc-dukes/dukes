@@ -32,6 +32,8 @@ public class RemoteCar extends DukesVerticle {
   String hostname = "?";
   private Car car;
   private Disposable startRequester;
+  private WatchDog watchDog;
+  private CarVerticle carVerticle;
 
   /**
    * construct me as a verticle
@@ -46,8 +48,9 @@ public class RemoteCar extends DukesVerticle {
   public void start() throws Exception {
     super.preStart();
     super.consumer(Events.START_CAR, this::startCar);
-    Observable<Long> startRequestRepeat = Observable.interval(5, 2, TimeUnit.SECONDS);
-    startRequester=startRequestRepeat.subscribe(l->requestStart());
+    super.consumer(Events.STOP_CAR, this::stopCar);
+    //Observable<Long> startRequestRepeat = Observable.interval(5, 2, TimeUnit.SECONDS);
+    //startRequester=startRequestRepeat.subscribe(l->requestStart());
     super.postStart();
   }
   
@@ -57,6 +60,18 @@ public class RemoteCar extends DukesVerticle {
     } else {
       startRequester.dispose();
     }
+  }
+  
+  private void stopCar(Message<JsonObject> message) {
+    if (car==null) {
+      LOG.error("No car instance active - can't stop");
+      return;
+    }
+    car.stop();
+    starter.undeployVerticle(watchDog);
+    starter.undeployVerticle(carVerticle);
+    Car.resetInstance();
+    car=null;
   }
 
   private void startCar(Message<JsonObject> message) {
@@ -80,11 +95,13 @@ public class RemoteCar extends DukesVerticle {
     car.stop();
     // Command.stop();
     try {
-      starter.deployVerticles(new WatchDog(car), new CarVerticle(hostname));
-      super.send(Characters.BOSS_HOGG, "started","true");
+      watchDog = new WatchDog(car);
+      carVerticle=new CarVerticle(hostname);
+      starter.deployVerticles(watchDog,carVerticle);
     } catch (Exception e) {
       ErrorHandler.getInstance().handle(e);
     }
+    // super.send(Characters.BOSS_HOGG, "started","true");
   }
 
   /**

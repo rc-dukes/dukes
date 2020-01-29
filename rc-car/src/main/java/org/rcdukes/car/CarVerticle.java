@@ -32,7 +32,6 @@ public class CarVerticle extends DukesVerticle {
   @Override
   public void start() {
     super.preStart();
-    super.send(Characters.BOARS_NEST, "getconfig",hostname);
     Subscription subscription = vertx.eventBus()
         .consumer(Characters.BO.getCallsign()).toObservable()
         .doOnNext(x -> LOG.trace("Received instruction")).map(Message::body)

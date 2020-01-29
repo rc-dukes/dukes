@@ -18,8 +18,9 @@ var streetLane = "images/StreetLane.jpg"; // default Image
 var URL = window.URL || window.webkitURL
 
 /**
- * most publish messages should go thru this function
- * except the high frequency heartbeat
+ * most publish messages should go thru this function except the high frequency
+ * heartbeat
+ * 
  * @param address
  * @param messageObject
  * @param headers
@@ -78,6 +79,9 @@ var handleConfig = function(err,msg) {
 	} else {
 	  // it's a reply with a configuration then
 	  config=msg.body;
+	  var cameraurl=config["camera.url"];
+	  document.getElementById('cameraSource').value=cameraurl;
+	  updateConfig();
 	}
 };
 
@@ -107,9 +111,12 @@ var display = function(err, msg) {
 /**
  * log the given message
  * 
- * @param msg - the message to log
- * @param id - the id of the div to log to
- * @param logLines - the loglines buffer to use
+ * @param msg -
+ *            the message to log
+ * @param id -
+ *            the id of the div to log to
+ * @param logLines -
+ *            the loglines buffer to use
  */
 function logMessage(msg,id='events',logLines=logLinesEvent) {
 	var newLine = "<p>\n"; // td
@@ -472,7 +479,7 @@ function keyPressed(id) {
 
 var CALLSIGN_BO = 'Lost sheep Bo';
 function sendWheelCommand(position) {
-	data = {
+	var data = {
 		type : 'servo',
 		position : position
 	};
@@ -480,7 +487,7 @@ function sendWheelCommand(position) {
 }
 
 function sendSpeedCommand(speed) {
-	data = {
+	var data = {
 		type : 'motor',
 		speed : speed
 	};
@@ -488,7 +495,7 @@ function sendSpeedCommand(speed) {
 }
 
 function sendSpeedDirectCommand(speed) {
-	data = {
+	var data = {
 		type : 'speedDirect',
 		speed : '' + speed
 	};
@@ -588,7 +595,8 @@ function setImage(id, src) {
 }
 
 /**
- * update the textBox for the given textboxId from the slider with the given sliderId
+ * update the textBox for the given textboxId from the slider with the given
+ * sliderId
  * 
  * @param sliderId -
  *            the slider to update
@@ -602,7 +610,9 @@ function updateTextBoxFromSlider(sliderId, textboxId) {
 }
 
 // update the given slider and send the new configuration to the server
-function onSlide(sliderId, textbox) {
+function onSlide() {
+	var sliderId=this.id;
+	var textbox=sliderId.replace("Slider","Textbox");
 	updateTextBoxFromSlider(sliderId, textbox);
 	updateConfig();
 }
@@ -640,14 +650,27 @@ function initialSliderValues() {
 
 // update the image Sources
 function updateImageSources(cameraSource) {
-	setImage("birdseyeImage", imageViewUrl + '?type=birdseye&mode=stream');
-	setImage("edgesImage", imageViewUrl + '?type=edges&mode=stream');
-	setImage("linesImage", imageViewUrl + '?type=lines&mode=stream');
-	setImage("cameraImageDebug", cameraSource);
-	setImage("cameraImage", imageViewUrl + '?type=camera&mode=stream');
+	if (powerStarter.started) {
+  	    setImage("birdseyeImage", imageViewUrl + '?type=birdseye&mode=stream');
+	    setImage("edgesImage", imageViewUrl + '?type=edges&mode=stream');
+	    setImage("linesImage", imageViewUrl + '?type=lines&mode=stream');
+	    setImage("cameraImage", imageViewUrl + '?type=camera&mode=stream');
+	    setImage("cameraImageDebug", cameraSource);
+	} else {
+		setImage("birdseyeImage","/images/birdseye.jpg");
+		setImage("edgesImage","/images/edges.jpg");
+		setImage("linesImage","/images/lines.jpg");
+		setImage("cameraImage","/images/camera.jpg");		
+		setImage("cameraImageDebug", "/images/camera.jpg");
+	}
+	
+	
 }
 
-function onSlideCam(sliderId, textbox, configKey) {
+function onSlideCam() {
+	var sliderId=this.id;
+	var textbox=sliderId.replace("Slider","Textbox");
+    var configKey=sliderId.replace("Slider","").replace("cam","").toLowerCase();
 	updateTextBoxFromSlider(sliderId, textbox);
 	updateCamConfig(sliderId, configKey);
 }
@@ -664,27 +687,39 @@ function updateCamConfig(elementId, configKey) {
 	ajax_cmd.send();
 }
 
-function addHandler(id,func) {
+function addHandler(event,id,func) {
   var elem = document.getElementById(id);
-  elem.addEventListener('click',func);
+  elem.addEventListener(event,func);
 }
 
 // global handling
 // see https://stackoverflow.com/a/53630402/1497139
 initDetect();
-addHandler("power",power);
-addHandler("photo",photo);
-addHandler("record",record);
-addHandler("up",up);
-addHandler("left",left);
-addHandler("right",right);
-addHandler("down",down);
-addHandler("stop",stop);
-addHandler("brake",brake);
-addHandler("center",center);
-addHandler("autopilot",autopilot);
-addHandler("manual",manual);
-addHandler("reconfigure",updateConfig);
-addHandler("requestConfig",requestConfig);
-addHandler("startCar",startCar);
-
+addHandler('click','power',power);
+addHandler('click','photo',photo);
+addHandler('click','record',record);
+addHandler('click','up',up);
+addHandler('click','left',left);
+addHandler('click','right',right);
+addHandler('click','down',down);
+addHandler('click','stop',stop);
+addHandler('click','brake',brake);
+addHandler('click','center',center);
+addHandler('click','autopilot',autopilot);
+addHandler('click','manual',manual);
+addHandler('click','reconfigure',updateConfig);
+addHandler('click','requestConfig',requestConfig);
+addHandler('click','startCar',startCar);
+addHandler('input','cameraFpsSlider',onSlide);
+addHandler('input','roiySlider',onSlide);
+addHandler('input','roihSlider',onSlide);
+addHandler('input','cannyConfigThreshold1Slider',onSlide);
+addHandler('input','cannyConfigThreshold2Slider',onSlide);
+addHandler('input','houghConfigRhoSlider',onSlide);
+addHandler('input','houghConfigThetaSlider',onSlide);
+addHandler('input','houghConfigThresholdSlider',onSlide);
+addHandler('input','houghConfigMinLineLengthSlider',onSlide);
+addHandler('input','houghConfigMaxLineGapSlider',onSlide);
+addHandler('input','camEcSlider',onSlideCam);
+addHandler('input','camBrSlider',onSlideCam);
+addHandler('input','camSaSlider',onSlideCam);
