@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.ClusterStarter;
 import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.DukesVerticle.Status;
 import org.rcdukes.common.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,16 +47,10 @@ public class TestClusterStarter {
 		ClusterStarter starter = new ClusterStarter();
 		TestVerticle testVerticle = new TestVerticle();
 		starter.deployVerticles(testVerticle);
+		testVerticle.waitStatus(Status.started, ClusterStarter.MAX_START_TIME, 10);
 		int minLoops=5;
 		while (testVerticle.counter <=minLoops) {
 		  Thread.sleep(TestVerticle.TEST_INTERVAL_MS);
-		}
-		String cameraurl=testVerticle.config().getString("camera.url");
-		assertEquals("http://pi.doe.com/html/cam_pic_new.php",cameraurl);
-		if (debug) {
-			for (String key : testVerticle.config().fieldNames()) {
-				LOG.info(key);
-			}
 		}
 	}
 
