@@ -63,7 +63,9 @@ public class RemoteCar extends DukesVerticle {
   
   private void echo(Message<JsonObject> message) {
     JsonObject jo=message.body();
+    System.out.println("received jsonobject: "+jo);
     super.send(Characters.BOSS_HOGG, jo);
+    System.out.println("send to "+Characters.BOSS_HOGG+" finished");
   }
   
   private void stopCar(Message<JsonObject> message) {

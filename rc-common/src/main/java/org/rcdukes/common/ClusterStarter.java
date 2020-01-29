@@ -69,6 +69,7 @@ public class ClusterStarter {
    */
   public void deployVerticles(AbstractVerticle... verticles) throws Exception {
     DeploymentOptions deploymentOptions = this.getDeployMentOptions(true);
+    // if there is no clustered vertx yet make sure we create one
     if (vertx == null) {
       this.clusteredVertx(resultHandler -> {
         vertx = resultHandler.result();
@@ -76,9 +77,12 @@ public class ClusterStarter {
           ErrorHandler.getInstance().handle(new RuntimeException(
               "vertx not available resultHandler result is null"));
         }
+        // and then deploy to it
         this.deployVerticles(deploymentOptions, verticles);
       });
     } else {
+      // there is already a clustered vertx available
+      // let's use it
       this.deployVerticles(deploymentOptions, verticles);
     }
   }

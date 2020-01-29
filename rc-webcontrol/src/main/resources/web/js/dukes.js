@@ -694,7 +694,11 @@ function addHandler(event,id,func) {
 }
 
 function echo() {
-  echoStarter.toggle();
+  var data = {
+			type : 'message',
+			text : 'hello General Lee!'
+  };
+  echoStarter.toggle(data);
 }
 
 // global handling
