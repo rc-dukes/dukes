@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
+import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.eventbus.Message;
 
@@ -102,7 +103,9 @@ public class RemoteCar extends DukesVerticle {
       LOG.error(e.getMessage());
     }
     LOG.info("starting remoteCar on host " + hostname);
-    starter.getOptions().getEventBusOptions().setHost(hostname);
+    EventBusOptions eventBusOptions = starter.getOptions().getEventBusOptions();
+    eventBusOptions.setHost(hostname);
+    eventBusOptions.setClusterPublicHost(hostname);
     // bootstrap the deployment by deploying me
     try {
       starter.deployVerticles(this);

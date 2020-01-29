@@ -32,8 +32,10 @@ public class TestClusterStarter {
 
 		@Override
 		public void start() {
+		  super.preStart();
 			LOG.info("Starting TestVerticle");
 			vertx.setPeriodic(TEST_INTERVAL_MS, id -> periodic());
+			super.postStart();
 		}
 
 		public void periodic() {
