@@ -2,7 +2,6 @@ package org.rcdukes.remotecar;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.concurrent.TimeUnit;
 
 import org.rcdukes.car.CarVerticle;
 import org.rcdukes.common.Characters;
@@ -16,7 +15,6 @@ import org.rcdukes.watchdog.WatchDog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.core.json.JsonObject;
@@ -49,6 +47,7 @@ public class RemoteCar extends DukesVerticle {
     super.preStart();
     super.consumer(Events.START_CAR, this::startCar);
     super.consumer(Events.STOP_CAR, this::stopCar);
+    super.consumer(Events.ECHO,this::echo);
     //Observable<Long> startRequestRepeat = Observable.interval(5, 2, TimeUnit.SECONDS);
     //startRequester=startRequestRepeat.subscribe(l->requestStart());
     super.postStart();
@@ -60,6 +59,11 @@ public class RemoteCar extends DukesVerticle {
     } else {
       startRequester.dispose();
     }
+  }
+  
+  private void echo(Message<JsonObject> message) {
+    JsonObject jo=message.body();
+    super.send(Characters.BOSS_HOGG, jo);
   }
   
   private void stopCar(Message<JsonObject> message) {

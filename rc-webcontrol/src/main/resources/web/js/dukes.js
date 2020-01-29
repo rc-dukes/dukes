@@ -10,6 +10,7 @@ var autopilotStarter=new Starter('Lost sheep Luke','START_DRAG_NAVIGATION','STOP
 var carStarter=new Starter('Jump again','START_CAR','STOP_CAR','startCar',publish);
 var configStarter=new Starter('Country music','REQUEST_CONFIG','?','requestConfig',publish);
 var powerStarter=new Starter('Country music','START_VERTICLES','STOP_VERTICLES','power',publish);
+var echoStarter=new Starter('Jump again','ECHO','?','echo',publish);
 var config=undefined;
 
 var manualwithkeys=false;
@@ -692,12 +693,17 @@ function addHandler(event,id,func) {
   elem.addEventListener(event,func);
 }
 
+function echo() {
+  echoStarter.toggle();
+}
+
 // global handling
 // see https://stackoverflow.com/a/53630402/1497139
 initDetect();
 addHandler('click','power',power);
 addHandler('click','photo',photo);
 addHandler('click','record',record);
+addHandler('click','echo',echo);
 addHandler('click','up',up);
 addHandler('click','left',left);
 addHandler('click','right',right);
