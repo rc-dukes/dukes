@@ -13,9 +13,10 @@
 		<Insets left="10" right="10" />
 	</padding>
    <CheckBox fx:id="probabilistic" mnemonicParsing="false" text="probabilistic" />
+
 	<Label text="Canny threshold 1" />
 	<Slider fx:id="cannyThreshold1" blockIncrement="1" max="2000" min="0" value="20" />
-	<TextField fx:id="cannyTheshold1text" />
+	<TextField fx:id="cannyThreshold1text" text="${cannyThreshold1.value}"/>
 	<Label text="Canny threshold 2" />
 	<Slider fx:id="cannyThreshold2" blockIncrement="1" max="2000" min="0" value="50" />
 
