@@ -64,8 +64,11 @@ public class RemoteCar extends DukesVerticle {
   private void echo(Message<JsonObject> message) {
     JsonObject jo=message.body();
     System.out.println("received jsonobject: "+jo);
-    super.send(Characters.BOSS_HOGG, jo);
-    System.out.println("send to "+Characters.BOSS_HOGG+" finished");
+    String msg=String.format("Thread %d is clustered %s",Thread.currentThread().getId(),this.getVertx().isClustered());
+    System.out.println(msg);
+    //starter.getVertx().eventBus().send(Characters.BOSS_HOGG.getCallsign(), jo);
+    super.send(Characters.ROSCO, jo);
+    System.out.println("send to "+Characters.ROSCO+" finished");
   }
   
   private void stopCar(Message<JsonObject> message) {

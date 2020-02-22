@@ -7,6 +7,11 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.junit.Test;
 import org.rcdukes.common.Characters;
 
+/**
+ * test Characters
+ * @author wf
+ *
+ */
 public class TestCharacters {
 
   public String spc(int numberOfSpaces) {
@@ -40,7 +45,7 @@ public class TestCharacters {
       output("  %s  label=\"%s\\n%s\"",spc(14),c.module,c.name());
       output("  %s  URL=\""+uml+"\"",spc(14),c.module);
       output("  %s]",spc(14));
-      output("  %slabel--%s",name,name);
+      output("  dukes--%slabel--%s",name,name);
     }
   }
 }
