@@ -9,18 +9,18 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -79,9 +79,9 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   @FXML
   protected Button cameraButton;
   @FXML
-  protected TextField lanevideo;
+  protected ComboBox<String> lanevideo;
   @FXML
-  protected TextField startvideo;
+  protected ComboBox<String> startvideo;
   @FXML
   protected TextArea messageArea;
 
@@ -120,6 +120,7 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     // bind a text property with the string containing the current Values of
     currentValuesProp = new SimpleObjectProperty<>();
     this.currentValues.textProperty().bind(currentValuesProp);
+    this.lanevideo.getItems().setAll("http://picaro/html/cam_pic_new.php","http://picarford:8080/?action=stream");
 
   }
 
@@ -132,8 +133,8 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     this.setButtonIcon(githubButton, MaterialDesignIcon.GITHUB_BOX,color,bgColor);
     this.setButtonIcon(chatButton, MaterialDesignIcon.COMMENT_TEXT,color,bgColor);
     this.setButtonIcon(helpButton, FontAwesomeIcon.QUESTION_CIRCLE,color,bgColor);
-    this.lanevideo.setText("http://wiki.bitplan.com/videos/full_run.mp4");
-    this.startvideo.setText("http://wiki.bitplan.com/videos/startlamp2.m4v");
+    this.lanevideo.setValue("http://wiki.bitplan.com/videos/full_run.mp4");
+    this.startvideo.setValue("http://wiki.bitplan.com/videos/startlamp2.m4v");
   }
 
  
@@ -196,7 +197,7 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     fileChooser.getExtensionFilters().add(extFilter);
     File file = fileChooser.showOpenDialog(primaryStage);
     if (file != null) {
-      this.lanevideo.setText(file.getPath());
+      this.lanevideo.setValue(file.getPath());
     }
   }
 
@@ -298,13 +299,13 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   }
 
   @Override
-  public StringProperty getLaneVideoProperty() {
-    return this.lanevideo.textProperty();
+  public Property<String> getLaneVideoProperty() {
+    return this.lanevideo.valueProperty();
   }
 
   @Override
-  public StringProperty getStartVideoProperty() {
-    return this.startvideo.textProperty();
+  public Property<String> getStartVideoProperty() {
+    return this.startvideo.valueProperty();
   }
 
   @Override

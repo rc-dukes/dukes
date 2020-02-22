@@ -3,7 +3,7 @@ package org.rcdukes.app;
 import org.opencv.core.Mat;
 import org.rcdukes.video.Image;
 
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.Property;
 
 /**
  * interface to make core gui display available for subGUIs
@@ -17,8 +17,8 @@ public interface GUIDisplayer {
   void setMessageText(String text);
   void setCameraButtonText(String text);
   void showCurrentValues(String text);
-  StringProperty getLaneVideoProperty();
-  StringProperty getStartVideoProperty();
+  Property<String> getLaneVideoProperty();
+  Property<String> getStartVideoProperty();
   /** 
    * handle the given error
    * @param th
