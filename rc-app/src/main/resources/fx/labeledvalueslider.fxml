@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="org.rcdukes.app.LabeledValueSlider">
+	<padding>
+		<Insets left="10" right="10" />
+	</padding>
+ 	<Slider fx:id="slider" blockIncrement="1" max="2000" min="0" value="20" />
+	<Label fx:id="label" text="Slider" />
+	<TextField fx:id="textField"/>
+</HBox>

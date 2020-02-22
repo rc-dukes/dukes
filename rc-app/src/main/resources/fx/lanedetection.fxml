@@ -4,6 +4,7 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="org.rcdukes.app.LaneDetectionGUI">
@@ -14,6 +15,7 @@
    <CheckBox fx:id="probabilistic" mnemonicParsing="false" text="probabilistic" />
 	<Label text="Canny threshold 1" />
 	<Slider fx:id="cannyThreshold1" blockIncrement="1" max="2000" min="0" value="20" />
+	<TextField fx:id="cannyTheshold1text" />
 	<Label text="Canny threshold 2" />
 	<Slider fx:id="cannyThreshold2" blockIncrement="1" max="2000" min="0" value="50" />
 
