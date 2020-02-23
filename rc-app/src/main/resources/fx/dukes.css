@@ -4,3 +4,7 @@
 .header {
   -fx-background-color: #3F51B5;
 }
+.root{
+    -fx-font-size: 14pt;
+    -fx-font-family: "Arial";
+}

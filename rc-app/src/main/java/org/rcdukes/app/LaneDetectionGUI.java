@@ -29,7 +29,7 @@ import rx.schedulers.Schedulers;
  */
 public class LaneDetectionGUI extends BaseGUI {
   @FXML
-  private CheckBox probabilistic;
+  private CheckBox probabilistic;  
   @FXML
   private LabeledValueSlider cannyThreshold1;
   @FXML
