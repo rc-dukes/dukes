@@ -17,7 +17,6 @@ import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Slider;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
@@ -56,7 +55,7 @@ public class LaneDetectionGUI extends BaseGUI {
     initVertx();
   }
 
-  public void startCamera() throws Exception {
+  public void startCamera(CameraGUI cameraGUI) throws Exception {
     configureGUI();
 
     if (this.imageSubscriber==null) {
@@ -69,11 +68,11 @@ public class LaneDetectionGUI extends BaseGUI {
             if (debug)
               displayCurrentSliderValues();
             applySliderValuesToConfig();
+            cameraGUI.applySliderValues();
             displayer.displayOriginal(originalImage.getFrame());
             ImageCollector collector = new ImageCollector();
             CameraMatrix cameraMatrix = CameraMatrix.DEFAULT;
-            CameraConfig cameraConfig=new CameraConfig();
-            LaneDetector laneDetector=new LaneDetector(edgeDetector,lineDetector,cameraConfig,cameraMatrix,collector);
+            LaneDetector laneDetector=new LaneDetector(edgeDetector,lineDetector,cameraGUI.cameraConfig,cameraMatrix,collector);
             laneDetector.detect(originalImage);
             displayer.display1(collector.getImage(ImageType.edges,true));
             displayer.display2(collector.getImage(ImageType.lines,true));

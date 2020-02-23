@@ -85,6 +85,13 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   @FXML
   protected TextArea messageArea;
 
+  @FXML 
+  protected LabeledValueSlider roiy;
+  
+  @FXML 
+  protected LabeledValueSlider roih;
+ 
+  
   // FXML label to show the current values set with the sliders
   @FXML
   private Label currentValues;
@@ -121,7 +128,8 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     currentValuesProp = new SimpleObjectProperty<>();
     this.currentValues.textProperty().bind(currentValuesProp);
     this.lanevideo.getItems().setAll("http://picaro/html/cam_pic_new.php","http://picarford:8080/?action=stream");
-
+    this.cameraController.roiy=roiy;
+    this.cameraController.roih=roih;
   }
 
   @FXML
@@ -142,7 +150,7 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   public void startCamera() throws Exception {
     switch (displayMode) {
     case Lane:
-      this.laneDetectionController.startCamera();
+      this.laneDetectionController.startCamera(this.cameraController);
       break;
     case Start:
       this.startDetectionController.startCamera();
