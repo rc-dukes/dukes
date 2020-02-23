@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+
+<fx:root type="javafx.scene.layout.HBox" xmlns:fx="http://javafx.com/fxml">
+
+	<padding>
+		<Insets left="10" right="10" />
+	</padding>
+	<Label fx:id='label' text="Label for Slider" />
+	<Slider fx:id='slider' blockIncrement="1" max="100" min="0" value="50" />
+	<TextField fx:id="textField" text="${slider.value}"/>
+</fx:root>

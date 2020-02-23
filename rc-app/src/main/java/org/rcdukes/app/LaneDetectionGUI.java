@@ -31,19 +31,19 @@ public class LaneDetectionGUI extends BaseGUI {
   @FXML
   private CheckBox probabilistic;
   @FXML
-  private Slider cannyThreshold1;
+  private LabeledValueSlider cannyThreshold1;
   @FXML
-  private Slider cannyThreshold2;
+  private LabeledValueSlider cannyThreshold2;
   @FXML
-  private Slider lineDetectRho;
+  private LabeledValueSlider lineDetectRho;
   @FXML
-  private Slider lineDetectTheta;
+  private LabeledValueSlider lineDetectTheta;
   @FXML
-  private Slider lineDetectThreshold;
+  private LabeledValueSlider lineDetectThreshold;
   @FXML
-  private Slider lineDetectMinLineLength;
+  private LabeledValueSlider lineDetectMinLineLength;
   @FXML
-  private Slider lineDetectMaxLineGap;
+  private LabeledValueSlider lineDetectMaxLineGap;
 
   private Vertx vertx;
 
