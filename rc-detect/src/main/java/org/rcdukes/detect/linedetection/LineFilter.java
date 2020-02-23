@@ -28,8 +28,8 @@ public class LineFilter {
         this.margin = margin;
         this.directional = directional;
     }
-
-    public Collection<Line> filter(Mat lines) {
+    /*
+    private Collection<Line> filter(Mat linesMat) {
         Set<Line> lineObjects = new HashSet<>();
 
         for (int x = 0; x < lines.rows(); x++) {
@@ -38,7 +38,7 @@ public class LineFilter {
         }
 
         return filter(lineObjects);
-    }
+    }*/
 
     public Collection<Line> filter(Collection<Line> lines) {
         double minDeg = angle - margin;

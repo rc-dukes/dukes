@@ -19,12 +19,32 @@ public class Line {
   private final Point2D point2;
 
   /**
-   * construct me from the given coordinates
-   * 
-   * @param coordinates
-   *          - the 4 coordinates to construct me from
+   * construct me from a hough lines detect result
+   * @param probabilistic
+   * @param h 
+   * @param w 
+   * @param coordinates - the 4 coordinates to construct me from
+   * @return the Line
    */
-  public Line(double ... coordinates) {
+  public static Line fromHough(boolean probabilistic,int w, int h, double ...coordinates) {
+    if (probabilistic) {
+      return new Line(coordinates);
+    } else {
+      double rho=coordinates[0];
+      double theta= coordinates[1];
+      double a = Math.cos(theta), b = Math.sin(theta);
+      double x0 = a*rho, y0 = b*rho;
+      Point pt1 = new Point(Math.round(x0 + w*(-b)), Math.round(y0 + h*(a)));
+      Point pt2 = new Point(Math.round(x0 - w*(-b)), Math.round(y0 - h*(a)));
+      return new Line(pt1,pt2);
+    }
+  }
+
+  /**
+   * construct me from the given coordinates
+   * @param coordinates - the 4 points
+   */
+  public Line(double... coordinates) {
     this(new Point(coordinates[0], coordinates[1]),
         new Point(coordinates[2], coordinates[3]));
   }
@@ -32,8 +52,10 @@ public class Line {
   /**
    * construct me from two points
    * 
-   * @param point1 - first point
-   * @param point2 - second point
+   * @param point1
+   *          - first point
+   * @param point2
+   *          - second point
    */
   public Line(Point2D point1, Point2D point2) {
     Objects.requireNonNull(point1, "point1 can not be null.");
@@ -86,13 +108,14 @@ public class Line {
   public Point2D getPoint2() {
     return point2;
   }
-  
+
   /**
    * calculate the average lines for the given lines
+   * 
    * @param lines
    * @return - the average line
    */
-  public static Line average(Line ...lines) {
+  public static Line average(Line... lines) {
     return average(Arrays.asList(lines));
   }
 
@@ -104,7 +127,7 @@ public class Line {
    * @return the average line
    */
   public static Line average(Collection<Line> lines) {
-    //double sumAngleRad = 0;
+    // double sumAngleRad = 0;
     double sumx = 0;
     double sumy = 0;
     double sumxlen = 0;
@@ -175,7 +198,9 @@ public class Line {
 
   /**
    * check whether the given point exists on the line
-   * @param point - the point to check
+   * 
+   * @param point
+   *          - the point to check
    * @return - true if the point is on the line
    */
   public boolean existsOnLine(Point2D point) {
@@ -218,7 +243,8 @@ public class Line {
   /**
    * get the interpolated point at the given fraction
    * 
-   * @param fraction the fractional part
+   * @param fraction
+   *          the fractional part
    * @return a point with the given fractionaldistance from topLeft
    */
   public Point2D pointAt(double fraction) {
@@ -247,14 +273,12 @@ public class Line {
   }
 
   /**
-  private boolean isBelow(Point2D point, Point2D nextVertexPoint) {
-    return nextVertexPoint.getY() > point.getY();
-  }
-
-  private boolean isAboveOrEqual(Point2D point, Point2D reference) {
-    return reference.getY() <= point.getY();
-  }
-  */
+   * private boolean isBelow(Point2D point, Point2D nextVertexPoint) { return
+   * nextVertexPoint.getY() > point.getY(); }
+   * 
+   * private boolean isAboveOrEqual(Point2D point, Point2D reference) { return
+   * reference.getY() <= point.getY(); }
+   */
 
   @Override
   /**
@@ -302,7 +326,8 @@ public class Line {
   /**
    * calculate the distance to the given point
    * 
-   * @param point - the point to calculate the distance to
+   * @param point
+   *          - the point to calculate the distance to
    * @return the distance
    */
   public double distance(Point2D point) {
@@ -329,8 +354,11 @@ public class Line {
 
     /**
      * create a vector from the given values
-     * @param x - x component of vector
-     * @param y - y component of vector
+     * 
+     * @param x
+     *          - x component of vector
+     * @param y
+     *          - y component of vector
      */
     public Vector(double x, double y) {
       this.x = x;
@@ -356,12 +384,12 @@ public class Line {
     public static Vector forX(double x) {
       return new Vector(x, 0);
     }
-    
+
     /**
      * convert me to a String
      */
     public String toString() {
-      return String.format(Locale.ENGLISH,"{%f,%f}",x,y);
+      return String.format(Locale.ENGLISH, "{%f,%f}", x, y);
     }
   }
 }

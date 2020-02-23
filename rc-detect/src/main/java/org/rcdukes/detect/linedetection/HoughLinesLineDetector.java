@@ -53,15 +53,15 @@ public class HoughLinesLineDetector implements LineDetector {
 
   @Override
   public Collection<Line> detect(Mat image) {
-    Mat houghLines=detectMat(image);
-
-    Set<Line> lines = new HashSet<>();
-
-    for (int x = 0; x < houghLines.rows(); x++) {
-      Line line = new Line(houghLines.get(x, 0));
+    Mat houghLinesMat=detectMat(image);
+    
+    
+    Set<Line> lines = new HashSet<Line>();
+    for (int x = 0; x < houghLinesMat.rows(); x++) {
+      Line line = Line.fromHough(probabilistic,image.width(),image.height(),houghLinesMat.get(x, 0));
       lines.add(line);
     }
-    houghLines.release();
+    houghLinesMat.release();
     return lines;
   }
 
@@ -69,19 +69,19 @@ public class HoughLinesLineDetector implements LineDetector {
    * detect lines
    * 
    * @param image
-   * @return
+   * @return a Mat with encoded lines see 
+   * <a href="https://docs.opencv.org/3.4/d9/db0/tutorial_hough_lines.html">OpenCV tutorial hough lines</a>
    */
   private Mat detectMat(Mat image) {
-    Mat lines = new Mat();
+    Mat lineMat = new Mat();
+    // see 
     if (probabilistic) {
-      // HoughLinesP(image, lines, rho, theta, threshold, minLineLength,
-      // maxLineGap)
-      Imgproc.HoughLinesP(image, lines, rho, theta, threshold, minLineLength,
+      Imgproc.HoughLinesP(image, lineMat, rho, theta, threshold, minLineLength,
           maxLineGap);
     } else {
-      Imgproc.HoughLines(image, lines, rho, theta, threshold);
+      Imgproc.HoughLines(image, lineMat, rho, theta, threshold);
     }
-    return lines;
+    return lineMat;
   }
 
   public double getRho() {

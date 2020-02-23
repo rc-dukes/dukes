@@ -163,7 +163,7 @@ public class ImageUtils {
   }
   
   String path=Environment.dukesHome+"media";
-  String filePrefix="dukes";
+  String filePrefix="dukes.";
   
   public ImageUtils() {
   }
@@ -185,7 +185,7 @@ public class ImageUtils {
    */
   public void writeImage(Mat img, String name) {
     String fileName = filePrefix.replace(".", "-")+ name;
-    writeImageToFilepath(img,path + fileName);
+    writeImageToFilepath(img,path +"/"+fileName);
   }
   
   /**
@@ -205,11 +205,10 @@ public class ImageUtils {
    * @param color
    */
   public void writeImageWithLines(Mat img, Collection<Line> lines, String name, Scalar color) {
-    String fileName = filePrefix.replace(".", "-" + name + ".");
     Mat output = new Mat();
     img.copyTo(output);
     drawLinesToImage(output,lines,color);
-    Imgcodecs.imwrite(path + fileName, output);
+    this.writeImage(output, name);
     output.release();
   }
  

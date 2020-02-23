@@ -127,7 +127,7 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     // bind a text property with the string containing the current Values of
     currentValuesProp = new SimpleObjectProperty<>();
     this.currentValues.textProperty().bind(currentValuesProp);
-    this.lanevideo.getItems().setAll("http://picaro/html/cam_pic_new.php","http://picarford:8080/?action=stream");
+    this.lanevideo.getItems().setAll("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg/1280px-4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg","http://picaro/html/cam_pic_new.php","http://picarford:8080/?action=stream");
     this.cameraController.roiy=roiy;
     this.cameraController.roih=roih;
   }
