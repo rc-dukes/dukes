@@ -11,7 +11,7 @@
 	<padding>
 		<Insets left="10" right="10" />
 	</padding>
-	<Label fx:id='label' text="Label for Slider" />
+	<Label fx:id='label' text="Label for Slider" minWidth="180"/>
 	<Slider fx:id='slider' blockIncrement="1" max="100" min="0" value="50" />
-	<TextField fx:id="textField" text="${slider.value}"/>
+	<TextField fx:id="textField" maxWidth="75"/>
 </fx:root>

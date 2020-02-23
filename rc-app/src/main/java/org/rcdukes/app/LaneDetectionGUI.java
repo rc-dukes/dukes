@@ -68,7 +68,8 @@ public class LaneDetectionGUI extends BaseGUI {
           @Override
           public void onNext(Image originalImage) {
             super.onNext(originalImage);
-            displayCurrentSliderValues();
+            if (debug)
+              displayCurrentSliderValues();
             applySliderValuesToConfig();
             displayer.displayOriginal(originalImage.getFrame());
             ImageCollector collector = new ImageCollector();

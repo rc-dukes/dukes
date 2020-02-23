@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
@@ -30,6 +31,17 @@ public class LabeledValueSlider extends HBox {
   @FXML
   private TextField textField;
   
+  String format="%.2f";
+  
+  
+  public String getFormat() {
+    return format;
+  }
+
+  public void setFormat(String format) {
+    this.format = format;
+  }
+
   public double getBlockIncrement() {
     return slider.getBlockIncrement();
   }
@@ -92,6 +104,8 @@ public class LabeledValueSlider extends HBox {
         String msg=String.format("%s loaded for root %s", loaded.getClass().getName(),root.getClass().getName());
         LOG.info(msg);
       }
+      textField.textProperty().bind(slider.valueProperty().asString(format));
+      textField.setAlignment(Pos.CENTER_RIGHT);
     } catch (IOException exception) {
       throw new RuntimeException(exception);
     }
