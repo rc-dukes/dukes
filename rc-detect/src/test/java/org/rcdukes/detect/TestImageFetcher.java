@@ -20,13 +20,8 @@ import rx.Observable;
  * @author wf
  *
  */
-public class TestImageFetcher {
-  boolean debug = true;
-
-  @BeforeClass
-  public static void setup() throws Exception {
-    NativeLibrary.load();
-  }
+public class TestImageFetcher extends BaseDetectTest {
+ 
 
   public static String testSource = "http://wiki.bitplan.com/videos/full_run.mp4";
 
@@ -85,8 +80,7 @@ public class TestImageFetcher {
   
   @Test
   public void testStaticImage() {
-    String source="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg/1280px-4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg";
-    ImageFetcher imageFetcher=new ImageFetcher(source);
+    ImageFetcher imageFetcher=new ImageFetcher(testImageUrl);
     assertTrue(imageFetcher.open());
     assertTrue(imageFetcher.isStaticImage());
     for (int i=0;i<=10;i++) {

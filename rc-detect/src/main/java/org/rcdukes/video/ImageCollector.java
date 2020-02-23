@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,9 +48,7 @@ public class ImageCollector {
     if (!testImages.containsKey(imageType)) {
       String testImagePath = testImagePaths[imageType.ordinal()] + ext;
       try {
-        byte[] testImageBytes = IOUtils.toByteArray(this.getClass()
-            .getClassLoader().getResourceAsStream(testImagePath));
-        Mat frame = ImageUtils.imageBytes2Mat(testImageBytes);
+        Mat frame = ImageUtils.fromResource(this.getClass(), testImagePath);
         Image image = new Image(frame, imageType.name(), 0,
             System.currentTimeMillis());
         testImages.put(imageType, image);

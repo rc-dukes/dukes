@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.core.Scalar;
@@ -92,6 +93,20 @@ public class ImageUtils {
       mat = Imgcodecs.imdecode(new MatOfByte(bytes),
         Imgcodecs.CV_LOAD_IMAGE_UNCHANGED);
     return mat;
+  }
+  
+  /**
+   * get a Mat from the given imagePath resource
+   * @param clazz
+   * @param imagePath
+   * @return the Mat
+   * @throws IOException
+   */
+  public static Mat fromResource(Class<?> clazz,String imagePath) throws IOException {
+    byte[] testImageBytes = IOUtils.toByteArray(clazz
+        .getClassLoader().getResourceAsStream(imagePath));
+    Mat frame = ImageUtils.imageBytes2Mat(testImageBytes);
+    return frame;
   }
   
   /**

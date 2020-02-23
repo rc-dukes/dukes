@@ -3,10 +3,8 @@ package org.rcdukes.detect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opencv.core.Mat;
-import org.rcdukes.opencv.NativeLibrary;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageCollector.ImageType;
@@ -17,12 +15,8 @@ import org.rcdukes.video.ImageUtils;
  * @author wf
  *
  */
-public class TestLaneDetection {
-  @BeforeClass
-  public static void setup() throws Exception {
-    NativeLibrary.load();
-  }
-  
+public class TestLaneDetection extends BaseDetectTest {
+ 
   public void detect(Image image,String prefix) {
     LaneDetector ld=LaneDetector.getDefault();
     ld.detect(image);
@@ -39,7 +33,7 @@ public class TestLaneDetection {
   @Test
   public void testLaneDetection() throws Exception {
     ImageUtils imageUtils=new ImageUtils();
-    Mat frame=ImageUtils.read("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg/1280px-4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg");
+    Mat frame=super.getTestImage();
     assertNotNull(frame);
     assertEquals(1280,frame.width());
     assertEquals(960,frame.height());
