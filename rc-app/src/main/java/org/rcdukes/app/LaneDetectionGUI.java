@@ -45,8 +45,6 @@ public class LaneDetectionGUI extends BaseGUI {
   @FXML
   private LabeledValueSlider lineDetectMaxLineGap;
 
-  private Vertx vertx;
-
   private CannyEdgeDetector edgeDetector = new CannyEdgeDetector();
   private HoughLinesLineDetector lineDetector = new HoughLinesLineDetector();
 
@@ -143,7 +141,6 @@ public class LaneDetectionGUI extends BaseGUI {
 
     Vertx.clusteredVertx(options, resultHandler -> {
       Vertx vertx = resultHandler.result();
-      this.vertx = vertx;
 
       Runtime.getRuntime().addShutdownHook(new Thread() {
         public void run() {

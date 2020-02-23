@@ -31,7 +31,7 @@ public class LabeledValueSlider extends HBox {
   @FXML
   private TextField textField;
   
-  String format="%.2f";
+  String format;
   
   
   public String getFormat() {
@@ -39,6 +39,7 @@ public class LabeledValueSlider extends HBox {
   }
 
   public void setFormat(String format) {
+    textField.textProperty().bind(slider.valueProperty().asString(format));
     this.format = format;
   }
 
@@ -104,8 +105,10 @@ public class LabeledValueSlider extends HBox {
         String msg=String.format("%s loaded for root %s", loaded.getClass().getName(),root.getClass().getName());
         LOG.info(msg);
       }
-      textField.textProperty().bind(slider.valueProperty().asString(format));
+     
       textField.setAlignment(Pos.CENTER_RIGHT);
+      if (format == null)
+        setFormat("%.2f");
     } catch (IOException exception) {
       throw new RuntimeException(exception);
     }

@@ -14,11 +14,11 @@
 		<Insets left="10" right="10" />
 	</padding>
    <CheckBox fx:id="probabilistic" mnemonicParsing="false" text="probabilistic" />
-    <LabeledValueSlider fx:id='cannyThreshold1' text="Canny threshold 1" blockIncrement="1" max="2000" min="0" value="20" />
-	<LabeledValueSlider fx:id="cannyThreshold2" text="Canny threshold 2"  blockIncrement="1" max="2000" min="0" value="50" />
+    <LabeledValueSlider fx:id='cannyThreshold1' text="Canny threshold 1" blockIncrement="1" max="2000" min="0" value="20" format="\%.0f"/>
+	<LabeledValueSlider fx:id="cannyThreshold2" text="Canny threshold 2"  blockIncrement="1" max="2000" min="0" value="50" format="\%.0f"/>
 	<LabeledValueSlider fx:id="lineDetectRho" text="LineDetect rho" blockIncrement="0.01" max="20" min="0" value="0.5" />
 	<LabeledValueSlider fx:id="lineDetectTheta" text="LineDetect theta" blockIncrement="0.01" max="5" min="-5" value="0.5" />
-	<LabeledValueSlider fx:id="lineDetectThreshold" text="LineDetect threshold" blockIncrement="1" max="200" min="0" value="20" />
-	<LabeledValueSlider fx:id="lineDetectMinLineLength" text="LineDetect minLineLength"  blockIncrement="1" max="200" min="0" value="50" />
-	<LabeledValueSlider fx:id="lineDetectMaxLineGap" text="LineDetect maxLineGap" blockIncrement="1" max="500" min="0" value="50" />
+	<LabeledValueSlider fx:id="lineDetectThreshold" text="LineDetect threshold" blockIncrement="1" max="200" min="0" value="20" format="\%.0f" />
+	<LabeledValueSlider fx:id="lineDetectMinLineLength" text="LineDetect minLineLength"  blockIncrement="1" max="200" min="0" value="50" format="\%.0f"/>
+	<LabeledValueSlider fx:id="lineDetectMaxLineGap" text="LineDetect maxLineGap" blockIncrement="1" max="500" min="0" value="50" format="\%.0f"/>
 </VBox>
