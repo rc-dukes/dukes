@@ -1,10 +1,17 @@
-.glyph-icon {
-  -fx-fill: white;
+.root{
+    -fx-font-size: 12pt;
+    -fx-font-family: "Helvetica";
+    -icons-color: black;
 }
 .header {
   -fx-background-color: #3F51B5;
 }
-.root{
-    -fx-font-size: 12pt;
-    -fx-font-family: "Helvetica";
+.glyph-icon{
+    -fx-text-fill: -icons-color;
+    -fx-fill: -icons-color;
+    -glyph-size: 24px;
+}
+
+.glyph-icon:hover{
+    -fx-effect:  dropshadow(three-pass-box, rgba(0,0,0,0.2), 4, 0, 0, 0);
 }

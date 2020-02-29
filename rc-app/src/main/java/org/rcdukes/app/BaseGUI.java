@@ -18,16 +18,25 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
+import javafx.stage.Stage;
+
 import org.rcdukes.common.ErrorHandler;
 
 /**
  * base java fx GUI functionality
+ * 
  * @author wf
  *
  */
 public class BaseGUI {
+  boolean debug=true;
+  Stage primaryStage;
   GUIDisplayer displayer;
-
+  String menuButtonColor="white";
+  String buttonInactiveColor="lightgray";
+  String buttonColor = "blue";
+  String buttonActiveColor="red";
+  String buttonBgColor = "transparent";
   public GUIDisplayer getDisplayer() {
     return displayer;
   }
@@ -35,7 +44,7 @@ public class BaseGUI {
   public void setDisplayer(GUIDisplayer displayer) {
     this.displayer = displayer;
   }
-  
+
   public static double getScreenWidth() {
     return Screen.getPrimary().getVisualBounds().getWidth();
   }
@@ -56,20 +65,22 @@ public class BaseGUI {
     Image image = new Image(new ByteArrayInputStream(imageFrame));
     this.onFXThread(imageView.imageProperty(), image);
   }
-  
+
   /**
    * display the given dukes Image in the given imageView
+   * 
    * @param imageView
    * @param dukesImage
    */
-  protected void displayImage(ImageView imageView, org.rcdukes.video.Image dukesImage) {
-    displayImage(imageView,dukesImage.getImageBytes());
+  protected void displayImage(ImageView imageView,
+      org.rcdukes.video.Image dukesImage) {
+    displayImage(imageView, dukesImage.getImageBytes());
   }
 
   protected void displayImage(ImageView fxImage, Mat openCvImage) {
     if (openCvImage.rows() > 0) {
-      Image image = ImageUtils.mat2Image(openCvImage,".png");
-      if (image!=null)
+      Image image = ImageUtils.mat2Image(openCvImage, ".png");
+      if (image != null)
         this.onFXThread(fxImage.imageProperty(), image);
     }
   }
@@ -107,9 +118,10 @@ public class BaseGUI {
       Platform.runLater(() -> property.set(value));
     }
   }
-  
+
   /**
    * browse the given url
+   * 
    * @param url
    */
   protected void browse(String url) {
@@ -119,26 +131,62 @@ public class BaseGUI {
       handle(e);
     }
   }
-  
+
   public void handle(Throwable th) {
     String text = ErrorHandler.getStackTraceText(th);
     displayer.setMessageText(text);
   }
-  
+
   /**
    * set the icon for the given button
-   * @param button  the button to modify
-   * @param icon - the icon to use
-   * @param color - the color of the icon
-   * @param bgColor - the background color of the icon
+   * 
+   * @param button
+   *          the button to modify
+   * @param icon
+   *          - the icon to use
+   * @param color
+   *          - the color of the icon
+   * @param bgColor
+   *          - the background color of the icon
    */
-  public void setButtonIcon(Button button,GlyphIcons icon,String color,String bgColor) {
-    GlyphsDude.setIcon(button, icon,"2.5em");
-    String text=button.getText();
+  public void setButtonIcon(Button button, GlyphIcons icon, String color,
+      String bgColor) {
+    GlyphsDude.setIcon(button, icon, "2.5em");
+    String text = button.getText();
     button.setText("");
-    button.setTooltip(new Tooltip(text));
-    button.setStyle(String.format("-fx-fill: %s;-fx-background-color: %s;",color,bgColor));
-    String style=button.getStyle();
-    System.out.println(String.format("button %s has style %s", text,style));
+    setButtonTooltip(button, text);
+    setButtonColor(button, color, bgColor);
+  }
+
+  public void setButtonTooltip(Button button, String toolTipText) {
+    button.setTooltip(new Tooltip(toolTipText));
+  }
+
+  /**
+   * set the color of the given button
+   * @param button
+   * @param bgColor
+   * @param color
+   */
+  public void setButtonColor(Button button, String color, String bgColor) {
+    String bstyle=String.format("-icons-color:%s;-fx-text-fill: %s;-fx-fill: %s;-fx-background-color: %s;",color,color,color, bgColor);
+    button.setStyle(bstyle);
+    String buttonName=button.getTooltip().getText();
+    if (debug)
+      System.out.println(String.format("button %s now has style '%s'",buttonName,bstyle));
+  }
+
+  /**
+   * change the color of the given button according to the active flage
+   * @param button - the button to change
+   * @param active - the state
+   */
+  public void setButtonActive(Button button, boolean active) {
+    String activeButtonColor=active?buttonActiveColor:buttonColor;
+    setButtonColor(button, activeButtonColor, buttonBgColor);
+    String buttonName=button.getTooltip().getText();
+    if (debug)
+    System.out.println(String.format("%s is now %s",buttonName,active?"on":"off"));
+    
   }
 }

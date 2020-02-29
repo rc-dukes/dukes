@@ -25,7 +25,6 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.Tooltip;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -110,11 +109,8 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     Lane, Start
   }
 
-  String color = "white";
-  String bgColor = "transparent";
-
   DisplayMode displayMode = DisplayMode.Lane;
-  private Stage primaryStage;
+ 
 
   /**
    * initialize me
@@ -148,18 +144,18 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
 
   @FXML
   public void initialize() {
-    this.setButtonIcon(homeButton, MaterialDesignIcon.HOME, color, bgColor);
-    this.setButtonIcon(detectButton, MaterialDesignIcon.CAMERA, color, bgColor);
-    this.setButtonIcon(githubButton, MaterialDesignIcon.GITHUB_BOX, color,
-        bgColor);
-    this.setButtonIcon(chatButton, MaterialDesignIcon.COMMENT_TEXT, color,
-        bgColor);
-    this.setButtonIcon(helpButton, FontAwesomeIcon.QUESTION_CIRCLE, color,
-        bgColor);
-    this.setButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN, color,
-        bgColor);
-    this.setButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN, color,
-        bgColor);
+    this.setButtonIcon(homeButton, MaterialDesignIcon.HOME, menuButtonColor, buttonBgColor);
+    this.setButtonIcon(detectButton, MaterialDesignIcon.CAMERA, menuButtonColor, buttonBgColor);
+    this.setButtonIcon(githubButton, MaterialDesignIcon.GITHUB_BOX, menuButtonColor,
+        buttonBgColor);
+    this.setButtonIcon(chatButton, MaterialDesignIcon.COMMENT_TEXT, menuButtonColor,
+        buttonBgColor);
+    this.setButtonIcon(helpButton, FontAwesomeIcon.QUESTION_CIRCLE, menuButtonColor,
+        buttonBgColor);
+    this.setButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN, menuButtonColor,
+        buttonBgColor);
+    this.setButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN, menuButtonColor,
+        buttonBgColor);
     this.lanevideo.setValue("http://wiki.bitplan.com/videos/full_run.mp4");
     this.startvideo.setValue("http://wiki.bitplan.com/videos/startlamp2.m4v");
   }
@@ -265,12 +261,12 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   public void addJustFullScreenButton() {
     if (primaryStage.isMaximized()) {
       this.setButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN_EXIT,
-          color, bgColor);
-      setToolTip(fullScreenButton, "part Screen");
+          menuButtonColor, buttonBgColor);
+      setButtonTooltip(fullScreenButton, "part Screen");
     } else {
-      this.setButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN, color,
-          bgColor);
-      setToolTip(fullScreenButton, "full Screen");
+      this.setButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN, menuButtonColor,
+          buttonBgColor);
+      setButtonTooltip(fullScreenButton, "full Screen");
     }
 
   }
@@ -302,20 +298,17 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     }
     pMenuBar.setVisible(show);
     if (pMenuBar.isVisible()) {
-      this.setButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN, color,
-          bgColor);
-      setToolTip(hideMenuButton, "hide Menu");
+      this.setButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN, buttonColor,
+          buttonBgColor);
+      setButtonTooltip(hideMenuButton, "hide Menu");
     } else {
-      this.setButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_UP, color,
-          bgColor);
-      setToolTip(hideMenuButton, "show Menu");
+      this.setButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_UP, buttonColor,
+          buttonBgColor);
+      setButtonTooltip(hideMenuButton, "show Menu");
     }
   }
 
-  public void setToolTip(Button button, String toolTipText) {
-    button.setTooltip(new Tooltip(toolTipText));
-  }
-
+ 
   /**
    * Report Issue clicked
    * 

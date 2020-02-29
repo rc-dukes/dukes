@@ -1,11 +1,13 @@
 package org.rcdukes.app;
 
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
 /**
  * navigation GUI
+ * 
  * @author wf
  */
 public class NavigationGUI extends BaseGUI {
@@ -39,26 +41,36 @@ public class NavigationGUI extends BaseGUI {
   protected Button requestConfigButton;
   @FXML
   protected Button echoButton;
-  
+
   @FXML
   public void initialize() {
-    String bgColor="transparent";
-    String color="#808080";
-    setButtonIcon(upButton,MaterialDesignIcon.ARROW_UP_BOLD,color,bgColor);
-    setButtonIcon(autoPilotButton,MaterialDesignIcon.UPLOAD,color,bgColor);
-    setButtonIcon(leftButton,MaterialDesignIcon.ARROW_LEFT_BOLD,color,bgColor);
-    setButtonIcon(stopButton,MaterialDesignIcon.STOP,color,bgColor);
-    setButtonIcon(rightButton,MaterialDesignIcon.ARROW_RIGHT_BOLD,color,bgColor);
-    setButtonIcon(downButton,MaterialDesignIcon.ARROW_DOWN_BOLD,color,bgColor);
-    setButtonIcon(manualButton,MaterialDesignIcon.ACCOUNT,color,bgColor);
-    setButtonIcon(brakeButton, MaterialDesignIcon.CLOSE,color,bgColor);
-    setButtonIcon(centerButton, MaterialDesignIcon.IMAGE_FILTER_CENTER_FOCUS,color,bgColor);
-    setButtonIcon(powerButton, MaterialDesignIcon.POWER,"blue",bgColor);
-    setButtonIcon(photoButton, MaterialDesignIcon.CAMERA,color,bgColor);
-    setButtonIcon(recordButton, MaterialDesignIcon.RECORD,color,bgColor);
-    setButtonIcon(startCarButton, MaterialDesignIcon.CAR,color,bgColor);
-    setButtonIcon(requestConfigButton, MaterialDesignIcon.SETTINGS,color,bgColor);
-    setButtonIcon(echoButton, MaterialDesignIcon.BULLHORN,color,bgColor);
-     }
+    setButtonIcon(upButton, MaterialDesignIcon.ARROW_UP_BOLD, buttonInactiveColor, buttonBgColor);
+    setButtonIcon(autoPilotButton, MaterialDesignIcon.UPLOAD, buttonInactiveColor, buttonBgColor);
+    setButtonIcon(leftButton, MaterialDesignIcon.ARROW_LEFT_BOLD, buttonInactiveColor,
+        buttonBgColor);
+    setButtonIcon(stopButton, MaterialDesignIcon.STOP, buttonInactiveColor, buttonBgColor);
+    setButtonIcon(rightButton, MaterialDesignIcon.ARROW_RIGHT_BOLD, buttonInactiveColor,
+        buttonBgColor);
+    setButtonIcon(downButton, MaterialDesignIcon.ARROW_DOWN_BOLD, buttonInactiveColor,
+        buttonBgColor);
+    setButtonIcon(manualButton, MaterialDesignIcon.ACCOUNT, buttonInactiveColor, buttonBgColor);
+    setButtonIcon(brakeButton, MaterialDesignIcon.CLOSE, buttonInactiveColor, buttonBgColor);
+    setButtonIcon(centerButton, MaterialDesignIcon.IMAGE_FILTER_CENTER_FOCUS,
+        buttonInactiveColor, buttonBgColor);
+    setButtonIcon(powerButton, MaterialDesignIcon.POWER, buttonColor,buttonBgColor);
+    setButtonIcon(photoButton, MaterialDesignIcon.CAMERA, buttonInactiveColor, buttonBgColor);
+    setButtonIcon(recordButton, MaterialDesignIcon.RECORD, buttonInactiveColor, buttonBgColor);
+    setButtonIcon(startCarButton, MaterialDesignIcon.CAR, buttonColor, buttonBgColor);
+    setButtonIcon(requestConfigButton, MaterialDesignIcon.SETTINGS, buttonColor,
+        buttonBgColor);
+    setButtonIcon(echoButton, MaterialDesignIcon.BULLHORN, buttonColor, buttonBgColor);
+  }
+
+  boolean power=false;
   
+  @FXML
+  private void onPower(final ActionEvent event) {
+    power=!power;
+    super.setButtonActive(powerButton,power);
+  }
 }
