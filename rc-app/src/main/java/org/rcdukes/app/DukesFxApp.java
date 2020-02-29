@@ -32,6 +32,7 @@ public class DukesFxApp extends Application {
     gui.init(primaryStage);
     primaryStage.setTitle("RC-Dukes Self driving Car");
     primaryStage.setScene(scene);
+    primaryStage.setMaximized(true);
     primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
       gui.addJustFullScreenButton();
     });

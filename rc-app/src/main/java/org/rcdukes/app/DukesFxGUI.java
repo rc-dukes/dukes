@@ -12,8 +12,12 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -21,6 +25,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -78,6 +83,8 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   protected Button helpButton;
   @FXML
   protected Button fullScreenButton;
+  @FXML
+  protected Button hideMenuButton;
   @FXML
   protected Button cameraButton;
   @FXML
@@ -150,6 +157,8 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     this.setButtonIcon(helpButton, FontAwesomeIcon.QUESTION_CIRCLE, color,
         bgColor);
     this.setButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN, color,
+        bgColor);
+    this.setButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN, color,
         bgColor);
     this.lanevideo.setValue("http://wiki.bitplan.com/videos/full_run.mp4");
     this.startvideo.setValue("http://wiki.bitplan.com/videos/startlamp2.m4v");
@@ -254,13 +263,57 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   }
 
   public void addJustFullScreenButton() {
-    if (primaryStage.isMaximized())
+    if (primaryStage.isMaximized()) {
       this.setButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN_EXIT,
           color, bgColor);
-    else
+      setToolTip(fullScreenButton, "part Screen");
+    } else {
       this.setButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN, color,
           bgColor);
+      setToolTip(fullScreenButton, "full Screen");
+    }
 
+  }
+
+  @FXML
+  private void onHideMenu(final ActionEvent event) {
+    showMenuBar(primaryStage.getScene(), menuBar, !menuBar.isVisible());
+  }
+
+  /**
+   * show or hide the menuBar
+   * 
+   * @param scene
+   * @param pMenuBar
+   */
+  public void showMenuBar(Scene scene, MenuBar pMenuBar, boolean show) {
+    Parent sroot = scene.getRoot();
+    ObservableList<Node> rootChilds = null;
+    if (sroot instanceof GridPane)
+      rootChilds = ((GridPane) sroot).getChildren();
+    if (rootChilds == null)
+      throw new RuntimeException(
+          "showMenuBar can not handle scene root of type "
+              + sroot.getClass().getName());
+    if (!show && rootChilds.contains(pMenuBar)) {
+      rootChilds.remove(pMenuBar);
+    } else if (show) {
+      rootChilds.add(0, pMenuBar);
+    }
+    pMenuBar.setVisible(show);
+    if (pMenuBar.isVisible()) {
+      this.setButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN, color,
+          bgColor);
+      setToolTip(hideMenuButton, "hide Menu");
+    } else {
+      this.setButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_UP, color,
+          bgColor);
+      setToolTip(hideMenuButton, "show Menu");
+    }
+  }
+
+  public void setToolTip(Button button, String toolTipText) {
+    button.setTooltip(new Tooltip(toolTipText));
   }
 
   /**
