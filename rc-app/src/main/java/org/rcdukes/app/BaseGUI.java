@@ -33,7 +33,7 @@ public class BaseGUI {
   Stage primaryStage;
   GUIDisplayer displayer;
   String menuButtonColor="white";
-  String buttonInactiveColor="lightgray";
+  String buttonInactiveColor="gray";
   String buttonColor = "blue";
   String buttonActiveColor="red";
   String buttonBgColor = "transparent";

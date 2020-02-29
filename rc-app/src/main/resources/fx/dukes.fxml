@@ -29,7 +29,7 @@
 	fx:controller="org.rcdukes.app.DukesFxGUI">
 	<MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput"
 		BorderPane.alignment="CENTER" GridPane.columnIndex="0"
-		GridPane.columnSpan="3" GridPane.hgrow="always" GridPane.rowIndex="0">
+		GridPane.columnSpan="4" GridPane.hgrow="always" GridPane.rowIndex="0">
 		<menus>
 			<Menu text="File">
 				<items>
@@ -49,7 +49,7 @@
 		</menus>
 	</MenuBar>
 	<HBox style="-fx-background-color: #303F9F;"
-		GridPane.columnIndex="0" GridPane.columnSpan="3"
+		GridPane.columnIndex="0" GridPane.columnSpan="4"
 		GridPane.hgrow="always" GridPane.rowIndex="1">
 		<Button fx:id="homeButton" text="Home"
 			ButtonBar.buttonData="LEFT" />
@@ -64,10 +64,10 @@
 		<Button fx:id="fullScreenButton" onAction="#onFullScreen" text="full Screen"
 			ButtonBar.buttonData="RIGHT" />
 		<Button fx:id="hideMenuButton" onAction="#onHideMenu" text="hide Menu"
-			ButtonBar.buttonData="RIGHT" />		
+			ButtonBar.buttonData="RIGHT" />
 	</HBox>
 	<HBox style="-fx-background-color: #3F51B5;"
-		GridPane.columnIndex="0" GridPane.columnSpan="3"
+		GridPane.columnIndex="0" GridPane.columnSpan="4"
 		GridPane.hgrow="always" GridPane.rowIndex="2">
 		<padding>
 			<Insets bottom="4" left="4" right="4" top="4" />
@@ -79,8 +79,8 @@
 	<VBox GridPane.columnIndex="0" GridPane.rowIndex="3">
 		<fx:include fx:id="navigation" source="navigation.fxml" />
 	</VBox>
-	<VBox GridPane.rowIndex="3" GridPane.columnIndex="1"
-		GridPane.columnSpan="2">
+	<VBox GridPane.columnIndex="1" GridPane.rowIndex="3"
+		GridPane.columnSpan="3">
 		<fx:include fx:id="camera" source="camera.fxml" />
 	</VBox>
 	<VBox GridPane.columnIndex="0" GridPane.rowIndex="4">
@@ -90,12 +90,20 @@
 			</padding>
 			<Text fill="white" stroke="white" text="Events" />
 		</HBox>
-		<TextArea fx:id="messageArea" text=""
-			GridPane.columnIndex="0" GridPane.hgrow="always"
-			GridPane.rowIndex="4" GridPane.vgrow="always" />
+		<TextArea fx:id="messageArea" text=""/>
 	</VBox>
-
 	<BorderPane GridPane.columnIndex="1" GridPane.rowIndex="4"
+		GridPane.vgrow="always">
+		<top>
+			<HBox style="-fx-background-color: #3F51B5;">
+				<padding>
+					<Insets bottom="4" left="4" right="4" top="4" />
+				</padding>
+				<Text fill="white" stroke="white" text="Heartbeat" />
+			</HBox>
+		</top>
+	</BorderPane>
+	<BorderPane GridPane.columnIndex="2" GridPane.rowIndex="4"
 		GridPane.vgrow="always">
 		<top>
 			<HBox style="-fx-background-color: #3F51B5;">
@@ -152,7 +160,7 @@
 			</VBox>
 		</center>
 	</BorderPane>
-	<BorderPane GridPane.columnIndex="2" GridPane.rowIndex="4">
+	<BorderPane GridPane.columnIndex="3" GridPane.rowIndex="4">
 		<top>
 			<HBox style="-fx-background-color: #3F51B5;">
 				<padding>

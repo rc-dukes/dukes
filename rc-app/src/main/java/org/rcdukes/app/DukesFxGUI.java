@@ -298,11 +298,11 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     }
     pMenuBar.setVisible(show);
     if (pMenuBar.isVisible()) {
-      this.setButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN, buttonColor,
+      this.setButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN, menuButtonColor,
           buttonBgColor);
       setButtonTooltip(hideMenuButton, "hide Menu");
     } else {
-      this.setButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_UP, buttonColor,
+      this.setButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_UP, menuButtonColor,
           buttonBgColor);
       setButtonTooltip(hideMenuButton, "show Menu");
     }
