@@ -38,5 +38,15 @@
 			GridPane.columnIndex="1" />
 		<Button fx:id="powerButton" text="power" GridPane.rowIndex="3"
 			GridPane.columnIndex="3" />
+		<Button fx:id="photoButton" text="photo" GridPane.rowIndex="4"
+			GridPane.columnIndex="0" />	
+		<Button fx:id="recordButton" text="record" GridPane.rowIndex="4"
+			GridPane.columnIndex="1" />	
+		<Button fx:id="startCarButton" text="start Car" GridPane.rowIndex="5"
+			GridPane.columnIndex="0" />	
+		<Button fx:id="requestConfigButton" text="get Config" GridPane.rowIndex="5"
+			GridPane.columnIndex="1" />				
+		<Button fx:id="echoButton" text="echo" GridPane.rowIndex="5"
+			GridPane.columnIndex="2" />		
 	</GridPane>
 </VBox>

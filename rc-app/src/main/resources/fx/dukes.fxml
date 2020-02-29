@@ -61,6 +61,8 @@
 			ButtonBar.buttonData="LEFT" />
 		<Button fx:id="helpButton" onAction="#onHelp" text="Help"
 			ButtonBar.buttonData="LEFT" />
+		<Button fx:id="fullScreenButton" onAction="#onFullScreen" text="full Screen"
+			ButtonBar.buttonData="RIGHT" />	
 	</HBox>
 	<HBox style="-fx-background-color: #3F51B5;"
 		GridPane.columnIndex="0" GridPane.columnSpan="3"

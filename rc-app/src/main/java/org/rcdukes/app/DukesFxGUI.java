@@ -54,7 +54,7 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   private VBox navigation;
   @FXML
   private NavigationGUI navigationController;
-  
+
   @FXML
   private HBox camera;
   @FXML
@@ -77,6 +77,8 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   @FXML
   protected Button helpButton;
   @FXML
+  protected Button fullScreenButton;
+  @FXML
   protected Button cameraButton;
   @FXML
   protected ComboBox<String> lanevideo;
@@ -85,13 +87,12 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   @FXML
   protected TextArea messageArea;
 
-  @FXML 
+  @FXML
   protected LabeledValueSlider roiy;
-  
-  @FXML 
+
+  @FXML
   protected LabeledValueSlider roih;
- 
-  
+
   // FXML label to show the current values set with the sliders
   @FXML
   private Label currentValues;
@@ -101,6 +102,9 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   enum DisplayMode {
     Lane, Start
   }
+
+  String color = "white";
+  String bgColor = "transparent";
 
   DisplayMode displayMode = DisplayMode.Lane;
   private Stage primaryStage;
@@ -127,25 +131,30 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     // bind a text property with the string containing the current Values of
     currentValuesProp = new SimpleObjectProperty<>();
     this.currentValues.textProperty().bind(currentValuesProp);
-    this.lanevideo.getItems().setAll("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg/1280px-4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg","http://picaro/html/cam_pic_new.php","http://picarford:8080/?action=stream");
-    this.cameraController.roiy=roiy;
-    this.cameraController.roih=roih;
+    this.lanevideo.getItems().setAll(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg/1280px-4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg",
+        "http://picaro/html/cam_pic_new.php",
+        "http://picarford:8080/?action=stream");
+    this.cameraController.roiy = roiy;
+    this.cameraController.roih = roih;
   }
 
   @FXML
   public void initialize() {
-    String color="white";
-    String bgColor="transparent";
-    this.setButtonIcon(homeButton, MaterialDesignIcon.HOME,color,bgColor);
-    this.setButtonIcon(detectButton, MaterialDesignIcon.CAMERA,color,bgColor);
-    this.setButtonIcon(githubButton, MaterialDesignIcon.GITHUB_BOX,color,bgColor);
-    this.setButtonIcon(chatButton, MaterialDesignIcon.COMMENT_TEXT,color,bgColor);
-    this.setButtonIcon(helpButton, FontAwesomeIcon.QUESTION_CIRCLE,color,bgColor);
+    this.setButtonIcon(homeButton, MaterialDesignIcon.HOME, color, bgColor);
+    this.setButtonIcon(detectButton, MaterialDesignIcon.CAMERA, color, bgColor);
+    this.setButtonIcon(githubButton, MaterialDesignIcon.GITHUB_BOX, color,
+        bgColor);
+    this.setButtonIcon(chatButton, MaterialDesignIcon.COMMENT_TEXT, color,
+        bgColor);
+    this.setButtonIcon(helpButton, FontAwesomeIcon.QUESTION_CIRCLE, color,
+        bgColor);
+    this.setButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN, color,
+        bgColor);
     this.lanevideo.setValue("http://wiki.bitplan.com/videos/full_run.mp4");
     this.startvideo.setValue("http://wiki.bitplan.com/videos/startlamp2.m4v");
   }
 
- 
   @FXML
   public void startCamera() throws Exception {
     switch (displayMode) {
@@ -230,6 +239,28 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   @FXML
   private void onHelp(final ActionEvent event) {
     this.help();
+  }
+
+  /**
+   * fullscreen toggle clicked
+   * 
+   * @param event
+   */
+  @FXML
+  private void onFullScreen(final ActionEvent event) {
+    this.primaryStage.setMaximized(!primaryStage.isMaximized());
+    // this.primaryStage.setFullScreen(!primaryStage.isFullScreen());
+    addJustFullScreenButton();
+  }
+
+  public void addJustFullScreenButton() {
+    if (primaryStage.isMaximized())
+      this.setButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN_EXIT,
+          color, bgColor);
+    else
+      this.setButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN, color,
+          bgColor);
+
   }
 
   /**
@@ -320,4 +351,5 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   public void setMessageText(String text) {
     this.messageArea.setText(text);
   }
+
 }

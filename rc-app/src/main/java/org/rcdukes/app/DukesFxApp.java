@@ -30,8 +30,11 @@ public class DukesFxApp extends Application {
     scene.getStylesheets().add(css);
     DukesFxGUI gui = loader.getController();
     gui.init(primaryStage);
-    primaryStage.setTitle("Dukes lane detection");
+    primaryStage.setTitle("RC-Dukes Self driving Car");
     primaryStage.setScene(scene);
+    primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
+      gui.addJustFullScreenButton();
+    });
     primaryStage.show();
   }
   

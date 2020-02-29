@@ -29,13 +29,23 @@ public class NavigationGUI extends BaseGUI {
   protected Button centerButton;
   @FXML
   protected Button powerButton;
+  @FXML
+  protected Button photoButton;
+  @FXML
+  protected Button recordButton;
+  @FXML
+  protected Button startCarButton;
+  @FXML
+  protected Button requestConfigButton;
+  @FXML
+  protected Button echoButton;
   
   @FXML
   public void initialize() {
     String bgColor="transparent";
     String color="#808080";
     setButtonIcon(upButton,MaterialDesignIcon.ARROW_UP_BOLD,color,bgColor);
-    setButtonIcon(autoPilotButton,MaterialDesignIcon.CAR,color,bgColor);
+    setButtonIcon(autoPilotButton,MaterialDesignIcon.UPLOAD,color,bgColor);
     setButtonIcon(leftButton,MaterialDesignIcon.ARROW_LEFT_BOLD,color,bgColor);
     setButtonIcon(stopButton,MaterialDesignIcon.STOP,color,bgColor);
     setButtonIcon(rightButton,MaterialDesignIcon.ARROW_RIGHT_BOLD,color,bgColor);
@@ -44,6 +54,11 @@ public class NavigationGUI extends BaseGUI {
     setButtonIcon(brakeButton, MaterialDesignIcon.CLOSE,color,bgColor);
     setButtonIcon(centerButton, MaterialDesignIcon.IMAGE_FILTER_CENTER_FOCUS,color,bgColor);
     setButtonIcon(powerButton, MaterialDesignIcon.POWER,"blue",bgColor);
-  }
+    setButtonIcon(photoButton, MaterialDesignIcon.CAMERA,color,bgColor);
+    setButtonIcon(recordButton, MaterialDesignIcon.RECORD,color,bgColor);
+    setButtonIcon(startCarButton, MaterialDesignIcon.CAR,color,bgColor);
+    setButtonIcon(requestConfigButton, MaterialDesignIcon.SETTINGS,color,bgColor);
+    setButtonIcon(echoButton, MaterialDesignIcon.BULLHORN,color,bgColor);
+     }
   
 }
