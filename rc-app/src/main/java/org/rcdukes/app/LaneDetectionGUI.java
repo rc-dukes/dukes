@@ -4,7 +4,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.rcdukes.camera.CameraMatrix;
 import org.rcdukes.common.Config;
-import org.rcdukes.detect.CameraConfig;
 import org.rcdukes.detect.ImageFetcher;
 import org.rcdukes.detect.ImageSubscriber;
 import org.rcdukes.detect.LaneDetector;
@@ -13,8 +12,6 @@ import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageCollector.ImageType;
 
-import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
@@ -52,7 +49,6 @@ public class LaneDetectionGUI extends BaseGUI {
 
   public LaneDetectionGUI() {
     Config.configureLogging();
-    initVertx();
   }
 
   public void startCamera(CameraGUI cameraGUI) throws Exception {
@@ -134,18 +130,4 @@ public class LaneDetectionGUI extends BaseGUI {
     this.lineDetectMaxLineGap.setValue(ld.getMaxLineGap());
   }
 
-  private void initVertx() {
-    VertxOptions options = new VertxOptions().setClustered(true)
-        .setClusterManager(Config.createHazelcastConfig());
-
-    Vertx.clusteredVertx(options, resultHandler -> {
-      Vertx vertx = resultHandler.result();
-
-      Runtime.getRuntime().addShutdownHook(new Thread() {
-        public void run() {
-          vertx.close();
-        }
-      });
-    });
-  }
 }

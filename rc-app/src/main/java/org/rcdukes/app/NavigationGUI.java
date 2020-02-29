@@ -62,10 +62,17 @@ public class NavigationGUI extends BaseGUI {
   }
 
   boolean power=false;
+  private App appVerticle;
   
   @FXML
   private void onPower(final ActionEvent event) {
     power=!power;
     super.setButtonActive(powerButton,power);
+    if (power) {
+      appVerticle=App.getInstance();
+    } 
+    appVerticle.heartBeat(power);
   }
+  
+  
 }

@@ -37,14 +37,6 @@ public class StartLightDetectionGUI extends BaseGUI {
 
   public StartLightDetectionGUI() {
     Config.configureLogging();
-    VertxOptions options = new VertxOptions().setClustered(true)
-        .setClusterManager(Config.createHazelcastConfig());
-
-    Vertx.clusteredVertx(options, resultHandler -> {
-      Vertx vertx = resultHandler.result();
-      this.vertx = vertx;
-    });
-
   }
 
   private boolean lightOn = false;
