@@ -9,28 +9,22 @@
 <HBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml/1"
 	xmlns="http://javafx.com/javafx/11.0.1"
 	fx:controller="org.rcdukes.app.CameraGUI">
-
-	<GridPane>
-		<HBox  styleClass="header" GridPane.rowIndex="0"  GridPane.columnIndex="0">
-			<padding>
-				<Insets top="4" right="4" bottom="4" left="4" />
-			</padding>
-			<Text fill="white" stroke="white" text="camera" />
+	<VBox>
+		<HBox  styleClass="header" >
+			<Text styleClass="headertext" text="camera" />
 		</HBox>
 		<ImageView GridPane.rowIndex="1"  GridPane.columnIndex="0" fx:id="originalFrame" />
-		<HBox GridPane.rowIndex="0"  GridPane.columnIndex="1" style="-fx-background-color: #3F51B5;">
-			<padding>
-				<Insets top="4" right="4" bottom="4" left="4" />
-			</padding>
+	</VBox>
+	<VBox>
+		<HBox  styleClass="header" >
 			<Text fill="white" stroke="white" text="edges/birdseye" />
 		</HBox>
 		<ImageView fx:id="processedImage1"  GridPane.rowIndex="1"  GridPane.columnIndex="1" />
-		<HBox GridPane.rowIndex="0"  GridPane.columnIndex="2" style="-fx-background-color: #3F51B5;">
-			<padding>
-				<Insets top="4" right="4" bottom="4" left="4" />
-			</padding>
-			<Text fill="white" stroke="white" text="lines" />
+	</VBox>
+	<VBox>
+		<HBox  styleClass="header" >
+			<Text styleClass="headertext" text="lines" />
 		</HBox>
 		<ImageView fx:id="processedImage2"  GridPane.rowIndex="1"  GridPane.columnIndex="2"/>
-	</GridPane>
+	</VBox>
 </HBox>

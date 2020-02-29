@@ -53,7 +53,7 @@
 		<Button fx:id="hideMenuButton" onAction="#onHideMenu" text="hide Menu" ButtonBar.buttonData="RIGHT"/>
 	</HBox>
 	<HBox styleClass="header">
-		<Text fill="white" stroke="white" text="Self Driving RC Car Desktop Control"/>
+		<Text styleClass="headertext" text="Self Driving RC Car Desktop Control"/>
 	</HBox>
 	<HBox>
 		<fx:include fx:id="navigation" source="navigation.fxml"/>
@@ -62,23 +62,23 @@
 	<HBox>
 		<VBox>
 			<HBox styleClass="header">
-				<Text fill="white" stroke="white" text="Events"/>
+				<Text styleClass="headertext" text="Events"/>
 			</HBox>
 			<TextArea fx:id="messageArea" text="" prefColumnCount="25"/>
 		</VBox>
 		<VBox>
 			<HBox styleClass="header">
-				<Text fill="white" stroke="white" text="Heartbeat"/>
+				<Text styleClass="headertext" text="Heartbeat"/>
 			</HBox>
 			<TextArea fx:id="heartbeatArea" text="" prefColumnCount="25"/>
 		</VBox>
 		<VBox>
 			<HBox styleClass="header">
-				<Text fill="white" stroke="white" text="Imageview Config"/>
+				<Text styleClass="headertext" text="Imageview Config"/>
 			</HBox>
-			<VBox alignment="CENTER_LEFT" spacing="15">
+			<VBox alignment="CENTER_LEFT" spacing="12">
 				<padding>
-					<Insets bottom="25" left="25" right="25" top="25"/>
+					<Insets bottom="15" left="15" right="15" top="15"/>
 				</padding>
 				<Label text="Camera config" style='-fx-font-weight: bold'/>
 				<LabeledValueSlider fx:id="roiy" text="ROI y" blockIncrement="1" max="100" min="0" value="19" format="\%.0f"/>
@@ -115,7 +115,7 @@
 		</VBox>
 		<VBox>
 			<HBox styleClass="header">
-				<Text fill="white" stroke="white" text="Detection Config"/>
+				<Text styleClass="headertext" text="Detection Config"/>
 			</HBox>
 			<TabPane fx:id="tabPane" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://www.w3.org/2001/XInclude">
 				<tabs>

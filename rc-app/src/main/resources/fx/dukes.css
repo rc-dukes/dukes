@@ -7,6 +7,10 @@
   -fx-background-color: #3F51B5;
   -fx-padding: 4 4 4 4;
 }
+.headertext { 
+  -fx-fill: white;
+  -fx-stroke: white;
+}
 
 .glyph-icon{
     -fx-text-fill: -icons-color;
