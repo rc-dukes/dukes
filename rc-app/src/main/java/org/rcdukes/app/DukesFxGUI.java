@@ -40,7 +40,7 @@ import javafx.stage.Stage;
  */
 public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   @FXML
-  private GridPane root;
+  private VBox root;
   @FXML
   private VBox vbox;
   @FXML
@@ -285,8 +285,8 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   public void showMenuBar(Scene scene, MenuBar pMenuBar, boolean show) {
     Parent sroot = scene.getRoot();
     ObservableList<Node> rootChilds = null;
-    if (sroot instanceof GridPane)
-      rootChilds = ((GridPane) sroot).getChildren();
+    if (sroot instanceof VBox)
+      rootChilds = ((VBox) sroot).getChildren();
     if (rootChilds == null)
       throw new RuntimeException(
           "showMenuBar can not handle scene root of type "

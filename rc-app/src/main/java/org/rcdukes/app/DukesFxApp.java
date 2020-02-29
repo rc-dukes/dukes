@@ -7,7 +7,7 @@ import org.rcdukes.opencv.NativeLibrary;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 /**
  * Java FX based GUI 
@@ -24,7 +24,7 @@ public class DukesFxApp extends Application {
   public void start(Stage primaryStage) throws Exception {
     // see https://stackoverflow.com/questions/39164050/javafx-8-tabpanes-and-tabs-with-separate-fxml-and-controllers-for-each-tab
     FXMLLoader loader = new FXMLLoader(getResource("fx/dukes.fxml"));   
-    GridPane root = loader.load();
+    VBox root = loader.load();
     Scene scene = new Scene(root, BaseGUI.getScreenWidth()*3/4, BaseGUI.getScreenHeight()*3/4);
     String css = getResource("fx/dukes.css").toExternalForm(); 
     scene.getStylesheets().add(css);

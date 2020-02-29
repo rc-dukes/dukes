@@ -5,7 +5,9 @@
 }
 .header {
   -fx-background-color: #3F51B5;
+  -fx-padding: 4 4 4 4;
 }
+
 .glyph-icon{
     -fx-text-fill: -icons-color;
     -fx-fill: -icons-color;
@@ -15,3 +17,5 @@
 .glyph-icon:hover{
     -fx-effect:  dropshadow(three-pass-box, rgba(0,0,0,0.2), 4, 0, 0, 0);
 }
+
+

@@ -23,13 +23,11 @@
 <?import javafx.scene.text.Text?>
 <?import org.rcdukes.app.LabeledValueSlider?>
 
-<GridPane id="root" maxHeight="Infinity" maxWidth="Infinity"
+<VBox id="root" maxHeight="Infinity" maxWidth="Infinity"
 	xmlns:fx="http://javafx.com/fxml/1"
 	xmlns="http://javafx.com/javafx/11.0.1"
 	fx:controller="org.rcdukes.app.DukesFxGUI">
-	<MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput"
-		BorderPane.alignment="CENTER" GridPane.columnIndex="0"
-		GridPane.columnSpan="4" GridPane.hgrow="always" GridPane.rowIndex="0">
+	<MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput">
 		<menus>
 			<Menu text="File">
 				<items>
@@ -48,9 +46,7 @@
 			</Menu>
 		</menus>
 	</MenuBar>
-	<HBox style="-fx-background-color: #303F9F;"
-		GridPane.columnIndex="0" GridPane.columnSpan="4"
-		GridPane.hgrow="always" GridPane.rowIndex="1">
+	<HBox style="-fx-background-color: #303F9F;">
 		<Button fx:id="homeButton" text="Home"
 			ButtonBar.buttonData="LEFT" />
 		<Button fx:id="detectButton" text="Detect"
@@ -66,45 +62,35 @@
 		<Button fx:id="hideMenuButton" onAction="#onHideMenu" text="hide Menu"
 			ButtonBar.buttonData="RIGHT" />
 	</HBox>
-	<HBox style="-fx-background-color: #3F51B5;"
-		GridPane.columnIndex="0" GridPane.columnSpan="4"
-		GridPane.hgrow="always" GridPane.rowIndex="2">
+	<HBox style="-fx-background-color: #3F51B5;">
 		<padding>
 			<Insets bottom="4" left="4" right="4" top="4" />
 		</padding>
 		<Text fill="white" stroke="white"
 			text="Self Driving RC Car Desktop Control" />
 	</HBox>
-
-	<VBox GridPane.columnIndex="0" GridPane.rowIndex="3">
-		<fx:include fx:id="navigation" source="navigation.fxml" />
-	</VBox>
-	<VBox GridPane.columnIndex="1" GridPane.rowIndex="3"
-		GridPane.columnSpan="3">
-		<fx:include fx:id="camera" source="camera.fxml" />
-	</VBox>
-	<VBox GridPane.columnIndex="0" GridPane.rowIndex="4">
-		<HBox style="-fx-background-color: #3F51B5;">
-			<padding>
-				<Insets bottom="4" left="4" right="4" top="4" />
-			</padding>
-			<Text fill="white" stroke="white" text="Events" />
-		</HBox>
-		<TextArea fx:id="messageArea" text=""/>
-	</VBox>
-	<BorderPane GridPane.columnIndex="1" GridPane.rowIndex="4"
-		GridPane.vgrow="always">
-		<top>
-			<HBox style="-fx-background-color: #3F51B5;">
-				<padding>
-					<Insets bottom="4" left="4" right="4" top="4" />
-				</padding>
-				<Text fill="white" stroke="white" text="Heartbeat" />
+  <HBox>
+			<fx:include fx:id="navigation" source="navigation.fxml" />
+  		<fx:include fx:id="camera" source="camera.fxml" />
+	</HBox>
+	<HBox>
+		<VBox>
+			<HBox styleClass="header">
+				<Text fill="white" stroke="white" text="Events" />
 			</HBox>
-		</top>
-	</BorderPane>
-	<BorderPane GridPane.columnIndex="2" GridPane.rowIndex="4"
-		GridPane.vgrow="always">
+			<TextArea fx:id="messageArea" text=""/>
+		</VBox>
+		<BorderPane>
+			<top>
+				<HBox style="-fx-background-color: #3F51B5;">
+					<padding>
+						<Insets bottom="4" left="4" right="4" top="4" />
+					</padding>
+					<Text fill="white" stroke="white" text="Heartbeat" />
+				</HBox>
+			</top>
+		</BorderPane>
+	  <BorderPane>
 		<top>
 			<HBox style="-fx-background-color: #3F51B5;">
 				<padding>
@@ -186,16 +172,5 @@
 			</TabPane>
 		</center>
 	</BorderPane>
-	<columnConstraints>
-		<ColumnConstraints prefWidth="480.0" />
-		<ColumnConstraints prefWidth="640.0"/>
-		<ColumnConstraints prefWidth="640.0"/>
-	</columnConstraints>
-	<rowConstraints>
-		<RowConstraints />
-		<RowConstraints />
-		<RowConstraints />
-		<RowConstraints />
-		<RowConstraints />
-	</rowConstraints>
-</GridPane>
+</HBox>
+</VBox>
