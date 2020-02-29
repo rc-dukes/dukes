@@ -15,7 +15,7 @@
 .glyph-icon{
     -fx-text-fill: -icons-color;
     -fx-fill: -icons-color;
-    -glyph-size: 24px;
+    -glyph-size: 36px;
 }
 
 .glyph-icon:hover{

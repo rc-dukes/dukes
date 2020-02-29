@@ -29,7 +29,7 @@ import org.rcdukes.common.ErrorHandler;
  *
  */
 public class BaseGUI {
-  boolean debug=true;
+  boolean debug=false;
   Stage primaryStage;
   GUIDisplayer displayer;
   String menuButtonColor="white";
@@ -148,14 +148,24 @@ public class BaseGUI {
    *          - the color of the icon
    * @param bgColor
    *          - the background color of the icon
+   * @param size
+   *          - the size of the icon
    */
   public void setButtonIcon(Button button, GlyphIcons icon, String color,
-      String bgColor) {
-    GlyphsDude.setIcon(button, icon, "2.5em");
+      String bgColor, String size) {
+    GlyphsDude.setIcon(button, icon, size);
     String text = button.getText();
     button.setText("");
     setButtonTooltip(button, text);
     setButtonColor(button, color, bgColor);
+  }
+  
+  public void setButtonIcon(Button button, GlyphIcons icon) {
+    this.setButtonIcon(button, icon,buttonColor,buttonBgColor,"3em");
+  }
+  
+  public void setMenuButtonIcon(Button button,GlyphIcons icon) {
+    this.setButtonIcon(button, icon, menuButtonColor, buttonBgColor,"2em");
   }
 
   public void setButtonTooltip(Button button, String toolTipText) {

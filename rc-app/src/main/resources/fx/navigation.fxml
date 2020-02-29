@@ -6,16 +6,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <?import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView?>
-<VBox alignment="CENTER" spacing="10"
+<VBox alignment="CENTER"
 	xmlns:fx="http://javafx.com/fxml/1"
 	xmlns="http://javafx.com/javafx/11.0.1"
 	fx:controller="org.rcdukes.app.NavigationGUI">
 
 	<HBox styleClass="header">
-		<padding>
-			<Insets top="4" right="4" bottom="4" left="4" />
-		</padding>
-		<Text fill="white" stroke="white" text="navigation" />
+		<Text styleClass="headertext" text="navigation" />
 	</HBox>
 	<GridPane gridLinesVisible="true">
 		<Button fx:id="upButton" text="up" GridPane.rowIndex="0"
@@ -29,9 +26,9 @@
 		<Button fx:id="rightButton" text="right" GridPane.rowIndex="1"
 			GridPane.columnIndex="2" />
 	    <Button fx:id="downButton" text="down" GridPane.rowIndex="2"
-			GridPane.columnIndex="1" />		
+			GridPane.columnIndex="1" />
 		<Button fx:id="manualButton" text="manual" GridPane.rowIndex="2"
-			GridPane.columnIndex="3" />			
+			GridPane.columnIndex="3" />
 		<Button fx:id="brakeButton" text="brake" GridPane.rowIndex="3"
 			GridPane.columnIndex="0" />
 		<Button fx:id="centerButton" text="center" GridPane.rowIndex="3"
@@ -39,14 +36,14 @@
 		<Button fx:id="powerButton" text="power" GridPane.rowIndex="3"
 			onAction="#onPower" GridPane.columnIndex="3" />
 		<Button fx:id="photoButton" text="photo" GridPane.rowIndex="4"
-			GridPane.columnIndex="0" />	
+			GridPane.columnIndex="0" />
 		<Button fx:id="recordButton" text="record" GridPane.rowIndex="4"
-			GridPane.columnIndex="1" />	
+			GridPane.columnIndex="1" />
 		<Button fx:id="startCarButton" text="start Car" GridPane.rowIndex="5"
-			GridPane.columnIndex="0" />	
+			GridPane.columnIndex="0" />
 		<Button fx:id="requestConfigButton" text="get Config" GridPane.rowIndex="5"
-			GridPane.columnIndex="1" />				
+			GridPane.columnIndex="1" />
 		<Button fx:id="echoButton" text="echo" GridPane.rowIndex="5"
-			GridPane.columnIndex="3" />		
+			GridPane.columnIndex="3" />
 	</GridPane>
 </VBox>

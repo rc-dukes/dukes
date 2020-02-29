@@ -144,18 +144,13 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
 
   @FXML
   public void initialize() {
-    this.setButtonIcon(homeButton, MaterialDesignIcon.HOME, menuButtonColor, buttonBgColor);
-    this.setButtonIcon(detectButton, MaterialDesignIcon.CAMERA, menuButtonColor, buttonBgColor);
-    this.setButtonIcon(githubButton, MaterialDesignIcon.GITHUB_BOX, menuButtonColor,
-        buttonBgColor);
-    this.setButtonIcon(chatButton, MaterialDesignIcon.COMMENT_TEXT, menuButtonColor,
-        buttonBgColor);
-    this.setButtonIcon(helpButton, FontAwesomeIcon.QUESTION_CIRCLE, menuButtonColor,
-        buttonBgColor);
-    this.setButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN, menuButtonColor,
-        buttonBgColor);
-    this.setButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN, menuButtonColor,
-        buttonBgColor);
+    this.setMenuButtonIcon(homeButton, MaterialDesignIcon.HOME);
+    this.setMenuButtonIcon(detectButton, MaterialDesignIcon.CAMERA);
+    this.setMenuButtonIcon(githubButton, MaterialDesignIcon.GITHUB_BOX);
+    this.setMenuButtonIcon(chatButton, MaterialDesignIcon.COMMENT_TEXT);
+    this.setMenuButtonIcon(helpButton, FontAwesomeIcon.QUESTION_CIRCLE);
+    this.setMenuButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN);
+    this.setMenuButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN);
     this.lanevideo.setValue("http://wiki.bitplan.com/videos/full_run.mp4");
     this.startvideo.setValue("http://wiki.bitplan.com/videos/startlamp2.m4v");
   }
@@ -260,12 +255,10 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
 
   public void addJustFullScreenButton() {
     if (primaryStage.isMaximized()) {
-      this.setButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN_EXIT,
-          menuButtonColor, buttonBgColor);
+      this.setMenuButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN_EXIT);
       setButtonTooltip(fullScreenButton, "part Screen");
     } else {
-      this.setButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN, menuButtonColor,
-          buttonBgColor);
+      this.setMenuButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN);
       setButtonTooltip(fullScreenButton, "full Screen");
     }
 
@@ -298,12 +291,10 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     }
     pMenuBar.setVisible(show);
     if (pMenuBar.isVisible()) {
-      this.setButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN, menuButtonColor,
-          buttonBgColor);
+      this.setMenuButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN);
       setButtonTooltip(hideMenuButton, "hide Menu");
     } else {
-      this.setButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_UP, menuButtonColor,
-          buttonBgColor);
+      this.setMenuButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_UP);
       setButtonTooltip(hideMenuButton, "show Menu");
     }
   }

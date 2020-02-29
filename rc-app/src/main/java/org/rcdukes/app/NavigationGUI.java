@@ -44,26 +44,21 @@ public class NavigationGUI extends BaseGUI {
 
   @FXML
   public void initialize() {
-    setButtonIcon(upButton, MaterialDesignIcon.ARROW_UP_BOLD, buttonInactiveColor, buttonBgColor);
-    setButtonIcon(autoPilotButton, MaterialDesignIcon.UPLOAD, buttonInactiveColor, buttonBgColor);
-    setButtonIcon(leftButton, MaterialDesignIcon.ARROW_LEFT_BOLD, buttonInactiveColor,
-        buttonBgColor);
-    setButtonIcon(stopButton, MaterialDesignIcon.STOP, buttonInactiveColor, buttonBgColor);
-    setButtonIcon(rightButton, MaterialDesignIcon.ARROW_RIGHT_BOLD, buttonInactiveColor,
-        buttonBgColor);
-    setButtonIcon(downButton, MaterialDesignIcon.ARROW_DOWN_BOLD, buttonInactiveColor,
-        buttonBgColor);
-    setButtonIcon(manualButton, MaterialDesignIcon.ACCOUNT, buttonInactiveColor, buttonBgColor);
-    setButtonIcon(brakeButton, MaterialDesignIcon.CLOSE, buttonInactiveColor, buttonBgColor);
-    setButtonIcon(centerButton, MaterialDesignIcon.IMAGE_FILTER_CENTER_FOCUS,
-        buttonInactiveColor, buttonBgColor);
-    setButtonIcon(powerButton, MaterialDesignIcon.POWER, buttonColor,buttonBgColor);
-    setButtonIcon(photoButton, MaterialDesignIcon.CAMERA, buttonInactiveColor, buttonBgColor);
-    setButtonIcon(recordButton, MaterialDesignIcon.RECORD, buttonInactiveColor, buttonBgColor);
-    setButtonIcon(startCarButton, MaterialDesignIcon.CAR, buttonColor, buttonBgColor);
-    setButtonIcon(requestConfigButton, MaterialDesignIcon.SETTINGS, buttonColor,
-        buttonBgColor);
-    setButtonIcon(echoButton, MaterialDesignIcon.BULLHORN, buttonColor, buttonBgColor);
+    setButtonIcon(upButton, MaterialDesignIcon.ARROW_UP_BOLD);
+    setButtonIcon(autoPilotButton, MaterialDesignIcon.UPLOAD);
+    setButtonIcon(leftButton, MaterialDesignIcon.ARROW_LEFT_BOLD);
+    setButtonIcon(stopButton, MaterialDesignIcon.STOP);
+    setButtonIcon(rightButton, MaterialDesignIcon.ARROW_RIGHT_BOLD);
+    setButtonIcon(downButton, MaterialDesignIcon.ARROW_DOWN_BOLD);
+    setButtonIcon(manualButton, MaterialDesignIcon.ACCOUNT);
+    setButtonIcon(brakeButton, MaterialDesignIcon.CLOSE);
+    setButtonIcon(centerButton, MaterialDesignIcon.IMAGE_FILTER_CENTER_FOCUS);
+    setButtonIcon(powerButton, MaterialDesignIcon.POWER);
+    setButtonIcon(photoButton, MaterialDesignIcon.CAMERA);
+    setButtonIcon(recordButton, MaterialDesignIcon.RECORD);
+    setButtonIcon(startCarButton, MaterialDesignIcon.CAR);
+    setButtonIcon(requestConfigButton, MaterialDesignIcon.SETTINGS);
+    setButtonIcon(echoButton, MaterialDesignIcon.BULLHORN);
   }
 
   boolean power=false;

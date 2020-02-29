@@ -23,7 +23,8 @@ public class CameraGUI extends BaseGUI {
 
   @FXML
   public void initialize() {
-    this.configureImageDisplaySize(400);
+    int fitWidth = (int)(BaseGUI.getScreenWidth()/1920.0*800);
+    this.configureImageDisplaySize(fitWidth);
   }
   
   public CameraGUI() {
@@ -31,10 +32,14 @@ public class CameraGUI extends BaseGUI {
     cameraConfig=new CameraConfig();
   }
 
+  /**
+   * configure the image display size to the given fitWidth
+   * @param fitWidth
+   */
   private void configureImageDisplaySize(int fitWidth) {
     this.imageViewProperties(this.originalFrame, fitWidth);
-    this.imageViewProperties(this.processedImage1, fitWidth);
-    this.imageViewProperties(this.processedImage2, fitWidth);
+    this.imageViewProperties(this.processedImage1, fitWidth*3/4);
+    this.imageViewProperties(this.processedImage2, fitWidth*3/4);
   }
 
   public void applySliderValues() {
