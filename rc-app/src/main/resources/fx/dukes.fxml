@@ -23,154 +23,110 @@
 <?import javafx.scene.text.Text?>
 <?import org.rcdukes.app.LabeledValueSlider?>
 
-<VBox id="root" maxHeight="Infinity" maxWidth="Infinity"
-	xmlns:fx="http://javafx.com/fxml/1"
-	xmlns="http://javafx.com/javafx/11.0.1"
-	fx:controller="org.rcdukes.app.DukesFxGUI">
+<VBox id="root" maxHeight="Infinity" maxWidth="Infinity" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="org.rcdukes.app.DukesFxGUI">
 	<MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput">
 		<menus>
 			<Menu text="File">
 				<items>
-					<MenuItem onAction="#onOpen" text="Open" />
-					<SeparatorMenuItem />
-					<MenuItem onAction="#onQuit" text="Quit" />
+					<MenuItem onAction="#onOpen" text="Open"/>
+					<SeparatorMenuItem/>
+					<MenuItem onAction="#onQuit" text="Quit"/>
 				</items>
 			</Menu>
 			<Menu text="Help">
 				<items>
-					<MenuItem onAction="#onHelp" text="Online Manual" />
-					<MenuItem onAction="#onReportIssue" text="Report Issue" />
-					<SeparatorMenuItem />
-					<MenuItem onAction="#onHelpAbout" text="About" />
+					<MenuItem onAction="#onHelp" text="Online Manual"/>
+					<MenuItem onAction="#onReportIssue" text="Report Issue"/>
+					<SeparatorMenuItem/>
+					<MenuItem onAction="#onHelpAbout" text="About"/>
 				</items>
 			</Menu>
 		</menus>
 	</MenuBar>
 	<HBox style="-fx-background-color: #303F9F;">
-		<Button fx:id="homeButton" text="Home"
-			ButtonBar.buttonData="LEFT" />
-		<Button fx:id="detectButton" text="Detect"
-			ButtonBar.buttonData="LEFT" />
-		<Button fx:id="githubButton" onAction="#onHelpAbout"
-			text="Github" ButtonBar.buttonData="LEFT" />
-		<Button fx:id="chatButton" onAction="#onChat" text="Chat"
-			ButtonBar.buttonData="LEFT" />
-		<Button fx:id="helpButton" onAction="#onHelp" text="Help"
-			ButtonBar.buttonData="LEFT" />
-		<Button fx:id="fullScreenButton" onAction="#onFullScreen" text="full Screen"
-			ButtonBar.buttonData="RIGHT" />
-		<Button fx:id="hideMenuButton" onAction="#onHideMenu" text="hide Menu"
-			ButtonBar.buttonData="RIGHT" />
+		<Button fx:id="homeButton" text="Home" ButtonBar.buttonData="LEFT"/>
+		<Button fx:id="detectButton" text="Detect" ButtonBar.buttonData="LEFT"/>
+		<Button fx:id="githubButton" onAction="#onHelpAbout" text="Github" ButtonBar.buttonData="LEFT"/>
+		<Button fx:id="chatButton" onAction="#onChat" text="Chat" ButtonBar.buttonData="LEFT"/>
+		<Button fx:id="helpButton" onAction="#onHelp" text="Help" ButtonBar.buttonData="LEFT"/>
+		<Button fx:id="fullScreenButton" onAction="#onFullScreen" text="full Screen" ButtonBar.buttonData="RIGHT"/>
+		<Button fx:id="hideMenuButton" onAction="#onHideMenu" text="hide Menu" ButtonBar.buttonData="RIGHT"/>
 	</HBox>
-	<HBox style="-fx-background-color: #3F51B5;">
-		<padding>
-			<Insets bottom="4" left="4" right="4" top="4" />
-		</padding>
-		<Text fill="white" stroke="white"
-			text="Self Driving RC Car Desktop Control" />
+	<HBox styleClass="header">
+		<Text fill="white" stroke="white" text="Self Driving RC Car Desktop Control"/>
 	</HBox>
-  <HBox>
-			<fx:include fx:id="navigation" source="navigation.fxml" />
-  		<fx:include fx:id="camera" source="camera.fxml" />
+	<HBox>
+		<fx:include fx:id="navigation" source="navigation.fxml"/>
+		<fx:include fx:id="camera" source="camera.fxml"/>
 	</HBox>
 	<HBox>
 		<VBox>
 			<HBox styleClass="header">
-				<Text fill="white" stroke="white" text="Events" />
+				<Text fill="white" stroke="white" text="Events"/>
 			</HBox>
-			<TextArea fx:id="messageArea" text=""/>
+			<TextArea fx:id="messageArea" text="" prefColumnCount="25"/>
 		</VBox>
-		<BorderPane>
-			<top>
-				<HBox style="-fx-background-color: #3F51B5;">
-					<padding>
-						<Insets bottom="4" left="4" right="4" top="4" />
-					</padding>
-					<Text fill="white" stroke="white" text="Heartbeat" />
-				</HBox>
-			</top>
-		</BorderPane>
-	  <BorderPane>
-		<top>
-			<HBox style="-fx-background-color: #3F51B5;">
-				<padding>
-					<Insets bottom="4" left="4" right="4" top="4" />
-				</padding>
-				<Text fill="white" stroke="white" text="Imageview Config" />
+		<VBox>
+			<HBox styleClass="header">
+				<Text fill="white" stroke="white" text="Heartbeat"/>
 			</HBox>
-		</top>
-		<center>
+			<TextArea fx:id="heartbeatArea" text="" prefColumnCount="25"/>
+		</VBox>
+		<VBox>
+			<HBox styleClass="header">
+				<Text fill="white" stroke="white" text="Imageview Config"/>
+			</HBox>
 			<VBox alignment="CENTER_LEFT" spacing="15">
 				<padding>
-					<Insets bottom="25" left="25" right="25" top="25" />
+					<Insets bottom="25" left="25" right="25" top="25"/>
 				</padding>
 				<Label text="Camera config" style='-fx-font-weight: bold'/>
 				<LabeledValueSlider fx:id="roiy" text="ROI y" blockIncrement="1" max="100" min="0" value="19" format="\%.0f"/>
-	            <LabeledValueSlider fx:id="roih" text="ROI h" blockIncrement="1" max="100" min="0" value="100" format="\%.0f"/>
+				<LabeledValueSlider fx:id="roih" text="ROI h" blockIncrement="1" max="100" min="0" value="100" format="\%.0f"/>
 				<GridPane alignment="center" hgap="10" vgap="10">
 					<padding>
-						<Insets bottom="25" left="25" right="25" top="25" />
+						<Insets bottom="25" left="25" right="25" top="25"/>
 					</padding>
 
-					<Text text="Video URLs:" GridPane.columnIndex="0"
-						GridPane.columnSpan="2" GridPane.rowIndex="0" />
+					<Text text="Video URLs:" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0"/>
 
-					<Label text="Lane:" GridPane.columnIndex="0"
-						GridPane.rowIndex="1" />
+					<Label text="Lane:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
 
-					<ComboBox fx:id="lanevideo" GridPane.columnIndex="1"
-						GridPane.rowIndex="1" />
+					<ComboBox fx:id="lanevideo" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-					<Label text="Start:" GridPane.columnIndex="0"
-						GridPane.rowIndex="2" />
+					<Label text="Start:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
 
-					<ComboBox fx:id="startvideo" GridPane.columnIndex="1"
-						GridPane.rowIndex="2" />
-
+					<ComboBox fx:id="startvideo" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
 					<columnConstraints>
-						<ColumnConstraints />
-						<ColumnConstraints minWidth="-Infinity"
-							prefWidth="360.0" />
+						<ColumnConstraints/>
+						<ColumnConstraints minWidth="-Infinity" prefWidth="360.0"/>
 					</columnConstraints>
 					<rowConstraints>
-						<RowConstraints />
-						<RowConstraints />
-						<RowConstraints />
+						<RowConstraints/>
+						<RowConstraints/>
+						<RowConstraints/>
 					</rowConstraints>
 				</GridPane>
-				<Button fx:id="cameraButton" alignment="center"
-					onAction="#startCamera" text="Start camera" />
+				<Button fx:id="cameraButton" alignment="center" onAction="#startCamera" text="Start camera"/>
 
-				<Label fx:id="currentValues" />
+				<Label fx:id="currentValues"/>
 			</VBox>
-		</center>
-	</BorderPane>
-	<BorderPane GridPane.columnIndex="3" GridPane.rowIndex="4">
-		<top>
-			<HBox style="-fx-background-color: #3F51B5;">
-				<padding>
-					<Insets bottom="4" left="4" right="4" top="4" />
-				</padding>
-				<Text fill="white" stroke="white" text="Detection Config" />
+		</VBox>
+		<VBox>
+			<HBox styleClass="header">
+				<Text fill="white" stroke="white" text="Detection Config"/>
 			</HBox>
-		</top>
-		<center>
-			<TabPane fx:id="tabPane"
-				xmlns="http://javafx.com/javafx/8.0.40"
-				xmlns:fx="http://www.w3.org/2001/XInclude">
+			<TabPane fx:id="tabPane" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://www.w3.org/2001/XInclude">
 				<tabs>
 					<Tab fx:id="laneTab" text="Lane">
-						<fx:include fx:id="laneDetection"
-							source="lanedetection.fxml" />
+						<fx:include fx:id="laneDetection" source="lanedetection.fxml"/>
 					</Tab>
 					<Tab fx:id="startTab" text="Start">
-						<fx:include fx:id="startDetection"
-							source="startlightdetection.fxml" />
+						<fx:include fx:id="startDetection" source="startlightdetection.fxml"/>
 					</Tab>
 				</tabs>
 			</TabPane>
-		</center>
-	</BorderPane>
-</HBox>
+		</VBox>
+	</HBox>
 </VBox>
