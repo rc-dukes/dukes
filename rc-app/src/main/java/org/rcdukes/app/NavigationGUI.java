@@ -64,6 +64,15 @@ public class NavigationGUI extends BaseGUI {
     setButtonIcon(startCarButton, MaterialDesignIcon.CAR);
     setButtonIcon(requestConfigButton, MaterialDesignIcon.SETTINGS);
     setButtonIcon(echoButton, MaterialDesignIcon.BULLHORN);
+    setControlState(power);
+  }
+
+  public void setControlState(boolean power) {
+    String color = power ? "blue" : "grey";
+    Button[] buttons = { manualButton, autoPilotButton, leftButton, rightButton,
+        upButton, downButton, centerButton,stopButton,brakeButton,photoButton,recordButton };
+    for (Button button : buttons)
+      super.setButtonColor(button, color, buttonBgColor);
   }
 
   boolean power = false;
@@ -75,8 +84,10 @@ public class NavigationGUI extends BaseGUI {
     super.setButtonActive(powerButton, power);
     if (power) {
       appVerticle = AppVerticle.getInstance();
-      super.setButtonActive(requestConfigButton,false);
-      super.setButtonActive(startCarButton,false);
+      super.setButtonActive(requestConfigButton, false);
+      super.setButtonActive(startCarButton, false);
+    } else {
+      setControlState(false);
     }
     appVerticle.heartBeat(power);
   }
@@ -116,18 +127,21 @@ public class NavigationGUI extends BaseGUI {
   private void onCenter(final ActionEvent event) {
     sendWheelCommand("center");
   }
-  
+
   @FXML
   private void onStartCar(final ActionEvent event) throws Exception {
     // @TODO - receive config from BOARS_NEST?
-    JsonObject configJo=Config.getEnvironment().asJsonObject();
-    AppVerticle.getInstance().sendEvent(Characters.GENERAL_LEE, Events.START_CAR,configJo);
+    JsonObject configJo = Config.getEnvironment().asJsonObject();
+    AppVerticle.getInstance().sendEvent(Characters.GENERAL_LEE,
+        Events.START_CAR, configJo);
     super.setButtonActive(startCarButton, true);
+    setControlState(true);
   }
-  
+
   @FXML
   private void onRequestConfig(final ActionEvent event) {
-    AppVerticle.getInstance().sendEvent(Characters.BOARS_NEST,Events.REQUEST_CONFIG, null);
+    AppVerticle.getInstance().sendEvent(Characters.BOARS_NEST,
+        Events.REQUEST_CONFIG, null);
     super.setButtonActive(requestConfigButton, true);
   }
 
