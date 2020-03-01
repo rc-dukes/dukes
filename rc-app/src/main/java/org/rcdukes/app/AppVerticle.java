@@ -4,7 +4,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.ClusterStarter;
+import org.rcdukes.common.Config;
 import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.WebStarter;
 import org.rcdukes.error.ErrorHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +42,11 @@ public class AppVerticle extends DukesVerticle {
   @Override
   public void start() throws Exception {
     super.preStart();
+    int port = Config.getEnvironment().getInteger(Config.WEBCONTROL_PORT);
+    WebStarter webStarter=new WebStarter(vertx,port);
+    webStarter.mountEventBus(".*", ".*");
+    webStarter.startHttpServer();
+    
     JsonObject startjo=new JsonObject();
     startjo.put("started",this.character.name());
     this.eventbusLogger.logEvent(startjo);
