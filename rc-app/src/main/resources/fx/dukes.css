@@ -19,7 +19,13 @@
 }
 
 .glyph-icon:hover{
-    -fx-effect:  dropshadow(three-pass-box, rgba(0,0,0,0.2), 4, 0, 0, 0);
+	// -fx-fill: white;
+	// https://openjfx.io/javadoc/11/javafx.graphics/javafx/scene/doc-files/cssref.html#typeeffect
+    -fx-effect:  dropshadow(three-pass-box, rgba(80,80,80,0.5), 10, 0.2, 4, 4);
+}
+
+.glyph-icon:pressed{
+   -fx-fill: black;
 }
 
 
