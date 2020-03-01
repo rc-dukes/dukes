@@ -9,6 +9,8 @@ import io.vertx.core.json.JsonObject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 /**
  * navigation GUI
@@ -70,7 +72,8 @@ public class NavigationGUI extends BaseGUI {
   public void setControlState(boolean enable) {
     String color = enable ? "blue" : "grey";
     Button[] buttons = { manualButton, autoPilotButton, leftButton, rightButton,
-        upButton, downButton, centerButton,stopButton,brakeButton,photoButton,recordButton };
+        upButton, downButton, centerButton, stopButton, brakeButton,
+        photoButton, recordButton };
     for (Button button : buttons) {
       super.setButtonColor(button, color, buttonBgColor);
       button.setDisable(!enable);
@@ -79,6 +82,34 @@ public class NavigationGUI extends BaseGUI {
 
   boolean power = false;
   private AppVerticle appVerticle;
+
+  /**
+   * handle navigation key events
+   * 
+   * @param evt
+   *          - the key event to handle
+   */
+  public void handleNavigationKey(KeyEvent evt) {
+    KeyCode code = evt.getCode();
+    switch (code) {
+    case UP:
+      up();
+      break;
+    case DOWN:
+      down();
+      break;
+    case LEFT:
+      left();
+      break;
+    case RIGHT:
+      right();
+      break;
+    case SPACE:
+      stop();
+      break;
+    default:
+    }
+  }
 
   @FXML
   private void onPower(final ActionEvent event) {
@@ -96,28 +127,54 @@ public class NavigationGUI extends BaseGUI {
 
   @FXML
   private void onUp(final ActionEvent event) {
-    sendSpeedCommand("up");
+    up();
+  }
+
+  private void up() {
+    if (!upButton.isDisabled())
+      sendSpeedCommand("up");
   }
 
   @FXML
   private void onDown(final ActionEvent event) {
-    sendSpeedCommand("down");
+    down();
+  }
+
+  private void down() {
+    if (!downButton.isDisabled())
+      sendSpeedCommand("down");
   }
 
   @FXML
   private void onLeft(final ActionEvent event) {
-    sendWheelCommand("left");
+    left();
+  }
+
+  private void left() {
+    if (!leftButton.isDisabled())
+      sendWheelCommand("left");
   }
 
   @FXML
   private void onRight(final ActionEvent event) {
-    sendWheelCommand("right");
+    right();
+  }
+
+  private void right() {
+    if (!rightButton.isDisabled())
+      sendWheelCommand("right");
   }
 
   @FXML
   private void onStop(final ActionEvent event) {
-    sendSpeedCommand("stop");
-    sendWheelCommand("center");
+    stop();
+  }
+
+  private void stop() {
+    if (!stopButton.isDisabled()) {
+      sendSpeedCommand("stop");
+      sendWheelCommand("center");
+    }
   }
 
   @FXML

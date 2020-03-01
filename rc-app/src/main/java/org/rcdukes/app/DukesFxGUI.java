@@ -109,7 +109,6 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   }
 
   DisplayMode displayMode = DisplayMode.Lane;
- 
 
   /**
    * initialize me
@@ -139,6 +138,7 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
         "http://picarford:8080/?action=stream");
     this.cameraController.roiy = roiy;
     this.cameraController.roih = roih;
+  
   }
 
   @FXML
@@ -152,6 +152,9 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     this.setMenuButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN);
     this.lanevideo.setValue("http://wiki.bitplan.com/videos/full_run.mp4");
     this.startvideo.setValue("http://wiki.bitplan.com/videos/startlamp2.m4v");
+    root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+      this.handleKeyInput(event);
+    });
   }
 
   @FXML
@@ -254,7 +257,8 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
 
   public void addJustFullScreenButton() {
     if (primaryStage.isMaximized()) {
-      this.setMenuButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN_EXIT);
+      this.setMenuButtonIcon(fullScreenButton,
+          MaterialDesignIcon.FULLSCREEN_EXIT);
       setButtonTooltip(fullScreenButton, "part Screen");
     } else {
       this.setMenuButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN);
@@ -298,7 +302,6 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     }
   }
 
- 
   /**
    * Report Issue clicked
    * 
@@ -345,8 +348,10 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
       final KeyEvent keyEvent = (KeyEvent) event;
       if (isKey(keyEvent, KeyCode.A))
         helpAbout();
-      if (isKey(keyEvent, KeyCode.H))
+      else if (isKey(keyEvent, KeyCode.H))
         help();
+      else
+        navigationController.handleNavigationKey(keyEvent);
     }
   }
 
