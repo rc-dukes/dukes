@@ -8,6 +8,7 @@ import org.rcdukes.detect.ImageFetcher;
 import org.rcdukes.detect.ImageSubscriber;
 import org.rcdukes.detect.LaneDetector;
 import org.rcdukes.detect.linedetection.HoughLinesLineDetector;
+import org.rcdukes.geometry.LaneDetectionResult;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageCollector.ImageType;
@@ -69,7 +70,7 @@ public class LaneDetectionGUI extends BaseGUI {
             ImageCollector collector = new ImageCollector();
             CameraMatrix cameraMatrix = CameraMatrix.DEFAULT;
             LaneDetector laneDetector=new LaneDetector(edgeDetector,lineDetector,cameraGUI.cameraConfig,cameraMatrix,collector);
-            laneDetector.detect(originalImage);
+            LaneDetectionResult ldr = laneDetector.detect(originalImage);
             displayer.display1(collector.getImage(ImageType.edges,true));
             displayer.display2(collector.getImage(ImageType.lines,true));
           }

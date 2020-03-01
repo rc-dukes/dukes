@@ -1,12 +1,16 @@
 package org.rcdukes.app;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.opencv.core.Mat;
 import org.rcdukes.video.Image;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
+import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
@@ -37,7 +41,7 @@ import javafx.stage.Stage;
  * combined GUI for detectors
  *
  */
-public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
+public class DukesFxGUI extends BaseGUI implements GUIDisplayer,EventbusLogger {
   @FXML
   private VBox root;
   @FXML
@@ -91,6 +95,8 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   protected ComboBox<String> startvideo;
   @FXML
   protected TextArea messageArea;
+  @FXML
+  protected TextArea heartbeatArea;
 
   @FXML
   protected LabeledValueSlider roiy;
@@ -152,6 +158,7 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
     this.setMenuButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN);
     this.lanevideo.setValue("http://wiki.bitplan.com/videos/full_run.mp4");
     this.startvideo.setValue("http://wiki.bitplan.com/videos/startlamp2.m4v");
+    this.navigationController.setEventbusLogger(this);
     root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
       this.handleKeyInput(event);
     });
@@ -391,6 +398,28 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer {
   @Override
   public void setMessageText(String text) {
     this.messageArea.setText(text);
+  }
+  
+  public static DateFormat isoDateFormat = new SimpleDateFormat(
+      "yyyy-MM-dd HH:mm:ss");
+  
+  public static String getIsoTimeStamp() {
+    Date now = new Date();
+    String isoTimeStamp=isoDateFormat.format(now);
+    return isoTimeStamp;
+  }
+  
+  @Override
+  public void logEvent(JsonObject jo) {
+    String msg=String.format("%s: %s\n",getIsoTimeStamp(),jo.encode());
+    TextArea target=messageArea;
+    if (jo.containsKey("type")) {
+      String type=jo.getString("type");
+      if ("heartbeat".equals(type)) {
+        target=heartbeatArea;
+      }
+    } 
+    target.appendText(msg);
   }
 
 }

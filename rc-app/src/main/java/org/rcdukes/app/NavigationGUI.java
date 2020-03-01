@@ -48,6 +48,16 @@ public class NavigationGUI extends BaseGUI {
   protected Button requestConfigButton;
   @FXML
   protected Button echoButton;
+  
+  EventbusLogger eventbusLogger;
+
+  public EventbusLogger getEventbusLogger() {
+    return eventbusLogger;
+  }
+
+  public void setEventbusLogger(EventbusLogger eventbusLogger) {
+    this.eventbusLogger = eventbusLogger;
+  }
 
   @FXML
   public void initialize() {
@@ -122,7 +132,7 @@ public class NavigationGUI extends BaseGUI {
     power = !power;
     super.setButtonActive(powerButton, power);
     if (power) {
-      appVerticle = AppVerticle.getInstance();
+      appVerticle = getAppVerticle();
       super.setButtonActive(requestConfigButton, false);
       super.setButtonActive(startCarButton, false);
     } else {
@@ -220,7 +230,7 @@ public class NavigationGUI extends BaseGUI {
   private void onStartCar(final ActionEvent event) throws Exception {
     // @TODO - receive config from BOARS_NEST?
     JsonObject configJo = Config.getEnvironment().asJsonObject();
-    AppVerticle.getInstance().sendEvent(Characters.GENERAL_LEE,
+    getAppVerticle().sendEvent(Characters.GENERAL_LEE,
         Events.START_CAR, configJo);
     super.setButtonActive(startCarButton, true);
     setControlState(true);
@@ -228,7 +238,7 @@ public class NavigationGUI extends BaseGUI {
 
   @FXML
   private void onRequestConfig(final ActionEvent event) {
-    AppVerticle.getInstance().sendEvent(Characters.BOARS_NEST,
+    getAppVerticle().sendEvent(Characters.BOARS_NEST,
         Events.REQUEST_CONFIG, null);
     super.setButtonActive(requestConfigButton, true);
   }
@@ -239,7 +249,7 @@ public class NavigationGUI extends BaseGUI {
    * @param speed
    */
   private void sendSpeedCommand(String speed) {
-    AppVerticle.getInstance().sendSpeedCommand(speed);
+    getAppVerticle().sendSpeedCommand(speed);
   }
 
   /**
@@ -248,6 +258,11 @@ public class NavigationGUI extends BaseGUI {
    * @param position
    */
   private void sendWheelCommand(String position) {
-    AppVerticle.getInstance().sendWheelCommand(position);
+    getAppVerticle().sendWheelCommand(position);
+  }
+  
+  protected AppVerticle getAppVerticle() {
+    AppVerticle appVerticle=AppVerticle.getInstance(eventbusLogger);
+    return appVerticle;
   }
 }

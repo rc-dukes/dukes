@@ -26,17 +26,23 @@ public class AppVerticle extends DukesVerticle {
   private ClusterStarter starter;
   private int HEARTBEAT_INTERVAL = 150; // send a heartbeat every 150 millisecs
   private Disposable heartBeatSubscription;
+  private EventbusLogger eventbusLogger;
 
   /**
    * JavaFX Application verticle
+   * @param eventbusLogger 
    */
-  public AppVerticle() {
+  public AppVerticle(EventbusLogger eventbusLogger) {
     super(Characters.UNCLE_JESSE);
+    this.eventbusLogger=eventbusLogger;
   }
 
   @Override
   public void start() throws Exception {
     super.preStart();
+    JsonObject startjo=new JsonObject();
+    startjo.put("started",this.character.name());
+    this.eventbusLogger.logEvent(startjo);
     super.postStart();
   }
 
@@ -66,6 +72,7 @@ public class AppVerticle extends DukesVerticle {
           name == null ? "?" : name, value == null ? "?" : value);
       LOG.info(msg);
     }
+    this.eventbusLogger.logEvent(jo);
     super.send(character, jo);
   }
 
@@ -103,12 +110,12 @@ public class AppVerticle extends DukesVerticle {
 
   /**
    * get instance singleton
-   * 
+   * @param eventbusLogger
    * @return - the instance
    */
-  public static AppVerticle getInstance() {
+  public static AppVerticle getInstance(EventbusLogger eventbusLogger) {
     if (instance == null) {
-      instance = new AppVerticle();
+      instance = new AppVerticle(eventbusLogger);
       instance.startUp();
     }
     return instance;
