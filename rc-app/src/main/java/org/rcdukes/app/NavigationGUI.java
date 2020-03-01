@@ -1,9 +1,11 @@
 package org.rcdukes.app;
 
 import org.rcdukes.common.Characters;
+import org.rcdukes.common.Config;
 import org.rcdukes.common.Events;
 
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
+import io.vertx.core.json.JsonObject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -71,9 +73,10 @@ public class NavigationGUI extends BaseGUI {
   private void onPower(final ActionEvent event) {
     power = !power;
     super.setButtonActive(powerButton, power);
-    super.setButtonActive(requestConfigButton,!power);
     if (power) {
       appVerticle = AppVerticle.getInstance();
+      super.setButtonActive(requestConfigButton,false);
+      super.setButtonActive(startCarButton,false);
     }
     appVerticle.heartBeat(power);
   }
@@ -112,6 +115,14 @@ public class NavigationGUI extends BaseGUI {
   @FXML
   private void onCenter(final ActionEvent event) {
     sendWheelCommand("center");
+  }
+  
+  @FXML
+  private void onStartCar(final ActionEvent event) throws Exception {
+    // @TODO - receive config from BOARS_NEST?
+    JsonObject configJo=Config.getEnvironment().asJsonObject();
+    AppVerticle.getInstance().sendEvent(Characters.GENERAL_LEE, Events.START_CAR,configJo);
+    super.setButtonActive(startCarButton, true);
   }
   
   @FXML

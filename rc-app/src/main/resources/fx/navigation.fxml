@@ -39,7 +39,7 @@
 			GridPane.columnIndex="0" />
 		<Button fx:id="recordButton" text="record" GridPane.rowIndex="4"
 			GridPane.columnIndex="1" />
-		<Button fx:id="startCarButton" text="start Car" GridPane.rowIndex="5"
+		<Button fx:id="startCarButton" text="start Car" onAction="#onStartCar"  GridPane.rowIndex="5"
 			GridPane.columnIndex="0" />
 		<Button fx:id="requestConfigButton" onAction="#onRequestConfig" text="get Config" GridPane.rowIndex="5"
 			GridPane.columnIndex="1" />
