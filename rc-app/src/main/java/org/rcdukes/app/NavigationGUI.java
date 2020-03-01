@@ -107,6 +107,12 @@ public class NavigationGUI extends BaseGUI {
     case SPACE:
       stop();
       break;
+    case PLUS:
+      autopilot();
+      break;
+    case MINUS:
+      manual();
+      break;
     default:
     }
   }
@@ -123,6 +129,29 @@ public class NavigationGUI extends BaseGUI {
       setControlState(false);
     }
     appVerticle.heartBeat(power);
+  }
+
+  @FXML
+  private void onManual(final ActionEvent event) {
+    manual();
+  }
+
+  private void manual() {
+    if (!manualButton.isDisabled()) {
+      super.setButtonActive(autoPilotButton, false);
+      super.setButtonActive(manualButton, true);
+    }
+  }
+  
+  @FXML void onAutoPilot(final ActionEvent event) {
+    autopilot();
+  }
+  
+  private void autopilot() {
+    if (!autoPilotButton.isDisabled()) {
+      super.setButtonActive(autoPilotButton, true);
+      super.setButtonActive(manualButton, false);
+    }
   }
 
   @FXML

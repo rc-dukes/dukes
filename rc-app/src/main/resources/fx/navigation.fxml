@@ -17,7 +17,7 @@
 	<GridPane gridLinesVisible="true">
 		<Button fx:id="upButton" text="up" onAction="#onUp" GridPane.rowIndex="0"
 			GridPane.columnIndex="1" />
-		<Button fx:id="autoPilotButton" text="autopilot"
+		<Button fx:id="autoPilotButton" text="autopilot"  onAction="#onAutoPilot"
 			GridPane.rowIndex="0" GridPane.columnIndex="3" />
 		<Button fx:id="leftButton" text="left" onAction="#onLeft" GridPane.rowIndex="1"
 			GridPane.columnIndex="0" />
@@ -27,7 +27,7 @@
 			GridPane.columnIndex="2" />
 	    <Button fx:id="downButton" text="down" onAction="#onDown" GridPane.rowIndex="2"
 			GridPane.columnIndex="1" />
-		<Button fx:id="manualButton" text="manual" GridPane.rowIndex="2"
+		<Button fx:id="manualButton" text="manual"  onAction="#onManual" GridPane.rowIndex="2"
 			GridPane.columnIndex="3" />
 		<Button fx:id="brakeButton" text="brake" onAction="#onBrake" GridPane.rowIndex="3"
 			GridPane.columnIndex="0" />
