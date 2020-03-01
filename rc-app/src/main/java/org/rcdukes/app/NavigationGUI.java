@@ -67,12 +67,14 @@ public class NavigationGUI extends BaseGUI {
     setControlState(power);
   }
 
-  public void setControlState(boolean power) {
-    String color = power ? "blue" : "grey";
+  public void setControlState(boolean enable) {
+    String color = enable ? "blue" : "grey";
     Button[] buttons = { manualButton, autoPilotButton, leftButton, rightButton,
         upButton, downButton, centerButton,stopButton,brakeButton,photoButton,recordButton };
-    for (Button button : buttons)
+    for (Button button : buttons) {
       super.setButtonColor(button, color, buttonBgColor);
+      button.setDisable(!enable);
+    }
   }
 
   boolean power = false;
