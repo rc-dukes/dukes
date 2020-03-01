@@ -43,8 +43,8 @@ usage() {
   echo "  -a |--all     : run all parts of the software"
   echo "  -c |--car     : run car software on pi"
   echo "  -s |--server  : run server software"
-  echo "  -r |--remote  : point webbrowser to remot control"
-  echo "  -w |--web     : point webbrowser to detect.html"
+  echo "  -r |--remote  : start webbrowser with remote control page"
+  echo "  -w |--web     : start webbrowser with detect page"
   echo "  -d |--debug   : debug this script"
   echo "  -h |--help    : show this usage"
   exit 1
