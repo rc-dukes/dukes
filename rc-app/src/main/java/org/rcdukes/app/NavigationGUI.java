@@ -1,5 +1,8 @@
 package org.rcdukes.app;
 
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.Events;
+
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -61,18 +64,77 @@ public class NavigationGUI extends BaseGUI {
     setButtonIcon(echoButton, MaterialDesignIcon.BULLHORN);
   }
 
-  boolean power=false;
-  private App appVerticle;
-  
+  boolean power = false;
+  private AppVerticle appVerticle;
+
   @FXML
   private void onPower(final ActionEvent event) {
-    power=!power;
-    super.setButtonActive(powerButton,power);
+    power = !power;
+    super.setButtonActive(powerButton, power);
+    super.setButtonActive(requestConfigButton,!power);
     if (power) {
-      appVerticle=App.getInstance();
-    } 
+      appVerticle = AppVerticle.getInstance();
+    }
     appVerticle.heartBeat(power);
   }
+
+  @FXML
+  private void onUp(final ActionEvent event) {
+    sendSpeedCommand("up");
+  }
+
+  @FXML
+  private void onDown(final ActionEvent event) {
+    sendSpeedCommand("down");
+  }
+
+  @FXML
+  private void onLeft(final ActionEvent event) {
+    sendWheelCommand("left");
+  }
+
+  @FXML
+  private void onRight(final ActionEvent event) {
+    sendWheelCommand("right");
+  }
+
+  @FXML
+  private void onStop(final ActionEvent event) {
+    sendSpeedCommand("stop");
+    sendWheelCommand("center");
+  }
+
+  @FXML
+  private void onBrake(final ActionEvent event) {
+    sendSpeedCommand("brake");
+  }
+
+  @FXML
+  private void onCenter(final ActionEvent event) {
+    sendWheelCommand("center");
+  }
   
-  
+  @FXML
+  private void onRequestConfig(final ActionEvent event) {
+    AppVerticle.getInstance().sendEvent(Characters.BOARS_NEST,Events.REQUEST_CONFIG, null);
+    super.setButtonActive(requestConfigButton, true);
+  }
+
+  /**
+   * send the given speed command
+   * 
+   * @param speed
+   */
+  private void sendSpeedCommand(String speed) {
+    AppVerticle.getInstance().sendSpeedCommand(speed);
+  }
+
+  /**
+   * send the given wheel command
+   * 
+   * @param position
+   */
+  private void sendWheelCommand(String position) {
+    AppVerticle.getInstance().sendWheelCommand(position);
+  }
 }

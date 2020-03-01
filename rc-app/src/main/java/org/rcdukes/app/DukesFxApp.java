@@ -16,6 +16,11 @@ import javafx.stage.Stage;
  */
 public class DukesFxApp extends Application {
   
+  /**
+   * get the resource from the given path
+   * @param path - relative to src/main/resource in the target classpath
+   * @return - the URL for the resource
+   */
   public URL  getResource(String path) {
     return getClass().getClassLoader().getResource(path);
   }

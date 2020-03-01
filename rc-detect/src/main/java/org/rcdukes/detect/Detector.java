@@ -117,8 +117,8 @@ public class Detector extends DukesVerticle {
     // update the camera Configuration
     shareData("cameraConfig", jo);
     if (restart) {
-      sendEvent(Events.START_LANE_DETECTION, jo);
-      sendEvent(Events.START_STARTLIGHT_DETECTION, jo);
+      sendEvent(this.character,Events.START_LANE_DETECTION, jo);
+      sendEvent(this.character,Events.START_STARTLIGHT_DETECTION, jo);
     }
   }
 

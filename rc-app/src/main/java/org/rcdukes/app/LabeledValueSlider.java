@@ -21,7 +21,7 @@ import javafx.scene.layout.HBox;
  *
  */
 public class LabeledValueSlider extends HBox {
-  public static boolean debug=true;
+  public static boolean debug=false;
   protected static final Logger LOG = LoggerFactory
       .getLogger(LabeledValueSlider.class);
   @FXML

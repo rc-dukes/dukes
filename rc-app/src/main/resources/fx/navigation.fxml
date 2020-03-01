@@ -15,23 +15,23 @@
 		<Text styleClass="headertext" text="navigation" />
 	</HBox>
 	<GridPane gridLinesVisible="true">
-		<Button fx:id="upButton" text="up" GridPane.rowIndex="0"
+		<Button fx:id="upButton" text="up" onAction="#onUp" GridPane.rowIndex="0"
 			GridPane.columnIndex="1" />
 		<Button fx:id="autoPilotButton" text="autopilot"
 			GridPane.rowIndex="0" GridPane.columnIndex="3" />
-		<Button fx:id="leftButton" text="left" GridPane.rowIndex="1"
+		<Button fx:id="leftButton" text="left" onAction="#onLeft" GridPane.rowIndex="1"
 			GridPane.columnIndex="0" />
-		<Button fx:id="stopButton" text="stop" GridPane.rowIndex="1"
+		<Button fx:id="stopButton" text="stop" onAction="#onStop" GridPane.rowIndex="1"
 			GridPane.columnIndex="1" />
-		<Button fx:id="rightButton" text="right" GridPane.rowIndex="1"
+		<Button fx:id="rightButton" text="right" onAction="#onRight" GridPane.rowIndex="1"
 			GridPane.columnIndex="2" />
-	    <Button fx:id="downButton" text="down" GridPane.rowIndex="2"
+	    <Button fx:id="downButton" text="down" onAction="#onDown" GridPane.rowIndex="2"
 			GridPane.columnIndex="1" />
 		<Button fx:id="manualButton" text="manual" GridPane.rowIndex="2"
 			GridPane.columnIndex="3" />
-		<Button fx:id="brakeButton" text="brake" GridPane.rowIndex="3"
+		<Button fx:id="brakeButton" text="brake" onAction="#onBrake" GridPane.rowIndex="3"
 			GridPane.columnIndex="0" />
-		<Button fx:id="centerButton" text="center" GridPane.rowIndex="3"
+		<Button fx:id="centerButton" text="center" onAction="#onCenter" GridPane.rowIndex="3"
 			GridPane.columnIndex="1" />
 		<Button fx:id="powerButton" text="power" GridPane.rowIndex="3"
 			onAction="#onPower" GridPane.columnIndex="3" />
@@ -41,7 +41,7 @@
 			GridPane.columnIndex="1" />
 		<Button fx:id="startCarButton" text="start Car" GridPane.rowIndex="5"
 			GridPane.columnIndex="0" />
-		<Button fx:id="requestConfigButton" text="get Config" GridPane.rowIndex="5"
+		<Button fx:id="requestConfigButton" onAction="#onRequestConfig" text="get Config" GridPane.rowIndex="5"
 			GridPane.columnIndex="1" />
 		<Button fx:id="echoButton" text="echo" GridPane.rowIndex="5"
 			GridPane.columnIndex="3" />
