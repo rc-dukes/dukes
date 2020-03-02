@@ -7,12 +7,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.rcdukes.opencv.NativeLibrary;
 import org.rcdukes.video.Image;
 
-import rx.Observable;
+import io.reactivex.Observable;
 
 /**
  * test the ImageFetcher observable
@@ -55,27 +53,27 @@ public class TestImageFetcher extends BaseDetectTest {
   public void testImageFetcherObservable() {
     ImageFetcher imageFetcher = getTestImageFetcher();
     Observable<Image> imageObservable = imageFetcher.toObservable();
-    ImageSubscriber imageUser = new ImageSubscriber();
-    imageUser.debug=debug;
-    imageObservable.subscribe(imageUser);
-    assertNull(imageUser.error);
-    assertTrue(imageUser.completed);
-    assertEquals(768,imageUser.cols);
-    assertEquals(576,imageUser.rows);
+    ImageObserver imageObserver = new ImageObserver();
+    imageObserver.debug=debug;
+    imageObservable.subscribe(imageObserver);
+    assertNull(imageObserver.error);
+    assertTrue(imageObserver.completed);
+    assertEquals(768,imageObserver.cols);
+    assertEquals(576,imageObserver.rows);
   }
   
   @Test
   public void testImageFetcherObservableSample() {
     ImageFetcher imageFetcher = getTestImageFetcher();
     Observable<Image> imageObservable = imageFetcher.toObservable();
-    ImageSubscriber imageUser = new ImageSubscriber();
-    imageUser.debug=debug;
+    ImageObserver imageObserver = new ImageObserver();
+    imageObserver.debug=debug;
     // sample at 25 fps
-    imageObservable.sample(40, TimeUnit.MILLISECONDS).subscribe(imageUser);
-    assertNull(imageUser.error);
-    assertTrue(imageUser.completed);
-    assertEquals(768,imageUser.cols);
-    assertEquals(576,imageUser.rows);
+    imageObservable.sample(40, TimeUnit.MILLISECONDS).subscribe(imageObserver);
+    assertNull(imageObserver.error);
+    assertTrue(imageObserver.completed);
+    assertEquals(768,imageObserver.cols);
+    assertEquals(576,imageObserver.rows);
   }
   
   @Test

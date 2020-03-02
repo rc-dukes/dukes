@@ -1,16 +1,11 @@
 package org.rcdukes.imageview;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import javax.imageio.ImageIO;
-import javax.xml.bind.DatatypeConverter;
 
 import org.opencv.core.Mat;
 import org.rcdukes.common.Characters;
@@ -94,16 +89,9 @@ public class DebugImageServer extends DukesVerticle {
    */
   protected void receiveSimulatorImage(Message<String> message) {
     String imgData = message.body(); // in DataURL format ...
-    // https://stackoverflow.com/a/34424596/1497139
-    imgData=imgData.substring(imgData.indexOf(",") + 1);
-    // FIXME - read from data url;
-    String ext="jpg";
-    byte[] imageEncodedBytes = DatatypeConverter.parseBase64Binary(imgData);
     try {
-      BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageEncodedBytes));
+      Mat imageMat=ImageUtils.matFromDataUrl(imgData, "jpg");
       ImageCollector imageCollector = Detector.getImageCollector();
-      byte[] imageBytes = ImageUtils.bufferedImage2ImageBytes(image, ext);
-      Mat imageMat=ImageUtils.imageBytes2Mat(imageBytes);
       imageCollector.addImage(imageMat, ImageType.simulator);
     } catch (IOException e) {
       ErrorHandler.getInstance().handle(e);

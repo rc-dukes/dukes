@@ -1,17 +1,18 @@
 package org.rcdukes.detect;
 
 import org.opencv.core.Mat;
+import org.rcdukes.common.ErrorHandler;
 import org.rcdukes.video.Image;
 
-import org.rcdukes.common.ErrorHandler;
-import rx.Subscriber;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
 /**
  * a subscriber for OpenCV  images
  * @author wf
  *
  */
-public class ImageSubscriber extends Subscriber<Image> {
+public class ImageObserver implements Observer<Image>  {
 
   public Throwable error;
   public int cols = 0;
@@ -21,7 +22,7 @@ public class ImageSubscriber extends Subscriber<Image> {
   public String stackTraceText;
 
   @Override
-  public void onCompleted() {
+  public void onComplete() {
     completed = true;
   }
 
@@ -43,4 +44,11 @@ public class ImageSubscriber extends Subscriber<Image> {
       System.out.println(msg);
     }
   }
+
+  @Override
+  public void onSubscribe(Disposable d) {
+   
+    
+  }
+
 };

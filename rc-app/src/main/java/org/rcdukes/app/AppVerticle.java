@@ -6,6 +6,7 @@ import org.rcdukes.common.Characters;
 import org.rcdukes.common.ClusterStarter;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.Events;
 import org.rcdukes.common.WebStarter;
 import org.rcdukes.error.ErrorHandler;
 import org.slf4j.Logger;
@@ -29,27 +30,33 @@ public class AppVerticle extends DukesVerticle {
   private int HEARTBEAT_INTERVAL = 150; // send a heartbeat every 150 millisecs
   private Disposable heartBeatSubscription;
   private EventbusLogger eventbusLogger;
+  private SimulatorImageFetcher simulatorImageFetcher;
 
   /**
    * JavaFX Application verticle
-   * @param eventbusLogger 
+   * 
+   * @param eventbusLogger
    */
   public AppVerticle(EventbusLogger eventbusLogger) {
     super(Characters.UNCLE_JESSE);
-    this.eventbusLogger=eventbusLogger;
+    this.eventbusLogger = eventbusLogger;
+    setSimulatorImageFetcher(new SimulatorImageFetcher());
   }
 
   @Override
   public void start() throws Exception {
     super.preStart();
     int port = Config.getEnvironment().getInteger(Config.WEBCONTROL_PORT);
-    WebStarter webStarter=new WebStarter(vertx,port);
+    WebStarter webStarter = new WebStarter(vertx, port);
     webStarter.mountEventBus(".*", ".*");
     webStarter.startHttpServer();
-    
-    JsonObject startjo=new JsonObject();
-    startjo.put("started",this.character.name());
+
+    JsonObject startjo = new JsonObject();
+    startjo.put("started", this.character.name());
     this.eventbusLogger.logEvent(startjo);
+ 
+    consumer(Characters.ROSCO, Events.SIMULATOR_IMAGE,
+        getSimulatorImageFetcher()::receiveSimulatorImage);
     super.postStart();
   }
 
@@ -117,6 +124,7 @@ public class AppVerticle extends DukesVerticle {
 
   /**
    * get instance singleton
+   * 
    * @param eventbusLogger
    * @return - the instance
    */
@@ -130,13 +138,14 @@ public class AppVerticle extends DukesVerticle {
 
   public void heartBeat(boolean on) {
     if (on) {
-    heartBeatSubscription=Observable.timer(HEARTBEAT_INTERVAL, TimeUnit.MILLISECONDS).repeat()
-        .subscribeOn(Schedulers.newThread()).subscribe(e -> {
-          sendHeartBeat();
-        });
+      heartBeatSubscription = Observable
+          .timer(HEARTBEAT_INTERVAL, TimeUnit.MILLISECONDS).repeat()
+          .subscribeOn(Schedulers.newThread()).subscribe(e -> {
+            sendHeartBeat();
+          });
     } else {
       heartBeatSubscription.dispose();
-      heartBeatSubscription=null;
+      heartBeatSubscription = null;
     }
   }
 
@@ -146,5 +155,19 @@ public class AppVerticle extends DukesVerticle {
   public void sendHeartBeat() {
     if (getStatus() == Status.started)
       this.sendCarCommand(Characters.FLASH, "heartbeat", null, null);
+  }
+
+  /**
+   * @return the simulatorImageFetcher
+   */
+  public SimulatorImageFetcher getSimulatorImageFetcher() {
+    return simulatorImageFetcher;
+  }
+
+  /**
+   * @param simulatorImageFetcher the simulatorImageFetcher to set
+   */
+  public void setSimulatorImageFetcher(SimulatorImageFetcher simulatorImageFetcher) {
+    this.simulatorImageFetcher = simulatorImageFetcher;
   }
 }

@@ -19,9 +19,8 @@
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/io.reactivex/rxjava-string -->
 		<dependency>
-				<groupId>io.reactivex</groupId>
-				<artifactId>rxjava-string</artifactId>
-				<version>${rxjava-string.version}</version>
+			<groupId>io.reactivex</groupId>
+			<artifactId>rxjava-string</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>nl.vaneijndhoven.dukes</groupId>

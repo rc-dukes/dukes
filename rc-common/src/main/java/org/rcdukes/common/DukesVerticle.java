@@ -191,12 +191,23 @@ public abstract class DukesVerticle extends AbstractVerticle {
   /**
    * enable a consumer to handle the given event
    * 
+   * @param targetCharacter
+   * @param event
+   * @param handler
+   */
+  public <T> void consumer(Characters targetCharacter,Events event, Handler<Message<T>> handler) {
+    String address = this.getEventAddress(targetCharacter,event);
+    this.consumer(address, handler);
+  }
+  
+  /**
+   * enable a consumer to handle the given event
+   * 
    * @param event
    * @param handler
    */
   public <T> void consumer(Events event, Handler<Message<T>> handler) {
-    String address = this.getEventAddress(this.character,event);
-    this.consumer(address, handler);
+    this.consumer(this.character,event, handler);
   }
 
   /**

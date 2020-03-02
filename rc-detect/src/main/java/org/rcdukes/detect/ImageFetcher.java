@@ -10,11 +10,10 @@ import org.rcdukes.video.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Action1;
-import rx.functions.Func0;
-import rx.functions.Func1;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.subjects.ReplaySubject;
 
 /**
  * fetcher for Images - will block at the given FPS rate
@@ -30,12 +29,12 @@ public class ImageFetcher {
   private VideoCapture capture = new VideoCapture();
   private String source;
   protected int frameIndex;
-  protected int failureCount=0;
-  protected int maxFailureCount=3;
+  protected int failureCount = 0;
+  protected int maxFailureCount = 3;
   protected double fps = DEFAULT_FPS; // frames per second
   private long milliTimeStamp;
   private boolean staticImage;
-  private boolean closed=false;
+  private boolean closed = false;
 
   private Image currentImage = null;
 
@@ -92,7 +91,7 @@ public class ImageFetcher {
       setStaticImage(true);
     }
     frameIndex = 0;
-    failureCount=0;
+    failureCount = 0;
     milliTimeStamp = System.nanoTime() / 1000000;
     return ret;
   }
@@ -101,7 +100,7 @@ public class ImageFetcher {
     if (!closed) {
       this.capture.release();
     }
-    closed=true;
+    closed = true;
   }
 
   /**
@@ -125,7 +124,8 @@ public class ImageFetcher {
     waitMillis -= currentMillis - milliTimeStamp;
     if (waitMillis > 0) {
       if (debug)
-        LOG.info(String.format(Locale.ENGLISH,"waiting %3d msecs for %.1f fps", waitMillis,getFps()));
+        LOG.info(String.format(Locale.ENGLISH, "waiting %3d msecs for %.1f fps",
+            waitMillis, getFps()));
       try {
         Thread.sleep(waitMillis);
       } catch (InterruptedException e) {
@@ -141,18 +141,20 @@ public class ImageFetcher {
       this.capture.read(frame);
       if (!frame.empty()) {
         currentImage = createNextImage(frame, currentMillis);
-        failureCount=0;
+        failureCount = 0;
       } else {
         failureCount++;
-        if (maxFailureCount<getFps() && failureCount%Math.round(getFps()*2)==0) {
-          String msg=String.format("%d read failures for %s",failureCount,source);
+        if (maxFailureCount < getFps()
+            && failureCount % Math.round(getFps() * 2) == 0) {
+          String msg = String.format("%d read failures for %s", failureCount,
+              source);
           LOG.info(msg);
         }
-        if (failureCount>maxFailureCount)
+        if (failureCount > maxFailureCount)
           return null;
       }
     }
-    milliTimeStamp=currentMillis;
+    milliTimeStamp = currentMillis;
     return currentImage;
   }
 
@@ -183,45 +185,30 @@ public class ImageFetcher {
    * @return an Image emitting Observable
    */
   public Observable<Image> toObservable() {
-    // Resource creation.
-    Func0<ImageFetcher> resourceFactory = () -> {
-      return this;
-    };
-
-    // Convert to observable.
-    Func1<ImageFetcher, Observable<Image>> observableFactory = capture -> Observable
-        .<Image> create(subscriber -> handleImage(subscriber));
-
-    // Disposal function.
-    Action1<ImageFetcher> dispose = ImageFetcher::close;
-
-    return Observable.using(resourceFactory, observableFactory, dispose);
-  }
-
-  /**
-   * handle a single image for the given subscriber
-   * 
-   * @param subscriber
-   */
-  private void handleImage(Subscriber<? super Image> subscriber) {
-    {
-      boolean hasNext = true;
-      while (hasNext && !closed) {
-        final Image image = this.fetch();
-        final Mat frame = image != null ? image.getFrame() : null;
-        final Size size = frame != null ? frame.size() : new Size(0, 0);
-        hasNext = image != null && size.width > 0 && size.height > 0;
-        if (hasNext) {
-          if (debug && frameIndex % Math.round(getFps()) == 0) {
-            String msg = String.format("->%6d:%4.0fx%4.0f", frameIndex,
-                size.width, size.height);
-            LOG.info(msg);
+    Observable<Image> observable = Observable
+        .create(new ObservableOnSubscribe<Image>() {
+          @Override
+          public void subscribe(ObservableEmitter<Image> observableEmitter)
+              throws Exception {
+            boolean hasNext = true;
+            while (hasNext && !closed) {
+              final Image image = ImageFetcher.this.fetch();
+              final Mat frame = image != null ? image.getFrame() : null;
+              final Size size = frame != null ? frame.size() : new Size(0, 0);
+              hasNext = image != null && size.width > 0 && size.height > 0;
+              if (hasNext) {
+                if (debug && frameIndex % Math.round(getFps()) == 0) {
+                  String msg = String.format("->%6d:%4.0fx%4.0f", frameIndex,
+                      size.width, size.height);
+                  LOG.info(msg);
+                }
+                observableEmitter.onNext(image);
+              }
+            }
+            observableEmitter.onComplete();
           }
-          subscriber.onNext(image);
-        }
-      }
-      subscriber.onCompleted();
-    }
+        });
+    return observable;
   }
 
 }

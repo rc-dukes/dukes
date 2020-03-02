@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 import javax.imageio.ImageIO;
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -51,6 +52,35 @@ public class ImageUtils {
     public static final Scalar cyan=new Scalar(255, 255, 0);
     public static final Scalar yellow=new Scalar(0, 255, 255);
     public static final Scalar indigo=new Scalar(130,0,75);
+  }
+  
+  /**
+   * read a buffered Image from the given data Url
+   * @param imgData
+   * @return a buffered Image
+   * @throws IOException
+   */
+  public static BufferedImage readFromDataUrl(String imgData) throws IOException {
+    // https://stackoverflow.com/a/34424596/1497139
+    imgData=imgData.substring(imgData.indexOf(",") + 1);
+    // FIXME - read from data url;
+    byte[] imageEncodedBytes = DatatypeConverter.parseBase64Binary(imgData);
+    BufferedImage image=ImageIO.read(new ByteArrayInputStream(imageEncodedBytes));
+    return image;
+  }
+  
+  /**
+   * get a Mat from the given DataUrl
+   * @param imgData
+   * @param ext - the image extension to use
+   * @return a Mat
+   * @throws IOException
+   */
+  public static Mat matFromDataUrl(String imgData, String ext) throws IOException {
+    BufferedImage image = ImageUtils.readFromDataUrl(imgData);
+    byte[] imageBytes = ImageUtils.bufferedImage2ImageBytes(image, ext);
+    Mat imageMat=ImageUtils.imageBytes2Mat(imageBytes);
+    return imageMat;
   }
   /**
    * convert an open CV matrix to an Image this function will log messages on

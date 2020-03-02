@@ -4,14 +4,12 @@ import org.junit.Test;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.ClusterStarter;
 import org.rcdukes.common.DukesVerticle;
-import org.rcdukes.common.Environment;
 import org.rcdukes.common.DukesVerticle.Status;
+import org.rcdukes.common.Environment;
 
-import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.bridge.BridgeOptions;
 import io.vertx.ext.bridge.PermittedOptions;
-import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.MessageConsumer;
 import io.vertx.rxjava.ext.eventbus.bridge.tcp.TcpEventBusBridge;

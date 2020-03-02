@@ -6,7 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.opencv.core.Mat;
+import org.rcdukes.detect.ImageFetcher;
 import org.rcdukes.video.Image;
+import org.rcdukes.video.ImageSource;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
@@ -36,12 +38,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import io.reactivex.Observable;
 
 /**
  * combined GUI for detectors
  *
  */
-public class DukesFxGUI extends BaseGUI implements GUIDisplayer,EventbusLogger {
+public class DukesFxGUI extends BaseGUI
+    implements GUIDisplayer, EventbusLogger, ImageSource {
   @FXML
   private VBox root;
   @FXML
@@ -138,13 +142,13 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,EventbusLogger {
     // bind a text property with the string containing the current Values of
     currentValuesProp = new SimpleObjectProperty<>();
     this.currentValues.textProperty().bind(currentValuesProp);
-    this.lanevideo.getItems().setAll(
+    this.lanevideo.getItems().setAll("simulator",
         "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg/1280px-4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg",
         "http://picaro/html/cam_pic_new.php",
         "http://picarford:8080/?action=stream");
     this.cameraController.roiy = roiy;
     this.cameraController.roih = roih;
-  
+
   }
 
   @FXML
@@ -158,6 +162,7 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,EventbusLogger {
     this.setMenuButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN);
     this.lanevideo.setValue("http://wiki.bitplan.com/videos/full_run.mp4");
     this.startvideo.setValue("http://wiki.bitplan.com/videos/startlamp2.m4v");
+    //
     this.navigationController.setEventbusLogger(this);
     root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
       this.handleKeyInput(event);
@@ -168,7 +173,7 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,EventbusLogger {
   public void startCamera() throws Exception {
     switch (displayMode) {
     case Lane:
-      this.laneDetectionController.startCamera(this.cameraController);
+      this.laneDetectionController.startCamera(this.cameraController, this);
       break;
     case Start:
       this.startDetectionController.startCamera();
@@ -386,11 +391,6 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,EventbusLogger {
   }
 
   @Override
-  public Property<String> getLaneVideoProperty() {
-    return this.lanevideo.valueProperty();
-  }
-
-  @Override
   public Property<String> getStartVideoProperty() {
     return this.startvideo.valueProperty();
   }
@@ -399,27 +399,38 @@ public class DukesFxGUI extends BaseGUI implements GUIDisplayer,EventbusLogger {
   public void setMessageText(String text) {
     this.messageArea.setText(text);
   }
-  
+
   public static DateFormat isoDateFormat = new SimpleDateFormat(
       "yyyy-MM-dd HH:mm:ss");
-  
+
   public static String getIsoTimeStamp() {
     Date now = new Date();
-    String isoTimeStamp=isoDateFormat.format(now);
+    String isoTimeStamp = isoDateFormat.format(now);
     return isoTimeStamp;
   }
-  
+
   @Override
   public void logEvent(JsonObject jo) {
-    String msg=String.format("%s: %s\n",getIsoTimeStamp(),jo.encode());
-    TextArea target=messageArea;
+    String msg = String.format("%s: %s\n", getIsoTimeStamp(), jo.encode());
+    TextArea target = messageArea;
     if (jo.containsKey("type")) {
-      String type=jo.getString("type");
+      String type = jo.getString("type");
       if ("heartbeat".equals(type)) {
-        target=heartbeatArea;
+        target = heartbeatArea;
       }
-    } 
+    }
     target.appendText(msg);
   }
 
+  @Override
+  public Observable<Image> getImageObservable() {
+    String imageSource = this.lanevideo.valueProperty().getValue();
+    if ("simulator".equals(imageSource)) {
+      AppVerticle appVerticle=AppVerticle.getInstance(this);
+      return appVerticle.getSimulatorImageFetcher().toObservable();
+    } else {
+      ImageFetcher imageFetcher = new ImageFetcher(imageSource);
+      return imageFetcher.toObservable();
+    }
+  }
 }

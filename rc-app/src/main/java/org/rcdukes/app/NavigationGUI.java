@@ -261,6 +261,10 @@ public class NavigationGUI extends BaseGUI {
     getAppVerticle().sendWheelCommand(position);
   }
   
+  /**
+   * get the AppVerticle
+   * @return - the singleton
+   */
   protected AppVerticle getAppVerticle() {
     AppVerticle appVerticle=AppVerticle.getInstance(eventbusLogger);
     return appVerticle;

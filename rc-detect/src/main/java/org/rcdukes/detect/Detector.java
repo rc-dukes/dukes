@@ -17,12 +17,12 @@ import org.rcdukes.video.ImageCollector;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.eventbus.Message;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
-import rx.Observable;
-import rx.Subscription;
-import rx.schedulers.Schedulers;
 
 /**
  * Detector aka Daisy
@@ -37,9 +37,10 @@ public class Detector extends DukesVerticle {
     return currentCollector;
   }
 
-  private Subscription startLaneDetectionSubscription;
-  private Subscription startLightDetectionSubscription;
+ 
   private ImageFetcher fetcher;
+  private Disposable startLaneDetectionSubscription;
+  private Disposable startLightDetectionSubscription;
 
   /**
    * default constructor
@@ -73,7 +74,7 @@ public class Detector extends DukesVerticle {
     CameraConfig cameraConfig = super.fromJsonObject(jo, CameraConfig.class);
     // is this a restart?
     if (startLaneDetectionSubscription != null)
-      startLaneDetectionSubscription.unsubscribe();
+      startLaneDetectionSubscription.dispose();;
     if (fetcher!=null)
       fetcher.close();
     startLaneDetectionSubscription = startLaneDetection(cameraConfig)
@@ -89,7 +90,7 @@ public class Detector extends DukesVerticle {
   private void startSLD(Message<JsonObject> message) {
     // is this a restart?
     if (startLightDetectionSubscription != null)
-      startLightDetectionSubscription.unsubscribe();
+      startLightDetectionSubscription.dispose();;
     startLightDetectionSubscription = startStartLightDetection(message)
         // .doOnNext(detection -> LOG.trace("Image start light processing
         // result: " + detection))

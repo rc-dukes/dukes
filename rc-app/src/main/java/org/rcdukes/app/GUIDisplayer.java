@@ -17,7 +17,6 @@ public interface GUIDisplayer {
   void setMessageText(String text);
   void setCameraButtonText(String text);
   void showCurrentValues(String text);
-  Property<String> getLaneVideoProperty();
   Property<String> getStartVideoProperty();
   /** 
    * handle the given error

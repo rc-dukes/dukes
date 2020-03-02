@@ -5,11 +5,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opencv.core.Mat;
 import org.rcdukes.imageview.DebugImageServer.ImageFormat;
-import org.rcdukes.opencv.NativeLibrary;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageCollector.ImageType;
