@@ -4,24 +4,20 @@ import java.util.concurrent.TimeUnit;
 
 import org.rcdukes.camera.CameraMatrix;
 import org.rcdukes.common.Config;
-import org.rcdukes.detect.ImageFetcher;
-import org.rcdukes.detect.ImageSubscriber;
+import org.rcdukes.detect.ImageObserver;
 import org.rcdukes.detect.LaneDetector;
 import org.rcdukes.detect.linedetection.HoughLinesLineDetector;
 import org.rcdukes.geometry.LaneDetectionResult;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
-import org.rcdukes.video.ImageSource;
 import org.rcdukes.video.ImageCollector.ImageType;
+import org.rcdukes.video.ImageSource;
 
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
-import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
-
-import org.reactivestreams.Subscription;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Graphical user interface for lane detection
@@ -51,18 +47,19 @@ public class LaneDetectionGUI extends BaseGUI {
   private HoughLinesLineDetector lineDetector = new HoughLinesLineDetector();
 
   private boolean configured = false;
-  private Disposable imageSubscriber = null;
   Observable<Image> simulatorImageObservable;
+  private ImageObserver frameGrabber;
 
   public LaneDetectionGUI() {
     Config.configureLogging();
   }
 
-  public void startCamera(CameraGUI cameraGUI, ImageSource imageSource) throws Exception {
+  public void startCamera(CameraGUI cameraGUI, ImageSource imageSource)
+      throws Exception {
     configureGUI();
 
-    if (this.imageSubscriber == null) {
-      ImageSubscriber frameGrabber = new ImageSubscriber() {
+    if (this.frameGrabber == null) {
+      frameGrabber = new ImageObserver() {
         @Override
         public void onNext(Image originalImage) {
           super.onNext(originalImage);
@@ -81,15 +78,15 @@ public class LaneDetectionGUI extends BaseGUI {
         }
       };
       displayer.setCameraButtonText("Stop Camera");
-      Observable<Image> imageObservable=imageSource.getImageObservable();
-      imageSubscriber = imageObservable.subscribeOn(Schedulers.newThread())
+      Observable<Image> imageObservable = imageSource.getImageObservable();
+      imageObservable.subscribeOn(Schedulers.newThread())
           .throttleFirst(100, TimeUnit.MILLISECONDS) // 10 Frames Per second
                                                      // some 2.5 times slower
                                                      // than original ...
           .doOnError(th -> displayer.handle(th)).subscribe(frameGrabber);
     } else {
-      imageSubscriber.dispose();
-      imageSubscriber = null;
+      frameGrabber.stop();
+      frameGrabber=null;
       displayer.setCameraButtonText("Start Camera");
     }
   }
