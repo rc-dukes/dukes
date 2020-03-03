@@ -8,6 +8,7 @@ import org.rcdukes.common.Characters;
 import org.rcdukes.common.ClusterStarter;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.EventbusLogger;
 import org.rcdukes.common.Events;
 import org.rcdukes.common.WebStarter;
 import org.rcdukes.error.ErrorHandler;
@@ -31,7 +32,6 @@ public class AppVerticle extends DukesVerticle {
   private ClusterStarter starter;
   private int HEARTBEAT_INTERVAL = 150; // send a heartbeat every 150 millisecs
   private Disposable heartBeatSubscription;
-  private EventbusLogger eventbusLogger;
   private SimulatorImageFetcher simulatorImageFetcher;
   private Navigator navigator;
 
@@ -50,7 +50,7 @@ public class AppVerticle extends DukesVerticle {
    */
   public AppVerticle(EventbusLogger eventbusLogger) {
     super(Characters.UNCLE_JESSE);
-    this.eventbusLogger = eventbusLogger;
+    super.setEventbusLogger(eventbusLogger);
     setSimulatorImageFetcher(new SimulatorImageFetcher());
   }
   
@@ -73,7 +73,6 @@ public class AppVerticle extends DukesVerticle {
 
     JsonObject startjo = new JsonObject();
     startjo.put("started", this.character.name());
-    this.eventbusLogger.logEvent(startjo);
  
     consumer(Characters.ROSCO, Events.SIMULATOR_IMAGE,
         getSimulatorImageFetcher()::receiveSimulatorImage);
@@ -106,7 +105,6 @@ public class AppVerticle extends DukesVerticle {
           name == null ? "?" : name, value == null ? "?" : value);
       LOG.info(msg);
     }
-    this.eventbusLogger.logEvent(jo);
     super.send(character, jo);
   }
 

@@ -30,6 +30,15 @@ public abstract class DukesVerticle extends AbstractVerticle {
   public static boolean debug = false;
   protected Characters character;
   protected String deploymentID = null;
+  protected EventbusLogger eventbusLogger;
+
+  public EventbusLogger getEventbusLogger() {
+    return eventbusLogger;
+  }
+
+  public void setEventbusLogger(EventbusLogger eventbusLogger) {
+    this.eventbusLogger = eventbusLogger;
+  }
 
   /**
    * construct me
@@ -43,6 +52,9 @@ public abstract class DukesVerticle extends AbstractVerticle {
   public void logStatus(String op, String status) {
     String msg = String.format("%s %s: %s", op, status,
         character.description());
+    if (this.eventbusLogger!=null) {
+      this.eventbusLogger.log(msg);
+    }
     LOG.info(msg);
   }
 
@@ -159,6 +171,8 @@ public abstract class DukesVerticle extends AbstractVerticle {
    *          - the JsonObject to send
    */
   public void send(String address, JsonObject jo) {
+    if (this.eventbusLogger!=null)
+      this.eventbusLogger.logEvent(address,jo);
     getVertx().eventBus().publish(address, jo);
   }
 

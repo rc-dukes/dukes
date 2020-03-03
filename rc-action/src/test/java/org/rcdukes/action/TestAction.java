@@ -19,19 +19,6 @@ import io.vertx.core.json.JsonObject;
  */
 public class TestAction {
   public static boolean debug = true;
-  public static long TIME_OUT = COMMAND_LOOP_INTERVAL * 3; // we expect a result
-  // within 50 msecs
-
-  @BeforeClass
-  public static void setTiming() {
-    // in Travis environment things might be *really* slow
-    if (TestSuite.isTravis()) {
-      // increase the timing a bit for travis
-      int TRAVIS_FACTOR = 2; // 
-      COMMAND_LOOP_INTERVAL = COMMAND_LOOP_INTERVAL * TRAVIS_FACTOR;
-      TIME_OUT = TIME_OUT * TRAVIS_FACTOR;
-    }
-  }
 
   /**
    * check the navigation result
@@ -74,7 +61,7 @@ public class TestAction {
     // Sleep (after creating the navigator) to ensure we surpass the command
     // loop interval, otherwise no
     // navigation command will be issued.
-    Thread.sleep(COMMAND_LOOP_INTERVAL);
+    Thread.sleep(COMMAND_LOOP_INTERVAL+1);
 
     double angles[] = { -45.0, -30.0, -15.0, -10.0, 0.0, 10.0, 15.0, 30.0,
         45.0 };

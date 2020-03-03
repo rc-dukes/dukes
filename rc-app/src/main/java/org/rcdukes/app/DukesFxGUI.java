@@ -6,12 +6,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.opencv.core.Mat;
+import org.rcdukes.common.Config;
+import org.rcdukes.common.EventbusLogger;
 import org.rcdukes.detect.ImageFetcher;
+import org.rcdukes.error.ErrorHandler;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageSource;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
+import io.reactivex.Observable;
 import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -38,7 +42,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import io.reactivex.Observable;
 
 /**
  * combined GUI for detectors
@@ -411,8 +414,8 @@ public class DukesFxGUI extends BaseGUI
   }
 
   @Override
-  public void logEvent(JsonObject jo) {
-    String msg = String.format("%s: %s\n", getIsoTimeStamp(), jo.encode());
+  public void logEvent(String address,JsonObject jo) {
+    String msg = String.format("%s:\n %s->%s\n", getIsoTimeStamp(), address,jo.encode());
     TextArea target = messageArea;
     if (jo.containsKey("type")) {
       String type = jo.getString("type");
@@ -420,6 +423,14 @@ public class DukesFxGUI extends BaseGUI
         target = heartbeatArea;
       }
     }
+    this.logToArea(target,msg);
+  }
+  @Override
+  public void log(String message) {
+    logToArea(messageArea,message);
+  }
+  
+  public void logToArea(TextArea target, String msg) {
     target.appendText(msg);
   }
 
@@ -433,5 +444,17 @@ public class DukesFxGUI extends BaseGUI
       ImageFetcher imageFetcher = new ImageFetcher(imageSource);
       return imageFetcher.toObservable();
     }
+  }
+
+  public void autoStart() {
+    try {
+      String cameraUrl=Config.getEnvironment().getString(Config.CAMERA_URL);
+      this.lanevideo.setValue(cameraUrl);
+      this.startCamera();
+      this.navigationController.powerButton.fire();
+    } catch (Exception e) {
+      ErrorHandler.getInstance().handle(e);
+    }
+    
   }
 }

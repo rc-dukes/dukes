@@ -14,6 +14,11 @@
 	<artifactId>rc-app</artifactId>
 	<description>JavaFX app to monitor the car</description>
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/args4j/args4j -->
+		<dependency>
+			<groupId>args4j</groupId>
+			<artifactId>args4j</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>nl.vaneijndhoven.dukes</groupId>
 			<artifactId>rc-common</artifactId>

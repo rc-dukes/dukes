@@ -21,6 +21,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import org.rcdukes.common.ErrorHandler;
+import org.rcdukes.common.EventbusLogger;
 
 /**
  * base java fx GUI functionality
