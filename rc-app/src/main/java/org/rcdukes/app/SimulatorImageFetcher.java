@@ -6,6 +6,8 @@ import org.opencv.core.Mat;
 import org.rcdukes.error.ErrorHandler;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.ReplaySubject;
@@ -17,12 +19,17 @@ import io.vertx.rxjava.core.eventbus.Message;
  *
  */
 public class SimulatorImageFetcher {
-  
+  boolean debug=false;
   private int frameIndex;
   // http://reactivex.io/RxJava/javadoc/rx/subjects/ReplaySubject.html
   ReplaySubject<Image> subject;
+  protected static final Logger LOG = LoggerFactory
+      .getLogger(SimulatorImageFetcher.class);
   Image Empty=new Image(null,"simulator",-1,0);
   
+  /**
+   * construct me
+   */
   public SimulatorImageFetcher() {
     frameIndex=0;
     subject=ReplaySubject.create();
@@ -38,6 +45,10 @@ public class SimulatorImageFetcher {
       long milliTimeStamp = System.currentTimeMillis();
       Image image = new Image(frame, "simulator", frameIndex++,
           milliTimeStamp);
+      if (debug) {
+        String msg=image.debugInfo();
+        LOG.info(msg);
+      }
       subject.onNext(image);
     } catch (IOException e) {
       ErrorHandler.getInstance().handle(e);

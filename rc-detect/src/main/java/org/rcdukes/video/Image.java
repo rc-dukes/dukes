@@ -119,11 +119,16 @@ public class Image {
    */
   public void finalize() {
     if (debug) {
-      String msg=String.format("releasing image %s %d of %s",getName(),getFrameIndex(),dateFormat.format(timeStamp));
+      String msg=String.format("releasing %s",this.debugInfo());
       System.out.println(msg);     
     }
     // this.frame.release();
     // this.frame=null;
+  }
+
+  public String debugInfo() {
+    String info=String.format("image %s %dx%d %d of %s",getName(),frame.width(),frame.height(),getFrameIndex(),dateFormat.format(timeStamp));
+    return info;
   }
 
 }

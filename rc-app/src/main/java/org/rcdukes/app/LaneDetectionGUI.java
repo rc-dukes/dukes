@@ -86,12 +86,16 @@ public class LaneDetectionGUI extends BaseGUI {
           .throttleFirst(100, TimeUnit.MILLISECONDS) // 10 Frames Per second
                                                      // some 2.5 times slower
                                                      // than original ...
-          .doOnError(th -> displayer.handle(th)).subscribe(frameGrabber);
+          .doOnError(th -> handleError(th)).subscribe(frameGrabber);
     } else {
       frameGrabber.stop();
       frameGrabber=null;
       displayer.setCameraButtonText("Start Camera");
     }
+  }
+  
+  private void handleError(Throwable th) {
+    displayer.handle(th);
   }
 
   private void configureGUI() {

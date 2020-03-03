@@ -20,6 +20,8 @@ import stormbots.MiniPID;
  *
  */
 public class StraightLaneNavigator implements Navigator {
+  
+  boolean debug=false;
   protected static final Logger LOG = LoggerFactory
       .getLogger(StraightLaneNavigator.class);
   private static final long MAX_DURATION_NO_LINES_DETECTED = 1000;
@@ -181,7 +183,8 @@ public class StraightLaneNavigator implements Navigator {
         .put("position", rudderPos);
     String debugMsg = String.format("sending servoDirect position %3.1f",
         rudderPercentage);
-    LOG.debug(debugMsg);
+    if (debug)
+      LOG.debug(debugMsg);
     return message;
   }
 

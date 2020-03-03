@@ -51,7 +51,6 @@ public class AppVerticle extends DukesVerticle {
   public AppVerticle(EventbusLogger eventbusLogger) {
     super(Characters.UNCLE_JESSE);
     super.setEventbusLogger(eventbusLogger);
-    setSimulatorImageFetcher(new SimulatorImageFetcher());
   }
   
   public void enableNavigator() {
@@ -73,7 +72,7 @@ public class AppVerticle extends DukesVerticle {
 
     JsonObject startjo = new JsonObject();
     startjo.put("started", this.character.name());
- 
+    setSimulatorImageFetcher(new SimulatorImageFetcher());
     consumer(Characters.ROSCO, Events.SIMULATOR_IMAGE,
         getSimulatorImageFetcher()::receiveSimulatorImage);
     super.postStart();

@@ -450,6 +450,8 @@ public class DukesFxGUI extends BaseGUI
     try {
       String cameraUrl=Config.getEnvironment().getString(Config.CAMERA_URL);
       this.lanevideo.setValue(cameraUrl);
+      this.hideMenuButton.fire();
+      this.fullScreenButton.fire();
       this.startCamera();
       this.navigationController.powerButton.fire();
     } catch (Exception e) {
