@@ -119,7 +119,7 @@ public class LaneOrientation {
     }
 
     /**
-     * determin the course relative to Horizon
+     * determine the course relative to Horizon
      * @return
      */
     public double determineCourseRelativeToHorizon() {
@@ -134,7 +134,7 @@ public class LaneOrientation {
         double middleAtHorizonX = middleAtHorizon.getX();
 
 
-        double maxX = 600; // width of image;
+        double maxX = viewPort.getWidth();
 
         double courseAbs = (middleAtHorizonX / maxX);
 

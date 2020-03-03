@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.opencv.core.Mat;
+import org.rcdukes.geometry.LaneDetectionResult;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageCollector.ImageType;
@@ -17,9 +18,14 @@ import org.rcdukes.video.ImageUtils;
  */
 public class TestLaneDetection extends BaseDetectTest {
  
-  public void detect(Image image,String prefix) {
+  /**
+   * detect based on the given image
+   * @param image
+   * @param prefix
+   */
+  public LaneDetectionResult detect(Image image,String prefix) {
     LaneDetector ld=LaneDetector.getDefault();
-    ld.detect(image);
+    LaneDetectionResult ldr = ld.detect(image);
     ImageCollector c = ld.getCollector();
     assertNotNull(c);
     ImageUtils imageUtils=new ImageUtils();
@@ -28,6 +34,7 @@ public class TestLaneDetection extends BaseDetectTest {
       if (cimage.getFrame()!=null)
         imageUtils.writeImage(cimage.getFrame(),prefix+cimage.getName()+Image.ext);
     }
+    return ldr;
   }
   
   @Test
@@ -39,7 +46,8 @@ public class TestLaneDetection extends BaseDetectTest {
     assertEquals(960,frame.height());
     imageUtils.writeImage(frame,"NH75-India.jpg");
     Image image=new Image(frame,"NH75-India",0,System.currentTimeMillis());
-    detect(image,image.getName());
+    LaneDetectionResult ldr = detect(image,image.getName());
+    assertNotNull(ldr);
   }
   
   @Test
@@ -54,6 +62,11 @@ public class TestLaneDetection extends BaseDetectTest {
     assertEquals(3,frame.channels());
     detect(image,"Utrecht");
     imageFetcher.close();
+  }
+  
+  @Test
+  public void testDetermineCurrentAngle() {
+    
   }
   
   

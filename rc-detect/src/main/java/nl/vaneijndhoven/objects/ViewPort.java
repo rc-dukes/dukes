@@ -9,6 +9,12 @@ public class ViewPort {
     private double height;
 
 
+    /**
+     * construct me
+     * @param origin
+     * @param width
+     * @param height
+     */
     public ViewPort(Point2D origin, double width, double height) {
         this.origin = origin;
         this.width = width;
