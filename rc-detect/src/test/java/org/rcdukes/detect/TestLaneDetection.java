@@ -48,6 +48,9 @@ public class TestLaneDetection extends BaseDetectTest {
     Image image=new Image(frame,"NH75-India",0,System.currentTimeMillis());
     LaneDetectionResult ldr = detect(image,image.getName());
     assertNotNull(ldr);
+    if (debug) {
+      System.out.println(ldr.debugInfo());
+    }
   }
   
   @Test

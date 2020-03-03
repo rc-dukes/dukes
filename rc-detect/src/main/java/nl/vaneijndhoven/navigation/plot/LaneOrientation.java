@@ -11,11 +11,20 @@ import org.rcdukes.geometry.Point2D;
 
 import nl.vaneijndhoven.objects.ViewPort;
 
+/**
+ * calculates the orientation of a given lane
+ *
+ */
 public class LaneOrientation {
 
     private final Lane lane;
     private final ViewPort viewPort;
 
+    /**
+     * construct me for the given lane and viewport
+     * @param lane
+     * @param viewPort
+     */
     public LaneOrientation(Lane lane, ViewPort viewPort) {
         this.lane = lane;
         this.viewPort = viewPort;

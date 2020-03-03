@@ -49,5 +49,10 @@ public class LaneDetectionResult {
     }
     result.put(key, number);
   }
+  
+  public String debugInfo() {
+    String msg=String.format(" angle: %3.1f°\ncourse:%3.1f%%", angle,courseRelativeToHorizon);
+    return msg;
+  }
  
 }
