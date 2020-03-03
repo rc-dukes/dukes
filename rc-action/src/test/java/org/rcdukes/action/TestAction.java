@@ -26,9 +26,8 @@ public class TestAction {
   public static void setTiming() {
     // in Travis environment things might be *really* slow
     if (TestSuite.isTravis()) {
-      // increase the timing
-      int TRAVIS_FACTOR = 2000; // 50 worked - 25 and 37 did not -
-      // 60/75 failed in one instance and even 300/600 !
+      // increase the timing a bit for travis
+      int TRAVIS_FACTOR = 2; // 
       COMMAND_LOOP_INTERVAL = COMMAND_LOOP_INTERVAL * TRAVIS_FACTOR;
       TIME_OUT = TIME_OUT * TRAVIS_FACTOR;
     }
