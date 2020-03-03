@@ -1,23 +1,25 @@
 package org.rcdukes.action;
 
-import static rx.Observable.just;
-import static rx.exceptions.Exceptions.propagate;
-
 import java.util.Locale;
 
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.Config;
+import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.Environment;
+import org.rcdukes.error.ErrorHandler;
 import org.rcdukes.geometry.LaneDetectionResult;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import rx.Observable;
+import io.vertx.rxjava.core.eventbus.Message;
 import stormbots.MiniPID;
 
 /**
  * straight line navigator
  *
  */
-public class StraightLaneNavigator {
+public class StraightLaneNavigator implements Navigator {
   protected static final Logger LOG = LoggerFactory
       .getLogger(StraightLaneNavigator.class);
   private static final long MAX_DURATION_NO_LINES_DETECTED = 1000;
@@ -34,13 +36,44 @@ public class StraightLaneNavigator {
   private double lastRudderPercentageSent = 0d;
 
   private boolean emergencyStopActivated = false;
+  DukesVerticle sender;
+
+  public DukesVerticle getSender() {
+    return sender;
+  }
+
+  public void setSender(DukesVerticle sender) {
+    this.sender = sender;
+  }
+
+  public String getWheelOrientationFromEnvironment() {
+    Environment env = Environment.getInstance();
+    String wheelOrientation = "+";
+    try {
+      wheelOrientation = env.getString(Config.WHEEL_ORIENTATION);
+    } catch (Exception e) {
+      ErrorHandler.getInstance().handle(e);
+    }
+    return wheelOrientation;
+  }
 
   /**
-   * construct me
+   * construct me with the given wheel orientation
+   * 
+   * @param wheelOrientation
    */
   public StraightLaneNavigator(String wheelOrientation) {
+    if (wheelOrientation == null)
+      wheelOrientation = this.getWheelOrientationFromEnvironment();
     this.wheelOrientation = wheelOrientation;
     initDefaults();
+  }
+
+  /**
+   * default constructor
+   */
+  public StraightLaneNavigator() {
+    this(null);
   }
 
   MiniPID pid;
@@ -59,20 +92,8 @@ public class StraightLaneNavigator {
       rudderFactor = -1;
   }
 
-  public Observable<JsonObject> navigate(JsonObject laneDetectResult) {
-    return processLane(fromJsonObject(laneDetectResult)).onErrorResumeNext(throwable -> {
-      // Convert No Lines Detected situation into stop command.
-      if (throwable instanceof NoLinesDetected) {
-        emergencyStopActivated = true;
-        return just(Action.emergencyStopCommand());
-      } else {
-        return Observable.error(propagate(throwable));
-      }
-    });
-
-  }
-
-  private LaneDetectionResult fromJsonObject(JsonObject jo) {
+  @Override
+  public LaneDetectionResult fromJsonObject(JsonObject jo) {
     LaneDetectionResult ldr = new LaneDetectionResult();
     if (jo.containsKey("angle")) {
       ldr.angle = jo.getDouble("angle");
@@ -87,18 +108,22 @@ public class StraightLaneNavigator {
   /**
    * process the laneDetectResult
    * 
-   * @param ldr - the lane detection result
-   * @return - a message to be sent to the vehicle
-   * @throws NoLinesDetected
+   * @param ldr
+   *          - the lane detection result
+   * @return - a message to be sent to the vehicle or null on error
    */
-  private Observable<JsonObject> processLane(LaneDetectionResult ldr)
-      throws NoLinesDetected {
+  @Override
+  public JsonObject getNavigationInstruction(LaneDetectionResult ldr) {
     long currentTime = System.currentTimeMillis();
 
-    verifyAngleFound(ldr.angle, currentTime);
-
-    if (ldr.angle == null) {
-      return Observable.empty();
+    AngleCheck angleCheck = verifyAngleFound(ldr.angle, currentTime);
+    switch (angleCheck) {
+    case empty:
+      return null;
+    case noLines:
+      return Action.emergencyStopCommand();
+    default:
+      // ok - do nothing
     }
 
     Double rudderPercentage;
@@ -137,21 +162,21 @@ public class StraightLaneNavigator {
       tsLastCommand = currentTime;
       lastRudderPercentageSent = rudderPercentage;
       previousAngle = ldr.angle;
-      JsonObject message=steerCommand(rudderPercentage);
-      return just(message);
+      JsonObject message = steerCommand(rudderPercentage);
+      return message;
     }
 
-    return Observable.empty();
+    return null;
   }
-  
+
   /**
    * get the command to steer the vehicle
+   * 
    * @param rudderPercentage
    * @return - the command message
    */
-  public JsonObject steerCommand( Double rudderPercentage) {
-    String rudderPos = String.format(Locale.ENGLISH, "%3.1f",
-        rudderPercentage);
+  public JsonObject steerCommand(Double rudderPercentage) {
+    String rudderPos = String.format(Locale.ENGLISH, "%3.1f", rudderPercentage);
     JsonObject message = new JsonObject().put("type", "servoDirect")
         .put("position", rudderPos);
     String debugMsg = String.format("sending servoDirect position %3.1f",
@@ -160,24 +185,53 @@ public class StraightLaneNavigator {
     return message;
   }
 
-  /// TODO rewrite to throw exception so calling class can act on specific error
-  /// to send stop command.
-  private void verifyAngleFound(Double angle, long currentTime)
-      throws NoLinesDetected {
+  enum AngleCheck {
+    ok, empty, noLines
+  }
+
+  /**
+   * check the angle
+   * 
+   * @param angle
+   * @param currentTime
+   * @return the AngleCheck
+   */
+  private AngleCheck verifyAngleFound(Double angle, long currentTime) {
+    AngleCheck result = AngleCheck.ok;
     if (angle == null) {
       // no angle detected
       if ((currentTime - tsLastLinesDetected > MAX_DURATION_NO_LINES_DETECTED)
           && !emergencyStopActivated) {
-        System.out.println("no angle found for "
-            + MAX_DURATION_NO_LINES_DETECTED + "ms, emergency stop");
-        throw new NoLinesDetected();
+        String msg = String.format("no angle found for %d ms, emergency stop",
+            MAX_DURATION_NO_LINES_DETECTED);
+        LOG.warn(msg);
+        result = AngleCheck.noLines;
       }
+      result = AngleCheck.empty;
     } else {
       // all good
       tsLastLinesDetected = currentTime;
     }
+    return result;
   }
 
-  private class NoLinesDetected extends RuntimeException {
+  @Override
+  public void navigateWithInstruction(
+      JsonObject navigationInstruction) {
+    if (navigationInstruction!=null)
+      sender.send(Characters.BO, navigationInstruction);
   }
+
+  @Override
+  public void navigateWithMessage(Message<JsonObject> ldrMessage) {
+    LaneDetectionResult ldr = fromJsonObject(ldrMessage.body());
+    this.navigateWithLaneDetectionResult(ldr);
+  }
+
+  @Override
+  public void navigateWithLaneDetectionResult(LaneDetectionResult ldr) {
+    JsonObject navigationJo = getNavigationInstruction(ldr);
+    navigateWithInstruction(navigationJo);
+  }
+
 }

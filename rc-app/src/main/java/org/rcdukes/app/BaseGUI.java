@@ -53,6 +53,16 @@ public class BaseGUI {
   public static double getScreenHeight() {
     return Screen.getPrimary().getVisualBounds().getHeight();
   }
+  
+  EventbusLogger eventbusLogger;
+
+  public EventbusLogger getEventbusLogger() {
+    return eventbusLogger;
+  }
+
+  public void setEventbusLogger(EventbusLogger eventbusLogger) {
+    this.eventbusLogger = eventbusLogger;
+  }
 
   /**
    * show the given imageFrame in the given JavaFX imageView Control
@@ -206,5 +216,14 @@ public class BaseGUI {
     if (debug)
       System.out.println(
           String.format("%s is now %s", buttonName, active ? "on" : "off"));
+  }
+  
+  /**
+   * get the AppVerticle
+   * @return - the singleton
+   */
+  protected AppVerticle getAppVerticle() {
+    AppVerticle appVerticle=AppVerticle.getInstance(eventbusLogger);
+    return appVerticle;
   }
 }

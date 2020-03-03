@@ -25,6 +25,11 @@
 			<version>0.0.2</version>
 		</dependency>
 		<dependency>
+			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<artifactId>rc-action</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-rx-java</artifactId>
 		</dependency>

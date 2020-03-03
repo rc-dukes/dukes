@@ -1,5 +1,6 @@
 package org.rcdukes.app;
 
+import org.rcdukes.action.Navigator;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.Events;
@@ -48,16 +49,6 @@ public class NavigationGUI extends BaseGUI {
   protected Button requestConfigButton;
   @FXML
   protected Button echoButton;
-  
-  EventbusLogger eventbusLogger;
-
-  public EventbusLogger getEventbusLogger() {
-    return eventbusLogger;
-  }
-
-  public void setEventbusLogger(EventbusLogger eventbusLogger) {
-    this.eventbusLogger = eventbusLogger;
-  }
 
   @FXML
   public void initialize() {
@@ -159,9 +150,17 @@ public class NavigationGUI extends BaseGUI {
   
   private void autopilot() {
     if (!autoPilotButton.isDisabled()) {
-      super.setButtonActive(autoPilotButton, true);
-      super.setButtonActive(manualButton, false);
-    }
+      Navigator navigator = this.getAppVerticle().getNavigator();
+      if (navigator==null) {
+        this.getAppVerticle().enableNavigator();
+        super.setButtonActive(autoPilotButton, true);
+        super.setButtonActive(manualButton, false);
+      } else {
+        this.getAppVerticle().stopNavigator();
+        super.setButtonActive(autoPilotButton, false);
+        super.setButtonActive(manualButton, true);     
+      }
+     }
   }
 
   @FXML
@@ -259,14 +258,5 @@ public class NavigationGUI extends BaseGUI {
    */
   private void sendWheelCommand(String position) {
     getAppVerticle().sendWheelCommand(position);
-  }
-  
-  /**
-   * get the AppVerticle
-   * @return - the singleton
-   */
-  protected AppVerticle getAppVerticle() {
-    AppVerticle appVerticle=AppVerticle.getInstance(eventbusLogger);
-    return appVerticle;
   }
 }

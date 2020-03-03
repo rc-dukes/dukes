@@ -2,6 +2,7 @@ package org.rcdukes.app;
 
 import java.util.concurrent.TimeUnit;
 
+import org.rcdukes.action.Navigator;
 import org.rcdukes.camera.CameraMatrix;
 import org.rcdukes.common.Config;
 import org.rcdukes.detect.ImageObserver;
@@ -57,7 +58,6 @@ public class LaneDetectionGUI extends BaseGUI {
   public void startCamera(CameraGUI cameraGUI, ImageSource imageSource)
       throws Exception {
     configureGUI();
-
     if (this.frameGrabber == null) {
       frameGrabber = new ImageObserver() {
         @Override
@@ -73,6 +73,9 @@ public class LaneDetectionGUI extends BaseGUI {
           LaneDetector laneDetector = new LaneDetector(edgeDetector,
               lineDetector, cameraGUI.cameraConfig, cameraMatrix, collector);
           LaneDetectionResult ldr = laneDetector.detect(originalImage);
+          Navigator navigator = LaneDetectionGUI.this.getAppVerticle().getNavigator();
+          if (navigator!=null)
+            navigator.navigateWithLaneDetectionResult(ldr);
           displayer.display1(collector.getImage(ImageType.edges, true));
           displayer.display2(collector.getImage(ImageType.lines, true));
         }

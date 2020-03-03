@@ -164,6 +164,7 @@ public class DukesFxGUI extends BaseGUI
     this.startvideo.setValue("http://wiki.bitplan.com/videos/startlamp2.m4v");
     //
     this.navigationController.setEventbusLogger(this);
+    this.laneDetectionController.setEventbusLogger(this);
     root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
       this.handleKeyInput(event);
     });

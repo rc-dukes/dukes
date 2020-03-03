@@ -2,6 +2,8 @@ package org.rcdukes.app;
 
 import java.util.concurrent.TimeUnit;
 
+import org.rcdukes.action.Navigator;
+import org.rcdukes.action.StraightLaneNavigator;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.ClusterStarter;
 import org.rcdukes.common.Config;
@@ -31,6 +33,15 @@ public class AppVerticle extends DukesVerticle {
   private Disposable heartBeatSubscription;
   private EventbusLogger eventbusLogger;
   private SimulatorImageFetcher simulatorImageFetcher;
+  private Navigator navigator;
+
+  public Navigator getNavigator() {
+    return navigator;
+  }
+
+  public void setNavigator(Navigator navigator) {
+    this.navigator = navigator;
+  }
 
   /**
    * JavaFX Application verticle
@@ -41,6 +52,15 @@ public class AppVerticle extends DukesVerticle {
     super(Characters.UNCLE_JESSE);
     this.eventbusLogger = eventbusLogger;
     setSimulatorImageFetcher(new SimulatorImageFetcher());
+  }
+  
+  public void enableNavigator() {
+    navigator=new StraightLaneNavigator();
+    navigator.setSender(this);
+  }
+  
+  public void stopNavigator() {
+    navigator=null;
   }
 
   @Override
