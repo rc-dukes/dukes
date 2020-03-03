@@ -19,7 +19,7 @@ import io.vertx.rxjava.core.eventbus.Message;
  *
  */
 public class SimulatorImageFetcher {
-  boolean debug=false;
+  public static boolean debug=false;
   private int frameIndex;
   // http://reactivex.io/RxJava/javadoc/rx/subjects/ReplaySubject.html
   ReplaySubject<Image> subject;

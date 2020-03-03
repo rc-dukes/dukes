@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
 import org.rcdukes.common.Config;
@@ -17,6 +18,8 @@ import org.rcdukes.video.ImageSource;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -449,6 +452,10 @@ public class DukesFxGUI extends BaseGUI
     }
   }
 
+  /**
+   * auto start me optionally with the simulator
+   * @param simulator
+   */
   public void autoStart(boolean simulator) {
     try {
       String cameraUrl = "simulator";
@@ -458,26 +465,31 @@ public class DukesFxGUI extends BaseGUI
       this.hideMenuButton.fire();
       this.primaryStage.setMaximized(true);
       this.navigationController.powerButton.fire();
-      int timeOut = 5000;
+      // create a wait loop on a different thread
+      int timeOut = 8000;
       int waitStep = 40;
-      int timeWait = timeOut;
-      boolean verticleStarted = false;
-      while (timeWait > 0 && !verticleStarted) {
-        Thread.sleep(waitStep);
-        timeOut -= waitStep;
+      Disposable waitLoop[]= {null};
+      waitLoop[0]=Observable
+      .timer(waitStep, TimeUnit.MILLISECONDS).repeat().timeout(timeOut,TimeUnit.MILLISECONDS).subscribeOn(Schedulers.newThread()).subscribe(e -> {
         AppVerticle appVerticle = navigationController.appVerticle;
-        verticleStarted = appVerticle != null
+        boolean verticleStarted = appVerticle != null
             && appVerticle.getStatus() == Status.started;
-      }
-      if (timeWait > 0) {
-        if (debug)
-          LOG.info(String.format("appVerticle started after %d msecs",
-              timeOut - timeWait));
-        this.cameraButton.fire();
-      }
+        if (verticleStarted) {
+          Platform.runLater(() ->this.cameraButton.fire());
+          if (waitLoop[0]!=null)
+            waitLoop[0].dispose();
+        }
+      });
     } catch (Exception e) {
       ErrorHandler.getInstance().handle(e);
     }
 
+  }
+  
+ 
+
+  public void setDebug(boolean debug) {
+    super.debug=debug;
+    SimulatorImageFetcher.debug=debug;
   }
 }

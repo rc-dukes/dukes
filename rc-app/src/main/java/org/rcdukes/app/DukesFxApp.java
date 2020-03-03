@@ -66,6 +66,7 @@ public class DukesFxApp extends Application {
       gui.addJustFullScreenButton();
     });
     primaryStage.show();
+    gui.setDebug(debug);
     if (autostart) {
       gui.autoStart(simulator);
     }

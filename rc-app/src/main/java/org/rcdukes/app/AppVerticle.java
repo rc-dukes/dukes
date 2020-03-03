@@ -153,6 +153,10 @@ public class AppVerticle extends DukesVerticle {
     return instance;
   }
 
+  /**
+   * switch on the heartBeat
+   * @param on
+   */
   public void heartBeat(boolean on) {
     if (on) {
       heartBeatSubscription = Observable
