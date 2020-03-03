@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.rcdukes.action.StraightLaneNavigator.COMMAND_LOOP_INTERVAL;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rcdukes.common.ClusterStarter;
 import org.rcdukes.common.DukesVerticle.Status;
@@ -69,7 +68,7 @@ public class TestAction {
         "90.0", "100.0", "100.0" };
     int index = 0;
     for (double angle : angles) {
-      Thread.sleep(COMMAND_LOOP_INTERVAL);
+      Thread.sleep(COMMAND_LOOP_INTERVAL+1);
       JsonObject ldrJo = new JsonObject();
       ldrJo.put("angle", angle);
       LaneDetectionResult ldr = navigator.fromJsonObject(ldrJo);
