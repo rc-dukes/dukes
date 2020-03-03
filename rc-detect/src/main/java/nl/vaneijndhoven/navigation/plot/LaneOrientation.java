@@ -118,6 +118,10 @@ public class LaneOrientation {
         }).orElse(Double.NaN);
     }
 
+    /**
+     * determin the course relative to Horizon
+     * @return
+     */
     public double determineCourseRelativeToHorizon() {
         Optional<Line> middle = determineLaneMiddle();
 

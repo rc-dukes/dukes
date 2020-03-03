@@ -7,6 +7,7 @@ import java.util.Date;
 
 import org.opencv.core.Mat;
 import org.rcdukes.common.Config;
+import org.rcdukes.common.DukesVerticle.Status;
 import org.rcdukes.common.EventbusLogger;
 import org.rcdukes.detect.ImageFetcher;
 import org.rcdukes.error.ErrorHandler;
@@ -214,7 +215,7 @@ public class DukesFxGUI extends BaseGUI
 
   @Override
   public void showCurrentValues(String text) {
-    System.out.println(text);
+    LOG.info(text);
     this.onFXThread(this.currentValuesProp, text);
   }
 
@@ -414,8 +415,9 @@ public class DukesFxGUI extends BaseGUI
   }
 
   @Override
-  public void logEvent(String address,JsonObject jo) {
-    String msg = String.format("%s:\n %s->%s\n", getIsoTimeStamp(), address,jo.encode());
+  public void logEvent(String address, JsonObject jo) {
+    String msg = String.format("%s:\n %s->%s\n", getIsoTimeStamp(), address,
+        jo.encode());
     TextArea target = messageArea;
     if (jo.containsKey("type")) {
       String type = jo.getString("type");
@@ -423,22 +425,23 @@ public class DukesFxGUI extends BaseGUI
         target = heartbeatArea;
       }
     }
-    this.logToArea(target,msg);
+    this.logToArea(target, msg);
   }
+
   @Override
   public void log(String message) {
-    logToArea(messageArea,message);
+    logToArea(messageArea, message);
   }
-  
+
   public void logToArea(TextArea target, String msg) {
-    target.appendText(msg);
+    Platform.runLater(() -> target.appendText(msg));
   }
 
   @Override
   public Observable<Image> getImageObservable() {
     String imageSource = this.lanevideo.valueProperty().getValue();
     if ("simulator".equals(imageSource)) {
-      AppVerticle appVerticle=AppVerticle.getInstance(this);
+      AppVerticle appVerticle = AppVerticle.getInstance(this);
       return appVerticle.getSimulatorImageFetcher().toObservable();
     } else {
       ImageFetcher imageFetcher = new ImageFetcher(imageSource);
@@ -446,17 +449,35 @@ public class DukesFxGUI extends BaseGUI
     }
   }
 
-  public void autoStart() {
+  public void autoStart(boolean simulator) {
     try {
-      String cameraUrl=Config.getEnvironment().getString(Config.CAMERA_URL);
+      String cameraUrl = "simulator";
+      if (!simulator)
+        cameraUrl = Config.getEnvironment().getString(Config.CAMERA_URL);
       this.lanevideo.setValue(cameraUrl);
       this.hideMenuButton.fire();
-      this.fullScreenButton.fire();
-      this.startCamera();
+      this.primaryStage.setMaximized(true);
       this.navigationController.powerButton.fire();
+      int timeOut = 5000;
+      int waitStep = 40;
+      int timeWait = timeOut;
+      boolean verticleStarted = false;
+      while (timeWait > 0 && !verticleStarted) {
+        Thread.sleep(waitStep);
+        timeOut -= waitStep;
+        AppVerticle appVerticle = navigationController.appVerticle;
+        verticleStarted = appVerticle != null
+            && appVerticle.getStatus() == Status.started;
+      }
+      if (timeWait > 0) {
+        if (debug)
+          LOG.info(String.format("appVerticle started after %d msecs",
+              timeOut - timeWait));
+        this.cameraButton.fire();
+      }
     } catch (Exception e) {
       ErrorHandler.getInstance().handle(e);
     }
-    
+
   }
 }

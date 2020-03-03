@@ -8,6 +8,8 @@ import java.net.URISyntaxException;
 
 import org.opencv.core.Mat;
 import org.rcdukes.video.ImageUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jensd.fx.glyphs.GlyphIcons;
 import de.jensd.fx.glyphs.GlyphsDude;
@@ -30,6 +32,8 @@ import org.rcdukes.common.EventbusLogger;
  *
  */
 public class BaseGUI {
+  protected static final Logger LOG = LoggerFactory
+      .getLogger(BaseGUI.class);
   boolean debug = false;
   Stage primaryStage;
   GUIDisplayer displayer;

@@ -82,7 +82,7 @@ public class NavigationGUI extends BaseGUI {
   }
 
   boolean power = false;
-  private AppVerticle appVerticle;
+  AppVerticle appVerticle;
 
   /**
    * handle navigation key events

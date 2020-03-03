@@ -52,7 +52,8 @@ public class ImageObserver implements Observer<Image>  {
   }
   
   public void stop() {
-    this.disposable.dispose();
+    if (disposable!=null)
+      this.disposable.dispose();
   }
 
 };

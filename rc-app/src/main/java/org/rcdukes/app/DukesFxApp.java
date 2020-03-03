@@ -30,6 +30,10 @@ public class DukesFxApp extends Application {
   @Option(name = "-a", aliases = {
       "--autostart" }, usage = "autostart using the configuration")
   protected boolean autostart=false;
+  
+  @Option(name = "-s", aliases = {
+  "--simulator" }, usage = "configure simulator")
+  protected boolean simulator=false;
 
   /**
    * get the resource from the given path
@@ -63,7 +67,7 @@ public class DukesFxApp extends Application {
     });
     primaryStage.show();
     if (autostart) {
-      gui.autoStart();
+      gui.autoStart(simulator);
     }
   }
 
