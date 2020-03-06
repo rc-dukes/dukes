@@ -17,8 +17,22 @@ class SteeringHandler {
       .getLogger(SteeringHandler.class);
 
   private int currentWheelPosition;
+  private double currentWheelAngle;
   private Car car;
 
+  /**
+   * interpolated between the minimum and maximum value with the given percentage
+   * @param min
+   * @param max
+   * @param percentage
+   * @return - the interpolated value
+   */
+  protected int interpolate(int min, int max, int percentage) {
+    int range = max - min;
+    int interpolated = min + ((range * Math.abs(percentage)) / 100);
+    return interpolated;
+  }
+  
   /**
    * create a steering handler for the given car
    * 
@@ -27,6 +41,7 @@ class SteeringHandler {
   SteeringHandler(Car car) {
     this.car = car;
     this.currentWheelPosition = car.getSteering().getSteeringMap().center();
+    this.currentWheelAngle=0;
   }
 
   /**
@@ -45,17 +60,19 @@ class SteeringHandler {
     if (!steeringMap.turnedOrientation()) {
       positionPercentage=-positionPercentage;
     }
-
+    double relativePosition=Math.abs(positionPercentage)/100;
     if (positionPercentage < 5) {
       int range = steeringMap.center() - steeringMap.maxLeft();
       currentWheelPosition = steeringMap.center()
           - ((range * Math.abs(positionPercentage)) / 100);
+      currentWheelAngle=steeringMap.maxLeftAngle()*relativePosition;
       LOG.debug("directPos = " + position + ", range = " + range + ", newPos = "
           + currentWheelPosition);
     } else if (positionPercentage > 5) {
       int range = steeringMap.maxRight() - steeringMap.center();
       currentWheelPosition = steeringMap.center()
-          + ((range * Math.abs(positionPercentage)) / 100);
+          + ((range * Math.abs(positionPercentage) )/ 100);
+      currentWheelAngle=steeringMap.maxRightAngle()*relativePosition;
       LOG.debug("directPos = " + position + ", range = " + range + ", newPos = "
           + currentWheelPosition);
     } else {

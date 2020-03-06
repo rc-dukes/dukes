@@ -16,7 +16,7 @@ import io.vertx.rxjava.core.eventbus.Message;
 import stormbots.MiniPID;
 
 /**
- * straight line navigator
+ * straight lane navigator
  *
  */
 public class StraightLaneNavigator implements Navigator {

@@ -22,7 +22,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <?import org.rcdukes.app.LabeledValueSlider?>
-
+<?import eu.hansolo.medusa.Gauge?>
 <VBox fx:id="root" maxHeight="Infinity" maxWidth="Infinity"
 	xmlns:fx="http://javafx.com/fxml/1"
 	xmlns="http://javafx.com/javafx/11.0.1"
@@ -75,6 +75,7 @@
 			<HBox styleClass="header">
 				<Text styleClass="headertext" text="Events" />
 			</HBox>
+			<Gauge fx:id="speedGauge" alert="true" alertMessage="Almost full" animated="true" areaTextVisible="true"  lcdFont="ELEKTRA" skinType="SLIM" />
 			<TextArea fx:id="messageArea" text="" prefRowCount="25" prefColumnCount="30" />
 		</VBox>
 		<VBox>

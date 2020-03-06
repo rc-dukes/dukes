@@ -19,13 +19,21 @@ public class SteeringMap extends ServoMap
   public static int WHEEL_MAX_RIGHT = 190;
   public static int WHEEL_GPIO = 18;
   public static String WHEEL_ORIENTATION = "-";
+  public static double WHEEL_MAX_LEFT_ANGLE=20;
+  private double WHEEL_MAX_RIGHT_ANGLE;
 
+  /**
+   * steering mapping
+   * @param servoCommand
+   */
   public SteeringMap(ServoCommand servoCommand) {
     Environment env = Config.getEnvironment();
     try {
       WHEEL_CENTER = env.getInteger(Config.WHEEL_CENTER);
       WHEEL_STEP_SIZE = env.getInteger(Config.WHEEL_STEP_SIZE);
       WHEEL_MAX_LEFT = env.getInteger(Config.WHEEL_MAX_LEFT);
+      WHEEL_MAX_LEFT_ANGLE=env.getDouble(Config.WHEEL_MAX_LEFT_ANGLE);
+      WHEEL_MAX_RIGHT_ANGLE=env.getDouble(Config.WHEEL_MAX_RIGHT_ANGLE);
       WHEEL_MAX_RIGHT = env.getInteger(Config.WHEEL_MAX_RIGHT);
       WHEEL_GPIO = env.getInteger(Config.WHEEL_GPIO);
       WHEEL_ORIENTATION = env.getString(Config.WHEEL_ORIENTATION);
@@ -58,4 +66,16 @@ public class SteeringMap extends ServoMap
   public int maxRight() {
     return WHEEL_MAX_RIGHT;
   }
+
+  @Override
+  public double maxLeftAngle() {
+    return WHEEL_MAX_LEFT_ANGLE;
+  }
+
+  @Override
+  public double maxRightAngle() {
+    return WHEEL_MAX_RIGHT_ANGLE;
+  }
+  
+  
 }

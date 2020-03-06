@@ -23,7 +23,7 @@ import io.vertx.core.json.JsonObject;
  *
  */
 public class TestEnvironment {
-
+  boolean debug=true;
   /**
    * set some properties for test purpose
    * 
@@ -46,8 +46,9 @@ public class TestEnvironment {
   @Test
   public void testEnvironment() throws Exception {
     String ip = "1.2.3.4";
-    int port=8080;
-    File propFile = setProperties(Config.REMOTECAR_HOST, ip,Config.WEBCONTROL_PORT,""+port);
+    int port = 8080;
+    File propFile = setProperties(Config.REMOTECAR_HOST, ip,
+        Config.WEBCONTROL_PORT, "" + port);
 
     Environment env = Config.getEnvironment();
     String piIp = env.getString(Config.REMOTECAR_HOST);
@@ -57,40 +58,42 @@ public class TestEnvironment {
     // tests are done on a development machine e.g. laptop
     // comment out if you actually intend to test on the PI
     assertFalse(env.isPi());
-    
-    assertEquals(port,env.getInteger(Config.WEBCONTROL_PORT));
+
+    assertEquals(port, env.getInteger(Config.WEBCONTROL_PORT));
     // cleanup
     propFile.delete();
   }
 
   @Test
   public void testCameraUrl() throws Exception {
-    String url="http://5.6.7.8/html/cam_pic_new.php";
+    String url = "http://5.6.7.8/html/cam_pic_new.php";
     Environment.from(File.createTempFile("dukes", ".ini").getAbsolutePath());
     File propFile = setProperties(Config.CAMERA_URL, url);
-    assertEquals(url,
-        Config.getEnvironment().getString(Config.CAMERA_URL));
+    assertEquals(url, Config.getEnvironment().getString(Config.CAMERA_URL));
     // cleanup
     propFile.delete();
   }
-  
+
   @Test
   public void testGetMyIpAddresses() {
     List<String> ips = Environment.getInstance().getMyIpAddresses();
     assertNotNull(ips);
     // there should be more than one IP address
     // e.g. 127.0.0.1 for l0 and 10.9.8.7 for wlan0
-    assertTrue(ips.size()>1);
-    //for (String ip:ips)
-    //  System.out.println(ip);
+    assertTrue(ips.size() > 1);
+    // for (String ip:ips)
+    // System.out.println(ip);
   }
-  
+
   @Test
   public void testMock() throws Exception {
     Environment.mock();
     JsonObject jo = Environment.getInstance().asJsonObject();
-    String json=jo.toString();
-    System.out.println(json);
+    String json = jo.toString();
+    if (debug)
+      System.out.println(json);
+    Environment env = Config.getEnvironment();
+    assertEquals(20.0,env.getDouble(Config.WHEEL_MAX_LEFT_ANGLE),0.001);
   }
 
 }

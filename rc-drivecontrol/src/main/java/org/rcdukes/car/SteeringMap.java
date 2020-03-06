@@ -11,4 +11,7 @@ public interface SteeringMap extends ServoMap {
 
     int maxLeft();
     int maxRight();
+    
+    double maxLeftAngle();
+    double maxRightAngle();
 }

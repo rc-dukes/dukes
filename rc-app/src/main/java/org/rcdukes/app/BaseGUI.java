@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import de.jensd.fx.glyphs.GlyphIcons;
 import de.jensd.fx.glyphs.GlyphsDude;
 import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
@@ -128,6 +129,24 @@ public class BaseGUI {
    */
   protected <T> void onFXThread(final ObjectProperty<T> property,
       final T value) {
+    if (Platform.isFxApplicationThread()) {
+      property.set(value);
+    } else {
+      Platform.runLater(() -> property.set(value));
+    }
+  }
+  
+  /**
+   * Generic method for putting element running on a non-JavaFX thread on the
+   * JavaFX thread, to properly update the UI
+   *
+   * @param property
+   *          a {@link DoubleProperty}
+   * @param value
+   *          the value to set for the given {@link DoubleProperty}
+   */
+  protected void onFXThread(final DoubleProperty property,
+      final Double value) {
     if (Platform.isFxApplicationThread()) {
       property.set(value);
     } else {

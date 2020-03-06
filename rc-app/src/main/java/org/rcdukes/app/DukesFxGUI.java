@@ -17,6 +17,7 @@ import org.rcdukes.video.ImageSource;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
+import eu.hansolo.medusa.Gauge;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -105,6 +106,8 @@ public class DukesFxGUI extends BaseGUI
   @FXML
   protected ComboBox<String> startvideo;
   @FXML
+  protected Gauge speedGauge;
+  @FXML
   protected TextArea messageArea;
   @FXML
   protected TextArea heartbeatArea;
@@ -169,12 +172,23 @@ public class DukesFxGUI extends BaseGUI
     this.setMenuButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN);
     this.lanevideo.setValue("http://wiki.bitplan.com/videos/full_run.mp4");
     this.startvideo.setValue("http://wiki.bitplan.com/videos/startlamp2.m4v");
+    speedGauge.setDecimals(1);
+    speedGauge.setUnit("m/s");
+    setSpeed(0);
     //
     this.navigationController.setEventbusLogger(this);
     this.laneDetectionController.setEventbusLogger(this);
     root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
       this.handleKeyInput(event);
     });
+  }
+
+  protected void setSpeed(double newSpeed) {
+    this.onFXThread(speedGauge.valueProperty(), newSpeed);
+  }
+  
+  protected double getSpeed() {
+    return speedGauge.valueProperty().doubleValue();
   }
 
   @FXML

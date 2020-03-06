@@ -220,6 +220,18 @@ public class Environment {
     int value = Integer.parseInt(valueStr);
     return value;
   }
+  
+  /**
+   * get a double property with the given key
+   * @param key
+   * @return the double property
+   * @throws Exception
+   */
+  public double getDouble(String key) throws Exception {
+    String valueStr=this.getString(key);
+    double value=Double.parseDouble(valueStr);
+    return value;
+  }
 
   /**
    * reset my singleton

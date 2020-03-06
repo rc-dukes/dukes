@@ -36,8 +36,10 @@ public class Config {
   public static final String WHEEL_ORIENTATION="wheel.orientation";
   public static final String WHEEL_CENTER = "wheel.center";
   public static final String WHEEL_STEP_SIZE = "wheel.stepsize";
-  public static final String WHEEL_MAX_LEFT = "wheel.maxleft";
-  public static final String WHEEL_MAX_RIGHT = "wheel.maxright";
+  public static final String WHEEL_MAX_LEFT = "wheel.max.left";
+  public static final String WHEEL_MAX_RIGHT = "wheel.max.right";
+  public static final String WHEEL_MAX_LEFT_ANGLE = "wheel.max.left.angle";
+  public static final String WHEEL_MAX_RIGHT_ANGLE = "wheel.max.right.angle";
 
   // led configuration
   public static final String LED_ON = "led.on";
@@ -52,6 +54,10 @@ public class Config {
   public static final String ENGINE_MAX_SPEED_REVERSE = "engine.max.speed.reverse";
   public static final String ENGINE_MIN_SPEED_FORWARD = "engine.min.speed.forward";
   public static final String ENGINE_MAX_SPEED_FORWARD = "engine.max.speed.forward";
+  public static final String ENGINE_MIN_SPEED_REVERSE_VELOCITY = "engine.min.speed.reverse.velocity";
+  public static final String ENGINE_MAX_SPEED_REVERSE_VELOCITY = "engine.max.speed.reverse.velocity";
+  public static final String ENGINE_MIN_SPEED_FORWARD_VELOCITY = "engine.min.speed.forward.velocity";
+  public static final String ENGINE_MAX_SPEED_FORWARD_VELOCITY = "engine.max.speed.forward.velocity";
   // Commands
   public static final String POSITION_LEFT = "left";
   public static final String POSITION_RIGHT = "right";
