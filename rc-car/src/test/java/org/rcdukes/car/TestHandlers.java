@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.rcdukes.car.SteeringHandler;
+import org.rcdukes.common.Config;
 
 import io.vertx.core.json.JsonObject;
 import org.rcdukes.car.Steering;
-import org.rcdukes.common.Config;
 import org.rcdukes.drivecontrol.Car;
 import org.rcdukes.drivecontrol.TestCar;
 
@@ -35,10 +35,10 @@ public class TestHandlers extends TestCar {
     assertEquals(130,steering.getServo());
     msg.put("position",Config.POSITION_LEFT);
     sh.handleServo(msg);
-    assertEquals(135,steering.getServo());
+    assertEquals(125,steering.getServo());
     msg.put("position",Config.POSITION_LEFT);
     sh.handleServo(msg);
-    assertEquals(140,steering.getServo());
+    assertEquals(120,steering.getServo());
     if (debug)
       servoCommand.showLog();
   }
