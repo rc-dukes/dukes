@@ -93,7 +93,7 @@ public class TestEnvironment {
     if (debug)
       System.out.println(json);
     Environment env = Config.getEnvironment();
-    assertEquals(20.0,env.getDouble(Config.WHEEL_MAX_LEFT_ANGLE),0.001);
+    assertEquals(-20.0,env.getDouble(Config.WHEEL_MAX_LEFT_ANGLE),0.001);
   }
 
 }
