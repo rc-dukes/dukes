@@ -117,7 +117,24 @@ public class NavigationGUI extends BaseGUI {
     default:
     }
   }
-
+  
+  @FXML
+  private void onPhoto(final ActionEvent event) {
+  }
+  
+  @FXML
+  private void onRecord(final ActionEvent event) {
+  }
+  
+  @FXML
+  private void onEcho(final ActionEvent event) {
+    appVerticle = getAppVerticle();
+    JsonObject jo=new JsonObject();
+    jo.put("type", "message");
+    jo.put("text", "Hello "+Characters.GENERAL_LEE.description());
+    appVerticle.sendEvent(Characters.GENERAL_LEE, Events.ECHO,jo);
+  }
+ 
   @FXML
   private void onPower(final ActionEvent event) {
     power = !power;

@@ -31,6 +31,10 @@ public class Engine extends Servo {
     neutral(force);
   }
 
+  /**
+   * switch to neutral
+   * @param force
+   */
   public void neutral(boolean force) {
     setSpeed(engineMap.getRange().getZeroPosition(), force);
   }

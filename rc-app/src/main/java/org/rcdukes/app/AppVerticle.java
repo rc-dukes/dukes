@@ -19,6 +19,7 @@ import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.vertx.core.json.JsonObject;
+import io.vertx.rxjava.core.eventbus.Message;
 
 /**
  * JavaFx Application Verticle
@@ -75,7 +76,17 @@ public class AppVerticle extends DukesVerticle {
     setSimulatorImageFetcher(new SimulatorImageFetcher());
     consumer(Characters.ROSCO, Events.SIMULATOR_IMAGE,
         getSimulatorImageFetcher()::receiveSimulatorImage);
+    consumer(Characters.ROSCO,Events.ECHO_REPLY,this::receiveEchoReply);
     super.postStart();
+  }
+  
+  /**
+   * receive an echo reply
+   * @param message
+   */
+  protected void receiveEchoReply(Message<String> message) {
+    String echoText = message.body(); 
+    this.eventbusLogger.log(echoText);
   }
 
   /***
