@@ -84,9 +84,9 @@ public class AppVerticle extends DukesVerticle {
    * receive an echo reply
    * @param message
    */
-  protected void receiveEchoReply(Message<String> message) {
-    String echoText = message.body(); 
-    this.eventbusLogger.log(echoText);
+  protected void receiveEchoReply(Message<JsonObject> message) {
+    JsonObject echoJo = message.body(); 
+    this.eventbusLogger.log(echoJo.encodePrettily());
   }
 
   /***
