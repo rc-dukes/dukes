@@ -142,6 +142,9 @@ public class AppVerticle extends DukesVerticle {
   public void startUp() {
     starter = new ClusterStarter();
     starter.prepare();
+    String clusterHostname=null;
+    String publicHost=null;
+    starter.configureCluster(clusterHostname, publicHost);
     // bootstrap the deployment by deploying me
     try {
       starter.deployVerticles(this);

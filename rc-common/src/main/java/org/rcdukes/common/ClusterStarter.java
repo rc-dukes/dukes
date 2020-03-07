@@ -1,12 +1,18 @@
 package org.rcdukes.common;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import org.rcdukes.error.ErrorHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.rxjava.core.AbstractVerticle;
 
 /**
@@ -16,6 +22,7 @@ import io.vertx.rxjava.core.AbstractVerticle;
  *
  */
 public class ClusterStarter {
+  private static final Logger LOG = LoggerFactory.getLogger(ClusterStarter.class);
   public static final int MAX_START_TIME = 20000;
   
   private VertxOptions options;
@@ -33,8 +40,37 @@ public class ClusterStarter {
   public void prepare() {
     if (!prepared) {
       Config.configureLogging();
+      try {
+        setHostname(InetAddress.getLocalHost().getCanonicalHostName());
+      } catch (UnknownHostException e) {
+        LOG.error(e.getMessage());
+      }
       prepared = true;
     }
+  }
+  
+  private String hostname;
+  
+  /**
+   * configure the cluster
+   * @param clusterHostname
+   * @param publicHost
+   */
+  public void configureCluster(String clusterHostname,String publicHost) {
+    if (clusterHostname == null) {
+      clusterHostname=getHostname();
+    }
+    if (publicHost==null) {
+      publicHost=getHostname();
+    }
+    String msg=String.format("starting cluster on %s setting host to %s and clusterPublicHost to %s",getHostname(),clusterHostname,publicHost);
+    LOG.info(msg);
+    EventBusOptions eventBusOptions = getOptions().getEventBusOptions();
+    // https://github.com/eclipse-vertx/vert.x/issues/3229
+    // https://stackoverflow.com/a/49028531/1497139
+    // https://vertx.io/docs/apidocs/io/vertx/core/eventbus/EventBusOptions.html#setClusterPublicHost-java.lang.String-
+    eventBusOptions.setHost(clusterHostname);
+    eventBusOptions.setClusterPublicHost(publicHost);
   }
 
   /**
@@ -138,6 +174,20 @@ public class ClusterStarter {
         verticle.postStop();
       }
     });
+  }
+
+  /**
+   * @return the hostname
+   */
+  public String getHostname() {
+    return hostname;
+  }
+
+  /**
+   * @param hostname the hostname to set
+   */
+  public void setHostname(String hostname) {
+    this.hostname = hostname;
   }
 
 }

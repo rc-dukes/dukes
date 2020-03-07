@@ -1,8 +1,5 @@
 package org.rcdukes.remotecar;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -19,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.reactivex.disposables.Disposable;
-import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.eventbus.Message;
 
@@ -111,7 +107,7 @@ public class RemoteCar extends DukesVerticle {
     // Command.stop();
     try {
       watchDog = new WatchDog(car);
-      carVerticle = new CarVerticle(hostname);
+      carVerticle = new CarVerticle(starter.getHostname());
       starter.deployVerticles(watchDog, carVerticle);
     } catch (Exception e) {
       ErrorHandler.getInstance().handle(e);
@@ -127,8 +123,6 @@ public class RemoteCar extends DukesVerticle {
   String clusterHostname = null;
   @Option(name = "-ph", aliases = { "--publichost" }, usage = "public hostname")
   String publicHost = null;
-  
-  private String hostname;
 
   /**
    * parse the given Arguments
@@ -153,29 +147,13 @@ public class RemoteCar extends DukesVerticle {
       this.parseArguments(args);
     } catch (CmdLineException cle) {
       ErrorHandler.getInstance().handle(cle);
+      parser.printUsage(System.err);
       System.exit(1);
     }
     starter = new ClusterStarter();
     starter.prepare();
-    try {
-      hostname = InetAddress.getLocalHost().getCanonicalHostName();
-    } catch (UnknownHostException e) {
-      LOG.error(e.getMessage());
-    }
-    if (clusterHostname == null) {
-      clusterHostname=hostname;
-    }
-    if (this.publicHost==null) {
-      publicHost=hostname;
-    }
-    String msg=String.format("starting remoteCar on %s setting host to %s and clusterPublicHost to %s",hostname,clusterHostname,publicHost);
-    LOG.info(msg);
-    EventBusOptions eventBusOptions = starter.getOptions().getEventBusOptions();
-    // https://github.com/eclipse-vertx/vert.x/issues/3229
-    // https://stackoverflow.com/a/49028531/1497139
-    // https://vertx.io/docs/apidocs/io/vertx/core/eventbus/EventBusOptions.html#setClusterPublicHost-java.lang.String-
-    eventBusOptions.setHost(clusterHostname);
-    eventBusOptions.setClusterPublicHost(publicHost);
+    starter.configureCluster(clusterHostname, publicHost);
+  
     // bootstrap the deployment by deploying me
     try {
       starter.deployVerticles(this);
