@@ -13,7 +13,10 @@
     <groupId>nl.vaneijndhoven.dukes</groupId>
     <artifactId>rc-remotecar</artifactId>
     <description>Runner to start the cluster on the car</description>
-
+    <properties>
+    <!-- to create a fat jar call mvn clean install -D createAssembly=true -->
+		   <assemblyMainClass>org.rcdukes.remotecar.RemoteCar</assemblyMainClass>
+	  </properties>
     <dependencies>
         <dependency>
             <groupId>nl.vaneijndhoven.dukes</groupId>
