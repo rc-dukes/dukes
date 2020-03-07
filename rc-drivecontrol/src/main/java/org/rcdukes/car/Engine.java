@@ -7,7 +7,7 @@ import org.rcdukes.drivecontrol.Car;
  */
 public class Engine extends Servo {
 
-  private EngineMap mapping;
+  private ServoRangeMap engineMap;
   private Car car;
 
   /**
@@ -15,9 +15,9 @@ public class Engine extends Servo {
    * @param mapping - servo settings to use
    * @param car - the car
    */
-  public Engine(Car car,EngineMap mapping) {
-    super(mapping);
-    this.mapping = mapping;
+  public Engine(Car car,ServoRangeMap engineMap) {
+    super(engineMap);
+    this.engineMap=engineMap;
     this.car=car;
   }
 
@@ -32,29 +32,25 @@ public class Engine extends Servo {
   }
 
   public void neutral(boolean force) {
-    setSpeed(mapping.neutral(), force);
+    setSpeed(engineMap.getRange().getZeroPosition(), force);
   }
 
-  public void setSpeed(int speed) {
+  public void setSpeed(ServoPosition speed) {
     boolean force = false;
     setSpeed(speed, force);
   }
 
-  private void setSpeed(int speed, boolean force) {
+  private void setSpeed(ServoPosition speed, boolean force) {
     if (!car.powerIsOn() && !force) {
       LOG.debug("Not setting motor value; power is off and force is false.");
       return;
     }
 
     LOG.debug("Setting motor to value " + speed);
-    super.setServo(speed);
+    super.setServo(speed.servoPos);
   }
-
-  public void setMapping(EngineMap mapping) {
-    this.mapping = mapping;
-  }
-
-  public EngineMap getEngineMap() {
-    return mapping;
+  
+  public ServoRangeMap getEngineMap() {
+    return engineMap;
   }
 }

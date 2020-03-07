@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.rcdukes.car.Engine;
 import org.rcdukes.car.Led;
+import org.rcdukes.car.ServoPosition;
 import org.rcdukes.car.Steering;
 import org.rcdukes.drivecontrol.Car;
 
@@ -43,13 +44,14 @@ public class TestCar {
 		Car car = getCar();
 		// let's play ...
 		car.setPowerOn();
-		car.turn(-1);
-		car.turn(120);
-		car.turn(1000);
-		car.drive(-1);
-		car.drive(150);
-		car.drive(1000);
-		car.setPowerOff();
+		int tvalues[]= {-1,120,1000};
+		for (int tvalue:tvalues) {
+		  car.turn(new ServoPosition(tvalue,tvalue*10));
+		}
+		int dvalues[]= {-1,150,1000};
+		for (int dvalue:dvalues) {
+		   	  	car.drive(new ServoPosition(dvalue,dvalue*10));
+		}
 		// Let's see what we got up to here ...
 		if (debug)
 			servoCommand.showLog();
@@ -60,9 +62,9 @@ public class TestCar {
 		Car car = getCar();
 		Engine engine = car.getEngine();
 		engine.forceInNeutral();
-		engine.setSpeed(14); // ignored - no power
+		engine.setSpeed(new ServoPosition(14,1.0)); // ignored - no power
 		car.setPowerOn();
-		engine.setSpeed(140);
+		engine.setSpeed(new ServoPosition(140,0));
 		if (debug)
 			servoCommand.showLog();
 	}
@@ -72,7 +74,8 @@ public class TestCar {
 		Car car = getCar();
 		Steering steering = car.getSteering();
 		steering.center();
-		steering.setWheelPosition(145);
+		ServoPosition cpos = steering.getSteeringMap().getCurrentPosition();
+		System.out.println(cpos);
 	}
 
 	@Test

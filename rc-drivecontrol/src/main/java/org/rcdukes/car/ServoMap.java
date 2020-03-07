@@ -12,12 +12,14 @@ public interface ServoMap {
   ServoCommand servoCommand();
   // return true if the orientation is turned (+)
   boolean turnedOrientation();
-  
+  public ServoPosition getCurrentPosition();
+  public void setCurrentPosition(ServoPosition currentPosition);
   /**
    * configure the given servoMap
    * @param gpioPin - the gpio pin to use
    * @param servoCommand
-   * @param turnedOrientation - do we have to switch left/right or forward/reverse commands
+   * @param orientation - do we have to switch left/right or forward/reverse commands +: do not switch -:switch
    */
-  public void configure(int gpioPin,ServoCommand servoCommand, boolean turnedOrientation);
+  public void configure(int gpioPin,ServoCommand servoCommand, String orientation);
+  
 }

@@ -1,21 +1,38 @@
 package org.rcdukes.drivecontrol;
 
 import org.rcdukes.car.ServoCommand;
+import org.rcdukes.car.ServoPosition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * servo gpioPin and command
+ * 
  * @author wf
  *
  */
-public class ServoMap implements org.rcdukes.car.ServoMap {
-  protected static final Logger LOG = LoggerFactory.getLogger(SteeringMap.class);
-  
+public abstract class ServoMap implements org.rcdukes.car.ServoMap {
+  protected static final Logger LOG = LoggerFactory
+      .getLogger(ServoMap.class);
+
   protected ServoCommand servoCommand;
   protected int gpioPin;
   protected boolean turnedOrientation;
+  ServoPosition currentPosition;
+
+  public ServoPosition getCurrentPosition() {
+    return currentPosition;
+  }
+
+  public void setCurrentPosition(ServoPosition currentPosition) {
+    this.currentPosition = currentPosition;
+  }
   
+  public void newPosition(ServoPosition newPosition) {
+    ServoPosition sp=new ServoPosition(newPosition.getServoPos(),newPosition.getValue());
+    this.setCurrentPosition(sp);
+  }
+
   @Override
   public int gpioPin() {
     return gpioPin;
@@ -27,10 +44,12 @@ public class ServoMap implements org.rcdukes.car.ServoMap {
   }
 
   @Override
-  public void configure(int gpioPin, ServoCommand servoCommand,  boolean turnedOrientation) {
-    this.gpioPin=gpioPin;
-    this.servoCommand=servoCommand;
-    this.turnedOrientation=turnedOrientation;
+  public void configure(int gpioPin, ServoCommand servoCommand,
+      String orientation) {
+    boolean turnedOrientation = orientation.trim().equals("-");
+    this.gpioPin = gpioPin;
+    this.servoCommand = servoCommand;
+    this.turnedOrientation = turnedOrientation;
   }
 
   @Override

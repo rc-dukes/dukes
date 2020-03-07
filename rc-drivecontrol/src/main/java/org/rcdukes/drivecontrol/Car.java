@@ -5,6 +5,7 @@ import org.rcdukes.car.Engine;
 import org.rcdukes.car.Led;
 import org.rcdukes.car.ServoBlaster;
 import org.rcdukes.car.ServoCommand;
+import org.rcdukes.car.ServoPosition;
 import org.rcdukes.car.Steering;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.Environment;
@@ -99,12 +100,13 @@ public class Car {
     led.statusLedOff();
   }
 
-  public void turn(double position) {
-    steering.setWheelPosition((int) position);
+  public void turn(ServoPosition currentWheelPosition) {
+    LOG.debug("about to set current wheel pos to " + currentWheelPosition);
+    steering.setWheelPosition(currentWheelPosition);
   }
 
-  public void drive(double speed) {
-    engine.setSpeed((int) speed);
+  public void drive(ServoPosition speed) {
+    engine.setSpeed(speed);
   }
 
   public Engine getEngine() {

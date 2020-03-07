@@ -23,7 +23,7 @@ public class CameraGUI extends BaseGUI {
 
   @FXML
   public void initialize() {
-    int fitWidth = (int)(BaseGUI.getScreenWidth()/1920.0*900);
+    int fitWidth = (int)(BaseGUI.getScreenWidth()/1920.0*600);
     this.configureImageDisplaySize(fitWidth);
   }
   

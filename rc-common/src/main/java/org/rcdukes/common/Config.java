@@ -54,15 +54,16 @@ public class Config {
   public static final String ENGINE_MAX_SPEED_REVERSE = "engine.max.speed.reverse";
   public static final String ENGINE_MIN_SPEED_FORWARD = "engine.min.speed.forward";
   public static final String ENGINE_MAX_SPEED_FORWARD = "engine.max.speed.forward";
-  public static final String ENGINE_MIN_SPEED_REVERSE_VELOCITY = "engine.min.speed.reverse.velocity";
-  public static final String ENGINE_MAX_SPEED_REVERSE_VELOCITY = "engine.max.speed.reverse.velocity";
-  public static final String ENGINE_MIN_SPEED_FORWARD_VELOCITY = "engine.min.speed.forward.velocity";
-  public static final String ENGINE_MAX_SPEED_FORWARD_VELOCITY = "engine.max.speed.forward.velocity";
+  public static final String ENGINE_MIN_VELOCITY_FORWARD = "engine.min.velocity.forward";
+  public static final String ENGINE_MAX_VELOCITY_FORWARD = "engine.max.velocity.forward";
+  public static final String ENGINE_MIN_VELOCITY_REVERSE = "engine.min.velocity.reverse";
+  public static final String ENGINE_MAX_VELOCITY_REVERSE = "engine.max.velocity.reverse";
   // Commands
   public static final String POSITION_LEFT = "left";
   public static final String POSITION_RIGHT = "right";
   public static final String POSITION_CENTER = "center";
   public static final String SERVO_COMMAND = "servo.command";
+  public static final String ZERO = "zero";
 
   /**
    * configure the logging

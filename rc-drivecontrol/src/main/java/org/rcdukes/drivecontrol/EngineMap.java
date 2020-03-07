@@ -1,7 +1,9 @@
 package org.rcdukes.drivecontrol;
 
 import org.rcdukes.car.ServoCommand;
-
+import org.rcdukes.car.ServoPosition;
+import org.rcdukes.car.ServoRange;
+import org.rcdukes.car.ServoSide;
 import org.rcdukes.error.ErrorHandler;
 
 import org.rcdukes.common.Config;
@@ -11,20 +13,7 @@ import org.rcdukes.common.Environment;
  * engine parameters which are vehicle dependent
  *
  */
-public class EngineMap extends ServoMap
-    implements org.rcdukes.car.EngineMap {
-
-  public static int ENGINE_GPIO = 17;
-  public static int SPEED_ZERO = 130;
-  public static int SPEED_STEP_SIZE = 1;
-
-  public static int MIN_SPEED_REVERSE = SPEED_ZERO - 9;
-  public static int MIN_SPEED_FORWARD = SPEED_ZERO + 8;
-
-  public static int MAX_SPEED_REVERSE = SPEED_ZERO - 50;
-  public static int MAX_SPEED_FORWARD = SPEED_ZERO + 90;
-
-  public static String ENGINE_ORIENTATION = "-";
+public class EngineMap extends ServoRangeMap {
 
   /**
    * configure me from the given ServoCommand
@@ -34,53 +23,25 @@ public class EngineMap extends ServoMap
   public EngineMap(ServoCommand servoCommand) {
     Environment env = Config.getEnvironment();
     try {
-      ENGINE_GPIO = env.getInteger(Config.ENGINE_GPIO);
-      SPEED_ZERO = env.getInteger(Config.ENGINE_SPEED_ZERO);
-      SPEED_STEP_SIZE = env.getInteger(Config.ENGINE_STEP_SIZE);
-      MIN_SPEED_REVERSE = env.getInteger(Config.ENGINE_MIN_SPEED_REVERSE);
-      MAX_SPEED_REVERSE = env.getInteger(Config.ENGINE_MAX_SPEED_REVERSE);
-      MIN_SPEED_FORWARD = env.getInteger(Config.ENGINE_MIN_SPEED_FORWARD);
-      MAX_SPEED_FORWARD = env.getInteger(Config.ENGINE_MAX_SPEED_FORWARD);
-      ENGINE_ORIENTATION = env.getString(Config.ENGINE_ORIENTATION);
-
+      int ENGINE_GPIO = env.getInteger(Config.ENGINE_GPIO);
+      int SPEED_STEP_SIZE = env.getInteger(Config.ENGINE_STEP_SIZE);
+      String ENGINE_ORIENTATION = env.getString(Config.ENGINE_ORIENTATION);
+      super.configure(ENGINE_GPIO, servoCommand,ENGINE_ORIENTATION);
+      ServoPosition minforward = new ServoPosition(Config.ENGINE_MIN_SPEED_FORWARD,Config.ENGINE_MIN_VELOCITY_FORWARD);
+      ServoPosition maxforward = new ServoPosition(Config.ENGINE_MAX_SPEED_FORWARD,Config.ENGINE_MAX_VELOCITY_FORWARD);
+      ServoPosition minreverse = new ServoPosition(Config.ENGINE_MIN_SPEED_REVERSE,Config.ENGINE_MIN_VELOCITY_REVERSE);
+      ServoPosition maxreverse = new ServoPosition(Config.ENGINE_MAX_SPEED_REVERSE,Config.ENGINE_MAX_VELOCITY_REVERSE);
+      ServoSide sideN=new ServoSide("reverse",-1,minreverse,maxreverse);  
+      ServoSide sideP=new ServoSide("forward",1,minforward,maxforward);
+      ServoPosition neutral = new ServoPosition(Config.ENGINE_SPEED_ZERO,Config.ZERO);
+      setRange(new ServoRange(SPEED_STEP_SIZE, sideN, neutral, sideP));
+      setName("Engine");
+      setUnit(" m/s");
+      check();
     } catch (Exception e) {
       ErrorHandler.getInstance().handle(e,
           "you might want to check you settings");
     }
-    LOG.info(String.format(
-        "Engine gpio: %3d orientation: %s reverse: %3d - %3d forward %3d - %3d zero: %3d  steps:  %3d",
-        ENGINE_GPIO,ENGINE_ORIENTATION,MIN_SPEED_REVERSE, MAX_SPEED_REVERSE, MIN_SPEED_FORWARD,
-        MAX_SPEED_FORWARD, SPEED_ZERO, SPEED_STEP_SIZE));
-    super.configure(ENGINE_GPIO, servoCommand,ENGINE_ORIENTATION.trim().equals("+"));
   }
 
-  @Override
-  public int neutral() {
-    return SPEED_ZERO;
-  }
-
-  @Override
-  public int stepSize() {
-    return SPEED_STEP_SIZE;
-  }
-
-  @Override
-  public int minReverse() {
-    return MIN_SPEED_REVERSE;
-  }
-
-  @Override
-  public int maxReverse() {
-    return MAX_SPEED_REVERSE;
-  }
-
-  @Override
-  public int minForward() {
-    return MIN_SPEED_FORWARD;
-  }
-
-  @Override
-  public int maxForward() {
-    return MAX_SPEED_FORWARD;
-  }
 }

@@ -216,6 +216,8 @@ public class Environment {
    * @throws Exception
    */
   public int getInteger(String key) throws Exception {
+    if (Config.ZERO.equals(key))
+      return 0;
     String valueStr = this.getString(key);
     int value = Integer.parseInt(valueStr);
     return value;
@@ -228,6 +230,8 @@ public class Environment {
    * @throws Exception
    */
   public double getDouble(String key) throws Exception {
+    if (Config.ZERO.equals(key))
+      return 0.0;
     String valueStr=this.getString(key);
     double value=Double.parseDouble(valueStr);
     return value;
