@@ -160,10 +160,7 @@ public class ServoSide {
    */
   public boolean isOnSide(int servoPos, boolean turnedOrientation) {
     boolean in=false;
-    if (this.polarity<0)
-      in=servoPos>=min.servoPos;
-    else
-      in=servoPos<=min.servoPos;
+    in=servoPos<=max.servoPos && servoPos>=min.servoPos;
     return in;
   }
 

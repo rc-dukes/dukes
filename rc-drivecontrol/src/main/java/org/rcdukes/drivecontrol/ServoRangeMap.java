@@ -1,5 +1,8 @@
 package org.rcdukes.drivecontrol;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.rcdukes.car.ServoPosition;
 import org.rcdukes.car.ServoRange;
 import org.rcdukes.car.ServoSide;
@@ -13,6 +16,7 @@ import org.rcdukes.car.ServoSide;
 public abstract class ServoRangeMap extends ServoMap
     implements org.rcdukes.car.ServoRangeMap {
   private ServoRange range = null;
+  
   private String unit;
   private String name;
 
@@ -22,7 +26,7 @@ public abstract class ServoRangeMap extends ServoMap
 
   public void setRange(ServoRange range) {
     if (this.range == null)
-      this.currentPosition = range.getZeroPosition();
+      this.newPosition(range.getZeroPosition());
     this.range = range;
   }
 

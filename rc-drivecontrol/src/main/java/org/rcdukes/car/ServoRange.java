@@ -1,5 +1,7 @@
 package org.rcdukes.car;
 
+import java.util.Arrays;
+
 /**
  * a range for a Servo
  * @author wf
@@ -11,6 +13,8 @@ public class ServoRange {
   ServoPosition zeroPosition; 
   ServoSide sideN;
   ServoSide sideP;
+  private ServoPosition max;
+  private ServoPosition min;
   
   public int getStepSize() {
     return stepSize;
@@ -52,5 +56,28 @@ public class ServoRange {
     this.zeroPosition = zeroPosition;
     this.sideN = sideN;
     this.sideP = sideP;
+    this.setMinMax();
+  }
+  
+  public void setMinMax() {
+    ServoPosition pos[]= {getSideN().getMin(),getSideN().getMax(),getSideP().getMin(),getSideP().getMax()};
+    Arrays.sort(pos, (p1,p2) -> Integer.signum(p1.getServoPos()-p2.getServoPos()));
+    this.min=pos[0];
+    this.max=pos[3];
+  }
+  
+  /**
+   * make sure the servo position stays within the valid bounds
+   * @param pos
+   * @return the clamped servo position
+   */
+  public int clampServoPos(long pos) {
+    int servoPos=(int) pos;
+    if (servoPos < min.servoPos)
+      return min.servoPos;
+    else if (servoPos > max.servoPos)
+      return max.servoPos;
+    else
+      return servoPos;
   }
  }

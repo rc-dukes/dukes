@@ -1,13 +1,13 @@
 package org.rcdukes.drivecontrol;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rcdukes.car.ServoPosition;
+import org.rcdukes.car.ServoRange;
 import org.rcdukes.car.ServoSide;
 import org.rcdukes.common.Environment;
 
@@ -91,20 +91,30 @@ public class TestServoMaps {
     }
   }
   
+  public void check(int servoPos,ServoRange range,ServoSide side, boolean expected) {
+    int clampedServoPos=range.clampServoPos(servoPos);
+    boolean in=side.isOnSide(clampedServoPos, false);
+    String msg=String.format("servopos %d clamped to %d should be on side %s within %d and %d",servoPos,clampedServoPos,side.getName(),side.getMin().getServoPos(),side.getMax().getServoPos());
+    assertTrue(msg,in==expected);
+  }
+  
   @Test
   public void testIsOnSide() {
-    ServoPosition minLeft=new ServoPosition(150,-20);
+    ServoPosition minLeft=new ServoPosition(130,-20);
     ServoPosition maxLeft=new ServoPosition(100,-10);
     ServoSide left=new ServoSide("left", -1.0, minLeft,maxLeft);
-    assertTrue("125 on left",left.isOnSide(125, false));
-    assertTrue("175 on left",left.isOnSide(175, false));
-    assertFalse("95 middle",left.isOnSide(95, false));
-    ServoPosition minRight=new ServoPosition(90,10);
-    ServoPosition maxRight=new ServoPosition(50,20);
+    ServoPosition minRight=new ServoPosition(140,10);
+    ServoPosition maxRight=new ServoPosition(160,20);
     ServoSide right=new ServoSide("right", 1.0, minRight,maxRight);
-    assertTrue("70 on right",right.isOnSide(70, false));
-    assertTrue("30 on right",right.isOnSide(30, false));
-    assertFalse("95 middle",right.isOnSide(95, false));
+    ServoPosition center=new ServoPosition(135,0);
+    ServoRange range=new ServoRange(1, left,center, right);
+    
+    check(115,range,left,true);
+    check(90,range,left,true);
+    check(135,range,left,false);
+    check(150,range,right,true);
+    check(180,range,right,true);
+    check(135,range,right,false);
   }
 
 }
