@@ -77,9 +77,9 @@ public class TestServoMaps {
       assertEquals(hint,expectedValues[index], cpos.getValue(), 0.05);
       index++;
     }
-    map.newPosition(map.getRange().getSideN().getMin());
-    while (map.getCurrentPosition().getServoPos() <= map.getRange().getSideP()
-        .getMax().getServoPos()) {
+    map.newPosition(map.getRange().getMin());
+    int maxPos=map.getRange().getMax().getServoPos();
+    while (map.getCurrentPosition().getServoPos() < maxPos) {
       if (debug)
         System.out.println(map.positionInfo());
       cpos = map.getCurrentPosition();
@@ -93,7 +93,7 @@ public class TestServoMaps {
   
   public void check(int servoPos,ServoRange range,ServoSide side, boolean expected) {
     int clampedServoPos=range.clampServoPos(servoPos);
-    boolean in=side.isOnSide(clampedServoPos, false);
+    boolean in=side.isOnSide(clampedServoPos);
     String msg=String.format("servopos %d clamped to %d should be on side %s within %d and %d",servoPos,clampedServoPos,side.getName(),side.getMin().getServoPos(),side.getMax().getServoPos());
     assertTrue(msg,in==expected);
   }

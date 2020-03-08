@@ -1,8 +1,5 @@
 package org.rcdukes.drivecontrol;
 
-import java.util.Arrays;
-import java.util.Collections;
-
 import org.rcdukes.car.ServoPosition;
 import org.rcdukes.car.ServoRange;
 import org.rcdukes.car.ServoSide;
@@ -64,15 +61,15 @@ public abstract class ServoRangeMap extends ServoMap
   public void step(int servoStep) {
     int spos = this.currentPosition.getServoPos();
     spos+=servoStep*range.getStepSize();
+    spos=this.range.clampServoPos(spos);
     double value=0;
     ServoSide side = null;
-    if (range.getSideN().isOnSide(spos, turnedOrientation)) {
+    if (range.getSideN().isOnSide(spos)) {
       side=range.getSideN();
-    } else if (range.getSideP().isOnSide(spos,turnedOrientation)) {
+    } else if (range.getSideP().isOnSide(spos)) {
       side=range.getSideP();
     }
     if (side!=null) {
-      spos=side.clampServoPos(spos);
       value=side.interpolateValueFromPos(spos);
     }
     this.currentPosition.setServoPos(spos);

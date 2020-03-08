@@ -158,7 +158,7 @@ public class ServoSide {
    * @param servoPos
    * @return - true if the value is on this Side
    */
-  public boolean isOnSide(int servoPos, boolean turnedOrientation) {
+  public boolean isOnSide(int servoPos) {
     boolean in=false;
     in=servoPos<=max.servoPos && servoPos>=min.servoPos;
     return in;

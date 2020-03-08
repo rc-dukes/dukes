@@ -51,10 +51,11 @@ class SteeringHandler {
   void handleServo(JsonObject messageBody) {
     LOG.debug("Received message for servo: " + messageBody);
     String position = messageBody.getString("position");
+    int stepFactor=steeringMap.turnedOrientation()?-1:1;
     if (Config.POSITION_LEFT.equals(position)) {
-      steeringMap.step(-1);
+      steeringMap.step(-1*stepFactor);
     } else if (Config.POSITION_RIGHT.equals(position)) {
-      steeringMap.step(1);
+      steeringMap.step(1*stepFactor);
     } else if (Config.POSITION_CENTER.equals(position)) {
       steeringMap.setZero();
     }

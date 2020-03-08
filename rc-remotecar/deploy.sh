@@ -62,7 +62,7 @@ usage() {
 copyToTarget() {
   local l_ini="$1"
   local l_iniPath="$2"
-  jar="rc-remotecar-$version-fat.jar"
+  jar="rc-remotecar-$version-jar-with-dependencies.jar"
   color_msg $blue "copying $jar to $target"
   if [ ! -f target/$jar ]
   then

@@ -128,7 +128,7 @@ runCar() {
   pwd=$(pwd)
   remotecar=$mydir/../rc-remotecar
   remotecar=$(realpath $remotecar)
-  fatjar=$remotecar/target/rc-remotecar-${version}-fat.jar
+  fatjar=$remotecar/target/rc-remotecar-${version}-jar-with-dependencies.jar
   if [ ! -f $fatjar ]
   then
     color_msg "$blue $fatjar is missing - will create it for you ..."

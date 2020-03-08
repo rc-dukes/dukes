@@ -42,6 +42,12 @@ public class ServoRange {
     this.sideP = sideP;
   }
  
+  public ServoPosition getMax() {
+    return max;
+  }
+  public ServoPosition getMin() {
+    return min;
+  }
   /**
    * construct the servo range
    * @param stepSize

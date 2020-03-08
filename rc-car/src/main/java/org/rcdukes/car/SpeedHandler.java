@@ -36,12 +36,12 @@ class SpeedHandler {
   void handleMotor(JsonObject messageBody) {
     LOG.debug("Received message for motor: " + messageBody);
     String speed = messageBody.getString("speed");
-
+    int stepFactor=engineMap.turnedOrientation()?-1:1;
     if ("up".equals(speed)) {
-      this.engineMap.step(1);
+      this.engineMap.step(1*stepFactor);
       car.drive(engineMap.getCurrentPosition());
     } else if ("down".equals(speed)) {
-      this.engineMap.step(-1);
+      this.engineMap.step(-1*stepFactor);
       car.drive(engineMap.getCurrentPosition());
     } else if ("stop".equals(speed)) {
       this.engineMap.setZero();
