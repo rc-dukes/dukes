@@ -56,6 +56,7 @@ public abstract class ServoMap implements org.rcdukes.car.ServoMap {
     this.gpioPin = gpioPin;
     this.servoCommand = servoCommand;
     this.turnedOrientation = turnedOrientation;
+    configureOrientation();
   }
 
   @Override

@@ -21,5 +21,5 @@ public interface ServoMap {
    * @param orientation - do we have to switch left/right or forward/reverse commands +: do not switch -:switch
    */
   public void configure(int gpioPin,ServoCommand servoCommand, String orientation);
-  
+  public void configureOrientation();
 }

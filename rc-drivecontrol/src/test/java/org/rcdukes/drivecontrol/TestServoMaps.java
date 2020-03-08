@@ -1,11 +1,14 @@
 package org.rcdukes.drivecontrol;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rcdukes.car.ServoPosition;
+import org.rcdukes.car.ServoSide;
 import org.rcdukes.common.Environment;
 
 /**
@@ -86,6 +89,22 @@ public class TestServoMaps {
       index++;
       map.step(1);
     }
+  }
+  
+  @Test
+  public void testIsOnSide() {
+    ServoPosition minLeft=new ServoPosition(150,-20);
+    ServoPosition maxLeft=new ServoPosition(100,-10);
+    ServoSide left=new ServoSide("left", -1.0, minLeft,maxLeft);
+    assertTrue("125 on left",left.isOnSide(125, false));
+    assertTrue("175 on left",left.isOnSide(175, false));
+    assertFalse("95 middle",left.isOnSide(95, false));
+    ServoPosition minRight=new ServoPosition(90,10);
+    ServoPosition maxRight=new ServoPosition(50,20);
+    ServoSide right=new ServoSide("right", 1.0, minRight,maxRight);
+    assertTrue("70 on right",right.isOnSide(70, false));
+    assertTrue("30 on right",right.isOnSide(30, false));
+    assertFalse("95 middle",right.isOnSide(95, false));
   }
 
 }

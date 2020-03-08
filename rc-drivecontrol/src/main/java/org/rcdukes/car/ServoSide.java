@@ -154,12 +154,16 @@ public class ServoSide {
   }
   
   /**
-   * check whether the value is on/in this Side
+   * check whether the value is on this Side
    * @param servoPos
-   * @return - true if the value is within min and max
+   * @return - true if the value is on this Side
    */
-  public boolean isIn(int servoPos) {
-    boolean in=servoPos<=max.servoPos && servoPos>=min.servoPos;
+  public boolean isOnSide(int servoPos, boolean turnedOrientation) {
+    boolean in=false;
+    if (this.polarity<0)
+      in=servoPos>=min.servoPos;
+    else
+      in=servoPos<=min.servoPos;
     return in;
   }
 

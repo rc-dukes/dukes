@@ -47,10 +47,6 @@ public abstract class ServoRangeMap extends ServoMap
     ServoRange range = this.getRange();
     ServoSide n = range.getSideN();
     ServoSide p = range.getSideP();
-    if (this.turnedOrientation) {
-      n = range.getSideP();
-      p = range.getSideN();
-    }
     if (percent == 0)
       return range.getZeroPosition();
     else if (percent < 0) {
@@ -66,9 +62,9 @@ public abstract class ServoRangeMap extends ServoMap
     spos+=servoStep*range.getStepSize();
     double value=0;
     ServoSide side = null;
-    if (range.getSideN().isIn(spos)) {
+    if (range.getSideN().isOnSide(spos, turnedOrientation)) {
       side=range.getSideN();
-    } else if (range.getSideP().isIn(spos)) {
+    } else if (range.getSideP().isOnSide(spos,turnedOrientation)) {
       side=range.getSideP();
     }
     if (side!=null) {
@@ -149,4 +145,15 @@ public abstract class ServoRangeMap extends ServoMap
     checkSide(sideP);
   }
 
+  /**
+   * switch the sides
+   */
+  public void configureOrientation() {
+    if (this.turnedOrientation) {
+      ServoSide n = range.getSideP();
+      ServoSide p = range.getSideN();
+      range.setSideN(n);
+      range.setSideP(p);
+    }
+  }
 }

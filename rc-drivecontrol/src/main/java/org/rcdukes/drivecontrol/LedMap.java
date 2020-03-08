@@ -45,5 +45,13 @@ public class LedMap extends ServoMap
   public int ledOn() {
     return LED_ON;
   }
+  
+  /**
+   * not needed here
+   */
+  @Override
+  public void configureOrientation() {
+    
+  }
  
 }
