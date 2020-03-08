@@ -81,6 +81,9 @@ public class Car {
     }
   }
 
+  /**
+   * set the power off
+   */
   public void setPowerOff() {
     if (powerIsOn) {
       LOG.info("Setting power OFF");
@@ -94,7 +97,11 @@ public class Car {
     return powerIsOn;
   }
 
+  /**
+   * stop the car
+   */
   public void stop() {
+    LOG.debug("stopping car");
     engine.forceInNeutral();
     steering.forceCenter();
     led.statusLedOff();

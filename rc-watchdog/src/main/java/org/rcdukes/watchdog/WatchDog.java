@@ -18,6 +18,7 @@ public class WatchDog extends DukesVerticle {
 	protected static int HEARTBEAT_INTERVAL_MS = 150;
 	protected static int MAX_MISSED_BEATS=6;
 	private long lastHeartbeat = 0;
+	private long heartBeatCount=0;
 	private Car car;
 	protected Subscription subscription;
 	
@@ -47,22 +48,32 @@ public class WatchDog extends DukesVerticle {
 		super.postStart();
 	}
 
+	/**
+	 * receive heartbeat messages
+	 * @param message
+	 */
 	private void heartbeat(Message<Object> message) {
 		JsonObject messageBody = (JsonObject) message.body();
 		if ("heartbeat".equals(messageBody.getString("type"))) {
 			lastHeartbeat = System.currentTimeMillis();
+		  this.heartBeatCount++;
 			// LOG.trace("Heartbeat received, set last heartbeat to {}",
 			// lastHeartbeat);
 			if (!car.powerIsOn()) {
 				LOG.info("First heartbeat received, power on");
 				car.setPowerOn();
 			}
+		} else {
+		  String msg=String.format("heartbeat message has wrong type:\n%s",messageBody.encodePrettily());
+		  LOG.warn(msg);
+		}
+		if (heartBeatCount%12==0) {
+		  LOG.info(String.format("heartbeat %d",this.heartBeatCount));
 		}
 	}
 
 	private void checkHeartbeat() {
 		long currentTime = System.currentTimeMillis();
-		// LOG.trace("Check heartbeat, current time: {}", currentTime);
 		if (currentTime - lastHeartbeat > (MAX_MISSED_BEATS * HEARTBEAT_INTERVAL_MS)) {
 			if (car.powerIsOn()) {
 				// missed maximum number of allowed heartbeats

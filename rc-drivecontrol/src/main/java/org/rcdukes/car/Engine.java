@@ -26,9 +26,21 @@ public class Engine extends Servo {
     neutral(force);
   }
 
+  /**
+   * force the car to neutral
+   */
   public void forceInNeutral() {
     boolean force = true;
     neutral(force);
+  }
+  
+  /**
+   * set the speed to the given servo Position
+   * @param speed
+   */
+  public void setSpeed(ServoPosition speed) {
+    boolean force = false;
+    setSpeed(speed, force);
   }
 
   /**
@@ -39,17 +51,17 @@ public class Engine extends Servo {
     setSpeed(engineMap.getRange().getZeroPosition(), force);
   }
 
-  public void setSpeed(ServoPosition speed) {
-    boolean force = false;
-    setSpeed(speed, force);
-  }
-
+  /**
+   * 
+   * @param speed
+   * @param force
+   */
   private void setSpeed(ServoPosition speed, boolean force) {
     if (!car.powerIsOn() && !force) {
-      LOG.debug("Not setting motor value; power is off and force is false.");
+      String msg=String.format("Not setting motor value to %s; power is off and force is false.",speed);
+      LOG.debug(msg);
       return;
     }
-
     LOG.debug("Setting motor to value " + speed);
     super.setServo(speed.servoPos);
   }
