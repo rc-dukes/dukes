@@ -3,7 +3,7 @@ package org.rcdukes.server;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
-import org.rcdukes.action.Action;
+import org.rcdukes.action.ActionVerticle;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.ClusterStarter;
 import org.rcdukes.common.Config;
@@ -56,7 +56,7 @@ public class CarServer extends DukesVerticle {
       JsonObject configJo=Config.getEnvironment().asJsonObject();
       super.send(Characters.BOSS_HOGG, configJo);
       if (!verticlesStarted) {
-        starter.deployVerticles(new DebugImageServer(),new Action(), new Detector());
+        starter.deployVerticles(new DebugImageServer(),new ActionVerticle(), new Detector());
         verticlesStarted=true;
       }
     } catch (Exception e) {
