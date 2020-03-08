@@ -63,6 +63,7 @@ public class Engine extends Servo {
       return;
     }
     LOG.debug("Setting motor to value " + speed);
+    this.engineMap.newPosition(speed);
     super.setServo(speed.servoPos);
   }
   

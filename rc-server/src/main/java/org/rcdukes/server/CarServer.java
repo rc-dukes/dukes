@@ -1,5 +1,8 @@
 package org.rcdukes.server;
 
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
 import org.rcdukes.action.Action;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.ClusterStarter;
@@ -28,7 +31,6 @@ public class CarServer extends DukesVerticle {
     super(Characters.BOARS_NEST);
   }
 
-  boolean debug = false;
   private ClusterStarter starter;
   int TIME_OUT=20000;
   boolean verticlesStarted=false;
@@ -67,7 +69,28 @@ public class CarServer extends DukesVerticle {
     System.out.println(configJo);
     // , 
   }
+  
+  protected CmdLineParser parser;
+  @Option(name = "-d", aliases = {
+      "--debug" }, usage = "debug\ncreate additional debug output if this switch is used")
+  protected boolean debug = false;
 
+  @Option(name = "-ch", aliases = { "--hostname" }, usage = "clusterHostname")
+  String clusterHostname = null;
+  @Option(name = "-ph", aliases = { "--publichost" }, usage = "public hostname")
+  String publicHost = null;
+  
+  /**
+   * parse the given Arguments
+   * 
+   * @param args
+   * @throws CmdLineException
+   */
+  public void parseArguments(String[] args) throws CmdLineException {
+    parser = new CmdLineParser(this);
+    parser.parseArgument(args);
+  }
+  
   /**
    * start the the cluster
    * 
@@ -77,8 +100,17 @@ public class CarServer extends DukesVerticle {
    *           on failure
    */
   public void mainInstance(String... args) {
+    try {
+      this.parseArguments(args);
+    } catch (CmdLineException cle) {
+      ErrorHandler.getInstance().handle(cle);
+      parser.printUsage(System.err);
+      System.exit(1);
+    }
     starter = new ClusterStarter();
     starter.prepare();
+
+    starter.configureCluster(clusterHostname, publicHost);
     // bootstrap the deployment by deploying me
     try {
       starter.deployVerticles(this);

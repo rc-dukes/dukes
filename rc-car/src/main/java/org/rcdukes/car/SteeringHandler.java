@@ -39,8 +39,7 @@ class SteeringHandler {
     LOG.debug("Received direct message for servo: " + messageBody);
     String position = messageBody.getString("position");
     int percent = Double.valueOf(position).intValue();
-    steeringMap.setCurrentPosition(this.steeringMap.atPercent(percent));
-    car.turn(steeringMap.getCurrentPosition());
+    car.turn(this.steeringMap.atPercent(percent));
   }
 
   /**

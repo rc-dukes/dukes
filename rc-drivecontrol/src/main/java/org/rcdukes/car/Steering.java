@@ -52,8 +52,8 @@ public class Steering extends Servo {
       LOG.debug("Not setting servo value; power is off and force is false.");
       return;
     }
-
     LOG.debug("Setting servo to value " + position);
+    this.servoMap.newPosition(position);
     super.setServo(position.servoPos);
   }
 

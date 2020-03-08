@@ -32,6 +32,7 @@ public abstract class ServoMap implements org.rcdukes.car.ServoMap {
    * set a new Position
    * @param newPosition
    */
+  @Override
   public ServoPosition newPosition(ServoPosition newPosition) {
     ServoPosition sp=new ServoPosition(newPosition.getServoPos(),newPosition.getValue());
     this.setCurrentPosition(sp);

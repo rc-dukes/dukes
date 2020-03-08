@@ -13,7 +13,7 @@ public interface ServoMap {
   // return true if the orientation is turned (+)
   boolean turnedOrientation();
   public ServoPosition getCurrentPosition();
-  public void setCurrentPosition(ServoPosition currentPosition);
+  public ServoPosition newPosition(ServoPosition newPosition);
   /**
    * configure the given servoMap
    * @param gpioPin - the gpio pin to use
