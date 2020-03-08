@@ -5,10 +5,10 @@ import org.rcdukes.car.Engine;
 import org.rcdukes.car.Led;
 import org.rcdukes.car.ServoBlaster;
 import org.rcdukes.car.ServoCommand;
-import org.rcdukes.car.ServoPosition;
 import org.rcdukes.car.Steering;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.Environment;
+import org.rcdukes.common.ServoPosition;
 import org.rcdukes.error.ErrorHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,11 +107,19 @@ public class Car {
     led.statusLedOff();
   }
 
-  public void turn(ServoPosition currentWheelPosition) {
-    LOG.debug("about to set current wheel pos to " + currentWheelPosition);
-    steering.setWheelPosition(currentWheelPosition);
+  /**
+   * turn the car to the given wheel position
+   * @param position
+   */
+  public void turn(ServoPosition position) {
+    LOG.debug("about to set current wheel pos to " + position);
+    steering.setWheelPosition(position);
   }
 
+  /**
+   * drive at the given speed
+   * @param speed
+   */
   public void drive(ServoPosition speed) {
     engine.setSpeed(speed);
   }

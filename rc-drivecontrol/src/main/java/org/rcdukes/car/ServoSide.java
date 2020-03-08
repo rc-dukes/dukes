@@ -1,5 +1,7 @@
 package org.rcdukes.car;
 
+import org.rcdukes.common.ServoPosition;
+
 /**
  * a side of a servo e.g. left/right or forward/reverse
  * 
@@ -70,10 +72,10 @@ public class ServoSide {
    * @return - the clamped valud
    */
   public double clampValue(double value) {
-    if (value < min.value)
-      return min.value;
-    else if (value > max.value)
-      return max.value;
+    if (value < min.getValue())
+      return min.getValue();
+    else if (value > max.getValue())
+      return max.getValue();
     else
       return value;
   }
@@ -85,10 +87,10 @@ public class ServoSide {
    */
   public int clampServoPos(long pos) {
     int servoPos=(int) pos;
-    if (servoPos < min.servoPos)
-      return min.servoPos;
-    else if (servoPos > max.servoPos)
-      return max.servoPos;
+    if (servoPos < min.getServoPos())
+      return min.getServoPos();
+    else if (servoPos > max.getServoPos())
+      return max.getServoPos();
     else
       return servoPos;
   }
@@ -125,8 +127,8 @@ public class ServoSide {
    * @return - a new servoPos setting
    */
   public int interpolateServoPos(double factor) {
-    double posRange = (max.servoPos - min.servoPos);
-    double pPos = min.servoPos + posRange * factor;
+    double posRange = (max.getServoPos() - min.getServoPos());
+    double pPos = min.getServoPos() + posRange * factor;
     return clampServoPos(Math.round(pPos));
   }
   
@@ -136,8 +138,8 @@ public class ServoSide {
    * @return - the new value
    */
   public double interpolateValue(double factor) {
-    double valueRange = (max.value - min.value);
-    double pVal = min.value + valueRange *factor;
+    double valueRange = (max.getValue() - min.getValue());
+    double pVal = min.getValue() + valueRange *factor;
     return clampValue(pVal);
   }
   
@@ -147,8 +149,8 @@ public class ServoSide {
    * @return - the interpolated value
    */
   public double interpolateValueFromPos(int spos) {
-    double posRange = (max.servoPos - min.servoPos);
-    double factor=(spos-min.servoPos)/posRange;
+    double posRange = (max.getServoPos() - min.getServoPos());
+    double factor=(spos-min.getServoPos())/posRange;
     double result=interpolateValue(factor);
     return result;
   }
@@ -160,7 +162,7 @@ public class ServoSide {
    */
   public boolean isOnSide(int servoPos) {
     boolean in=false;
-    in=servoPos<=max.servoPos && servoPos>=min.servoPos;
+    in=servoPos<=max.getServoPos() && servoPos>=min.getServoPos();
     return in;
   }
 

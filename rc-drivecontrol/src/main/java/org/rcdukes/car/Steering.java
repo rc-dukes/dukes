@@ -1,5 +1,6 @@
 package org.rcdukes.car;
 
+import org.rcdukes.common.ServoPosition;
 import org.rcdukes.drivecontrol.Car;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public class Steering extends Servo {
     }
     LOG.debug("Setting servo to value " + position);
     this.servoMap.newPosition(position);
-    super.setServo(position.servoPos);
+    super.setServo(position.getServoPos());
   }
 
   public ServoRangeMap getSteeringMap() {

@@ -1,5 +1,7 @@
 package org.rcdukes.car;
 
+import org.rcdukes.common.ServoPosition;
+
 /**
  * a range based map
  * @author wf

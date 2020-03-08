@@ -1,5 +1,6 @@
 package org.rcdukes.car;
 
+import org.rcdukes.common.ServoPosition;
 import org.rcdukes.drivecontrol.Car;
 
 /**
@@ -64,7 +65,7 @@ public class Engine extends Servo {
     }
     LOG.debug("Setting motor to value " + speed);
     this.engineMap.newPosition(speed);
-    super.setServo(speed.servoPos);
+    super.setServo(speed.getServoPos());
   }
   
   public ServoRangeMap getEngineMap() {

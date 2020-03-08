@@ -1,5 +1,6 @@
 package org.rcdukes.car;
 
+import org.rcdukes.common.ServoPosition;
 import org.rcdukes.drivecontrol.Car;
 
 import io.vertx.core.json.JsonObject;
@@ -33,7 +34,7 @@ class SpeedHandler {
    * @param messageBody
    *          - containing an "up"/"down" element
    */
-  void handleMotor(JsonObject messageBody) {
+  ServoPosition handleMotor(JsonObject messageBody) {
     LOG.debug("Received message for motor: " + messageBody);
     String speed = messageBody.getString("speed");
     int stepFactor=engineMap.turnedOrientation()?-1:1;
@@ -49,6 +50,7 @@ class SpeedHandler {
     } else if ("brake".equals(speed)) {
       performBrake();
     }
+    return car.getEngine().getEngineMap().getCurrentPosition();
   }
 
   private void performBrake() {
@@ -88,12 +90,14 @@ class SpeedHandler {
     handleMotor(message);
   }
 
-  void handleSpeedDirect(JsonObject messageBody) {
+  ServoPosition handleSpeedDirect(JsonObject messageBody) {
     LOG.debug("Received direct message for speed: " + messageBody);
     String speed = messageBody.getString("speed");
     int percent = Double.valueOf(speed).intValue();
     engineMap.atPercent(percent);
-    car.drive(engineMap.getCurrentPosition());
+    ServoPosition newPosition=engineMap.getCurrentPosition();
+    car.drive(newPosition);
+    return newPosition;
   }
 
 }

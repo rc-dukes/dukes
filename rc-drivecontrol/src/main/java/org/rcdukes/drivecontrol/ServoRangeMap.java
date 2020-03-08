@@ -1,8 +1,8 @@
 package org.rcdukes.drivecontrol;
 
-import org.rcdukes.car.ServoPosition;
 import org.rcdukes.car.ServoRange;
 import org.rcdukes.car.ServoSide;
+import org.rcdukes.common.ServoPosition;
 
 /**
  * a range map

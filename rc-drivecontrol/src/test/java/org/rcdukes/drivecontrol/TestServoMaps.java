@@ -6,10 +6,10 @@ import static org.junit.Assert.fail;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.rcdukes.car.ServoPosition;
 import org.rcdukes.car.ServoRange;
 import org.rcdukes.car.ServoSide;
 import org.rcdukes.common.Environment;
+import org.rcdukes.common.ServoPosition;
 
 /**
  * test EngineMap

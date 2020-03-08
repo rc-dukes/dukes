@@ -10,6 +10,7 @@ import org.rcdukes.common.Config;
 import org.rcdukes.common.DukesVerticle;
 import org.rcdukes.common.EventbusLogger;
 import org.rcdukes.common.Events;
+import org.rcdukes.common.ServoPosition;
 import org.rcdukes.common.WebStarter;
 import org.rcdukes.error.ErrorHandler;
 import org.slf4j.Logger;
@@ -77,6 +78,7 @@ public class AppVerticle extends DukesVerticle {
     consumer(Characters.ROSCO, Events.SIMULATOR_IMAGE,
         getSimulatorImageFetcher()::receiveSimulatorImage);
     consumer(Characters.ROSCO,Events.ECHO_REPLY,this::receiveEchoReply);
+    consumer(Characters.BOSS_HOGG,Events.CAR_POSITION,this::receiveCarPosition);
     super.postStart();
   }
   
@@ -87,6 +89,17 @@ public class AppVerticle extends DukesVerticle {
   protected void receiveEchoReply(Message<JsonObject> message) {
     JsonObject echoJo = message.body(); 
     this.eventbusLogger.log(echoJo.encodePrettily());
+  }
+  
+  /**
+   * receive an car position
+   * @param message
+   */
+  protected void receiveCarPosition(Message<JsonObject> message) {
+    JsonObject carPosJo= message.body();
+    this.eventbusLogger.log(carPosJo.encodePrettily());
+    ServoPosition carPos =carPosJo.mapTo(ServoPosition.class);
+    // TODO - use the received car position in the navigation
   }
 
   /***

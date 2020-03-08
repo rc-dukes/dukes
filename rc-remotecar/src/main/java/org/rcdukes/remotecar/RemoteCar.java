@@ -107,12 +107,11 @@ public class RemoteCar extends DukesVerticle {
     // Command.stop();
     try {
       watchDog = new WatchDog(car);
-      carVerticle = new CarVerticle(starter.getHostname());
+      carVerticle = new CarVerticle();
       starter.deployVerticles(watchDog, carVerticle);
     } catch (Exception e) {
       ErrorHandler.getInstance().handle(e);
     }
-    // super.send(Characters.BOSS_HOGG, "started","true");
   }
 
   protected CmdLineParser parser;

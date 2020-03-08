@@ -1,7 +1,4 @@
-package org.rcdukes.car;
-
-import org.rcdukes.common.Config;
-import org.rcdukes.common.Environment;
+package org.rcdukes.common;
 
 /**
  * a servo position
@@ -14,8 +11,9 @@ public class ServoPosition {
   int servoPos;
   // optional extra info
   public String unit="";
-  public String servoConfig;
-  public String valueConfig;
+  public String kind="";
+  transient public String servoConfig;
+  transient public String valueConfig;
   
   public double getValue() {
     return value;
@@ -29,6 +27,12 @@ public class ServoPosition {
   public void setServoPos(int servoPos) {
     this.servoPos = servoPos;
   }
+  
+  /**
+   * default constructor to allow for JsonObject mapping
+   */
+  public ServoPosition() {}
+  
   /**
    * create a servo position
    * @param servoPos
@@ -36,6 +40,18 @@ public class ServoPosition {
    */
   public ServoPosition (int servoPos, double value) {
     init(servoPos,value);
+  }
+  
+  /**
+   * construct me with pos, value and  unit
+   * @param servoPos
+   * @param value
+   * @param unit
+   */
+  public ServoPosition(int servoPos, double value, String unit, String kind) {
+    init(servoPos,value);
+    this.unit=unit;
+    this.kind=kind;
   }
   
   /**

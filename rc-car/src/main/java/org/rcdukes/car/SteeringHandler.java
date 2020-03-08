@@ -1,6 +1,7 @@
 package org.rcdukes.car;
 
 import org.rcdukes.common.Config;
+import org.rcdukes.common.ServoPosition;
 import org.rcdukes.drivecontrol.Car;
 
 import io.vertx.core.json.JsonObject;
@@ -34,12 +35,15 @@ class SteeringHandler {
    * 
    * @param messageBody
    *          containing a double value "position" element
+   * @return the new servo position
    */
-  void handleServoDirect(JsonObject messageBody) {
+  ServoPosition handleServoDirect(JsonObject messageBody) {
     LOG.debug("Received direct message for servo: " + messageBody);
     String position = messageBody.getString("position");
     int percent = Double.valueOf(position).intValue();
-    car.turn(this.steeringMap.atPercent(percent));
+    ServoPosition newPosition=this.steeringMap.atPercent(percent);
+    car.turn(newPosition);
+    return newPosition;
   }
 
   /**
@@ -47,8 +51,9 @@ class SteeringHandler {
    * 
    * @param messageBody
    *          - containing a position element with "left"/"right" commands
+   * @return 
    */
-  void handleServo(JsonObject messageBody) {
+  ServoPosition handleServo(JsonObject messageBody) {
     LOG.debug("Received message for servo: " + messageBody);
     String position = messageBody.getString("position");
     int stepFactor=steeringMap.turnedOrientation()?-1:1;
@@ -59,7 +64,9 @@ class SteeringHandler {
     } else if (Config.POSITION_CENTER.equals(position)) {
       steeringMap.setZero();
     }
-    car.turn(steeringMap.getCurrentPosition());
+    ServoPosition newPosition=steeringMap.getCurrentPosition();
+    car.turn(newPosition);
+    return newPosition;
   }
 
 }

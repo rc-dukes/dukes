@@ -5,12 +5,12 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.rcdukes.car.Engine;
 import org.rcdukes.car.Led;
-import org.rcdukes.car.ServoPosition;
 import org.rcdukes.car.Steering;
 import org.rcdukes.drivecontrol.Car;
 
 import org.rcdukes.common.Config;
 import org.rcdukes.common.Environment;
+import org.rcdukes.common.ServoPosition;
 
 /**
  * test the handling of the car

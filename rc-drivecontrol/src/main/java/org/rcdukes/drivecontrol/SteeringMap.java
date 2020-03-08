@@ -1,11 +1,11 @@
 package org.rcdukes.drivecontrol;
 
 import org.rcdukes.car.ServoCommand;
-import org.rcdukes.car.ServoPosition;
 import org.rcdukes.car.ServoRange;
 import org.rcdukes.car.ServoSide;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.Environment;
+import org.rcdukes.common.ServoPosition;
 import org.rcdukes.error.ErrorHandler;
 
 /**

@@ -2,6 +2,8 @@ package org.rcdukes.car;
 
 import java.util.Arrays;
 
+import org.rcdukes.common.ServoPosition;
+
 /**
  * a range for a Servo
  * @author wf
@@ -79,10 +81,10 @@ public class ServoRange {
    */
   public int clampServoPos(long pos) {
     int servoPos=(int) pos;
-    if (servoPos < min.servoPos)
-      return min.servoPos;
-    else if (servoPos > max.servoPos)
-      return max.servoPos;
+    if (servoPos < min.getServoPos())
+      return min.getServoPos();
+    else if (servoPos > max.getServoPos())
+      return max.getServoPos();
     else
       return servoPos;
   }

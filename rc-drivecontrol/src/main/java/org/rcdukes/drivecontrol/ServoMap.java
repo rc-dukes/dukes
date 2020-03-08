@@ -1,7 +1,7 @@
 package org.rcdukes.drivecontrol;
 
 import org.rcdukes.car.ServoCommand;
-import org.rcdukes.car.ServoPosition;
+import org.rcdukes.common.ServoPosition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
