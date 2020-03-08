@@ -65,7 +65,7 @@ public class TestServoMaps {
     assertEquals(0, cpos.getValue(), 0.0001);
     int index = 0;
     for (int percent : percents) {
-      map.setCurrentPosition(map.atPercent(percent));
+      map.newPosition(map.atPercent(percent));
       cpos = map.getCurrentPosition();
       if (debug)
         System.out.println(map.positionInfo());

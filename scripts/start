@@ -1,6 +1,6 @@
 #!/bin/bash
-# WF 2019-06-29
-#
+# WF 2019-06-29 - initial version
+# WF 2020-03-08 - add app start
 # start server and client
 
 #ansi colors
@@ -42,6 +42,7 @@ usage() {
   echo ""
   echo "  -a |--all     : run all parts of the software"
   echo "  -c |--car     : run car software on pi"
+  echo "  -j |--fx      : run javafx remote control app"
   echo "  -s |--server  : run server software"
   echo "  -r |--remote  : start webbrowser with remote control page"
   echo "  -w |--web     : start webbrowser with detect page"
@@ -103,6 +104,25 @@ runServer() {
   runInTerminal "java -jar $jar"&
 }
 
+#
+#  run the JavaFx remote control app
+#
+runJavaFxApp() {
+  rcapp=$mydir/../rc-app
+  rcapp=$(realpath $rcapp)
+  fatjar=$rcapp/target/rc-app-${version}-jar-with-dependencies.jar
+  if [ ! -f $fatjar ]
+  then
+    color_msg $red "$fatjar is missing you might want to use install.sh to create it"
+  else
+    java -jar $fatjar $@
+  fi
+}
+
+
+#
+# run the remote car application on the Raspberry PI
+#
 runCar() {
   # the deploy script is in rc-remotecar
   pwd=$(pwd)
@@ -214,6 +234,9 @@ do
     -s |--server)
       # the server on e.g. a laptop
       runServer
+      ;;
+    -j |--fx)
+      runJavaFxApp
       ;;
     -r |--remote)
       # the browser pointing to the web page of the server

@@ -12,7 +12,8 @@ public class ServoPosition {
 
   double value;
   int servoPos;
-  
+  // optional extra info
+  public String unit="";
   public String servoConfig;
   public String valueConfig;
   
@@ -60,6 +61,16 @@ public class ServoPosition {
   public void init (int servoPos, double value) {
     this.servoPos=servoPos;
     this.value=value;
+  }
+
+  /**
+   * convert me to a string
+   */
+  public String toString() {
+    String info = String.format("%5.1f%s (%3d)",
+        this.getValue(), this.unit,
+        this.getServoPos());
+    return info;
   }
 
 }

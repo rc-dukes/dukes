@@ -73,16 +73,29 @@ public abstract class ServoRangeMap extends ServoMap
       this.currentPosition.setValue(0);
     }
   }
+  
+  /**
+   * set a new Position
+   * @param newPosition
+   */
+  @Override
+  public ServoPosition newPosition(ServoPosition newPosition) {
+    newPosition=super.newPosition(newPosition);
+    newPosition.unit=unit;
+    return newPosition;
+  }
 
   @Override
   public void setZero() {
-    this.currentPosition = range.getZeroPosition();
+    this.newPosition(range.getZeroPosition());
   }
 
+  /**
+   * return the given position info
+   * @return the position info
+   */
   public String positionInfo() {
-    String info = String.format("%5.1f%s (%3d)",
-        this.currentPosition.getValue(), this.unit,
-        this.currentPosition.getServoPos());
+    String info = this.currentPosition.toString();
     return info;
   }
 

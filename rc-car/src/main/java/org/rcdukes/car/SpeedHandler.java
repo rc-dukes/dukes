@@ -1,7 +1,6 @@
 package org.rcdukes.car;
 
 import org.rcdukes.drivecontrol.Car;
-import org.rcdukes.drivecontrol.EngineMap;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
