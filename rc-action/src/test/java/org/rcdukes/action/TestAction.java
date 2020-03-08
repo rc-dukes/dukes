@@ -84,7 +84,7 @@ public class TestAction {
     int TIME_OUT = 20000;
     Environment.mock();
     ClusterStarter clusterStarter = new ClusterStarter();
-    Action action = new Action();
+    ActionVerticle action = new ActionVerticle();
     clusterStarter.deployVerticles(action);
     action.waitStatus(Status.started, TIME_OUT, 10);
     if (!TestSuite.isTravis()) {

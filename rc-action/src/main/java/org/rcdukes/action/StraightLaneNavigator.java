@@ -123,7 +123,7 @@ public class StraightLaneNavigator implements Navigator {
     case empty:
       return null;
     case noLines:
-      return Action.emergencyStopCommand();
+      return ActionVerticle.emergencyStopCommand();
     default:
       // ok - do nothing
     }

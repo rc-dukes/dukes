@@ -242,12 +242,18 @@ public class BaseGUI {
           String.format("%s is now %s", buttonName, active ? "on" : "off"));
   }
   
+  private PositionDisplay positionDisplay;
+  public void setPositionDisplay(PositionDisplay positionDisplay) {
+    this.positionDisplay=positionDisplay;
+  }
+  
   /**
    * get the AppVerticle
    * @return - the singleton
    */
   protected AppVerticle getAppVerticle() {
     AppVerticle appVerticle=AppVerticle.getInstance(eventbusLogger);
+    appVerticle.setPositionDisplay(this.positionDisplay);
     return appVerticle;
   }
 }

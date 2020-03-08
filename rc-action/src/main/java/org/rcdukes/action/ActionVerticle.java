@@ -1,23 +1,18 @@
 package org.rcdukes.action;
 
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.Events;
+
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.eventbus.Message;
-import org.rcdukes.common.Characters;
-import org.rcdukes.common.Config;
-import org.rcdukes.common.DukesVerticle;
-import org.rcdukes.common.Environment;
-import org.rcdukes.common.Events;
-import org.rcdukes.error.ErrorHandler;
-import org.rcdukes.geometry.LaneDetectionResult;
-
-import rx.Observable;
 import rx.Subscription;
 
 /**
  * action (aka Luke) control Verticle
  *
  */
-public class Action extends DukesVerticle {
+public class ActionVerticle extends DukesVerticle {
 
   private Subscription laneDetection;
   private Subscription stoppingZoneDetection;
@@ -27,7 +22,7 @@ public class Action extends DukesVerticle {
   /**
    * construct me
    */
-  public Action() {
+  public ActionVerticle() {
     super(Characters.LUKE);
   }
 

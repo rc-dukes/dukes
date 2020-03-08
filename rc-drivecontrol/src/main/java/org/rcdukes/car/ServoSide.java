@@ -162,7 +162,9 @@ public class ServoSide {
    */
   public boolean isOnSide(int servoPos) {
     boolean in=false;
-    in=servoPos<=max.getServoPos() && servoPos>=min.getServoPos();
+    int maxp=Math.max(max.getServoPos(),min.getServoPos());
+    int minp=Math.min(max.getServoPos(),min.getServoPos());
+    in=servoPos<=maxp && servoPos>=minp;
     return in;
   }
 

@@ -84,6 +84,7 @@ public class NavigationGUI extends BaseGUI {
   boolean power = false;
   AppVerticle appVerticle;
 
+
   /**
    * handle navigation key events
    * 
@@ -276,4 +277,5 @@ public class NavigationGUI extends BaseGUI {
   private void sendWheelCommand(String position) {
     getAppVerticle().sendWheelCommand(position);
   }
+
 }

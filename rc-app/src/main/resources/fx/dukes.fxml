@@ -75,7 +75,10 @@
 			<HBox styleClass="header">
 				<Text styleClass="headertext" text="Events" />
 			</HBox>
-			<Gauge fx:id="speedGauge" alert="true" alertMessage="Almost full" animated="true" areaTextVisible="true"  lcdFont="ELEKTRA" skinType="SLIM" />
+			<HBox>
+				<Gauge fx:id="steeringGauge" lcdFont="DIGITAL"  />
+				<Gauge fx:id="motorGauge" lcdFont="DIGITAL"  />
+			</HBox>
 			<TextArea fx:id="messageArea" text="" prefRowCount="25" prefColumnCount="30" />
 		</VBox>
 		<VBox>

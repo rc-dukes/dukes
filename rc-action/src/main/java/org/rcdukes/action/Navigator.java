@@ -3,7 +3,6 @@ package org.rcdukes.action;
 import org.rcdukes.common.DukesVerticle;
 import org.rcdukes.geometry.LaneDetectionResult;
 
-import io.reactivex.Observable;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.eventbus.Message;
 

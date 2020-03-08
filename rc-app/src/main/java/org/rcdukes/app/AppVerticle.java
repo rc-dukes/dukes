@@ -36,6 +36,7 @@ public class AppVerticle extends DukesVerticle {
   private Disposable heartBeatSubscription;
   private SimulatorImageFetcher simulatorImageFetcher;
   private Navigator navigator;
+  private PositionDisplay positionDisplay;
 
   public Navigator getNavigator() {
     return navigator;
@@ -54,14 +55,14 @@ public class AppVerticle extends DukesVerticle {
     super(Characters.UNCLE_JESSE);
     super.setEventbusLogger(eventbusLogger);
   }
-  
+
   public void enableNavigator() {
-    navigator=new StraightLaneNavigator();
+    navigator = new StraightLaneNavigator();
     navigator.setSender(this);
   }
-  
+
   public void stopNavigator() {
-    navigator=null;
+    navigator = null;
   }
 
   @Override
@@ -77,28 +78,33 @@ public class AppVerticle extends DukesVerticle {
     setSimulatorImageFetcher(new SimulatorImageFetcher());
     consumer(Characters.ROSCO, Events.SIMULATOR_IMAGE,
         getSimulatorImageFetcher()::receiveSimulatorImage);
-    consumer(Characters.ROSCO,Events.ECHO_REPLY,this::receiveEchoReply);
-    consumer(Characters.BOSS_HOGG,Events.CAR_POSITION,this::receiveCarPosition);
+    consumer(Characters.ROSCO, Events.ECHO_REPLY, this::receiveEchoReply);
+    consumer(Characters.BOSS_HOGG, Events.CAR_POSITION,
+        this::receiveCarPosition);
     super.postStart();
   }
-  
+
   /**
    * receive an echo reply
+   * 
    * @param message
    */
   protected void receiveEchoReply(Message<JsonObject> message) {
-    JsonObject echoJo = message.body(); 
+    JsonObject echoJo = message.body();
     this.eventbusLogger.log(echoJo.encodePrettily());
   }
-  
+
   /**
    * receive an car position
+   * 
    * @param message
    */
   protected void receiveCarPosition(Message<JsonObject> message) {
-    JsonObject carPosJo= message.body();
-    this.eventbusLogger.log(carPosJo.encodePrettily());
-    ServoPosition carPos =carPosJo.mapTo(ServoPosition.class);
+    JsonObject carPosJo = message.body();
+    // this.eventbusLogger.log(carPosJo.encodePrettily());
+    ServoPosition carPos = carPosJo.mapTo(ServoPosition.class);
+    if (positionDisplay != null)
+      this.positionDisplay.showPosition(carPos);
     // TODO - use the received car position in the navigation
   }
 
@@ -155,8 +161,8 @@ public class AppVerticle extends DukesVerticle {
   public void startUp() {
     starter = new ClusterStarter();
     starter.prepare();
-    String clusterHostname=null;
-    String publicHost=null;
+    String clusterHostname = null;
+    String publicHost = null;
     starter.configureCluster(clusterHostname, publicHost);
     // bootstrap the deployment by deploying me
     try {
@@ -182,6 +188,7 @@ public class AppVerticle extends DukesVerticle {
 
   /**
    * switch on the heartBeat
+   * 
    * @param on
    */
   public void heartBeat(boolean on) {
@@ -213,9 +220,15 @@ public class AppVerticle extends DukesVerticle {
   }
 
   /**
-   * @param simulatorImageFetcher the simulatorImageFetcher to set
+   * @param simulatorImageFetcher
+   *          the simulatorImageFetcher to set
    */
-  public void setSimulatorImageFetcher(SimulatorImageFetcher simulatorImageFetcher) {
+  public void setSimulatorImageFetcher(
+      SimulatorImageFetcher simulatorImageFetcher) {
     this.simulatorImageFetcher = simulatorImageFetcher;
+  }
+
+  public void setPositionDisplay(PositionDisplay positionDisplay) {
+    this.positionDisplay = positionDisplay;
   }
 }
