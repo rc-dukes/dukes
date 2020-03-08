@@ -64,14 +64,19 @@ public abstract class ServoRangeMap extends ServoMap
   public void step(int servoStep) {
     int spos = this.currentPosition.getServoPos();
     spos+=servoStep*range.getStepSize();
-    currentPosition.setServoPos(spos);
+    double value=0;
+    ServoSide side = null;
     if (range.getSideN().isIn(spos)) {
-      currentPosition.setValue(range.getSideN().interpolateValueFromPos(spos));
+      side=range.getSideN();
     } else if (range.getSideP().isIn(spos)) {
-      currentPosition.setValue(range.getSideP().interpolateValueFromPos(spos));
-    } else {
-      this.currentPosition.setValue(0);
+      side=range.getSideP();
     }
+    if (side!=null) {
+      spos=side.clampServoPos(spos);
+      value=side.interpolateValueFromPos(spos);
+    }
+    this.currentPosition.setServoPos(spos);
+    this.currentPosition.setValue(value);
   }
   
   /**

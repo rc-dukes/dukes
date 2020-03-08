@@ -64,7 +64,12 @@ public class ServoSide {
     }
   }
 
-  private double clampValue(double value) {
+  /**
+   * make sure the servo Value stays within the valid bounds
+   * @param value
+   * @return - the clamped valud
+   */
+  public double clampValue(double value) {
     if (value < min.value)
       return min.value;
     else if (value > max.value)
@@ -73,7 +78,12 @@ public class ServoSide {
       return value;
   }
 
-  private int clampServoPos(long pos) {
+  /**
+   * make sure the servo position stays within the valid bounds
+   * @param pos
+   * @return the clamped servo position
+   */
+  public int clampServoPos(long pos) {
     int servoPos=(int) pos;
     if (servoPos < min.servoPos)
       return min.servoPos;
