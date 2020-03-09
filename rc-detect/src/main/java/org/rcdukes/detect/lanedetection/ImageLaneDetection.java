@@ -63,6 +63,8 @@ public class ImageLaneDetection {
     }
     CameraConfig cameraConfig=ld.getCameraConfig();
     imageCollector.addImage(image, ImageType.camera);
+    ldr.frameIndex=image.getFrameIndex();
+    ldr.milliTimeStamp=image.getMilliTimeStamp();
     // ! important - create a copy of the image because debug info will be
     // written on it
     Mat imageCopy=image.getFrame().clone(); 

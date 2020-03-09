@@ -151,16 +151,8 @@ public class Detector extends DukesVerticle {
    * @param msg
    * @return
    **/
-  private Observable<String> startLaneDetection(CameraConfig cameraConfig) {
-    return startLaneDetectionObservable(cameraConfig).map(ldr -> {
-      try {
-        // @TODO further simplify by using pojo handling ...
-        Map<String, Object> map = ldr.toMap();
-        return new ObjectMapper().writeValueAsString(map);
-      } catch (JsonProcessingException e) {
-        throw new RuntimeException(e);
-      }
-    });
+  private Observable<LaneDetectionResult> startLaneDetection(CameraConfig cameraConfig) {
+    return startLaneDetectionObservable(cameraConfig).map(ldr -> ldr);
   }
 
   /**

@@ -96,14 +96,7 @@ public class StraightLaneNavigator implements Navigator {
 
   @Override
   public LaneDetectionResult fromJsonObject(JsonObject jo) {
-    LaneDetectionResult ldr = new LaneDetectionResult();
-    if (jo.containsKey("angle")) {
-      ldr.angle = jo.getDouble("angle");
-    }
-
-    if (jo.containsKey("courseRelativeToHorizon")) {
-      ldr.courseRelativeToHorizon = jo.getDouble("courseRelativeToHorizon");
-    }
+    LaneDetectionResult ldr =jo.mapTo(LaneDetectionResult.class);
     return ldr;
   }
 

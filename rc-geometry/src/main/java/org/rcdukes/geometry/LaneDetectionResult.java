@@ -18,6 +18,8 @@ public class LaneDetectionResult {
   public Double distanceToStoppingZone;
   public Double distanceToStoppingZoneEnd;
   public Lane lane;
+  public int frameIndex;
+  public long milliTimeStamp;
 
   /**
    * convert me to a Map
