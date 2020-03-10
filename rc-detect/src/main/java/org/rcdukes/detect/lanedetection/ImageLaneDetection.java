@@ -25,10 +25,9 @@ import org.rcdukes.video.ImageUtils.CVColor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import nl.vaneijndhoven.navigation.plot.LaneOrientation;
-import nl.vaneijndhoven.navigation.plot.StoppingZoneOrientation;
 import nl.vaneijndhoven.objects.StoppingZone;
 import nl.vaneijndhoven.objects.ViewPort;
+import nl.vaneijndhoven.objects.stoppingzone.StoppingZoneOrientation;
 import nl.vaneijndhoven.opencv.stopzonedetection.DefaultStoppingZoneDetector;
 
 /**
@@ -75,7 +74,7 @@ public class ImageLaneDetection {
     Mat frame = new ROI("camera",0, ry, 1, rh)
         .region(undistorted);
     Size imageSize = frame.size();
-    ViewPort viewPort = new ViewPort(new Point(0, 0), imageSize.width,
+    ViewPort viewPort = new ViewPort(new Point(0.0, 0.0), imageSize.width,
         imageSize.height);
     Polygon imagePolygon = new ImagePolygon(frame.size(), 0, 0, 1, 0, 1, 1, 0, 1);
     Polygon worldPolygon = new ImagePolygon(frame.size(), 0, 0, 1, 0, 1, 1, 0, 1);
@@ -95,10 +94,11 @@ public class ImageLaneDetection {
     StoppingZone stoppingZone = new DefaultStoppingZoneDetector().detect(lines);
 
     LaneOrientation laneOrientation = new LaneOrientation(lane, viewPort);
+    laneOrientation.determineLines();
     StoppingZoneOrientation stoppingZoneOrientation = new StoppingZoneOrientation(
         stoppingZone, lane, viewPort);
 
-    Optional<Line> middle = laneOrientation.determineLaneMiddle();
+    Optional<Line> middle = Optional.of(laneOrientation.getMiddle());
 
     ImageUtils iu=new ImageUtils();
     lane.getLeftBoundary().ifPresent(boundary -> iu.drawLinesToImage(frame,
@@ -125,14 +125,14 @@ public class ImageLaneDetection {
     }
     imageCollector.addImage(frame, ImageType.lines);
     
-    ldr.angle = laneOrientation.determineCurrentAngle();
+    ldr.left=laneOrientation.getLeft();
+    ldr.middle=laneOrientation.getMiddle();
+    ldr.right=laneOrientation.getRight();
     ldr.distanceMiddle = laneOrientation.determineDistanceToMiddle();
     ldr.distanceLeft = laneOrientation.distanceFromLeftBoundary();
     ldr.distanceRight = laneOrientation.distanceFromRightBoundary();
     ldr.courseRelativeToHorizon = laneOrientation
         .determineCourseRelativeToHorizon();
-    ldr.lane=lane;
-   
     return ldr;
   }
 }

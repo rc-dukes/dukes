@@ -54,32 +54,6 @@ public class TestAction {
   }
 
   @Test
-  public void testStraightLaneNavigator2() throws InterruptedException {
-    Navigator navigator = new StraightLaneNavigator("+");
-
-    // Sleep (after creating the navigator) to ensure we surpass the command
-    // loop interval, otherwise no
-    // navigation command will be issued.
-    Thread.sleep(COMMAND_LOOP_INTERVAL+1);
-
-    double angles[] = { -45.0, -30.0, -15.0, -10.0, 0.0, 10.0, 15.0, 30.0,
-        45.0 };
-    String expected[] = { "-100.0", "-100.0", "-60.0", "-40.0", "0.0", "60.0",
-        "90.0", "100.0", "100.0" };
-    int index = 0;
-    for (double angle : angles) {
-      Thread.sleep(COMMAND_LOOP_INTERVAL+1);
-      JsonObject ldrJo = new JsonObject();
-      ldrJo.put("angle", angle);
-      LaneDetectionResult ldr = navigator.fromJsonObject(ldrJo);
-      JsonObject nav2 = navigator.getNavigationInstruction(ldr);
-      check(nav2, "type", "servoDirect", "position", expected[index]);
-      index++;
-    }
-  }
-
-
-  @Test
   public void testAction() throws Exception {
     int TIME_OUT = 20000;
     Environment.mock();

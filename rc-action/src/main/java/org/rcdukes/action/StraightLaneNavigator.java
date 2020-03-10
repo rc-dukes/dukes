@@ -2,6 +2,7 @@ package org.rcdukes.action;
 
 import java.util.Locale;
 
+import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.DukesVerticle;
@@ -20,25 +21,19 @@ import stormbots.MiniPID;
  *
  */
 public class StraightLaneNavigator implements Navigator {
-  
-  boolean debug=false;
+
+  boolean debug = false;
   protected static final Logger LOG = LoggerFactory
       .getLogger(StraightLaneNavigator.class);
   private static final long MAX_DURATION_NO_LINES_DETECTED = 1000;
 
   // private long COMMAND_LOOP_INTERVAL = 250L;
   public static long COMMAND_LOOP_INTERVAL = 50L;
-
   private long tsLastLinesDetected = System.currentTimeMillis();
-
-  private double previousAngle = 0;
-
   private long tsLastCommand = System.currentTimeMillis();
-  private long tsLastConnectionOKmessageSent = System.currentTimeMillis();
-  private double lastRudderPercentageSent = 0d;
-
   private boolean emergencyStopActivated = false;
   DukesVerticle sender;
+  private TinkerGraph graph;
 
   public DukesVerticle getSender() {
     return sender;
@@ -69,6 +64,7 @@ public class StraightLaneNavigator implements Navigator {
       wheelOrientation = this.getWheelOrientationFromEnvironment();
     this.wheelOrientation = wheelOrientation;
     initDefaults();
+    graph = TinkerGraph.open();
   }
 
   /**
@@ -87,7 +83,6 @@ public class StraightLaneNavigator implements Navigator {
    */
   private void initDefaults() {
     tsLastCommand = System.currentTimeMillis();
-    lastRudderPercentageSent = 0d;
     pid = new MiniPID(1, 0, 0);
     rudderFactor = 1;
     if (wheelOrientation.equals("-"))
@@ -96,7 +91,7 @@ public class StraightLaneNavigator implements Navigator {
 
   @Override
   public LaneDetectionResult fromJsonObject(JsonObject jo) {
-    LaneDetectionResult ldr =jo.mapTo(LaneDetectionResult.class);
+    LaneDetectionResult ldr = jo.mapTo(LaneDetectionResult.class);
     return ldr;
   }
 
@@ -109,9 +104,9 @@ public class StraightLaneNavigator implements Navigator {
    */
   @Override
   public JsonObject getNavigationInstruction(LaneDetectionResult ldr) {
-    long currentTime = System.currentTimeMillis();
+    long currentTime = ldr.milliTimeStamp;
 
-    AngleCheck angleCheck = verifyAngleFound(ldr.angle, currentTime);
+    AngleCheck angleCheck = verifyAngleFound(ldr, currentTime);
     switch (angleCheck) {
     case empty:
       return null;
@@ -121,61 +116,36 @@ public class StraightLaneNavigator implements Navigator {
       // ok - do nothing
     }
 
-    Double rudderPercentage;
+    Double angle;
 
     if (ldr.courseRelativeToHorizon != null) {
       // pass 1: steer on courseRelativeToHorizon
-      rudderPercentage = ldr.courseRelativeToHorizon * rudderFactor;
+      angle = Math.toDegrees(ldr.courseRelativeToHorizon) * rudderFactor;
       // System.out.println("rudder on horizon: " + rudderPercentage);
     } else {
-      // pass 2: steer on angle
-      if (ldr.angle < 0) {
-        // left
-        rudderPercentage = 4 * ldr.angle;
-      } else {
-        // right
-        rudderPercentage = 6 * ldr.angle;
+      angle = null;
+    }
+    if (angle != null) {
+      if (currentTime - tsLastCommand > COMMAND_LOOP_INTERVAL) {
+        tsLastCommand = currentTime;
+        JsonObject message = steerCommand(angle);
+        return message;
       }
-      // System.out.println("rudder on angle: " + rudderPercentage);
-
     }
-
-    if (rudderPercentage > 100) {
-      rudderPercentage = 100d;
-    } else if (rudderPercentage < -100) {
-      rudderPercentage = -100d;
-    }
-
-    if (currentTime - tsLastCommand > COMMAND_LOOP_INTERVAL) {
-
-      // double pidRudderPercentage = pid.getOutput(angle * 5,
-      // rudderPercentage);
-      // System.out.println("rudderPercentage: " + rudderPercentage + ", pid
-      // rudder percentage: " + pidRudderPercentage);
-      // rudderPercentage = pidRudderPercentage;
-
-      tsLastCommand = currentTime;
-      lastRudderPercentageSent = rudderPercentage;
-      previousAngle = ldr.angle;
-      JsonObject message = steerCommand(rudderPercentage);
-      return message;
-    }
-
     return null;
   }
 
   /**
    * get the command to steer the vehicle
    * 
-   * @param rudderPercentage
+   * @param angle
    * @return - the command message
    */
-  public JsonObject steerCommand(Double rudderPercentage) {
-    String rudderPos = String.format(Locale.ENGLISH, "%3.1f", rudderPercentage);
-    JsonObject message = new JsonObject().put("type", "servoDirect")
-        .put("position", rudderPos);
-    String debugMsg = String.format("sending servoDirect position %3.1f",
-        rudderPercentage);
+  public JsonObject steerCommand(Double angle) {
+    String angleStr = String.format(Locale.ENGLISH, "%5.1f", angle);
+    JsonObject message = new JsonObject().put("type", "servoAngle").put("angle",
+        angleStr);
+    String debugMsg = String.format("sending servoAngle %s°", angleStr);
     if (debug)
       LOG.debug(debugMsg);
     return message;
@@ -188,13 +158,14 @@ public class StraightLaneNavigator implements Navigator {
   /**
    * check the angle
    * 
-   * @param angle
+   * @param ldr
    * @param currentTime
    * @return the AngleCheck
    */
-  private AngleCheck verifyAngleFound(Double angle, long currentTime) {
+  private AngleCheck verifyAngleFound(LaneDetectionResult ldr,
+      long currentTime) {
     AngleCheck result = AngleCheck.ok;
-    if (angle == null) {
+    if (ldr.middle == null && ldr.left == null && ldr.right == null) {
       // no angle detected
       if ((currentTime - tsLastLinesDetected > MAX_DURATION_NO_LINES_DETECTED)
           && !emergencyStopActivated) {
@@ -212,9 +183,8 @@ public class StraightLaneNavigator implements Navigator {
   }
 
   @Override
-  public void navigateWithInstruction(
-      JsonObject navigationInstruction) {
-    if (navigationInstruction!=null)
+  public void navigateWithInstruction(JsonObject navigationInstruction) {
+    if (navigationInstruction != null)
       sender.send(Characters.BO, navigationInstruction);
   }
 

@@ -5,7 +5,7 @@ package org.rcdukes.geometry;
  */
 public interface Point3D extends Point2D {
 
-    double getZ();
+    Double getZ();
 
     double distance(Point3D other);
 }

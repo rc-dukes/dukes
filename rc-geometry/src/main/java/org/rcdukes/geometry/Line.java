@@ -15,9 +15,15 @@ import java.util.Arrays;
  */
 public class Line {
 
-  private final Point2D point1;
-  private final Point2D point2;
+  private Point point1;
+  private Point point2;
 
+  /**
+   * default constructor
+   */
+  public Line() {
+    
+  }
   /**
    * construct me from a hough lines detect result
    * @param probabilistic
@@ -57,13 +63,32 @@ public class Line {
    * @param point2
    *          - second point
    */
-  public Line(Point2D point1, Point2D point2) {
+  public Line(Point point1, Point point2) {
+    init(point1,point2);
+  }
+  
+  /**
+   * convenience constructor
+   * @param point1
+   * @param point2
+   */
+  public Line(Point2D point1,Point2D point2) {
+    init (new Point(point1.getX(),point1.getY()),
+        new Point(point2.getX(),point2.getY()));
+  }
+  
+  /**
+   * initialize me
+   * @param point1
+   * @param point2
+   */
+  public void init(Point point1, Point point2) {
     Objects.requireNonNull(point1, "point1 can not be null.");
     Objects.requireNonNull(point2, "point2 can not be null.");
     this.point1 = point1;
     this.point2 = point2;
   }
-
+  
   /**
    * calculate the length of the line
    * 
@@ -147,10 +172,10 @@ public class Line {
     double avgxlen = sumxlen / lines.size();
     double avgylen = sumylen / lines.size();
 
-    Point2D origin = new Point(avgx - 0.5 * avgxlen, avgy - 0.5 * avgylen);
-    Point2D end = new Vector(avgxlen, avgylen).calculate(origin, 1);
+    Point origin = new Point(avgx - 0.5 * avgxlen, avgy - 0.5 * avgylen);
+    Point2D endV = new Vector(avgxlen, avgylen).calculate(origin, 1);
 
-    Line avgLine = new Line(origin, end);
+    Line avgLine = new Line(origin, new Point(endV.getX(),endV.getY()));
 
     // System.out.println("avg rad: " + avgAngleRad + " line rad: " +
     // avgLine.angleRad());

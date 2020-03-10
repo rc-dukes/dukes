@@ -1,4 +1,4 @@
-package nl.vandeindhoven.dukes.geometry;
+package org.rcdukes.geometry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -8,11 +8,6 @@ import static org.junit.Assert.fail;
 import java.util.List;
 
 import org.junit.Test;
-import org.rcdukes.geometry.Line;
-import org.rcdukes.geometry.Point;
-import org.rcdukes.geometry.Point2D;
-import org.rcdukes.geometry.Point3D;
-import org.rcdukes.geometry.Polygon;
 import org.rcdukes.geometry.Line.Vector;
 import org.rcdukes.geometry.pointinplane.PointInPlane;
 import org.rcdukes.geometry.pointinplane.WindingNumbers;
@@ -29,8 +24,8 @@ public class TestGeometry {
   public void testLine() {
     Line line = new Line(0., 0., 100., 100.);
     Line liner = new Line(100., 100., 0.0, 0.0);
-    Line line2 = new Line(0., 10., 100, 110.);
-    Line line3 = new Line(50.0, 0, 50.0, 100.);
+    Line line2 = new Line(0., 10., 100., 110.);
+    Line line3 = new Line(50.0, 0., 50.0, 100.);
     assertEquals(141.0, line.length(), 0.5);
     assertEquals(Math.PI / 4, line.angleRad(), 0.01);
     assertEquals(45.0, line.angleDeg(), 0.01);
@@ -81,13 +76,7 @@ public class TestGeometry {
 
   @Test
   public void testPoint() {
-    try {
-      new Point();
-      fail("exception expected");
-    } catch (IllegalArgumentException e) {
-      assertEquals("Point must have at least 1 dimension", e.getMessage());
-    }
-    Point p = new Point(0, 0);
+    Point p = new Point(0.0, 0.0);
     try {
       p.distance();
       fail("exception expected");
@@ -96,16 +85,13 @@ public class TestGeometry {
           "Can only calculate distance between two points with similar dimensions.",
           e.getMessage());
     }
-    Point3D p3 = new Point(0, 0, 0);
-    assertEquals(0.0, p3.getZ(), 0.001);
-    assertEquals(Math.sqrt(3), p3.distance(new Point(1, 1, 1)), 0.00001);
   }
 
   @Test
   public void testPolygon() {
-    Polygon polygons[] = { Polygon.square(new Point(0, 0), new Point(100, 100)),
-        new Polygon(new Point(0, 0), new Point(100, 100), new Point(100, 0),
-            new Point(0, 100)) };
+    Polygon polygons[] = { Polygon.square(new Point(0.0, 0.0), new Point(100., 100.)),
+        new Polygon(new Point(0.0, 0.0), new Point(100., 100.), new Point(100., 0.),
+            new Point(0., 100.)) };
     double expectedShoelace[] = { 20000, 0 };
     String expectedIntersects[] = { "[{0.0,25.0}, {100.0,25.0}]",
         "[{25.0,25.0}, {75.0,25.0}, {100.0,25.0}]" };
@@ -137,5 +123,5 @@ public class TestGeometry {
       assertTrue(pip.isPointInPlane(point, polygons[0]));
     }
   }
-
+  
 }

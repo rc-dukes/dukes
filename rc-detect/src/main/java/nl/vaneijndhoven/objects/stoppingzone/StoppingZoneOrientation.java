@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.navigation.plot;
+package nl.vaneijndhoven.objects.stoppingzone;
 
 import org.rcdukes.geometry.Lane;
 import org.rcdukes.geometry.Line;
