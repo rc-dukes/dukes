@@ -19,6 +19,13 @@ public interface ServoRangeMap extends ServoMap {
    * @return the ServoPosition
    */
   public ServoPosition atPercent(double percent);
+  
+  /**
+   * return a servo position close to the given value
+   * @param value
+   * @return - the servoPosition
+   */
+  public ServoPosition atValue(double value);
   /**
    * step the given number of steps -1, 1
    * @param servoStep
@@ -28,4 +35,5 @@ public interface ServoRangeMap extends ServoMap {
    * set the zero/center position
    */
   public void setZero();
+ 
 }

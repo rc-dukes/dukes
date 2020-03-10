@@ -2,7 +2,6 @@ package org.rcdukes.action;
 
 import java.util.Locale;
 
-import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.DukesVerticle;
@@ -170,10 +169,10 @@ public class StraightLaneNavigator implements Navigator {
    * @return - the command message
    */
   public JsonObject steerCommand(Double angle) {
-    String angleStr = String.format(Locale.ENGLISH, "%5.1f", angle);
+    String angleStr = String.format(Locale.ENGLISH, "%5.1f°", angle);
     JsonObject message = new JsonObject().put("type", "servoAngle").put("angle",
-        angleStr);
-    String debugMsg = String.format("sending servoAngle %s°", angleStr);
+        angle);
+    String debugMsg = String.format("sending servoAngle %s", angleStr);
     if (debug)
       LOG.debug(debugMsg);
     return message;

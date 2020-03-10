@@ -45,6 +45,20 @@ class SteeringHandler {
     car.turn(newPosition);
     return newPosition;
   }
+  
+  /**
+   * handle the given servo Angle
+   * @param angleJo
+   * @return
+   */
+  public ServoPosition handleServoAngle(JsonObject angleJo) {
+    Double angle = angleJo.getDouble("angle");
+    ServoPosition newPosition=this.steeringMap.atValue(angle);
+    String msg=String.format("steering %5.1f° for wanted angle %5.1f°", newPosition.getValue(),angle);
+    LOG.debug(msg);
+    car.turn(newPosition);
+    return newPosition;
+  }
 
   /**
    * handle a message for the steering servo

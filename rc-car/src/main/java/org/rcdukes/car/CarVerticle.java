@@ -50,6 +50,9 @@ public class CarVerticle extends DukesVerticle {
       newPosition = steeringHandler.handleServo(message);
       newPosition.kind="steering";
       break;
+    case "servoAngle":
+      newPosition=steeringHandler.handleServoAngle(message);
+      newPosition.kind="steering";
     case "servoDirect":
       newPosition = steeringHandler.handleServoDirect(message);
       newPosition.kind="steering";

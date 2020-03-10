@@ -61,6 +61,22 @@ public class TestServoMaps {
         -20,-16.7,-13.3,-10.0,-6.7,-3.3,0,4.2,8.3,12.5,16.7,20.8,25.0};
     checkServoRangeMap(smap, percents, expectedServoPos, expectedValues);
   }
+  
+  @Test
+  public void testAngles() {
+    double angles[]= {-45,-30,-20,-10,-5,0,5,10,20,30,45};
+    double expectedValues[] = {-20,-20,-20,-10,-5,0,5,10,20,25,25};
+    SteeringMap smap = new SteeringMap(sc);
+    int index=0;
+    for (double angle:angles) {
+      ServoPosition anglePos = smap.atValue(angle);
+      String msg=String.format("steering %5.1f° (%3d) for wanted angle %5.1f°", anglePos.getValue(),anglePos.getServoPos(),angle);
+      if (debug)
+        System.out.println(msg);
+      assertEquals(expectedValues[index],anglePos.getValue(),0.001);
+      index++;
+    }
+  }
 
   private void checkServoRangeMap(ServoRangeMap map, int[] percents,
       int[] expectedServoPos, double[] expectedValues) {
@@ -93,7 +109,7 @@ public class TestServoMaps {
   
   public void check(int servoPos,ServoRange range,ServoSide side, boolean expected) {
     int clampedServoPos=range.clampServoPos(servoPos);
-    boolean in=side.isOnSide(clampedServoPos);
+    boolean in=side.isServoPosOnSide(clampedServoPos);
     String msg=String.format("servopos %d clamped to %d should be on side %s within %d and %d",servoPos,clampedServoPos,side.getName(),side.getMin().getServoPos(),side.getMax().getServoPos());
     assertTrue(msg,in==expected);
   }

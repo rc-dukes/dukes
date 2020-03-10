@@ -133,13 +133,21 @@ public class ServoSide {
   }
   
   /**
+   * get the value Range
+   * @return
+   */
+  public double valueRange() {
+    double valueRange = (max.getValue() - min.getValue());
+    return valueRange;
+  }
+  
+  /**
    * interpolate the value with the given factor
    * @param factor
    * @return - the new value
    */
   public double interpolateValue(double factor) {
-    double valueRange = (max.getValue() - min.getValue());
-    double pVal = min.getValue() + valueRange *factor;
+    double pVal = min.getValue() + valueRange() *factor;
     return clampValue(pVal);
   }
   
@@ -156,15 +164,28 @@ public class ServoSide {
   }
   
   /**
-   * check whether the value is on this Side
+   * check whether the serviOis is on this Side
    * @param servoPos
-   * @return - true if the value is on this Side
+   * @return - true if the servoPos is on this Side
    */
-  public boolean isOnSide(int servoPos) {
+  public boolean isServoPosOnSide(int servoPos) {
     boolean in=false;
     int maxp=Math.max(max.getServoPos(),min.getServoPos());
     int minp=Math.min(max.getServoPos(),min.getServoPos());
     in=servoPos<=maxp && servoPos>=minp;
+    return in;
+  }
+  
+  /**
+   * check whether the value is on this Side
+   * @param value
+   * @return - true if the value is on this Side
+   */
+  public boolean isValueOnSide(double value) {
+    boolean in=false;
+    double maxv=Math.max(max.getValue(),min.getValue());
+    double minv=Math.min(max.getValue(),min.getValue());
+    in=value<=maxv && value>=minv;
     return in;
   }
 

@@ -13,7 +13,7 @@ import org.rcdukes.common.ServoPosition;
 public abstract class ServoRangeMap extends ServoMap
     implements org.rcdukes.car.ServoRangeMap {
   private ServoRange range = null;
-  
+
   private String unit;
   private String name;
 
@@ -58,32 +58,44 @@ public abstract class ServoRangeMap extends ServoMap
   }
 
   @Override
+  public ServoPosition atValue(double value) {
+    double percent=0.;
+    if (value<0) {
+      percent=value/range.getSideN().valueRange()*100;
+    } else {
+      percent=value/range.getSideP().valueRange()*100;
+    }
+    return this.atPercent(percent);
+  }
+
+  @Override
   public void step(int servoStep) {
     int spos = this.currentPosition.getServoPos();
-    spos+=servoStep*range.getStepSize();
-    spos=this.range.clampServoPos(spos);
-    double value=0;
+    spos += servoStep * range.getStepSize();
+    spos = this.range.clampServoPos(spos);
+    double value = 0;
     ServoSide side = null;
-    if (range.getSideN().isOnSide(spos)) {
-      side=range.getSideN();
-    } else if (range.getSideP().isOnSide(spos)) {
-      side=range.getSideP();
+    if (range.getSideN().isServoPosOnSide(spos)) {
+      side = range.getSideN();
+    } else if (range.getSideP().isServoPosOnSide(spos)) {
+      side = range.getSideP();
     }
-    if (side!=null) {
-      value=side.interpolateValueFromPos(spos);
+    if (side != null) {
+      value = side.interpolateValueFromPos(spos);
     }
     this.currentPosition.setServoPos(spos);
     this.currentPosition.setValue(value);
   }
-  
+
   /**
    * set a new Position
+   * 
    * @param newPosition
    */
   @Override
   public ServoPosition newPosition(ServoPosition newPosition) {
-    newPosition=super.newPosition(newPosition);
-    newPosition.unit=unit;
+    newPosition = super.newPosition(newPosition);
+    newPosition.unit = unit;
     return newPosition;
   }
 
@@ -94,6 +106,7 @@ public abstract class ServoRangeMap extends ServoMap
 
   /**
    * return the given position info
+   * 
    * @return the position info
    */
   public String positionInfo() {
@@ -101,15 +114,15 @@ public abstract class ServoRangeMap extends ServoMap
     return info;
   }
 
-  protected void assertGreater(double vmax, double vmin,String maxname, String minname)
-      throws Exception {
+  protected void assertGreater(double vmax, double vmin, String maxname,
+      String minname) throws Exception {
     boolean ok;
-    String cmp="";
-    ok=(vmax < vmin); 
-    cmp=">=";
+    String cmp = "";
+    ok = (vmax < vmin);
+    cmp = ">=";
     if (ok) {
-      String msg = String.format("%s %f should be %s than %s %f", maxname,vmax,
-          cmp,minname,vmin);
+      String msg = String.format("%s %f should be %s than %s %f", maxname, vmax,
+          cmp, minname, vmin);
       throw new Exception(msg);
     }
   }
@@ -117,9 +130,8 @@ public abstract class ServoRangeMap extends ServoMap
   protected void checkSide(ServoSide side) throws Exception {
     assertGreater(side.getMax().getValue(), side.getMin().getValue(),
         side.getMax().valueConfig, side.getMin().valueConfig);
-    assertGreater(side.getMax().getServoPos(),
-        side.getMin().getServoPos(), side.getMax().servoConfig,
-        side.getMin().valueConfig);
+    assertGreater(side.getMax().getServoPos(), side.getMin().getServoPos(),
+        side.getMax().servoConfig, side.getMin().valueConfig);
   }
 
   /**
@@ -131,14 +143,12 @@ public abstract class ServoRangeMap extends ServoMap
     range = this.getRange();
     LOG.info(String.format(
         "%s gpio: %s  %3d - %3d > %3d < %3d - %3d orientation: %s steps:  %3d",
-        name, this.gpioPin,
-        range.getSideN().getMin().getServoPos(),
+        name, this.gpioPin, range.getSideN().getMin().getServoPos(),
         range.getSideN().getMax().getServoPos(),
         range.getZeroPosition().getServoPos(),
         range.getSideP().getMin().getServoPos(),
         range.getSideP().getMax().getServoPos(),
-        this.turnedOrientation ? "-" : "+",
-        range.getStepSize()));
+        this.turnedOrientation ? "-" : "+", range.getStepSize()));
     assert range.getStepSize() > 0 : "step size should be >0";
     ServoSide sideN = range.getSideN();
     ServoSide sideP = range.getSideP();

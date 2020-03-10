@@ -2,7 +2,6 @@ package org.rcdukes.action;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.rcdukes.action.StraightLaneNavigator.COMMAND_LOOP_INTERVAL;
 
 import org.junit.Test;
 import org.rcdukes.common.ClusterStarter;
