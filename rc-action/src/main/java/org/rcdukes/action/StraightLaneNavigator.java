@@ -3,10 +3,7 @@ package org.rcdukes.action;
 import java.util.Locale;
 
 import org.rcdukes.common.Characters;
-import org.rcdukes.common.Config;
 import org.rcdukes.common.DukesVerticle;
-import org.rcdukes.common.Environment;
-import org.rcdukes.error.ErrorHandler;
 import org.rcdukes.geometry.LaneDetectionResult;
 
 import io.vertx.core.json.JsonObject;
@@ -34,39 +31,15 @@ public class StraightLaneNavigator implements Navigator {
     this.sender = sender;
   }
 
-  public String getWheelOrientationFromEnvironment() {
-    Environment env = Environment.getInstance();
-    String wheelOrientation = "+";
-    try {
-      wheelOrientation = env.getString(Config.WHEEL_ORIENTATION);
-    } catch (Exception e) {
-      ErrorHandler.getInstance().handle(e);
-    }
-    return wheelOrientation;
-  }
-
-  /**
-   * construct me with the given wheel orientation
-   * 
-   * @param wheelOrientation
-   */
-  public StraightLaneNavigator(String wheelOrientation) {
-    if (wheelOrientation == null)
-      wheelOrientation = this.getWheelOrientationFromEnvironment();
-    this.wheelOrientation = wheelOrientation;
-    initDefaults();
-  }
 
   /**
    * default constructor
    */
   public StraightLaneNavigator() {
-    this(null);
+    this.initDefaults();
   }
 
   MiniPID pid;
-  private String wheelOrientation;
-  private int rudderFactor;
   private Long tsLastLinesDetected;
   private Long tsLastCommand;
   public static long COMMAND_LOOP_INTERVAL = 200L; // how often to send commands
@@ -78,9 +51,6 @@ public class StraightLaneNavigator implements Navigator {
    */
   private void initDefaults() {
     pid = new MiniPID(1, 0, 0);
-    rudderFactor = 1;
-    if (wheelOrientation.equals("-"))
-      rudderFactor = -1;
   }
 
   @Override
@@ -143,14 +113,20 @@ public class StraightLaneNavigator implements Navigator {
       // ok - do nothing
     }
 
-    Double angle;
+    Double angle=null;
 
     if (ldr.courseRelativeToHorizon != null) {
       // pass 1: steer on courseRelativeToHorizon
-      angle = Math.toDegrees(ldr.courseRelativeToHorizon) * rudderFactor;
+      angle = Math.toDegrees(ldr.courseRelativeToHorizon);
       // System.out.println("rudder on horizon: " + rudderPercentage);
     } else {
-      angle = null;
+      System.out.println(ldr.debugInfo());
+      if (ldr.left!=null) {
+        angle=5.0;
+      } 
+      if (ldr.right!=null) {
+        angle=-5.0;
+      }
     }
     if (angle != null) {
       if (currentTime - tsLastCommand > COMMAND_LOOP_INTERVAL) {

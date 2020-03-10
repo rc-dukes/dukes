@@ -7,6 +7,7 @@ import java.util.Date;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.videoio.VideoWriter;
+import org.rcdukes.video.ImageUtils;
 
 /**
  * record videos
@@ -14,10 +15,7 @@ import org.opencv.videoio.VideoWriter;
  *
  */
 public class VideoRecorder {
-  public static transient final String DATE_FORMAT="yyyy-MM-ddHHmmss";
-  public static transient final DateFormat dateFormat=new SimpleDateFormat(DATE_FORMAT);
-  public static String MEDIA_PATH="/tmp";
-  
+ 
   String name;
   private VideoWriter save;
   private Size frameSize;
@@ -47,23 +45,9 @@ public class VideoRecorder {
     this.frameSize=frameSize;
     this.isColor=isColor;
     int fourcc = VideoWriter.fourcc(FOURCC.charAt(0), FOURCC.charAt(1), FOURCC.charAt(2), FOURCC.charAt(3)); 
-    setPath(filePath(name+"_"+FOURCC,ext));
+    setPath(ImageUtils.filePath(name+"_"+FOURCC,ext));
     save = new VideoWriter(getPath(),fourcc, this.fps, this.frameSize, isColor);
     started=true;
-  }
-  
-  
-  /**
-   * get a filePath for the given name and extension by adding a timeStamp
-   * @param name
-   * @param ext
-   * @return - the filePath
-   */
-  public static String filePath(String name, String ext) {
-    Date now = new Date();
-    String timestamp=dateFormat.format(now);
-    String filepath=String.format("%s/%s_%s%s", MEDIA_PATH,name,timestamp,ext);
-    return filepath;
   }
   
   

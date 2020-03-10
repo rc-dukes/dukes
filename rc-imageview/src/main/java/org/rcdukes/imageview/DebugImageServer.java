@@ -62,7 +62,7 @@ public class DebugImageServer extends DukesVerticle {
     // @TODO - get config information from config Verticle (or shared data ...)
     File mediaPath=new File(Environment.dukesHome+"media");
     mediaPath.mkdirs();
-    VideoRecorder.MEDIA_PATH=mediaPath.getPath();
+    ImageUtils.MEDIA_PATH=mediaPath.getPath();
     int port = Config.getEnvironment().getInteger(Config.IMAGEVIEW_PORT);
     server = vertx.createHttpServer().requestHandler(this::sendImage);
     // Now bind the server:
@@ -126,12 +126,7 @@ public class DebugImageServer extends DukesVerticle {
    */
   protected void shootPhoto() {
     ImageCollector imageCollector = Detector.getImageCollector();
-    for (ImageType imageType : ImageType.values()) {
-      String filepath=VideoRecorder.filePath(imageType.name(), ".jpg");
-      Image image=imageCollector.getImage(imageType, false);
-      if (image!=null)
-        ImageUtils.writeImageToFilepath(image.getFrame(), filepath);
-    }
+    imageCollector.writeImages();
   }
 
   /**

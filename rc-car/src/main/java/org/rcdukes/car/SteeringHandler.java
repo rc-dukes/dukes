@@ -30,7 +30,7 @@ class SteeringHandler {
   SteeringHandler(Car car) {
     this.car = car;
     this.steeringMap=car.getSteering().getSteeringMap(); 
-    steerFactor=steeringMap.turnedOrientation()?-1:1;
+    steerFactor=1; // steeringMap.turnedOrientation()?-1:1;
   }
 
   /**

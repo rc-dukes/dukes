@@ -8,13 +8,16 @@ import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
 import org.rcdukes.common.Config;
+import org.rcdukes.common.Environment;
 import org.rcdukes.common.DukesVerticle.Status;
 import org.rcdukes.common.EventbusLogger;
 import org.rcdukes.common.ServoPosition;
 import org.rcdukes.detect.ImageFetcher;
 import org.rcdukes.error.ErrorHandler;
 import org.rcdukes.video.Image;
+import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageSource;
+import org.rcdukes.video.ImageUtils;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
@@ -164,6 +167,9 @@ public class DukesFxGUI extends BaseGUI
         "file:/Users/wf/Documents/workspace/dukes/rc-detect/src/main/resources/images/road.jpg");
     this.cameraController.roiy = roiy;
     this.cameraController.roih = roih;
+    File mediaPath=new File(Environment.dukesHome+"media");
+    mediaPath.mkdirs();
+    ImageUtils.MEDIA_PATH=mediaPath.getPath();
   }
 
   @FXML
@@ -534,5 +540,10 @@ public class DukesFxGUI extends BaseGUI
       });
       break;
     }
+  }
+
+  @Override
+  public void setImageCollector(ImageCollector imageCollector) {
+    this.navigationController.setImageCollector(imageCollector);
   }
 }

@@ -7,6 +7,7 @@ package org.rcdukes.geometry;
  */
 public class LaneDetectionResult {
 
+  public static boolean forceError=false;
   public Line left;
   public Line middle;
   public Line right;
@@ -18,14 +19,29 @@ public class LaneDetectionResult {
   public Double distanceToStoppingZoneEnd;
   public int frameIndex;
   public long milliTimeStamp;
+  
+  public void checkError() {
+    if (forceError)
+      throw new RuntimeException("error forced to debug");
+  }
 
   /**
    * get a string for the given line's angle
    * @param line (potentially null)
    * @return - the angle String
    */
-  public String angleString(Line line) {
-    String text=line!=null?String.format("%6.1f°", line.angleDeg()+90):"?";
+  public String lineAngleString(Line line) {
+    String text=angleString(line==null?null:line.angleDeg()+90);
+    return text;
+  }
+  
+  /**
+   * get a string for the given angle
+   * @param angle (potentially null)
+   * @return - the angle String
+   */
+  public String angleString(Double angle) {
+    String text=angle!=null?String.format("%6.1f°", angle):"?";
     return text;
   }
   
@@ -34,7 +50,7 @@ public class LaneDetectionResult {
    * @return - a string with navigation info
    */
   public String debugInfo() {
-    String msg=String.format("  left: %s\nmiddle: %s\n right: %s\ncourse: %6.1f°", angleString(left),angleString(middle),angleString(right),Math.toDegrees(courseRelativeToHorizon));
+    String msg=String.format("  left: %s\nmiddle: %s\n right: %s\ncourse: %s", lineAngleString(left),lineAngleString(middle),lineAngleString(right),courseRelativeToHorizon==null?"?":angleString(Math.toDegrees(courseRelativeToHorizon)));
     return msg;
   }
  

@@ -188,5 +188,12 @@ public class TestLaneDetection extends BaseDetectTest {
     if (debug)
       System.out.println(ldr2.debugInfo());
   }
+  
+  @Test
+  public void testDebugInfo() {
+    LaneDetectionResult ldr=new LaneDetectionResult();
+    String info=ldr.debugInfo();
+    assertEquals("  left: ?\nmiddle: ?\n right: ?\ncourse: ?",info);
+  }
 
 }

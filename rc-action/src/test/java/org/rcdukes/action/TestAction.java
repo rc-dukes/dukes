@@ -45,7 +45,7 @@ public class TestAction {
 
   @Test
   public void testStraightLaneNavigator() throws InterruptedException {
-    Navigator navigator = new StraightLaneNavigator("+");
+    Navigator navigator = new StraightLaneNavigator();
     JsonObject ldrJo = new JsonObject();
     LaneDetectionResult ldr = navigator.fromJsonObject(ldrJo);
     JsonObject nav = navigator.getNavigationInstruction(ldr);

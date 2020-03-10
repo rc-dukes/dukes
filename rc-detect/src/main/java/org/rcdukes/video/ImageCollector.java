@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.opencv.core.Mat;
+import org.rcdukes.video.ImageCollector.ImageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -171,6 +172,19 @@ public class ImageCollector {
        emitterList.add(emitter);     
     });
     return imageObservable;
+  }
+
+  /**
+   * write the images
+   */
+  public void writeImages() {
+    for (ImageType imageType : ImageType.values()) {
+      String filepath=ImageUtils.filePath(imageType.name(), ".jpg");
+      Image image=this.getImage(imageType, false);
+      if (image!=null)
+        ImageUtils.writeImageToFilepath(image.getFrame(), filepath);
+    }
+    
   }
 
 }

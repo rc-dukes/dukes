@@ -69,15 +69,22 @@ public class LaneDetectionGUI extends BaseGUI {
           cameraGUI.applySliderValues();
           displayer.displayOriginal(originalImage.getFrame());
           ImageCollector collector = new ImageCollector();
+          displayer.setImageCollector(collector);
           CameraMatrix cameraMatrix = CameraMatrix.DEFAULT;
           LaneDetector laneDetector = new LaneDetector(edgeDetector,
               lineDetector, cameraGUI.cameraConfig, cameraMatrix, collector);
           LaneDetectionResult ldr = laneDetector.detect(originalImage);
+          ldr.checkError();
           Navigator navigator = LaneDetectionGUI.this.getAppVerticle().getNavigator();
           if (navigator!=null)
             navigator.navigateWithLaneDetectionResult(ldr);
           displayer.display1(collector.getImage(ImageType.edges, true));
           displayer.display2(collector.getImage(ImageType.lines, true));
+        }
+        @Override
+        public void onError(Throwable th) {
+          super.onError(th);
+          
         }
       };
       displayer.setCameraButtonText("Stop Camera");
@@ -86,7 +93,7 @@ public class LaneDetectionGUI extends BaseGUI {
           .throttleFirst(100, TimeUnit.MILLISECONDS) // 10 Frames Per second
                                                      // some 2.5 times slower
                                                      // than original ...
-          .doOnError(th -> handleError(th)).subscribe(frameGrabber);
+          .subscribe(frameGrabber);
     } else {
       frameGrabber.stop();
       frameGrabber=null;

@@ -4,6 +4,11 @@ import org.rcdukes.action.Navigator;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.Events;
+import org.rcdukes.geometry.LaneDetectionResult;
+import org.rcdukes.video.Image;
+import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.ImageCollector.ImageType;
+import org.rcdukes.video.ImageUtils;
 
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import io.vertx.core.json.JsonObject;
@@ -83,6 +88,7 @@ public class NavigationGUI extends BaseGUI {
 
   boolean power = false;
   AppVerticle appVerticle;
+  private ImageCollector imageCollector;
 
 
   /**
@@ -121,10 +127,14 @@ public class NavigationGUI extends BaseGUI {
   
   @FXML
   private void onPhoto(final ActionEvent event) {
+    if (this.imageCollector!=null)
+      imageCollector.writeImages();
   }
   
   @FXML
   private void onRecord(final ActionEvent event) {
+    LaneDetectionResult.forceError=!LaneDetectionResult.forceError;
+    super.setButtonActive(recordButton, LaneDetectionResult.forceError);
   }
   
   @FXML
@@ -276,6 +286,10 @@ public class NavigationGUI extends BaseGUI {
    */
   private void sendWheelCommand(String position) {
     getAppVerticle().sendWheelCommand(position);
+  }
+
+  public void setImageCollector(ImageCollector imageCollector) {
+    this.imageCollector=imageCollector;
   }
 
 }
