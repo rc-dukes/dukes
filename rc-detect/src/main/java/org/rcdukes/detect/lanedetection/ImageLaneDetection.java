@@ -40,7 +40,7 @@ public class ImageLaneDetection {
   private LaneDetector ld;
 
   /**
-   * create me for the givne LaneDetector
+   * create me for the given LaneDetector
    * @param laneDetector
    */
   public ImageLaneDetection(LaneDetector laneDetector) {
