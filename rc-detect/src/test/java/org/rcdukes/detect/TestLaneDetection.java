@@ -158,10 +158,13 @@ public class TestLaneDetection extends BaseDetectTest {
     assertNotNull(ldr.middle);
     double angle = ldr.middle.angleDeg() + 90;
     double expectedAngle=18.43;
-    if (TestSuite.isTravis())
+    double expectedCourse=28.45;
+    if (TestSuite.isTravis()) {
       expectedAngle=15.94;
+      expectedCourse=20.37;
+    }
     assertEquals(expectedAngle, angle, 0.01);
-    assertEquals(28.45,Math.toDegrees(ldr.courseRelativeToHorizon),0.01);
+    assertEquals(expectedCourse,Math.toDegrees(ldr.courseRelativeToHorizon),0.01);
     if (debug)
       System.out.println(ldr.debugInfo());
     JsonObject ldrJo = JsonObject.mapFrom(ldr);
