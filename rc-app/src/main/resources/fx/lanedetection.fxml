@@ -16,6 +16,8 @@
 		<Insets left="10" right="10" />
 	</padding>
    <CheckBox fx:id="probabilistic" mnemonicParsing="false" text="probabilistic" />
+    <Label text="Car Config" style='-fx-font-weight: bold'/>
+    <LabeledValueSlider fx:id='angleOffset' text="Angle offset" blockIncrement="0.5" max="15" min="-15" value="0" format="\%.0f"/>
     <Label text="Canny config" style='-fx-font-weight: bold'/>
     <LabeledValueSlider fx:id='cannyThreshold1' text="Threshold 1" blockIncrement="1" max="2000" min="0" value="20" format="\%.0f"/>
 	<LabeledValueSlider fx:id="cannyThreshold2" text="Threshold 2"  blockIncrement="1" max="2000" min="0" value="50" format="\%.0f"/>

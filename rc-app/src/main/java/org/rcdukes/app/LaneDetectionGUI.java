@@ -30,6 +30,8 @@ public class LaneDetectionGUI extends BaseGUI {
   @FXML
   private CheckBox probabilistic;
   @FXML
+  private LabeledValueSlider angleOffset;
+  @FXML
   private LabeledValueSlider cannyThreshold1;
   @FXML
   private LabeledValueSlider cannyThreshold2;
@@ -74,6 +76,7 @@ public class LaneDetectionGUI extends BaseGUI {
           LaneDetector laneDetector = new LaneDetector(edgeDetector,
               lineDetector, cameraGUI.cameraConfig, cameraMatrix, collector);
           LaneDetectionResult ldr = laneDetector.detect(originalImage);
+          ldr.angleOffset=angleOffset.getValue();
           ldr.checkError();
           Navigator navigator = LaneDetectionGUI.this.getAppVerticle().getNavigator();
           if (navigator!=null)

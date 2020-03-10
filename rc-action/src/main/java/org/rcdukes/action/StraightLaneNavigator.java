@@ -31,7 +31,6 @@ public class StraightLaneNavigator implements Navigator {
     this.sender = sender;
   }
 
-
   /**
    * default constructor
    */
@@ -41,11 +40,13 @@ public class StraightLaneNavigator implements Navigator {
 
   MiniPID pid;
   private Long tsLastLinesDetected;
-  private Long tsLastCommand;
-  public static long COMMAND_LOOP_INTERVAL = 200L; // how often to send commands
-  private static final long MAX_DURATION_NO_LINES_DETECTED = 1000;
+  private Long tsLatestCommand;
+  public static long COMMAND_LOOP_INTERVAL = 150L; // how often to send commands 3x per second
+  private static final long MAX_DURATION_NO_LINES_DETECTED = 1200; // max two seconds @TODO should be speed dependent ...
+  private static final long FALLBACK_TO_ANGLE_TIME=450L;
   private boolean emergencyStopActivated = false;
-  
+  private long currentTime;
+
   /**
    * initialize my defaults
    */
@@ -89,7 +90,24 @@ public class StraightLaneNavigator implements Navigator {
     }
     return result;
   }
+
+  /**
+   * is it o.k to send a command with the given angle?
+   * @param angle
+   * @return true if the angle is not null and enough time has passed since the latest command
+   */
+  public boolean cmdOk(Double angle) {
+    return angle != null && currentTime - tsLatestCommand > COMMAND_LOOP_INTERVAL;
+  }
   
+  /**
+   * shall we fallback to use an angle?
+   * @return true if we haven't had a command recently and need one to avoid emergency stop
+   */
+  public boolean fallBackToAngle() {
+    return currentTime-tsLatestCommand > FALLBACK_TO_ANGLE_TIME;
+  }
+
   /**
    * process the laneDetectResult
    * 
@@ -99,9 +117,11 @@ public class StraightLaneNavigator implements Navigator {
    */
   @Override
   public JsonObject getNavigationInstruction(LaneDetectionResult ldr) {
-    long currentTime = ldr.milliTimeStamp;
-    if (tsLastLinesDetected==null) tsLastLinesDetected=currentTime;
-    if (tsLastCommand==null) tsLastCommand=currentTime;
+    currentTime = ldr.milliTimeStamp;
+    if (tsLastLinesDetected == null)
+      tsLastLinesDetected = currentTime;
+    if (tsLatestCommand == null)
+      tsLatestCommand = currentTime;
 
     AngleCheck angleCheck = verifyAngleFound(ldr, currentTime);
     switch (angleCheck) {
@@ -113,31 +133,29 @@ public class StraightLaneNavigator implements Navigator {
       // ok - do nothing
     }
 
-    Double angle=null;
-
+    Double angle = null;
+    Double angleFactor=0.5;
     if (ldr.courseRelativeToHorizon != null) {
       // pass 1: steer on courseRelativeToHorizon
       angle = Math.toDegrees(ldr.courseRelativeToHorizon);
-      // System.out.println("rudder on horizon: " + rudderPercentage);
-    } else {
-      System.out.println(ldr.debugInfo());
-      if (ldr.left!=null) {
-        angle=5.0;
-      } 
-      if (ldr.right!=null) {
-        angle=-5.0;
+    } else if (this.fallBackToAngle()){
+      if (ldr.left != null && ldr.right == null) {
+        angle = ldr.left.angleDeg90() *angleFactor;
+      }
+      if (ldr.right != null && ldr.left == null) {
+        angle = ldr.right.angleDeg90() *angleFactor;
       }
     }
-    if (angle != null) {
-      if (currentTime - tsLastCommand > COMMAND_LOOP_INTERVAL) {
-        tsLastCommand = currentTime;
-        JsonObject message = steerCommand(angle);
-        return message;
-      }
+    if (this.cmdOk(angle)) {
+      String msg=ldr.debugInfo()+String.format("\nsteer: %s",ldr.angleString(angle));
+      LOG.debug(msg);
+      tsLatestCommand = currentTime;
+      JsonObject message = steerCommand(-(angle+ldr.angleOffset));
+      return message;
     }
     return null;
   }
-  
+
   /**
    * get the command to steer the vehicle
    * 

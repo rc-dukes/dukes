@@ -193,7 +193,7 @@ public class TestLaneDetection extends BaseDetectTest {
   public void testDebugInfo() {
     LaneDetectionResult ldr=new LaneDetectionResult();
     String info=ldr.debugInfo();
-    assertEquals("  left: ?\nmiddle: ?\n right: ?\ncourse: ?",info);
+    assertEquals("\n  left: ?\nmiddle: ?\n right: ?\ncourse: ?",info);
   }
 
 }

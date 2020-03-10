@@ -115,6 +115,14 @@ public class Line {
   public double angleDeg() {
     return toDegrees(angleRad());
   }
+  
+  /**
+   * get the angle of the line turned by 90 degrees as needed for navigation
+   * @return the angle +90
+   */
+  public double angleDeg90() {
+    return this.angleDeg()+90;
+  }
 
   /**
    * getter for first point
