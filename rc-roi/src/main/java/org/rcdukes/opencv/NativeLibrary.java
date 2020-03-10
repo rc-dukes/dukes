@@ -6,8 +6,6 @@ import java.util.Arrays;
 
 import org.opencv.core.Core;
 
-import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
-
 /**
  * load <a href='https://opencv.org/'>OpenCV</a> NativeLibrary properly
  */
@@ -117,13 +115,6 @@ public class NativeLibrary {
   public static void load() throws Exception {
     addLibraryPath(getNativeLibPath().getAbsolutePath());
     System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-  }
-  
-  /**
-   * logStdErr
-   */
-  public static void logStdErr() {
-    SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
   }
 
 }

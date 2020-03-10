@@ -81,17 +81,6 @@ public class TestROI {
 
   @Test
   public void testLogStderr() throws Exception {
-    NativeLibrary.logStdErr();
-    /* even the nullStream approach does not work
-    PrintStream nullStream = new PrintStream(new OutputStream() {
-      public void write(int b) {
-      }
-    });
-    System.setErr(nullStream);
-    System.setOut(nullStream);*
-    */
-    System.err.println("testing stderr via slf4j");
-
     NativeLibrary.load();
     VideoCapture capture = new VideoCapture();
     // Dorf Appenzell

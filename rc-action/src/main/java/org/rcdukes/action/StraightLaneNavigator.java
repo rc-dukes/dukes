@@ -25,15 +25,7 @@ public class StraightLaneNavigator implements Navigator {
   boolean debug = false;
   protected static final Logger LOG = LoggerFactory
       .getLogger(StraightLaneNavigator.class);
-  private static final long MAX_DURATION_NO_LINES_DETECTED = 1000;
-
-  // private long COMMAND_LOOP_INTERVAL = 250L;
-  public static long COMMAND_LOOP_INTERVAL = 50L;
-  private long tsLastLinesDetected = System.currentTimeMillis();
-  private long tsLastCommand = System.currentTimeMillis();
-  private boolean emergencyStopActivated = false;
   DukesVerticle sender;
-  private TinkerGraph graph;
 
   public DukesVerticle getSender() {
     return sender;
@@ -64,7 +56,6 @@ public class StraightLaneNavigator implements Navigator {
       wheelOrientation = this.getWheelOrientationFromEnvironment();
     this.wheelOrientation = wheelOrientation;
     initDefaults();
-    graph = TinkerGraph.open();
   }
 
   /**
@@ -77,12 +68,16 @@ public class StraightLaneNavigator implements Navigator {
   MiniPID pid;
   private String wheelOrientation;
   private int rudderFactor;
-
+  private Long tsLastLinesDetected;
+  private Long tsLastCommand;
+  public static long COMMAND_LOOP_INTERVAL = 200L; // how often to send commands
+  private static final long MAX_DURATION_NO_LINES_DETECTED = 1000;
+  private boolean emergencyStopActivated = false;
+  
   /**
    * initialize my defaults
    */
   private void initDefaults() {
-    tsLastCommand = System.currentTimeMillis();
     pid = new MiniPID(1, 0, 0);
     rudderFactor = 1;
     if (wheelOrientation.equals("-"))
@@ -93,62 +88,6 @@ public class StraightLaneNavigator implements Navigator {
   public LaneDetectionResult fromJsonObject(JsonObject jo) {
     LaneDetectionResult ldr = jo.mapTo(LaneDetectionResult.class);
     return ldr;
-  }
-
-  /**
-   * process the laneDetectResult
-   * 
-   * @param ldr
-   *          - the lane detection result
-   * @return - a message to be sent to the vehicle or null on error
-   */
-  @Override
-  public JsonObject getNavigationInstruction(LaneDetectionResult ldr) {
-    long currentTime = ldr.milliTimeStamp;
-
-    AngleCheck angleCheck = verifyAngleFound(ldr, currentTime);
-    switch (angleCheck) {
-    case empty:
-      return null;
-    case noLines:
-      return ActionVerticle.emergencyStopCommand();
-    default:
-      // ok - do nothing
-    }
-
-    Double angle;
-
-    if (ldr.courseRelativeToHorizon != null) {
-      // pass 1: steer on courseRelativeToHorizon
-      angle = Math.toDegrees(ldr.courseRelativeToHorizon) * rudderFactor;
-      // System.out.println("rudder on horizon: " + rudderPercentage);
-    } else {
-      angle = null;
-    }
-    if (angle != null) {
-      if (currentTime - tsLastCommand > COMMAND_LOOP_INTERVAL) {
-        tsLastCommand = currentTime;
-        JsonObject message = steerCommand(angle);
-        return message;
-      }
-    }
-    return null;
-  }
-
-  /**
-   * get the command to steer the vehicle
-   * 
-   * @param angle
-   * @return - the command message
-   */
-  public JsonObject steerCommand(Double angle) {
-    String angleStr = String.format(Locale.ENGLISH, "%5.1f", angle);
-    JsonObject message = new JsonObject().put("type", "servoAngle").put("angle",
-        angleStr);
-    String debugMsg = String.format("sending servoAngle %s°", angleStr);
-    if (debug)
-      LOG.debug(debugMsg);
-    return message;
   }
 
   enum AngleCheck {
@@ -180,6 +119,64 @@ public class StraightLaneNavigator implements Navigator {
       tsLastLinesDetected = currentTime;
     }
     return result;
+  }
+  
+  /**
+   * process the laneDetectResult
+   * 
+   * @param ldr
+   *          - the lane detection result
+   * @return - a message to be sent to the vehicle or null on error
+   */
+  @Override
+  public JsonObject getNavigationInstruction(LaneDetectionResult ldr) {
+    long currentTime = ldr.milliTimeStamp;
+    if (tsLastLinesDetected==null) tsLastLinesDetected=currentTime;
+    if (tsLastCommand==null) tsLastCommand=currentTime;
+
+    AngleCheck angleCheck = verifyAngleFound(ldr, currentTime);
+    switch (angleCheck) {
+    case empty:
+      return null;
+    case noLines:
+      return ActionVerticle.emergencyStopCommand();
+    default:
+      // ok - do nothing
+    }
+
+    Double angle;
+
+    if (ldr.courseRelativeToHorizon != null) {
+      // pass 1: steer on courseRelativeToHorizon
+      angle = Math.toDegrees(ldr.courseRelativeToHorizon) * rudderFactor;
+      // System.out.println("rudder on horizon: " + rudderPercentage);
+    } else {
+      angle = null;
+    }
+    if (angle != null) {
+      if (currentTime - tsLastCommand > COMMAND_LOOP_INTERVAL) {
+        tsLastCommand = currentTime;
+        JsonObject message = steerCommand(angle);
+        return message;
+      }
+    }
+    return null;
+  }
+  
+  /**
+   * get the command to steer the vehicle
+   * 
+   * @param angle
+   * @return - the command message
+   */
+  public JsonObject steerCommand(Double angle) {
+    String angleStr = String.format(Locale.ENGLISH, "%5.1f", angle);
+    JsonObject message = new JsonObject().put("type", "servoAngle").put("angle",
+        angleStr);
+    String debugMsg = String.format("sending servoAngle %s°", angleStr);
+    if (debug)
+      LOG.debug(debugMsg);
+    return message;
   }
 
   @Override

@@ -98,7 +98,7 @@ public class ImageLaneDetection {
     StoppingZoneOrientation stoppingZoneOrientation = new StoppingZoneOrientation(
         stoppingZone, lane, viewPort);
 
-    Optional<Line> middle = Optional.of(laneOrientation.getMiddle());
+    Optional<Line> middle = Optional.ofNullable(laneOrientation.getMiddle());
 
     ImageUtils iu=new ImageUtils();
     lane.getLeftBoundary().ifPresent(boundary -> iu.drawLinesToImage(frame,

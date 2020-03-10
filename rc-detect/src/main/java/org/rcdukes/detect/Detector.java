@@ -1,6 +1,5 @@
 package org.rcdukes.detect;
 
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.rcdukes.camera.CameraMatrix;
@@ -81,7 +80,10 @@ public class Detector extends DukesVerticle {
         // .doOnNext(detection -> LOG.trace("Image lane detection processing
         // result: " + detection))
         .subscribe(
-            lane -> vertx.eventBus().publish(Events.LANE_DETECTED.name(), lane),
+            lane -> {
+              JsonObject laneJo=JsonObject.mapFrom(lane);
+              super.sendEvent(Characters.LUKE, Events.LANE_DETECTED, laneJo);
+            },
             error -> LOG.error("Error during lane detection image processing:",
                 error),
             () -> LOG.info("Lane detection image processing ended"));

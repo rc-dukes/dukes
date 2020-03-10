@@ -32,5 +32,12 @@ public class TestRemoteCar {
     remoteCar.send(Characters.GENERAL_LEE,configJo);
     Thread.sleep(ClusterStarter.MAX_START_TIME);
   }
+  
+  @Test
+  public void testRemoteCarCommandLine() {
+    Environment.mock();
+    String args[]= {};
+    RemoteCar.main(args);
+  }
 
 }

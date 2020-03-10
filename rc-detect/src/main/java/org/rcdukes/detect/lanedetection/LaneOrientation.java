@@ -38,9 +38,9 @@ public class LaneOrientation {
    * determine the lines
    */
   public void determineLines() {
-    setMiddle(determineLaneMiddle().get());
-    setLeft(lane.getLeftBoundary().get());
-    setRight(lane.getRightBoundary().get());
+    setMiddle(determineLaneMiddle().orElse(null));
+    setLeft(lane.getLeftBoundary().orElse(null));
+    setRight(lane.getRightBoundary().orElse(null));
   }
 
   /**

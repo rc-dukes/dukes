@@ -24,12 +24,6 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/uk.org.lidalia/sysout-over-slf4j -->
-		<dependency>
-			<groupId>uk.org.lidalia</groupId>
-			<artifactId>sysout-over-slf4j</artifactId>
-			<version>1.0.2</version>
-		</dependency>
 	</dependencies>
 
 </project>
