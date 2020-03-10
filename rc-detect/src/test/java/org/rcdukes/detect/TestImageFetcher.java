@@ -78,6 +78,7 @@ public class TestImageFetcher extends BaseDetectTest {
   
   @Test
   public void testStaticImage() {
+    String testImageUrl="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg/1280px-4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg";
     ImageFetcher imageFetcher=new ImageFetcher(testImageUrl);
     assertTrue(imageFetcher.open());
     assertTrue(imageFetcher.isStaticImage());

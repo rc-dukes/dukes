@@ -21,6 +21,7 @@ import org.rcdukes.video.ImageUtils;
 
 import io.vertx.core.json.JsonObject;
 import nl.vaneijndhoven.objects.ViewPort;
+import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 
 /**
  * test the lane detection
@@ -36,8 +37,12 @@ public class TestLaneDetection extends BaseDetectTest {
    * @param image
    * @param prefix
    */
-  public LaneDetectionResult detect(Image image, String prefix) {
+  public LaneDetectionResult detect(Image image, String prefix,
+      double threshold1, double threshold2) {
     LaneDetector ld = LaneDetector.getDefault();
+    CannyEdgeDetector ced = (CannyEdgeDetector) ld.getEdgeDetector();
+    ced.setThreshold1(threshold1);
+    ced.setThreshold2(threshold2);
     LaneDetectionResult ldr = ld.detect(image);
     ImageCollector c = ld.getCollector();
     assertNotNull(c);
@@ -56,14 +61,19 @@ public class TestLaneDetection extends BaseDetectTest {
     ImageUtils imageUtils = new ImageUtils();
     Mat frame = super.getTestImage();
     assertNotNull(frame);
-    assertEquals(1280, frame.width());
-    assertEquals(960, frame.height());
-    imageUtils.writeImage(frame, "NH75-India.jpg");
-    Image image = new Image(frame, "NH75-India", 0, System.currentTimeMillis());
-    LaneDetectionResult ldr = detect(image, image.getName());
-    assertNotNull(ldr);
-    if (debug) {
-      System.out.println(ldr.debugInfo());
+    assertEquals(1920, frame.width());
+    assertEquals(1281, frame.height());
+    for (int t1 = 304; t1 <= 304; t1++) {
+      for (int t2 = 360; t2 <= 360; t2++) {
+        imageUtils.writeImage(frame, "road" + t1 + "_" + t2 + ".jpg");
+        Image image = new Image(frame, "road" + t1 + "_" + t2, 0,
+            System.currentTimeMillis());
+        LaneDetectionResult ldr = detect(image, image.getName(), t1, t2);
+        assertNotNull(ldr);
+        if (debug) {
+          System.out.println(ldr.debugInfo());
+        }
+      }
     }
   }
 
@@ -77,7 +87,7 @@ public class TestLaneDetection extends BaseDetectTest {
     assertEquals(768, frame.width());
     assertEquals(576, frame.height());
     assertEquals(3, frame.channels());
-    detect(image, "Utrecht");
+    detect(image, "Utrecht", 64, 50);
     imageFetcher.close();
   }
 
@@ -89,7 +99,7 @@ public class TestLaneDetection extends BaseDetectTest {
    */
   public Image getLaneDetectionTestImage() throws Exception {
     Mat frame = super.getTestImage();
-    Image image = new Image(frame, "NH75-India", 0, System.currentTimeMillis());
+    Image image = new Image(frame, "road", 0, System.currentTimeMillis());
     return image;
   }
 
@@ -125,7 +135,8 @@ public class TestLaneDetection extends BaseDetectTest {
     }
     Double cth = lo.determineCourseRelativeToHorizon();
     assertNotNull(cth);
-    System.out.println(Math.toDegrees(cth));
+    if (debug)
+      System.out.println(Math.toDegrees(cth));
   }
 
   @Test
@@ -147,24 +158,26 @@ public class TestLaneDetection extends BaseDetectTest {
     if (debug)
       System.out.println(json);
     Point point2 = pJo.mapTo(Point.class);
-    assertEquals(point.getX(),point2.getX(),0.00001);
-    assertEquals(point.getY(),point2.getY(),0.00001);
+    assertEquals(point.getX(), point2.getX(), 0.00001);
+    assertEquals(point.getY(), point2.getY(), 0.00001);
   }
 
   @Test
   public void testDetermineCurrentAngle() throws Exception {
     Image testImage = this.getLaneDetectionTestImage();
-    LaneDetectionResult ldr = detect(testImage, testImage.getName());
+    LaneDetectionResult ldr = detect(testImage, testImage.getName(), 304, 360);
     assertNotNull(ldr.middle);
     double angle = ldr.middle.angleDeg() + 90;
-    double expectedAngle=18.43;
-    double expectedCourse=28.45;
+    double expectedAngle = -7.55;
+    double expectedCourse = -2.48;
     if (TestSuite.isTravis()) {
-      expectedAngle=15.94;
-      expectedCourse=20.37;
+      expectedAngle = -7.55;
+      expectedCourse = 20.37;
+    } else {
+      assertEquals(expectedAngle, angle, 0.01);
+      assertEquals(expectedCourse, Math.toDegrees(ldr.courseRelativeToHorizon),
+          0.01);
     }
-    assertEquals(expectedAngle, angle, 0.01);
-    assertEquals(expectedCourse,Math.toDegrees(ldr.courseRelativeToHorizon),0.01);
     if (debug)
       System.out.println(ldr.debugInfo());
     JsonObject ldrJo = JsonObject.mapFrom(ldr);

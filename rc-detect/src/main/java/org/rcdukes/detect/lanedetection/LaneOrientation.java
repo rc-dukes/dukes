@@ -105,11 +105,11 @@ public class LaneOrientation {
     if (middle == null) {
       return null;
     }
-    Point2D middleAtHorizon = middle.topMost();
-    double middleAtHorizonX = middleAtHorizon.getX();
+    double middleAtHorizonX = middle.topMost().getX();
+    double middleHere=middle.bottomMost().getX();
     double maxX = viewPort.getWidth();
     // @TODO - distance to horizon is taken as 1 here ...
-    double tan = (middleAtHorizonX / maxX);
+    double tan = (middleAtHorizonX-middleHere) / maxX;
     return Math.atan(tan);
   }
 

@@ -55,8 +55,8 @@ class SteeringHandler {
    * @return
    */
   public ServoPosition handleServoAngle(JsonObject angleJo) {
-    Double angle = angleJo.getDouble("angle")*steerFactor;
-    ServoPosition newPosition=this.steeringMap.atValue(angle);
+    Double angle = angleJo.getDouble("angle");
+    ServoPosition newPosition=this.steeringMap.atValue(angle*steerFactor);
     String msg=String.format("steering %5.1f° for wanted angle %5.1f°", newPosition.getValue(),angle);
     LOG.debug(msg);
     car.turn(newPosition);

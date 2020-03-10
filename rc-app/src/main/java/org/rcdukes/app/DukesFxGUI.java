@@ -19,7 +19,6 @@ import org.rcdukes.video.ImageSource;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import eu.hansolo.medusa.Gauge;
-import eu.hansolo.medusa.Gauge.SkinType;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -152,6 +151,7 @@ public class DukesFxGUI extends BaseGUI
         });
     this.displayer = this;
     this.laneDetectionController.setDisplayer(this);
+    this.laneDetectionController.setPositionDisplay(this);
     this.startDetectionController.setDisplayer(this);
     this.navigationController.setPositionDisplay(this);
     // bind a text property with the string containing the current Values of
@@ -160,7 +160,8 @@ public class DukesFxGUI extends BaseGUI
     this.lanevideo.getItems().setAll("simulator",
         "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg/1280px-4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg",
         "http://picaro/html/cam_pic_new.php",
-        "http://picarford:8080/?action=stream");
+        "http://picarford:8080/?action=stream",
+        "file:/Users/wf/Documents/workspace/dukes/rc-detect/src/main/resources/images/road.jpg");
     this.cameraController.roiy = roiy;
     this.cameraController.roih = roih;
   }

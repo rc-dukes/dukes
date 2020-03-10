@@ -7,6 +7,7 @@ import org.rcdukes.video.ImageUtils;
 
 /**
  * base class for detection tests
+ * 
  * @author wf
  *
  */
@@ -17,11 +18,11 @@ public class BaseDetectTest {
   public static void setup() throws Exception {
     NativeLibrary.load();
   }
-  String testImageUrl="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg/1280px-4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg";
 
   public Mat getTestImage() throws Exception {
-    Mat frame=ImageUtils.read(testImageUrl);
+    String imagePath="images/road.jpg";
+    Mat frame = ImageUtils.fromResource(this.getClass(), imagePath);
     return frame;
   }
-  
+
 }

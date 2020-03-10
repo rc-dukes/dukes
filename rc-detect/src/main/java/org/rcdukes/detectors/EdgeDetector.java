@@ -3,7 +3,7 @@ package org.rcdukes.detectors;
 import org.opencv.core.Mat;
 
 /**
- *  detector or edges
+ *  detector for edges
  */
 public interface EdgeDetector {
     Mat detect(Mat image);
