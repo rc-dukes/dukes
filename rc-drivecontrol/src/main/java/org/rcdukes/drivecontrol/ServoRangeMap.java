@@ -60,10 +60,12 @@ public abstract class ServoRangeMap extends ServoMap
   @Override
   public ServoPosition atValue(double value) {
     double percent=0.;
+    ServoSide sideN = range.getSideN();
+    ServoSide sideP = range.getSideP();
     if (value<0) {
-      percent=value/range.getSideN().valueRange()*100;
+      percent=value/sideN.valueRange()*100;
     } else {
-      percent=value/range.getSideP().valueRange()*100;
+      percent=value/sideP.valueRange()*100;
     }
     return this.atPercent(percent);
   }

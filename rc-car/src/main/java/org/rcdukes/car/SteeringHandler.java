@@ -19,6 +19,8 @@ class SteeringHandler {
 
   private Car car;
   private ServoRangeMap steeringMap;
+
+  private int steerFactor;
   
   /**
    * create a steering handler for the given car
@@ -28,6 +30,7 @@ class SteeringHandler {
   SteeringHandler(Car car) {
     this.car = car;
     this.steeringMap=car.getSteering().getSteeringMap(); 
+    steerFactor=steeringMap.turnedOrientation()?-1:1;
   }
 
   /**
@@ -40,7 +43,7 @@ class SteeringHandler {
   ServoPosition handleServoDirect(JsonObject messageBody) {
     LOG.debug("Received direct message for servo: " + messageBody);
     String position = messageBody.getString("position");
-    int percent = Double.valueOf(position).intValue();
+    int percent = Double.valueOf(position).intValue()*steerFactor;
     ServoPosition newPosition=this.steeringMap.atPercent(percent);
     car.turn(newPosition);
     return newPosition;
@@ -52,7 +55,7 @@ class SteeringHandler {
    * @return
    */
   public ServoPosition handleServoAngle(JsonObject angleJo) {
-    Double angle = angleJo.getDouble("angle");
+    Double angle = angleJo.getDouble("angle")*steerFactor;
     ServoPosition newPosition=this.steeringMap.atValue(angle);
     String msg=String.format("steering %5.1f° for wanted angle %5.1f°", newPosition.getValue(),angle);
     LOG.debug(msg);
@@ -70,11 +73,10 @@ class SteeringHandler {
   ServoPosition handleServo(JsonObject messageBody) {
     LOG.debug("Received message for servo: " + messageBody);
     String position = messageBody.getString("position");
-    int stepFactor=steeringMap.turnedOrientation()?-1:1;
     if (Config.POSITION_LEFT.equals(position)) {
-      steeringMap.step(-1*stepFactor);
+      steeringMap.step(-1*steerFactor);
     } else if (Config.POSITION_RIGHT.equals(position)) {
-      steeringMap.step(1*stepFactor);
+      steeringMap.step(1*steerFactor);
     } else if (Config.POSITION_CENTER.equals(position)) {
       steeringMap.setZero();
     }
