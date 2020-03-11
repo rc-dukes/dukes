@@ -33,8 +33,7 @@ import org.rcdukes.common.EventbusLogger;
  *
  */
 public class BaseGUI {
-  protected static final Logger LOG = LoggerFactory
-      .getLogger(BaseGUI.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(BaseGUI.class);
   boolean debug = false;
   Stage primaryStage;
   GUIDisplayer displayer;
@@ -59,7 +58,7 @@ public class BaseGUI {
   public static double getScreenHeight() {
     return Screen.getPrimary().getVisualBounds().getHeight();
   }
-  
+
   EventbusLogger eventbusLogger;
 
   public EventbusLogger getEventbusLogger() {
@@ -135,7 +134,7 @@ public class BaseGUI {
       Platform.runLater(() -> property.set(value));
     }
   }
-  
+
   /**
    * Generic method for putting element running on a non-JavaFX thread on the
    * JavaFX thread, to properly update the UI
@@ -145,8 +144,7 @@ public class BaseGUI {
    * @param value
    *          the value to set for the given {@link DoubleProperty}
    */
-  protected void onFXThread(final DoubleProperty property,
-      final Double value) {
+  protected void onFXThread(final DoubleProperty property, final Double value) {
     if (Platform.isFxApplicationThread()) {
       property.set(value);
     } else {
@@ -219,10 +217,12 @@ public class BaseGUI {
         "-icons-color:%s;-fx-text-fill: %s;-fx-fill: %s;-fx-background-color: %s;",
         color, color, color, bgColor);
     button.setStyle(bstyle);
-    String buttonName = button.getTooltip().getText();
-    if (debug)
-      System.out.println(
-          String.format("button %s now has style '%s'", buttonName, bstyle));
+    /**
+     * uncomment to debug
+     *  String buttonName = button.getTooltip().getText();
+     * if (debug) System.out.println(
+     * String.format("button %s now has style '%s'", buttonName, bstyle));
+     */
   }
 
   /**
@@ -241,18 +241,20 @@ public class BaseGUI {
       System.out.println(
           String.format("%s is now %s", buttonName, active ? "on" : "off"));
   }
-  
+
   private PositionDisplay positionDisplay;
+
   public void setPositionDisplay(PositionDisplay positionDisplay) {
-    this.positionDisplay=positionDisplay;
+    this.positionDisplay = positionDisplay;
   }
-  
+
   /**
    * get the AppVerticle
+   * 
    * @return - the singleton
    */
   protected AppVerticle getAppVerticle() {
-    AppVerticle appVerticle=AppVerticle.getInstance(eventbusLogger);
+    AppVerticle appVerticle = AppVerticle.getInstance(eventbusLogger);
     appVerticle.setPositionDisplay(this.positionDisplay);
     return appVerticle;
   }

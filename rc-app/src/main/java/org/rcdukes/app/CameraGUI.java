@@ -15,15 +15,17 @@ public class CameraGUI extends BaseGUI {
   @FXML ImageView originalFrame;
   @FXML ImageView processedImage1;
   @FXML ImageView processedImage2;
+  
   // make my config visible
   CameraConfig cameraConfig;
   // will be configured by main GUI and not via @FXML
   public LabeledValueSlider roiy;
   public LabeledValueSlider roih;
-
+  public LabeledValueSlider angleOffset;
+  public int imageWidth=800;
   @FXML
   public void initialize() {
-    int fitWidth = (int)(BaseGUI.getScreenWidth()/1920.0*600);
+    int fitWidth = (int)(BaseGUI.getScreenWidth()/1920.0*imageWidth);
     this.configureImageDisplaySize(fitWidth);
   }
   
@@ -43,6 +45,7 @@ public class CameraGUI extends BaseGUI {
   }
 
   public void applySliderValues() {
+    cameraConfig.setAngleOffset(angleOffset.getValue());
     cameraConfig.setRoih(roih.getValue());
     cameraConfig.setRoiy(roiy.getValue());
   }

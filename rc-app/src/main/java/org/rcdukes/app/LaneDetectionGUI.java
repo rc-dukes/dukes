@@ -15,6 +15,7 @@ import org.rcdukes.video.ImageCollector.ImageType;
 import org.rcdukes.video.ImageSource;
 
 import io.reactivex.Observable;
+import io.reactivex.exceptions.Exceptions;
 import io.reactivex.schedulers.Schedulers;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -29,8 +30,7 @@ import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 public class LaneDetectionGUI extends BaseGUI {
   @FXML
   private CheckBox probabilistic;
-  @FXML
-  private LabeledValueSlider angleOffset;
+
   @FXML
   private LabeledValueSlider cannyThreshold1;
   @FXML
@@ -64,30 +64,37 @@ public class LaneDetectionGUI extends BaseGUI {
       frameGrabber = new ImageObserver() {
         @Override
         public void onNext(Image originalImage) {
-          super.onNext(originalImage);
-          if (debug)
-            displayCurrentSliderValues();
-          applySliderValuesToConfig();
-          cameraGUI.applySliderValues();
-          displayer.displayOriginal(originalImage.getFrame());
-          ImageCollector collector = new ImageCollector();
-          displayer.setImageCollector(collector);
-          CameraMatrix cameraMatrix = CameraMatrix.DEFAULT;
-          LaneDetector laneDetector = new LaneDetector(edgeDetector,
-              lineDetector, cameraGUI.cameraConfig, cameraMatrix, collector);
-          LaneDetectionResult ldr = laneDetector.detect(originalImage);
-          ldr.angleOffset=angleOffset.getValue();
-          ldr.checkError();
-          Navigator navigator = LaneDetectionGUI.this.getAppVerticle().getNavigator();
-          if (navigator!=null)
-            navigator.navigateWithLaneDetectionResult(ldr);
-          displayer.display1(collector.getImage(ImageType.edges, true));
-          displayer.display2(collector.getImage(ImageType.lines, true));
+          try {
+            super.onNext(originalImage);
+            if (debug)
+              displayCurrentSliderValues();
+            applySliderValuesToConfig();
+            cameraGUI.applySliderValues();
+            displayer.displayOriginal(originalImage.getFrame());
+            ImageCollector collector = new ImageCollector();
+            displayer.setImageCollector(collector);
+            CameraMatrix cameraMatrix = CameraMatrix.DEFAULT;
+
+            LaneDetector laneDetector = new LaneDetector(edgeDetector,
+                lineDetector, cameraGUI.cameraConfig, cameraMatrix, collector);
+            LaneDetectionResult ldr = laneDetector.detect(originalImage);
+            ldr.checkError();
+            Navigator navigator = LaneDetectionGUI.this.getAppVerticle()
+                .getNavigator();
+            if (navigator != null)
+              navigator.navigateWithLaneDetectionResult(ldr);
+            displayer.display1(collector.getImage(ImageType.edges, true));
+            displayer.display2(collector.getImage(ImageType.lines, true));
+          } catch (Throwable t) {
+            onError(t);
+            // throw Exceptions.propagate(t);
+          }
         }
+
         @Override
         public void onError(Throwable th) {
           super.onError(th);
-          
+          handleError(th);
         }
       };
       displayer.setCameraButtonText("Stop Camera");
@@ -99,12 +106,13 @@ public class LaneDetectionGUI extends BaseGUI {
           .subscribe(frameGrabber);
     } else {
       frameGrabber.stop();
-      frameGrabber=null;
+      frameGrabber = null;
       displayer.setCameraButtonText("Start Camera");
     }
   }
-  
+
   private void handleError(Throwable th) {
+    th.printStackTrace();
     displayer.handle(th);
   }
 

@@ -9,6 +9,8 @@ import org.rcdukes.common.Config;
  */
 public class CameraConfig {
   private String source;
+  // correction of viewing angle
+  private double angleOffset=0.0;
   private double roih;
   private double roiy;
   private double fps;
@@ -26,6 +28,14 @@ public class CameraConfig {
     }
   }
   
+  public double getAngleOffset() {
+    return angleOffset;
+  }
+
+  public void setAngleOffset(double angleOffset) {
+    this.angleOffset = angleOffset;
+  }
+
   public long getInterval() {
     return Math.round(1000/fps);
   }

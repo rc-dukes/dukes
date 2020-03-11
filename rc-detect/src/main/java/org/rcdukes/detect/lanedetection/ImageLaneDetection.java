@@ -125,9 +125,13 @@ public class ImageLaneDetection {
     }
     imageCollector.addImage(frame, ImageType.lines);
     
-    ldr.left=laneOrientation.getLeft();
-    ldr.middle=laneOrientation.getMiddle();
-    ldr.right=laneOrientation.getRight();
+    Double angleOffset=cameraConfig.getAngleOffset();
+    if (laneOrientation.getLeft()!=null)
+      ldr.left=laneOrientation.getLeft().angleDeg90()+angleOffset;
+    if (laneOrientation.getMiddle()!=null)
+      ldr.middle=laneOrientation.getMiddle().angleDeg90()+angleOffset;
+    if (laneOrientation.getRight()!=null)
+      ldr.right=laneOrientation.getRight().angleDeg90()+angleOffset;
     ldr.distanceMiddle = laneOrientation.determineDistanceToMiddle();
     ldr.distanceLeft = laneOrientation.distanceFromLeftBoundary();
     ldr.distanceRight = laneOrientation.distanceFromRightBoundary();

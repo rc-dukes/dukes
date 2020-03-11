@@ -167,7 +167,7 @@ public class TestLaneDetection extends BaseDetectTest {
     Image testImage = this.getLaneDetectionTestImage();
     LaneDetectionResult ldr = detect(testImage, testImage.getName(), 304, 360);
     assertNotNull(ldr.middle);
-    double angle = ldr.middle.angleDeg() + 90;
+    double angle = ldr.middle;
     double expectedAngle = -7.55;
     double expectedCourse = -2.48;
     if (TestSuite.isTravis()) {

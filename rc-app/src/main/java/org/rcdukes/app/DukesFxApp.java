@@ -31,6 +31,10 @@ public class DukesFxApp extends Application {
       "--autostart" }, usage = "autostart using the configuration")
   protected boolean autostart=false;
   
+  @Option(name = "-iw", aliases = {
+  "--imageWidth" }, usage = "camera imageWidth")
+  protected int imageWidth=800;
+  
   @Option(name = "-s", aliases = {
   "--simulator" }, usage = "configure simulator")
   protected boolean simulator=false;
@@ -67,6 +71,7 @@ public class DukesFxApp extends Application {
     });
     primaryStage.show();
     gui.setDebug(debug);
+    gui.setCameraImageWidth(imageWidth);
     if (autostart) {
       gui.autoStart(simulator);
     }

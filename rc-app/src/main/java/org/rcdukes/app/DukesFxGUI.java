@@ -123,7 +123,9 @@ public class DukesFxGUI extends BaseGUI
 
   @FXML
   protected LabeledValueSlider roih;
-
+  @FXML
+  protected LabeledValueSlider angleOffset;
+  
   // FXML label to show the current values set with the sliders
   @FXML
   private Label currentValues;
@@ -135,6 +137,7 @@ public class DukesFxGUI extends BaseGUI
   }
 
   DisplayMode displayMode = DisplayMode.Lane;
+  private int cameraImageWidth;
 
   /**
    * initialize me
@@ -167,6 +170,8 @@ public class DukesFxGUI extends BaseGUI
         "file:/Users/wf/Documents/workspace/dukes/rc-detect/src/main/resources/images/road.jpg");
     this.cameraController.roiy = roiy;
     this.cameraController.roih = roih;
+    this.cameraController.angleOffset=angleOffset;
+    this.cameraController.imageWidth=this.cameraImageWidth;
     File mediaPath=new File(Environment.dukesHome+"media");
     mediaPath.mkdirs();
     ImageUtils.MEDIA_PATH=mediaPath.getPath();
@@ -545,5 +550,9 @@ public class DukesFxGUI extends BaseGUI
   @Override
   public void setImageCollector(ImageCollector imageCollector) {
     this.navigationController.setImageCollector(imageCollector);
+  }
+
+  public void setCameraImageWidth(int imageWidth) {
+    this.cameraImageWidth=imageWidth;
   }
 }

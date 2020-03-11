@@ -2,9 +2,14 @@ package org.rcdukes.action;
 
 import java.util.Locale;
 
+import org.apache.tinkerpop.gremlin.structure.Vertex;
+import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
+import org.apache.tinkerpop.gremlin.structure.T;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.DukesVerticle;
 import org.rcdukes.geometry.LaneDetectionResult;
+import org.rcdukes.geometry.Line;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -22,6 +27,7 @@ public class StraightLaneNavigator implements Navigator {
   protected static final Logger LOG = LoggerFactory
       .getLogger(StraightLaneNavigator.class);
   DukesVerticle sender;
+  private TinkerGraph graph;
 
   public DukesVerticle getSender() {
     return sender;
@@ -36,14 +42,58 @@ public class StraightLaneNavigator implements Navigator {
    */
   public StraightLaneNavigator() {
     this.initDefaults();
+    this.graph = TinkerGraph.open();
+  }
+  
+  /**
+   * access to graph 
+   * @return the GraphTraversalSource
+   */
+  public GraphTraversalSource g() {
+    return this.graph.traversal();
+  }
+  
+  /**
+   * set a property of the given vertex
+   * @param v
+   * @param name - name of the property
+   * @param value - value of the property
+   */
+  public void setProp(Vertex v,String name,Object value) {
+    if (value!=null) {
+      v.property(name,value);
+    }
+  }
+
+  /**
+   * convert the given lane Detection Result to a vertex and add it to the graph
+   * 
+   * @param ldr
+   * @return the new Vertex
+   */
+  public Vertex addToGraph(LaneDetectionResult ldr) {
+    Vertex v = graph.addVertex(T.label,"pos", "frameIndex", ldr.frameIndex,
+        "milliTimeStamp", ldr.milliTimeStamp);
+    setProp(v,"left", ldr.left);
+    setProp(v,"middle",ldr.middle);
+    setProp(v,"right", ldr.right);
+    setProp(v,"course", ldr.courseRelativeToHorizon);
+    return v;
   }
 
   MiniPID pid;
   private Long tsLastLinesDetected;
   private Long tsLatestCommand;
-  public static long COMMAND_LOOP_INTERVAL = 150L; // how often to send commands 3x per second
-  private static final long MAX_DURATION_NO_LINES_DETECTED = 1200; // max two seconds @TODO should be speed dependent ...
-  private static final long FALLBACK_TO_ANGLE_TIME=450L;
+  public static long COMMAND_LOOP_INTERVAL = 150L; // how often to send commands
+                                                   // 3x per second
+  private static final long MAX_DURATION_NO_LINES_DETECTED = 1200; // max two
+                                                                   // seconds
+                                                                   // @TODO
+                                                                   // should be
+                                                                   // speed
+                                                                   // dependent
+                                                                   // ...
+  private static final long FALLBACK_TO_ANGLE_TIME = 450L;
   private boolean emergencyStopActivated = false;
   private long currentTime;
 
@@ -93,19 +143,24 @@ public class StraightLaneNavigator implements Navigator {
 
   /**
    * is it o.k to send a command with the given angle?
+   * 
    * @param angle
-   * @return true if the angle is not null and enough time has passed since the latest command
+   * @return true if the angle is not null and enough time has passed since the
+   *         latest command
    */
   public boolean cmdOk(Double angle) {
-    return angle != null && currentTime - tsLatestCommand > COMMAND_LOOP_INTERVAL;
+    return angle != null
+        && currentTime - tsLatestCommand > COMMAND_LOOP_INTERVAL;
   }
-  
+
   /**
    * shall we fallback to use an angle?
-   * @return true if we haven't had a command recently and need one to avoid emergency stop
+   * 
+   * @return true if we haven't had a command recently and need one to avoid
+   *         emergency stop
    */
   public boolean fallBackToAngle() {
-    return currentTime-tsLatestCommand > FALLBACK_TO_ANGLE_TIME;
+    return currentTime - tsLatestCommand > FALLBACK_TO_ANGLE_TIME;
   }
 
   /**
@@ -117,6 +172,7 @@ public class StraightLaneNavigator implements Navigator {
    */
   @Override
   public JsonObject getNavigationInstruction(LaneDetectionResult ldr) {
+    Vertex posV = addToGraph(ldr);
     currentTime = ldr.milliTimeStamp;
     if (tsLastLinesDetected == null)
       tsLastLinesDetected = currentTime;
@@ -134,23 +190,24 @@ public class StraightLaneNavigator implements Navigator {
     }
 
     Double angle = null;
-    Double angleFactor=0.5;
+    Double angleFactor = 0.5;
     if (ldr.courseRelativeToHorizon != null) {
       // pass 1: steer on courseRelativeToHorizon
       angle = Math.toDegrees(ldr.courseRelativeToHorizon);
-    } else if (this.fallBackToAngle()){
+    } else if (this.fallBackToAngle()) {
       if (ldr.left != null && ldr.right == null) {
-        angle = ldr.left.angleDeg90() *angleFactor;
+        angle = ldr.left * angleFactor;
       }
       if (ldr.right != null && ldr.left == null) {
-        angle = ldr.right.angleDeg90() *angleFactor;
+        angle = ldr.right * angleFactor;
       }
     }
     if (this.cmdOk(angle)) {
-      String msg=ldr.debugInfo()+String.format("\nsteer: %s",ldr.angleString(angle));
+      String msg = ldr.debugInfo()
+          + String.format("\nsteer: %s", Line.angleString(angle));
       LOG.debug(msg);
       tsLatestCommand = currentTime;
-      JsonObject message = steerCommand(-(angle+ldr.angleOffset));
+      JsonObject message = steerCommand(-(angle));
       return message;
     }
     return null;

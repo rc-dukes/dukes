@@ -76,16 +76,18 @@
 				<Text styleClass="headertext" text="Events" />
 			</HBox>
 			<HBox>
-				<Gauge fx:id="steeringGauge" lcdFont="DIGITAL"  />
-				<Gauge fx:id="motorGauge" lcdFont="DIGITAL"  />
+				<Gauge fx:id="steeringGauge" lcdFont="DIGITAL" />
+				<Gauge fx:id="motorGauge" lcdFont="DIGITAL" />
 			</HBox>
-			<TextArea fx:id="messageArea" text="" prefRowCount="25" prefColumnCount="30" />
+			<TextArea fx:id="messageArea" text="" prefRowCount="25"
+				prefColumnCount="30" />
 		</VBox>
 		<VBox>
 			<HBox styleClass="header">
 				<Text styleClass="headertext" text="Heartbeat" />
 			</HBox>
-			<TextArea fx:id="heartbeatArea" text="" prefRowCount="25" prefColumnCount="20" />
+			<TextArea fx:id="heartbeatArea" text="" prefRowCount="25"
+				prefColumnCount="20" />
 		</VBox>
 		<VBox>
 			<HBox styleClass="header">
@@ -96,6 +98,10 @@
 					<Insets bottom="15" left="15" right="15" top="15" />
 				</padding>
 				<Label text="Camera config" style='-fx-font-weight: bold' />
+				<LabeledValueSlider fx:id='angleOffset'
+					text="Angle offset" blockIncrement="0.5" max="15" min="-15"
+					value="0" format="\%.0f" />
+
 				<LabeledValueSlider fx:id="roiy" text="ROI y"
 					blockIncrement="1" max="100" min="0" value="19" format="\%.0f" />
 				<LabeledValueSlider fx:id="roih" text="ROI h"

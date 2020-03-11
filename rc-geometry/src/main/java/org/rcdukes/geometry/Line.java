@@ -317,10 +317,31 @@ public class Line {
   /**
    * get a string representation of me
    * 
-   * @return a concatenation of my two points
+   * @return a concatenation of my two points and the 90 degree rotated angle
    */
   public String toString() {
-    return point1 + " - " + point2;
+    String text=String.format("%s - %s: %s", point1,point2,Line.lineAngleString(this));
+    return text;
+  }
+  
+  /**
+   * get a string for the given angle
+   * @param angle (potentially null)
+   * @return - the angle String
+   */
+  public static String angleString(Double angle) {
+    String text=angle!=null?String.format("%6.1f°", angle):"?";
+    return text;
+  }
+  
+  /**
+   * get a string for the given line's angle
+   * @param line (potentially null)
+   * @return - the angle String
+   */
+  public static String lineAngleString(Line line) {
+    String text=angleString(line==null?null:line.angleDeg90());
+    return text;
   }
 
   /**
@@ -422,7 +443,8 @@ public class Line {
      * convert me to a String
      */
     public String toString() {
-      return String.format(Locale.ENGLISH, "{%f,%f}", x, y);
+      return String.format(Locale.ENGLISH, "{%f,%f: %s}", x, y);
     }
+    
   }
 }
