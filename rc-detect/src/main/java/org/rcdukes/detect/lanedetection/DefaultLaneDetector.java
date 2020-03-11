@@ -13,6 +13,11 @@ import nl.vaneijndhoven.objects.ViewPort;
 import nl.vaneijndhoven.objects.lane.LaneLeftBoundary;
 import nl.vaneijndhoven.objects.lane.LaneRightBoundary;
 
+/**
+ * the default lane detector
+ * @author wf
+ *
+ */
 public class DefaultLaneDetector implements LaneDetector {
 
     @Override

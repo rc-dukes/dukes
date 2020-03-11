@@ -120,6 +120,8 @@ public class TestLaneDetection extends BaseDetectTest {
       assertEquals(msg, angles[index++], line.angleDeg(), 0.01);
     }
     Lane lane = new Lane(ofNullable(left), ofNullable(right));
+    assertNotNull(lane.getLeftBoundary());
+    assertNotNull(lane.getRightBoundary());
     ViewPort viewPort = new ViewPort(new Point(0.0, 0.0), 1280, 537);
     LaneOrientation lo = new LaneOrientation(lane, viewPort);
     for (Line line : lo.getLines()) {

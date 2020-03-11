@@ -2,6 +2,9 @@ package org.rcdukes.geometry;
 
 import java.util.Optional;
 
+/**
+ * a lane
+ */
 public class Lane {
 
     Optional<Line> leftBoundary;
