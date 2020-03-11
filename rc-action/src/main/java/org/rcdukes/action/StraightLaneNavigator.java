@@ -1,11 +1,15 @@
 package org.rcdukes.action;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.T;
+import org.apache.tinkerpop.gremlin.process.traversal.P;
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.DukesVerticle;
 import org.rcdukes.geometry.LaneDetectionResult;
@@ -43,6 +47,8 @@ public class StraightLaneNavigator implements Navigator {
   public StraightLaneNavigator() {
     this.initDefaults();
     this.graph = TinkerGraph.open();
+    this.graph.createIndex("frameIndex", Vertex.class);
+    this.graph.createIndex("milliTimeStamp", Vertex.class);
   }
   
   /**
@@ -162,6 +168,53 @@ public class StraightLaneNavigator implements Navigator {
   public boolean fallBackToAngle() {
     return currentTime - tsLatestCommand > FALLBACK_TO_ANGLE_TIME;
   }
+  
+  class AngleRange {
+    double min=Double.MAX_VALUE;
+    double max=-Double.MAX_VALUE;
+    double sum=0;
+    double avg=Double.NaN;
+    int count;
+    int timeWindow;
+    private String name;
+    private double stdDev;
+    
+    /**
+     * create an angle Range for the given vertices
+     * @param name
+     * @param currentTime
+     * @param timeWindow
+     */
+    public AngleRange(String name,long currentTime,int timeWindow) {
+      this.name=name;
+      List<Vertex> angleNodes = g().V().has(name).has("milliTimeStamp",P.gt(currentTime-timeWindow)).toList();
+      count=angleNodes.size();
+      this.timeWindow=timeWindow;
+      for (Vertex angleNode:angleNodes) {
+        double angle=(Double) angleNode.property(name).value();
+        sum+=angle;
+        max=Math.max(max, angle);
+        min=Math.min(min, angle);
+      }
+      avg=sum/count;
+      double sum2=0;
+      for (Vertex angleNode:angleNodes) {
+        Double angle=(Double) angleNode.property(name).value();
+        Double avgDiff=angle-avg;
+        sum2+=avgDiff*avgDiff;
+      }
+      stdDev=Math.sqrt(sum2/count);
+    }
+    
+    /**
+     * get the debug info
+     * @return
+     */
+    public String debugInfo() {
+      String info=String.format("%6s: %s <- %s ± %s -> %s / %3d in %3d msecs",name,Line.angleString(min),Line.angleString(avg),Line.angleString(stdDev),Line.angleString(max),count,timeWindow);
+      return info;
+    }
+  }
 
   /**
    * process the laneDetectResult
@@ -172,8 +225,18 @@ public class StraightLaneNavigator implements Navigator {
    */
   @Override
   public JsonObject getNavigationInstruction(LaneDetectionResult ldr) {
-    Vertex posV = addToGraph(ldr);
     currentTime = ldr.milliTimeStamp;
+    Vertex posV = addToGraph(ldr);
+    // find the LaneDetectionResults of the last second hat have a middle line
+    int timeWindow=1000;
+    AngleRange middleRange=new AngleRange("middle",currentTime,timeWindow);
+    AngleRange leftRange=new AngleRange("left",currentTime,timeWindow);
+    AngleRange rightRange=new AngleRange("right",currentTime,timeWindow);
+    AngleRange courseRange=new AngleRange("course",currentTime,timeWindow);
+    LOG.info(middleRange.debugInfo());
+    LOG.info(leftRange.debugInfo());
+    LOG.info(rightRange.debugInfo());
+    LOG.info(courseRange.debugInfo());
     if (tsLastLinesDetected == null)
       tsLastLinesDetected = currentTime;
     if (tsLatestCommand == null)

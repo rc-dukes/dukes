@@ -70,7 +70,8 @@ public class TestStraightLaneNavigator {
     ImageFetcher imageFetcher = new ImageFetcher(testUrl);
     imageFetcher.open();
     int frameIndex=0;
-    while (frameIndex<100 && imageFetcher.hasNext() && !imageFetcher.isClosed()) {
+    int maxFrameIndex=50;
+    while (frameIndex<maxFrameIndex && imageFetcher.hasNext() && !imageFetcher.isClosed()) {
       Image image = imageFetcher.fetch();
       frameIndex=image.getFrameIndex();
       System.out.println(frameIndex);
@@ -84,6 +85,6 @@ public class TestStraightLaneNavigator {
     }
     imageFetcher.close();
     long nodeCount = nav.g().V().count().next().longValue();
-    assertEquals(100, nodeCount);
+    assertEquals(maxFrameIndex, nodeCount);
   }
 }
