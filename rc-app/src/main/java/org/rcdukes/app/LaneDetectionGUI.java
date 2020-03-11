@@ -13,9 +13,9 @@ import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageCollector.ImageType;
 import org.rcdukes.video.ImageSource;
+import org.rcdukes.video.VideoRecorders;
 
 import io.reactivex.Observable;
-import io.reactivex.exceptions.Exceptions;
 import io.reactivex.schedulers.Schedulers;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -56,51 +56,71 @@ public class LaneDetectionGUI extends BaseGUI {
   public LaneDetectionGUI() {
     Config.configureLogging();
   }
+  
+  public class FrameGrabber extends ImageObserver {
+    private CameraGUI cameraGUI;
+    private VideoRecorders videoRecorders;
+
+    /**
+     * construct me for the given cameraGUI
+     * @param displayer 
+     * @param cameraGUI
+     * @param fps 
+     */
+    public FrameGrabber(GUIDisplayer displayer, CameraGUI cameraGUI, double fps) {
+      this.cameraGUI=cameraGUI;
+      this.videoRecorders=new VideoRecorders(fps);
+      displayer.setVideoRecorders(videoRecorders);
+    }
+
+    @Override
+    public void onNext(Image originalImage) {
+      try {
+        super.onNext(originalImage);
+        if (debug)
+          displayCurrentSliderValues();
+        applySliderValuesToConfig();
+        cameraGUI.applySliderValues();
+        displayer.displayOriginal(originalImage.getFrame());
+        ImageCollector collector = new ImageCollector();
+        displayer.setImageCollector(collector);
+        CameraMatrix cameraMatrix = CameraMatrix.DEFAULT;
+
+        LaneDetector laneDetector = new LaneDetector(edgeDetector,
+            lineDetector, cameraGUI.cameraConfig, cameraMatrix, collector);
+        LaneDetectionResult ldr = laneDetector.detect(originalImage);
+        ldr.checkError();
+        Navigator navigator = LaneDetectionGUI.this.getAppVerticle()
+            .getNavigator();
+        if (navigator != null)
+          navigator.navigateWithLaneDetectionResult(ldr);
+        displayer.display1(collector.getImage(ImageType.edges, true));
+        displayer.display2(collector.getImage(ImageType.lines, true));
+        displayer.display3(collector.getImage(ImageType.birdseye, true));
+        videoRecorders.recordFrame(collector);
+      } catch (Throwable t) {
+        onError(t);
+        // throw Exceptions.propagate(t);
+      }
+    }
+
+    @Override
+    public void onError(Throwable th) {
+      super.onError(th);
+      handleError(th);
+    }
+  }
 
   public void startCamera(CameraGUI cameraGUI, ImageSource imageSource)
       throws Exception {
     configureGUI();
     if (this.frameGrabber == null) {
-      frameGrabber = new ImageObserver() {
-        @Override
-        public void onNext(Image originalImage) {
-          try {
-            super.onNext(originalImage);
-            if (debug)
-              displayCurrentSliderValues();
-            applySliderValuesToConfig();
-            cameraGUI.applySliderValues();
-            displayer.displayOriginal(originalImage.getFrame());
-            ImageCollector collector = new ImageCollector();
-            displayer.setImageCollector(collector);
-            CameraMatrix cameraMatrix = CameraMatrix.DEFAULT;
-
-            LaneDetector laneDetector = new LaneDetector(edgeDetector,
-                lineDetector, cameraGUI.cameraConfig, cameraMatrix, collector);
-            LaneDetectionResult ldr = laneDetector.detect(originalImage);
-            ldr.checkError();
-            Navigator navigator = LaneDetectionGUI.this.getAppVerticle()
-                .getNavigator();
-            if (navigator != null)
-              navigator.navigateWithLaneDetectionResult(ldr);
-            displayer.display1(collector.getImage(ImageType.edges, true));
-            displayer.display2(collector.getImage(ImageType.lines, true));
-          } catch (Throwable t) {
-            onError(t);
-            // throw Exceptions.propagate(t);
-          }
-        }
-
-        @Override
-        public void onError(Throwable th) {
-          super.onError(th);
-          handleError(th);
-        }
-      };
+      double fps=10.0;
+      frameGrabber = new FrameGrabber(displayer,cameraGUI,fps);
       displayer.setCameraButtonText("Stop Camera");
       Observable<Image> imageObservable = imageSource.getImageObservable();
       imageObservable.subscribeOn(Schedulers.newThread())
-          .throttleFirst(100, TimeUnit.MILLISECONDS) // 10 Frames Per second
+          .throttleFirst(Math.round(1000/fps), TimeUnit.MILLISECONDS) // 10 Frames Per second
                                                      // some 2.5 times slower
                                                      // than original ...
           .subscribe(frameGrabber);

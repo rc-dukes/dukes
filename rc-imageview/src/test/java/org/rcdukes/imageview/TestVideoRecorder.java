@@ -10,6 +10,7 @@ import org.opencv.core.Mat;
 import org.rcdukes.imageview.DebugImageServer.ImageFormat;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.VideoRecorder;
 import org.rcdukes.video.ImageCollector.ImageType;
 
 /**
@@ -32,7 +33,7 @@ public class TestVideoRecorder extends OpenCVBasedTest {
       for (String FOURCC : VideoRecorder.FOURCCs) {
         FOURCC = FOURCC.toLowerCase();
         VideoRecorder recorder = new VideoRecorder("test", 25);
-        recorder.ext = ext;
+        recorder.setExt(ext);
         recorder.FOURCC = FOURCC;
         String msg = String.format(
             "recording: %dx%d %d channel %s video with %s", testMat.width(),

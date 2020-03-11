@@ -1,13 +1,8 @@
-package org.rcdukes.imageview;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+package org.rcdukes.video;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.videoio.VideoWriter;
-import org.rcdukes.video.ImageUtils;
 
 /**
  * record videos
@@ -24,7 +19,7 @@ public class VideoRecorder {
   boolean started;
   boolean isColor;
   public static String exts[]= {".mov",".avi",".mpg"};
-  String ext=".avi";
+  private String ext=".avi";
   private String path;
   public static String FOURCCs[]= { "AVC1", "FMP4", "H264", "JPEG","MJPG",  "MP4V","X264","XVID" };
   public static String FOURCC="mp4v";
@@ -45,7 +40,7 @@ public class VideoRecorder {
     this.frameSize=frameSize;
     this.isColor=isColor;
     int fourcc = VideoWriter.fourcc(FOURCC.charAt(0), FOURCC.charAt(1), FOURCC.charAt(2), FOURCC.charAt(3)); 
-    setPath(ImageUtils.filePath(name+"_"+FOURCC,ext));
+    setPath(ImageUtils.filePath(name+"_"+FOURCC,getExt()));
     save = new VideoWriter(getPath(),fourcc, this.fps, this.frameSize, isColor);
     started=true;
   }
@@ -84,6 +79,20 @@ public class VideoRecorder {
    */
   public void setPath(String path) {
     this.path = path;
+  }
+
+  /**
+   * @return the ext
+   */
+  public String getExt() {
+    return ext;
+  }
+
+  /**
+   * @param ext the ext to set
+   */
+  public void setExt(String ext) {
+    this.ext = ext;
   }
   
 }

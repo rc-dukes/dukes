@@ -15,6 +15,7 @@ public class CameraGUI extends BaseGUI {
   @FXML ImageView originalFrame;
   @FXML ImageView processedImage1;
   @FXML ImageView processedImage2;
+  @FXML ImageView processedImage3;
   
   // make my config visible
   CameraConfig cameraConfig;

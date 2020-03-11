@@ -18,6 +18,7 @@ import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageSource;
 import org.rcdukes.video.ImageUtils;
+import org.rcdukes.video.VideoRecorders;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
@@ -237,6 +238,11 @@ public class DukesFxGUI extends BaseGUI
   @Override
   public void display2(Image image) {
     displayImage(cameraController.processedImage2, image);
+  }
+  
+  @Override
+  public void display3(Image image) {
+    displayImage(cameraController.processedImage3, image);
   }
 
   @Override
@@ -555,4 +561,10 @@ public class DukesFxGUI extends BaseGUI
   public void setCameraImageWidth(int imageWidth) {
     this.cameraImageWidth=imageWidth;
   }
+
+  @Override
+  public void setVideoRecorders(VideoRecorders videoRecorders) {
+    this.navigationController.setVideoRecorders(videoRecorders);
+  }
+
 }

@@ -13,18 +13,19 @@
 		<HBox  styleClass="header" >
 			<Text styleClass="headertext" text="camera" />
 		</HBox>
-		<ImageView GridPane.rowIndex="1"  GridPane.columnIndex="0" fx:id="originalFrame" />
+		<ImageView fx:id="originalFrame" />
 	</VBox>
 	<VBox>
 		<HBox  styleClass="header" >
 			<Text fill="white" stroke="white" text="edges/birdseye" />
 		</HBox>
-		<ImageView fx:id="processedImage1"  GridPane.rowIndex="1"  GridPane.columnIndex="1" />
+		<ImageView fx:id="processedImage1"   />
+		<ImageView fx:id="processedImage3"   />
 	</VBox>
 	<VBox>
 		<HBox  styleClass="header" >
 			<Text styleClass="headertext" text="lines" />
 		</HBox>
-		<ImageView fx:id="processedImage2"  GridPane.rowIndex="1"  GridPane.columnIndex="2"/>
+		<ImageView fx:id="processedImage2"  />
 	</VBox>
 </HBox>

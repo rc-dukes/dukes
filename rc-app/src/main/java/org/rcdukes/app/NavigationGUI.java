@@ -4,11 +4,8 @@ import org.rcdukes.action.Navigator;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.Events;
-import org.rcdukes.geometry.LaneDetectionResult;
-import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
-import org.rcdukes.video.ImageCollector.ImageType;
-import org.rcdukes.video.ImageUtils;
+import org.rcdukes.video.VideoRecorders;
 
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import io.vertx.core.json.JsonObject;
@@ -54,6 +51,8 @@ public class NavigationGUI extends BaseGUI {
   protected Button requestConfigButton;
   @FXML
   protected Button echoButton;
+  
+  protected VideoRecorders videoRecorders;
 
   @FXML
   public void initialize() {
@@ -73,13 +72,14 @@ public class NavigationGUI extends BaseGUI {
     setButtonIcon(requestConfigButton, MaterialDesignIcon.SETTINGS);
     setButtonIcon(echoButton, MaterialDesignIcon.BULLHORN);
     setControlState(power);
+    recordButton.setDisable(true);
   }
 
   public void setControlState(boolean enable) {
     String color = enable ? "blue" : "grey";
     Button[] buttons = { manualButton, autoPilotButton, leftButton, rightButton,
         upButton, downButton, centerButton, stopButton, brakeButton,
-        photoButton, recordButton };
+        photoButton };
     for (Button button : buttons) {
       super.setButtonColor(button, color, buttonBgColor);
       button.setDisable(!enable);
@@ -133,8 +133,12 @@ public class NavigationGUI extends BaseGUI {
   
   @FXML
   private void onRecord(final ActionEvent event) {
-    LaneDetectionResult.forceError=!LaneDetectionResult.forceError;
-    super.setButtonActive(recordButton, LaneDetectionResult.forceError);
+    // LaneDetectionResult.forceError=!LaneDetectionResult.forceError;
+    // super.setButtonActive(recordButton, LaneDetectionResult.forceError);
+    if (this.videoRecorders!=null) {
+      videoRecorders.toggle();
+      super.setButtonActive(recordButton,videoRecorders.isStarted());
+    }
   }
   
   @FXML
@@ -290,6 +294,11 @@ public class NavigationGUI extends BaseGUI {
 
   public void setImageCollector(ImageCollector imageCollector) {
     this.imageCollector=imageCollector;
+  }
+
+  public void setVideoRecorders(VideoRecorders videoRecorders) {
+   this.videoRecorders=videoRecorders;
+   this.recordButton.setDisable(false);
   }
 
 }

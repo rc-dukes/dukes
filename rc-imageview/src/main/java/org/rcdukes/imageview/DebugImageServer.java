@@ -2,10 +2,6 @@ package org.rcdukes.imageview;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.opencv.core.Mat;
 import org.rcdukes.common.Characters;
@@ -19,6 +15,7 @@ import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageCollector.ImageType;
 import org.rcdukes.video.ImageUtils;
+import org.rcdukes.video.VideoRecorders;
 
 import io.vertx.core.Future;
 import io.vertx.rxjava.core.buffer.Buffer;
@@ -42,6 +39,7 @@ public class DebugImageServer extends DukesVerticle {
   }
 
   protected HttpServer server;
+  private VideoRecorders videoRecorders;
 
   // @TODO Make configurable
   // the format to be used for image encoding
@@ -64,13 +62,14 @@ public class DebugImageServer extends DukesVerticle {
     mediaPath.mkdirs();
     ImageUtils.MEDIA_PATH=mediaPath.getPath();
     int port = Config.getEnvironment().getInteger(Config.IMAGEVIEW_PORT);
+    this.videoRecorders=new VideoRecorders(fps);
     server = vertx.createHttpServer().requestHandler(this::sendImage);
     // Now bind the server:
     server.listen(port, res -> {
       if (res.succeeded()) {
         startFuture.complete();
-        consumer(Events.START_RECORDING, x -> startRecording());
-        consumer(Events.STOP_RECORDING, x -> stopRecording());
+        consumer(Events.START_RECORDING, x -> videoRecorders.start());
+        consumer(Events.STOP_RECORDING, x -> videoRecorders.stop());
         consumer(Events.SIMULATOR_IMAGE, this::receiveSimulatorImage);
         consumer(Events.PHOTO_SHOOT,x->shootPhoto());
         super.postStart();
@@ -109,17 +108,7 @@ public class DebugImageServer extends DukesVerticle {
     return image;
   }
 
-  Map<ImageType, VideoRecorder> recorders = new HashMap<ImageType, VideoRecorder>();
-
-  /**
-   * start Recording
-   */
-  protected void startRecording() {
-    for (ImageType imageType : ImageType.values()) {
-      VideoRecorder recorder = new VideoRecorder(imageType.name(), fps);
-      recorders.put(imageType, recorder);
-    }
-  }
+ 
   
   /**
    * create a single shot video
@@ -128,20 +117,6 @@ public class DebugImageServer extends DukesVerticle {
     ImageCollector imageCollector = Detector.getImageCollector();
     imageCollector.writeImages();
   }
-
-  /**
-   * stop Recording
-   */
-  protected void stopRecording() {
-    Iterator<Entry<ImageType, VideoRecorder>> it = recorders.entrySet().iterator();
-    while (it.hasNext())
-    {
-       Entry<ImageType, VideoRecorder> entry= it.next();
-       VideoRecorder recorder = entry.getValue();
-       recorder.stop();
-       it.remove();
-    }
-   }
 
   /**
    * send an image for the given request
@@ -175,21 +150,9 @@ public class DebugImageServer extends DukesVerticle {
       this.sendImageBytes(request, image.getImageBytes());
     }
     // optionally record
-    recordFrame(mat,imageType);
+    videoRecorders.recordFrame(mat,imageType);
   }
   
-  /**
-   * record the given frame if the videorecorder for it's imageType is active
-   * @param frame
-   * @param imageType
-   */
-  public void recordFrame(Mat frame,ImageType imageType) {
-    if (recorders.containsKey(imageType) && frame != null) {
-      VideoRecorder recorder = recorders.get(imageType);
-      recorder.recordMat(frame);
-    }
-  }
-
   /**
    * send the given bytes as an image
    * 
