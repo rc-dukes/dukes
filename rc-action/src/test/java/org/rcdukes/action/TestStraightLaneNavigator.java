@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.rcdukes.geometry.LaneDetectionResult;
 
+import io.vertx.core.json.JsonObject;
+
 /**
  * test the straight lane navigator
  * 
@@ -44,5 +46,15 @@ public class TestStraightLaneNavigator {
     long nodeCount = nav.g().V().count().next().longValue();
     assertEquals(3,nodeCount);
   }
+  
+  @Test
+  public void testFromJson()  {
+    Navigator navigator = new StraightLaneNavigator();
+    JsonObject ldrJo = new JsonObject();
+    LaneDetectionResult ldr = navigator.fromJsonObject(ldrJo);
+    JsonObject nav = navigator.getNavigationInstruction(ldr);
+    assertNull(nav);
+  }
+
 
 }
