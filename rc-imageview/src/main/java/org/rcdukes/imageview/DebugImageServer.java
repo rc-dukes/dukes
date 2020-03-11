@@ -180,5 +180,14 @@ public class DebugImageServer extends DukesVerticle {
     Thread streamThread = new Thread(multipartStreamer);
     streamThread.start();
   }
+
+  /**
+   * delegator
+   * @param frame
+   * @param imageType
+   */
+  public void recordFrame(Mat frame, ImageType imageType) {
+    this.videoRecorders.recordFrame(frame,imageType);
+  }
   
 }
