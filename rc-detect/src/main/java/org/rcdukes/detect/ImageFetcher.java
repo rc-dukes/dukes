@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.subjects.ReplaySubject;
 
 /**
  * fetcher for Images - will block at the given FPS rate
@@ -35,9 +34,12 @@ public class ImageFetcher {
   private long milliTimeStamp;
   private boolean staticImage;
   private boolean closed = false;
+  private boolean hasNext=false;
 
   private Image currentImage = null;
 
+  private Mat frame;
+  private Size size;
   public double getFps() {
     return fps;
   }
@@ -93,14 +95,15 @@ public class ImageFetcher {
     frameIndex = 0;
     failureCount = 0;
     milliTimeStamp = System.nanoTime() / 1000000;
+    hasNext=true;
     return ret;
   }
 
   public void close() {
-    if (!closed) {
+    if (!isClosed()) {
       this.capture.release();
     }
-    closed = true;
+    closed=true;
   }
 
   /**
@@ -150,11 +153,16 @@ public class ImageFetcher {
               source);
           LOG.info(msg);
         }
-        if (failureCount > maxFailureCount)
+        if (failureCount > maxFailureCount) {
+          hasNext=false;
           return null;
+        }
       }
     }
     milliTimeStamp = currentMillis;
+    frame = currentImage != null ? currentImage.getFrame() : null;
+    size = frame != null ? frame.size() : new Size(0, 0);
+    hasNext = currentImage != null && size.width > 0 && size.height > 0;
     return currentImage;
   }
 
@@ -190,12 +198,9 @@ public class ImageFetcher {
           @Override
           public void subscribe(ObservableEmitter<Image> observableEmitter)
               throws Exception {
-            boolean hasNext = true;
-            while (hasNext && !closed) {
+            hasNext=true;
+            while (hasNext && !isClosed()) {
               final Image image = ImageFetcher.this.fetch();
-              final Mat frame = image != null ? image.getFrame() : null;
-              final Size size = frame != null ? frame.size() : new Size(0, 0);
-              hasNext = image != null && size.width > 0 && size.height > 0;
               if (hasNext) {
                 if (debug && frameIndex % Math.round(getFps()) == 0) {
                   String msg = String.format("->%6d:%4.0fx%4.0f", frameIndex,
@@ -209,6 +214,17 @@ public class ImageFetcher {
           }
         });
     return observable;
+  }
+
+  public boolean hasNext() {
+    return hasNext;
+  }
+
+  /**
+   * @return the closed
+   */
+  public boolean isClosed() {
+    return closed;
   }
 
 }

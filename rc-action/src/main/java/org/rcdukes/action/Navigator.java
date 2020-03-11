@@ -1,5 +1,6 @@
 package org.rcdukes.action;
 
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.rcdukes.common.DukesVerticle;
 import org.rcdukes.geometry.LaneDetectionResult;
 
@@ -43,5 +44,9 @@ public interface Navigator {
    * @param ldr
    */
   public void navigateWithLaneDetectionResult(LaneDetectionResult ldr);
-  
+  /**
+   * access the graph database
+   * @return the graph traversal source
+   */
+  public GraphTraversalSource g();
 }
