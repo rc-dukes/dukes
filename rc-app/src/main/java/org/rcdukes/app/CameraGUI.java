@@ -3,6 +3,7 @@ package org.rcdukes.app;
 import org.rcdukes.detect.CameraConfig;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.image.ImageView;
 
 /**
@@ -24,6 +25,7 @@ public class CameraGUI extends BaseGUI {
   public LabeledValueSlider roih;
   public LabeledValueSlider angleOffset;
   public int imageWidth=800;
+  public CheckBox showStoppingZone;
   @FXML
   public void initialize() {
     int fitWidth = (int)(BaseGUI.getScreenWidth()/1920.0*imageWidth);
@@ -49,6 +51,7 @@ public class CameraGUI extends BaseGUI {
     cameraConfig.setAngleOffset(angleOffset.getValue());
     cameraConfig.setRoih(roih.getValue());
     cameraConfig.setRoiy(roiy.getValue());
+    cameraConfig.setShowStoppingZone(showStoppingZone.isSelected());
   }
 
 }

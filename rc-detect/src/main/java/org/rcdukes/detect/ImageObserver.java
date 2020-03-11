@@ -20,7 +20,7 @@ public class ImageObserver implements Observer<Image>  {
   public boolean completed = false;
   public boolean debug = false;
   public String stackTraceText;
-  private Disposable disposable;
+  private Disposable disposable; 
 
   @Override
   public void onComplete() {

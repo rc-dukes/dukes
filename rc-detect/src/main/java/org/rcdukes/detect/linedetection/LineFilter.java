@@ -11,6 +11,9 @@ import static java.lang.Math.atan2;
 import static java.lang.Math.toDegrees;
 import static java.lang.Math.toRadians;
 
+/**
+ * filters lines
+ */
 public class LineFilter {
 
     private final double angle;
@@ -28,17 +31,6 @@ public class LineFilter {
         this.margin = margin;
         this.directional = directional;
     }
-    /*
-    private Collection<Line> filter(Mat linesMat) {
-        Set<Line> lineObjects = new HashSet<>();
-
-        for (int x = 0; x < lines.rows(); x++) {
-            Line line = new Line(lines.get(x, 0));
-            lineObjects.add(line);
-        }
-
-        return filter(lineObjects);
-    }*/
 
     public Collection<Line> filter(Collection<Line> lines) {
         double minDeg = angle - margin;

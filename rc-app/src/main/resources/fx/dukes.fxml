@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
@@ -82,7 +83,7 @@
 			<TextArea fx:id="messageArea" text="" prefRowCount="25"
 				prefColumnCount="30" />
 		</VBox>
-		<VBox>
+		<VBox HBox.hgrow="ALWAYS" maxWidth="Infinity">
 			<HBox styleClass="header">
 				<Text styleClass="headertext" text="Heartbeat" />
 			</HBox>
@@ -106,6 +107,8 @@
 					blockIncrement="1" max="100" min="0" value="19" format="\%.0f" />
 				<LabeledValueSlider fx:id="roih" text="ROI h"
 					blockIncrement="1" max="100" min="0" value="100" format="\%.0f" />
+				<CheckBox fx:id="showStoppingZone" mnemonicParsing="false"
+					text="show stopping Zone" />
 				<GridPane alignment="center" hgap="10" vgap="10">
 					<padding>
 						<Insets bottom="25" left="25" right="25" top="25" />

@@ -14,6 +14,7 @@ public class CameraConfig {
   private double roih;
   private double roiy;
   private double fps;
+  private boolean showStoppingZone=false;
   /**
    * construct me
    */
@@ -82,6 +83,20 @@ public class CameraConfig {
 
   public void setFps(double fps) {
     this.fps = fps;
+  }
+
+  /**
+   * @return the showStoppingZone
+   */
+  public boolean isShowStoppingZone() {
+    return showStoppingZone;
+  }
+
+  /**
+   * @param showStoppingZone the showStoppingZone to set
+   */
+  public void setShowStoppingZone(boolean showStoppingZone) {
+    this.showStoppingZone = showStoppingZone;
   }
 
 }

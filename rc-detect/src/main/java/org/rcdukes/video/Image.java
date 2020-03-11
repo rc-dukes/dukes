@@ -4,7 +4,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+import org.rcdukes.video.ImageUtils.CVColor;
 
 /**
  * Wrapper for openCV Images
@@ -53,7 +58,11 @@ public class Image {
   public void setFrame(Mat frame) {
     this.frame = frame;
     if (frame!=null)
-      this.setImageBytes(ImageUtils.mat2ImageBytes(frame, ext));
+      refresh();
+  }
+  
+  public void refresh() {
+    this.setImageBytes(ImageUtils.mat2ImageBytes(frame, ext));
   }
   
   
@@ -124,6 +133,28 @@ public class Image {
     }
     // this.frame.release();
     // this.frame=null;
+  }
+  
+  /**
+   * add my frameIndex as debug info to the given frame
+   * 
+   * @param frame - the target frame
+   */
+  public void addImageInfo(Mat frame) {
+    int fontFace = Core.FONT_HERSHEY_SIMPLEX;
+    int fontScale = 1;
+    Scalar color = CVColor.dodgerblue;
+    String text = String.format("%5d", getFrameIndex());
+    Point pos = new Point(frame.width() - 100, 25);
+    Imgproc.putText(frame, text, pos, fontFace, fontScale, color);
+  }
+  
+  /**
+   * add my image info
+   */
+  public void addImageInfo() {
+    this.addImageInfo(this.frame);
+    this.refresh();
   }
 
   public String debugInfo() {

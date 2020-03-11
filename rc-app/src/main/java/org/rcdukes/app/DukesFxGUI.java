@@ -39,6 +39,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
@@ -120,12 +121,14 @@ public class DukesFxGUI extends BaseGUI
   protected TextArea heartbeatArea;
 
   @FXML
+  protected LabeledValueSlider angleOffset;
+  @FXML
   protected LabeledValueSlider roiy;
-
+  @FXML
+  private CheckBox showStoppingZone;
   @FXML
   protected LabeledValueSlider roih;
-  @FXML
-  protected LabeledValueSlider angleOffset;
+  
   
   // FXML label to show the current values set with the sliders
   @FXML
@@ -172,6 +175,7 @@ public class DukesFxGUI extends BaseGUI
     this.cameraController.roiy = roiy;
     this.cameraController.roih = roih;
     this.cameraController.angleOffset=angleOffset;
+    this.cameraController.showStoppingZone=this.showStoppingZone;
     this.cameraController.imageWidth=this.cameraImageWidth;
     File mediaPath=new File(Environment.dukesHome+"media");
     mediaPath.mkdirs();

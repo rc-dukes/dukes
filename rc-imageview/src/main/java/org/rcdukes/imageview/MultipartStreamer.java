@@ -1,14 +1,9 @@
 package org.rcdukes.imageview;
 
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
 import org.rcdukes.video.Image;
-import org.rcdukes.video.ImageUtils;
 import org.rcdukes.video.ImageCollector.ImageType;
-import org.rcdukes.video.ImageUtils.CVColor;
+import org.rcdukes.video.ImageUtils;
 
 import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.http.HttpServerResponse;
@@ -45,22 +40,7 @@ public class MultipartStreamer implements Runnable {
     this.imageType = imageType;
   }
 
-  /**
-   * add the info from the image to the given frame
-   * 
-   * @param frame
-   *          - the openCV frame
-   * @param image
-   *          - the rcdukes image
-   */
-  public void addImageInfo(Mat frame, Image image) {
-    int fontFace = Core.FONT_HERSHEY_SIMPLEX;
-    int fontScale = 1;
-    Scalar color = CVColor.dodgerblue;
-    String text = String.format("%5d", image.getFrameIndex());
-    Point pos = new Point(frame.width() - 100, 25);
-    Imgproc.putText(frame, text, pos, fontFace, fontScale, color);
-  }
+  
 
   /**
    * serve the next image
@@ -69,7 +49,7 @@ public class MultipartStreamer implements Runnable {
     Image image=this.debugImageServer.getNextImage(imageType);
     if (image != null) {
       Mat frame = image.getFrame().clone();
-      addImageInfo(frame, image);
+      image.addImageInfo(frame);
       byte[] bytes = ImageUtils.mat2ImageBytes(frame,
           DebugImageServer.exts[DebugImageServer.imageFormat.ordinal()]);
       currentData = Buffer.buffer().appendBytes(bytes);

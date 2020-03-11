@@ -10,19 +10,35 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.rcdukes.app.LabeledValueSlider?>
 
-<VBox alignment="CENTER_LEFT" spacing="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="org.rcdukes.app.LaneDetectionGUI">
+<VBox alignment="CENTER_LEFT" spacing="10"
+	xmlns:fx="http://javafx.com/fxml/1"
+	xmlns="http://javafx.com/javafx/11.0.1"
+	fx:controller="org.rcdukes.app.LaneDetectionGUI">
 
 	<padding>
 		<Insets left="10" right="10" />
 	</padding>
-   <CheckBox fx:id="probabilistic" mnemonicParsing="false" text="probabilistic" />
-    <Label text="Canny config" style='-fx-font-weight: bold'/>
-    <LabeledValueSlider fx:id='cannyThreshold1' text="Threshold 1" blockIncrement="1" max="2000" min="0" value="20" format="\%.0f"/>
-	<LabeledValueSlider fx:id="cannyThreshold2" text="Threshold 2"  blockIncrement="1" max="2000" min="0" value="50" format="\%.0f"/>
-	<Label text="Hough config" style='-fx-font-weight: bold'/>
-	<LabeledValueSlider fx:id="lineDetectRho" text="Rho" blockIncrement="0.01" max="20" min="0" value="0.5" />
-	<LabeledValueSlider fx:id="lineDetectTheta" text="Theta" blockIncrement="0.01" max="5" min="-5" value="0.5" />
-	<LabeledValueSlider fx:id="lineDetectThreshold" text="Threshold" blockIncrement="1" max="200" min="0" value="20" format="\%.0f" />
-	<LabeledValueSlider fx:id="lineDetectMinLineLength" text="MinLineLength"  blockIncrement="1" max="200" min="0" value="50" format="\%.0f"/>
-	<LabeledValueSlider fx:id="lineDetectMaxLineGap" text="MaxLineGap" blockIncrement="1" max="500" min="0" value="50" format="\%.0f"/>
+	<CheckBox fx:id="probabilistic" mnemonicParsing="false"
+		text="probabilistic" />
+	<Label text="Canny config" style='-fx-font-weight: bold' />
+	<LabeledValueSlider fx:id='cannyThreshold1'
+		text="Threshold 1" blockIncrement="1" max="2000" min="0" value="20"
+		format="\%.0f" />
+	<LabeledValueSlider fx:id="cannyThreshold2"
+		text="Threshold 2" blockIncrement="1" max="2000" min="0" value="50"
+		format="\%.0f" />
+	<Label text="Hough config" style='-fx-font-weight: bold' />
+	<LabeledValueSlider fx:id="lineDetectRho" text="Rho"
+		blockIncrement="0.01" max="20" min="0" value="0.5" />
+	<LabeledValueSlider fx:id="lineDetectTheta"
+		text="Theta" blockIncrement="0.01" max="5" min="-5" value="0.5" />
+	<LabeledValueSlider fx:id="lineDetectThreshold"
+		text="Threshold" blockIncrement="1" max="200" min="0" value="20"
+		format="\%.0f" />
+	<LabeledValueSlider fx:id="lineDetectMinLineLength"
+		text="MinLineLength" blockIncrement="1" max="200" min="0" value="50"
+		format="\%.0f" />
+	<LabeledValueSlider fx:id="lineDetectMaxLineGap"
+		text="MaxLineGap" blockIncrement="1" max="500" min="0" value="50"
+		format="\%.0f" />
 </VBox>

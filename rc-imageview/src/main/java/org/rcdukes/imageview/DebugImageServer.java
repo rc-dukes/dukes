@@ -107,9 +107,7 @@ public class DebugImageServer extends DukesVerticle {
     Image image = imageCollector.getImage(imageType, SERVE_TEST_IMAGES);
     return image;
   }
-
  
-  
   /**
    * create a single shot video
    */

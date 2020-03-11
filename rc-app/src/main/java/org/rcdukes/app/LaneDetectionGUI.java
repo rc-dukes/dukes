@@ -57,6 +57,11 @@ public class LaneDetectionGUI extends BaseGUI {
     Config.configureLogging();
   }
   
+  /**
+   * ImageObserver for JavaFX 
+   * @author wf
+   *
+   */
   public class FrameGrabber extends ImageObserver {
     private CameraGUI cameraGUI;
     private VideoRecorders videoRecorders;
@@ -81,7 +86,6 @@ public class LaneDetectionGUI extends BaseGUI {
           displayCurrentSliderValues();
         applySliderValuesToConfig();
         cameraGUI.applySliderValues();
-        displayer.displayOriginal(originalImage.getFrame());
         ImageCollector collector = new ImageCollector();
         displayer.setImageCollector(collector);
         CameraMatrix cameraMatrix = CameraMatrix.DEFAULT;
@@ -94,6 +98,8 @@ public class LaneDetectionGUI extends BaseGUI {
             .getNavigator();
         if (navigator != null)
           navigator.navigateWithLaneDetectionResult(ldr);
+        collector.addImageInfo();
+        displayer.displayOriginal(collector.getImage(ImageType.camera, true));
         displayer.display1(collector.getImage(ImageType.edges, true));
         displayer.display2(collector.getImage(ImageType.lines, true));
         displayer.display3(collector.getImage(ImageType.birdseye, true));

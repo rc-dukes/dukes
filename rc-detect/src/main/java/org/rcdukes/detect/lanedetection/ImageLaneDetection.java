@@ -41,6 +41,7 @@ public class ImageLaneDetection {
 
   /**
    * create me for the given LaneDetector
+   * 
    * @param laneDetector
    */
   public ImageLaneDetection(LaneDetector laneDetector) {
@@ -49,35 +50,37 @@ public class ImageLaneDetection {
 
   /**
    * detect the lane
+   * 
    * @param image
    * @param imageCollector
    * @return a map with information
    */
   public LaneDetectionResult detectLane(Image image,
       ImageCollector imageCollector) {
-    LaneDetectionResult ldr=new LaneDetectionResult();
-    if (image==null) {
+    LaneDetectionResult ldr = new LaneDetectionResult();
+    if (image == null) {
       LOG.error("detectLane: original is null");
       return ldr;
     }
-    CameraConfig cameraConfig=ld.getCameraConfig();
+    CameraConfig cameraConfig = ld.getCameraConfig();
     imageCollector.addImage(image, ImageType.camera);
-    ldr.frameIndex=image.getFrameIndex();
-    ldr.milliTimeStamp=image.getMilliTimeStamp();
-    // ! important - create a copy of the image because debug info will be
+    ldr.frameIndex = image.getFrameIndex();
+    ldr.milliTimeStamp = image.getMilliTimeStamp();
+    // ! important - create a copy of the image because debug info might be
     // written on it
-    Mat imageCopy=image.getFrame().clone(); 
+    Mat imageCopy = image.getFrame().clone();
     Mat undistorted = ld.getMatrix().apply(imageCopy);
     // get the configured Region of interest
-    double ry=cameraConfig.getRoiy()/100.0;
-    double rh=(1-ry)*cameraConfig.getRoih()/100.0;
-    Mat frame = new ROI("camera",0, ry, 1, rh)
-        .region(undistorted);
+    double ry = cameraConfig.getRoiy() / 100.0;
+    double rh = (1 - ry) * cameraConfig.getRoih() / 100.0;
+    Mat frame = new ROI("camera", 0, ry, 1, rh).region(undistorted);
     Size imageSize = frame.size();
     ViewPort viewPort = new ViewPort(new Point(0.0, 0.0), imageSize.width,
         imageSize.height);
-    Polygon imagePolygon = new ImagePolygon(frame.size(), 0, 0, 1, 0, 1, 1, 0, 1);
-    Polygon worldPolygon = new ImagePolygon(frame.size(), 0, 0, 1, 0, 1, 1, 0, 1);
+    Polygon imagePolygon = new ImagePolygon(frame.size(), 0, 0, 1, 0, 1, 1, 0,
+        1);
+    Polygon worldPolygon = new ImagePolygon(frame.size(), 0, 0, 1, 0, 1, 1, 0,
+        1);
 
     PerspectiveShift perspectiveShift = new PerspectiveShift(imagePolygon,
         worldPolygon);
@@ -100,7 +103,7 @@ public class ImageLaneDetection {
 
     Optional<Line> middle = Optional.ofNullable(laneOrientation.getMiddle());
 
-    ImageUtils iu=new ImageUtils();
+    ImageUtils iu = new ImageUtils();
     lane.getLeftBoundary().ifPresent(boundary -> iu.drawLinesToImage(frame,
         asList(boundary), CVColor.green));
     lane.getRightBoundary().ifPresent(boundary -> iu.drawLinesToImage(frame,
@@ -111,27 +114,29 @@ public class ImageLaneDetection {
     ldr.distanceToStoppingZone = -1.0;
     ldr.distanceToStoppingZoneEnd = -1.0;
     if (stoppingZone.getEntrance() != null) {
-      stoppingZone.getEntrance().ifPresent(entrance -> iu.drawLinesToImage(frame,
-          asList(entrance), CVColor.cyan));
+      if (cameraConfig.isShowStoppingZone())
+        stoppingZone.getEntrance().ifPresent(entrance -> iu
+            .drawLinesToImage(frame, asList(entrance), CVColor.cyan));
       ldr.distanceToStoppingZone = stoppingZoneOrientation
           .determineDistanceToStoppingZone();
     }
 
     if (stoppingZone.getExit() != null) {
-      stoppingZone.getExit().ifPresent(exit -> iu.drawLinesToImage(frame,
-          asList(exit), CVColor.yellow));
+      if (cameraConfig.isShowStoppingZone())
+        stoppingZone.getExit().ifPresent(
+            exit -> iu.drawLinesToImage(frame, asList(exit), CVColor.yellow));
       ldr.distanceToStoppingZoneEnd = stoppingZoneOrientation
           .determineDistanceToStoppingZoneEnd();
     }
     imageCollector.addImage(frame, ImageType.lines);
-    
-    Double angleOffset=cameraConfig.getAngleOffset();
-    if (laneOrientation.getLeft()!=null)
-      ldr.left=laneOrientation.getLeft().angleDeg90()+angleOffset;
-    if (laneOrientation.getMiddle()!=null)
-      ldr.middle=laneOrientation.getMiddle().angleDeg90()+angleOffset;
-    if (laneOrientation.getRight()!=null)
-      ldr.right=laneOrientation.getRight().angleDeg90()+angleOffset;
+
+    Double angleOffset = cameraConfig.getAngleOffset();
+    if (laneOrientation.getLeft() != null)
+      ldr.left = laneOrientation.getLeft().angleDeg90() + angleOffset;
+    if (laneOrientation.getMiddle() != null)
+      ldr.middle = laneOrientation.getMiddle().angleDeg90() + angleOffset;
+    if (laneOrientation.getRight() != null)
+      ldr.right = laneOrientation.getRight().angleDeg90() + angleOffset;
     ldr.distanceMiddle = laneOrientation.determineDistanceToMiddle();
     ldr.distanceLeft = laneOrientation.distanceFromLeftBoundary();
     ldr.distanceRight = laneOrientation.distanceFromRightBoundary();

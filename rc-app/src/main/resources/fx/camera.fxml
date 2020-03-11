@@ -6,10 +6,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.image.ImageView?>
-<HBox alignment="CENTER_LEFT" xmlns:fx="http://javafx.com/fxml/1"
+<HBox  HBox.hgrow="ALWAYS" maxWidth="Infinity" alignment="CENTER_LEFT" xmlns:fx="http://javafx.com/fxml/1"
 	xmlns="http://javafx.com/javafx/11.0.1"
 	fx:controller="org.rcdukes.app.CameraGUI">
-	<VBox>
+	<VBox HBox.hgrow="ALWAYS" maxWidth="Infinity">
 		<HBox  styleClass="header" >
 			<Text styleClass="headertext" text="camera" />
 		</HBox>
