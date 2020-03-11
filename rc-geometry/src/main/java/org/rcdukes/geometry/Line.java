@@ -443,7 +443,7 @@ public class Line {
      * convert me to a String
      */
     public String toString() {
-      return String.format(Locale.ENGLISH, "{%f,%f: %s}", x, y);
+      return String.format(Locale.ENGLISH, "{%f,%f}", x, y);
     }
     
   }

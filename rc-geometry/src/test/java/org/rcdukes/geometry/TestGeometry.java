@@ -34,7 +34,7 @@ public class TestGeometry {
     assertEquals(100., line.getPoint2().getX(), 0.01);
     assertEquals(100., line.getPoint2().getY(), 0.01);
     Line avgLine = Line.average(line, line2);
-    assertEquals("{0.0,5.0} - {100.0,105.0}", avgLine.toString());
+    assertEquals("{0.0,5.0} - {100.0,105.0}:  135.0°", avgLine.toString());    
     Point2D pRight = new Point(50.0, 40.0);
     Point2D pLeft = new Point(50.0, 60.0);
     Point2D pOn = new Point(50.0, 50.0);
