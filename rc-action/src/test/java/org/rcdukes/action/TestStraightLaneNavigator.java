@@ -70,7 +70,7 @@ public class TestStraightLaneNavigator {
     ImageFetcher imageFetcher = new ImageFetcher(testUrl);
     imageFetcher.open();
     int frameIndex=0;
-    int maxFrameIndex=50;
+    int maxFrameIndex=300;
     while (frameIndex<maxFrameIndex && imageFetcher.hasNext() && !imageFetcher.isClosed()) {
       Image image = imageFetcher.fetch();
       frameIndex=image.getFrameIndex();
