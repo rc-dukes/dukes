@@ -168,6 +168,7 @@ public class DukesFxGUI extends BaseGUI
     currentValuesProp = new SimpleObjectProperty<>();
     this.currentValues.textProperty().bind(currentValuesProp);
     this.lanevideo.getItems().setAll("simulator",
+        "http://wiki.bitplan.com/videos/full_run.mp4",
         "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg/1280px-4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg",
         "http://picaro/html/cam_pic_new.php",
         "http://picarford:8080/?action=stream",

@@ -45,6 +45,7 @@ public class CameraGUI extends BaseGUI {
     this.imageViewProperties(this.originalFrame, fitWidth);
     this.imageViewProperties(this.processedImage1, fitWidth*3/4);
     this.imageViewProperties(this.processedImage2, fitWidth*3/4);
+    this.imageViewProperties(this.processedImage3, fitWidth*3/4);
   }
 
   public void applySliderValues() {
