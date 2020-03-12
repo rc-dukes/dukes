@@ -103,6 +103,12 @@ public class StraightLaneNavigator implements Navigator {
   private boolean emergencyStopActivated = false;
   private long currentTime;
   private Long startTime;
+  private AngleRange middleRange;
+  private AngleRange stopRangeLeft;
+  private AngleRange stopRangeRight;
+  private AngleRange leftRange;
+  private AngleRange rightRange;
+  private AngleRange courseRange;
 
   /**
    * initialize my defaults
@@ -118,17 +124,24 @@ public class StraightLaneNavigator implements Navigator {
   }
 
   /**
-   * is it o.k to send a command with the given angle?
+   * is it o.k to send a command with the given AngleRange?
    * 
-   * @param angle
-   * @return true if the angle is not null and enough time has passed since the
-   *         latest command
+   * @param angleRange - the angle Range to check
+   * @param minFound
+   * @return true if the angleRange is not null has enough found entries and
+   *         enough time has passed since the latest command
    */
-  public boolean cmdOk(Double angle) {
-    return angle != null
+  public boolean cmdOk(AngleRange angleRange, int minFound) {
+    boolean ok = angleRange != null && angleRange.count > minFound
         && currentTime - tsLatestCommand > COMMAND_LOOP_INTERVAL;
+    return ok;
   }
 
+  /**
+   * staticical analysis of angles in the given past timeWindow
+   * @author wf
+   *
+   */
   class AngleRange {
     Double min = Double.MAX_VALUE;
     Double max = -Double.MAX_VALUE;
@@ -152,10 +165,10 @@ public class StraightLaneNavigator implements Navigator {
           .has("milliTimeStamp", P.gt(currentTime - timeWindow)).toList();
       count = angleNodes.size();
       this.timeWindow = timeWindow;
-      if (count==0) {
-        min=null;
-        max=null;
-        stdDev=null;
+      if (count == 0) {
+        min = null;
+        max = null;
+        stdDev = null;
       }
 
       for (Vertex angleNode : angleNodes) {
@@ -172,6 +185,11 @@ public class StraightLaneNavigator implements Navigator {
         sum2 += avgDiff * avgDiff;
       }
       stdDev = Math.sqrt(sum2 / count);
+    }
+    
+    public double steer() {
+      double angle=avg;
+      return avg;
     }
 
     /**
@@ -201,6 +219,30 @@ public class StraightLaneNavigator implements Navigator {
   }
 
   /**
+   * analyze the angle ranges int the given timeWindow
+   * 
+   * @param showDebug
+   */
+  public void analyzeAngleRanges(int timeWindow, boolean showDebug) {
+    middleRange = new AngleRange("middle", currentTime, timeWindow);
+    stopRangeLeft = new AngleRange("left", currentTime,
+        MAX_DURATION_NO_LINES_DETECTED);
+    stopRangeRight = new AngleRange("right", currentTime,
+        MAX_DURATION_NO_LINES_DETECTED);
+    leftRange = new AngleRange("left", currentTime, timeWindow);
+    rightRange = new AngleRange("right", currentTime, timeWindow);
+    courseRange = new AngleRange("course", currentTime, timeWindow);
+    if (showDebug) {
+      LOG.info(stopRangeLeft.debugInfo());
+      LOG.info(stopRangeRight.debugInfo());
+      LOG.info(middleRange.debugInfo());
+      LOG.info(leftRange.debugInfo());
+      LOG.info(rightRange.debugInfo());
+      LOG.info(courseRange.debugInfo());
+    }
+  }
+
+  /**
    * process the laneDetectResult
    * 
    * @param ldr
@@ -209,41 +251,48 @@ public class StraightLaneNavigator implements Navigator {
    */
   @Override
   public JsonObject getNavigationInstruction(LaneDetectionResult ldr) {
-    if (this.emergencyStopActivated) return null;
+    // empty message signals no navigation
+    JsonObject message = null;
+ 
+    // if in emergency stop mode do not continue
+    if (this.emergencyStopActivated)
+      return message;
     // set the current time and start time
     setTime(ldr);
     // add the lane detection result to the tinker graph
     addToGraph(ldr);
     // analyze the LaneDetectionResults of the relevant time Windows
     int timeWindow = 1000;
-    AngleRange middleRange = new AngleRange("middle", currentTime, timeWindow);
-    AngleRange stopRange = new AngleRange("middle", currentTime,
-        MAX_DURATION_NO_LINES_DETECTED);
-    AngleRange leftRange = new AngleRange("left", currentTime, timeWindow);
-    AngleRange rightRange = new AngleRange("right", currentTime, timeWindow);
-    AngleRange courseRange = new AngleRange("course", currentTime, timeWindow);
-    LOG.info(stopRange.debugInfo());
-    LOG.info(middleRange.debugInfo());
-    LOG.info(leftRange.debugInfo());
-    LOG.info(rightRange.debugInfo());
-    LOG.info(courseRange.debugInfo());
+    boolean showDebug = true;
+    analyzeAngleRanges(timeWindow, showDebug);
+
+    // do we need to stop since there have been no lines for too long?
     if (currentTime - startTime > MAX_DURATION_NO_LINES_DETECTED
-        && stopRange.count == 0 || emergencyStopActivated) {
+        && stopRangeLeft.count + stopRangeRight.count == 0
+        || emergencyStopActivated) {
       this.emergencyStopActivated = true;
       return ActionVerticle.emergencyStopCommand();
     }
-    int MIN_FOUND_PER_TIMEWINDOW = 5;
-    JsonObject message=null;
-    if (middleRange.count > MIN_FOUND_PER_TIMEWINDOW) {
-      double angle = courseRange.avg;
-      if (this.cmdOk(angle)) {
-        String msg = ldr.debugInfo()
-            + String.format("\nsteer: %s", Line.angleString(angle));
-        LOG.debug(msg);
-        tsLatestCommand = currentTime;
-        // @TODO check polarity
-        message = steerCommand(-(angle));
-      }
+    // if we have enough detections for statistics we'll use this information
+    int MIN_FOUND_PER_TIMEWINDOW = 3;
+    // decide which angleRange to use
+    AngleRange navigateRange = null;
+    if (middleRange.count >= MIN_FOUND_PER_TIMEWINDOW) {
+      navigateRange = courseRange;
+    } else {
+      // are we left or right heavy?
+      navigateRange = leftRange.count > rightRange.count ? leftRange
+          : rightRange;
+    }
+    // check that we can send a command
+    if (this.cmdOk(navigateRange,MIN_FOUND_PER_TIMEWINDOW)) {
+      double angle=navigateRange.steer();
+      String msg = ldr.debugInfo()
+          + String.format("\nsteer by %s: %s", navigateRange.name,Line.angleString(angle));
+      LOG.debug(msg);
+      tsLatestCommand = currentTime;
+      // @TODO check polarity
+      message = steerCommand(-(angle));
     }
     return message;
   }
