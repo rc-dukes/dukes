@@ -3,7 +3,9 @@ package org.rcdukes.action;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.rcdukes.common.Environment;
 import org.rcdukes.detect.ImageFetcher;
 import org.rcdukes.detect.LaneDetector;
 import org.rcdukes.geometry.LaneDetectionResult;
@@ -20,6 +22,10 @@ import io.vertx.core.json.JsonObject;
  */
 public class TestStraightLaneNavigator {
   public static boolean debug=true;
+  @BeforeClass
+  public static void setUp() {
+    Environment.mock();
+  }
   /**
    * get a LaneDetectionResult for the given Parameters
    * 
