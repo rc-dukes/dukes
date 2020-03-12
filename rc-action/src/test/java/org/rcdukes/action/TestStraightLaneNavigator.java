@@ -1,7 +1,6 @@
 package org.rcdukes.action;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
@@ -20,7 +19,7 @@ import io.vertx.core.json.JsonObject;
  *
  */
 public class TestStraightLaneNavigator {
-
+  public static boolean debug=true;
   /**
    * get a LaneDetectionResult for the given Parameters
    * 
@@ -69,15 +68,18 @@ public class TestStraightLaneNavigator {
     String testUrl = "http://wiki.bitplan.com/videos/full_run.mp4";
     ImageFetcher imageFetcher = new ImageFetcher(testUrl);
     imageFetcher.open();
-    int frameIndex=0;
-    int maxFrameIndex=300;
-    while (frameIndex<maxFrameIndex && imageFetcher.hasNext() && !imageFetcher.isClosed()) {
+    int frameIndex = 0;
+    int maxFrameIndex = 300;
+    while (frameIndex < maxFrameIndex && imageFetcher.hasNext()
+        && !imageFetcher.isClosed()) {
       Image image = imageFetcher.fetch();
-      frameIndex=image.getFrameIndex();
+      frameIndex = image.getFrameIndex();
       System.out.println(frameIndex);
       if (imageFetcher.hasNext()) {
         LaneDetector laneDetector = LaneDetector.getDefault();
         LaneDetectionResult ldr = laneDetector.detect(image);
+        if (debug)
+        System.out.println(ldr.debugInfo());
         JsonObject navJo = nav.getNavigationInstruction(ldr);
         if (navJo != null)
           System.out.println(navJo.encodePrettily());

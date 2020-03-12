@@ -26,10 +26,33 @@ import stormbots.MiniPID;
 public class StraightLaneNavigator implements Navigator {
 
   boolean debug = false;
+  public static int COMMAND_LOOP_INTERVAL = 150; // how often to send commands
+  // e.g. 6x per second
+  public static final int MAX_DURATION_NO_LINES_DETECTED = 8*COMMAND_LOOP_INTERVAL; // max 1.5
+  // secs
+  // @TODO
+  // should be
+  // speed
+  // dependent
+  // ...
+  public static final int DEFAULT_TIME_WINDOW=2*COMMAND_LOOP_INTERVAL;
+
   protected static final Logger LOG = LoggerFactory
       .getLogger(StraightLaneNavigator.class);
   DukesVerticle sender;
   private TinkerGraph graph;
+  private int timeWindow;
+  MiniPID pid;
+  private Long tsLatestCommand;
+  private boolean emergencyStopActivated = false;
+  private long currentTime;
+  private Long startTime;
+  private AngleRange middleRange;
+  private AngleRange stopRangeLeft;
+  private AngleRange stopRangeRight;
+  private AngleRange leftRange;
+  private AngleRange rightRange;
+  private AngleRange courseRange;
 
   public DukesVerticle getSender() {
     return sender;
@@ -43,7 +66,12 @@ public class StraightLaneNavigator implements Navigator {
    * default constructor
    */
   public StraightLaneNavigator() {
+    this(DEFAULT_TIME_WINDOW);
+  }
+
+  public StraightLaneNavigator(int timeWindow) {
     this.initDefaults();
+    this.timeWindow = timeWindow;
     this.graph = TinkerGraph.open();
     this.graph.createIndex("frameIndex", Vertex.class);
     this.graph.createIndex("milliTimeStamp", Vertex.class);
@@ -89,27 +117,6 @@ public class StraightLaneNavigator implements Navigator {
     return v;
   }
 
-  MiniPID pid;
-  private Long tsLatestCommand;
-  public static long COMMAND_LOOP_INTERVAL = 150L; // how often to send commands
-                                                   // 3x per second
-  private static final int MAX_DURATION_NO_LINES_DETECTED = 1500; // max 1.5
-                                                                  // secs
-                                                                  // @TODO
-                                                                  // should be
-                                                                  // speed
-                                                                  // dependent
-                                                                  // ...
-  private boolean emergencyStopActivated = false;
-  private long currentTime;
-  private Long startTime;
-  private AngleRange middleRange;
-  private AngleRange stopRangeLeft;
-  private AngleRange stopRangeRight;
-  private AngleRange leftRange;
-  private AngleRange rightRange;
-  private AngleRange courseRange;
-
   /**
    * initialize my defaults
    */
@@ -126,7 +133,8 @@ public class StraightLaneNavigator implements Navigator {
   /**
    * is it o.k to send a command with the given AngleRange?
    * 
-   * @param angleRange - the angle Range to check
+   * @param angleRange
+   *          - the angle Range to check
    * @param minFound
    * @return true if the angleRange is not null has enough found entries and
    *         enough time has passed since the latest command
@@ -139,6 +147,7 @@ public class StraightLaneNavigator implements Navigator {
 
   /**
    * staticical analysis of angles in the given past timeWindow
+   * 
    * @author wf
    *
    */
@@ -186,9 +195,9 @@ public class StraightLaneNavigator implements Navigator {
       }
       stdDev = Math.sqrt(sum2 / count);
     }
-    
+
     public double steer() {
-      double angle=avg;
+      double angle = avg;
       return avg;
     }
 
@@ -224,6 +233,7 @@ public class StraightLaneNavigator implements Navigator {
    * @param showDebug
    */
   public void analyzeAngleRanges(int timeWindow, boolean showDebug) {
+    long aStart = System.nanoTime();
     middleRange = new AngleRange("middle", currentTime, timeWindow);
     stopRangeLeft = new AngleRange("left", currentTime,
         MAX_DURATION_NO_LINES_DETECTED);
@@ -233,6 +243,8 @@ public class StraightLaneNavigator implements Navigator {
     rightRange = new AngleRange("right", currentTime, timeWindow);
     courseRange = new AngleRange("course", currentTime, timeWindow);
     if (showDebug) {
+      long aTime = System.nanoTime()-aStart;
+      LOG.info(String.format("analysis took %5.3f msecs", aTime/1000000.0));
       LOG.info(stopRangeLeft.debugInfo());
       LOG.info(stopRangeRight.debugInfo());
       LOG.info(middleRange.debugInfo());
@@ -253,7 +265,7 @@ public class StraightLaneNavigator implements Navigator {
   public JsonObject getNavigationInstruction(LaneDetectionResult ldr) {
     // empty message signals no navigation
     JsonObject message = null;
- 
+
     // if in emergency stop mode do not continue
     if (this.emergencyStopActivated)
       return message;
@@ -262,7 +274,6 @@ public class StraightLaneNavigator implements Navigator {
     // add the lane detection result to the tinker graph
     addToGraph(ldr);
     // analyze the LaneDetectionResults of the relevant time Windows
-    int timeWindow = 1000;
     boolean showDebug = true;
     analyzeAngleRanges(timeWindow, showDebug);
 
@@ -285,10 +296,10 @@ public class StraightLaneNavigator implements Navigator {
           : rightRange;
     }
     // check that we can send a command
-    if (this.cmdOk(navigateRange,MIN_FOUND_PER_TIMEWINDOW)) {
-      double angle=navigateRange.steer();
-      String msg = ldr.debugInfo()
-          + String.format("\nsteer by %s: %s", navigateRange.name,Line.angleString(angle));
+    if (this.cmdOk(navigateRange, MIN_FOUND_PER_TIMEWINDOW)) {
+      double angle = navigateRange.steer();
+      String msg = ldr.debugInfo() + String.format("\nsteer by %s: %s",
+          navigateRange.name, Line.angleString(angle));
       LOG.debug(msg);
       tsLatestCommand = currentTime;
       // @TODO check polarity
