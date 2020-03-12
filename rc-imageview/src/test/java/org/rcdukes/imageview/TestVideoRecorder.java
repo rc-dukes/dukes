@@ -7,8 +7,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.junit.Test;
 import org.opencv.core.Mat;
+import org.rcdukes.common.TinkerPopDatabase;
 import org.rcdukes.imageview.DebugImageServer.ImageFormat;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
@@ -77,5 +79,25 @@ public class TestVideoRecorder extends OpenCVBasedTest {
     assertFalse(info.path.contains(".avi"));
     assertTrue(info.path.endsWith(".json"));
     assertTrue(info.path.contains("navigation_")); 
+  }
+  
+  @Test
+  public void testVideoInfoGraphDatabase() throws IOException {
+    TinkerPopDatabase tpd = new TinkerPopDatabase();
+    VideoInfo vInfo=new VideoInfo(25.);
+    vInfo.setFrameIndex(10);
+    vInfo.setFrameIndex(20);
+    tpd.addVertex(vInfo);
+    File gFile = File.createTempFile("videoInfo", ".json");
+    tpd.writeGraph(gFile.getPath());
+    TinkerPopDatabase tpd2=new TinkerPopDatabase();
+    tpd2.loadGraph(gFile);
+    assertEquals(1,tpd2.g().V().count().next().longValue());
+    Vertex vInfoNode=tpd2.g().V().hasLabel("VideoInfo").next();
+    VideoInfo vInfo2=tpd2.fromVertex(vInfoNode, VideoInfo.class);
+    assertEquals(25.,vInfo2.fps,0.01);
+    assertEquals(10,vInfo2.minFrameIndex.intValue());
+    assertEquals(20,vInfo2.maxFrameIndex.intValue());
+    gFile.delete();
   }
 }

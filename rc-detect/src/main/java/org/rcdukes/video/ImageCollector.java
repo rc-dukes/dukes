@@ -185,9 +185,13 @@ public class ImageCollector {
     }
   }
 
-  public void addImageInfo() {
+  /**
+   * add the given info to my images
+   * @param info
+   */
+  public void addImageInfo(String info) {
     for (Image image:this.images.values()) {
-      image.addImageInfo();
+      image.addImageInfo(info);
     }
   }
 

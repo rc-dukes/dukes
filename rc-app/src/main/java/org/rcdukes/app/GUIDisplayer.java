@@ -12,6 +12,7 @@ import javafx.beans.property.Property;
  *
  */
 public interface GUIDisplayer {
+  enum PictureStep{FIRST,PREV,NEXT,FORWARD};
   void displayOriginal(Image image);
   void displayOriginal( Mat openCvImage);
   void display1(Image image);

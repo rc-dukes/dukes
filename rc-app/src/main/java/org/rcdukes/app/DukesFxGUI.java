@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
+import org.rcdukes.action.Navigator;
+import org.rcdukes.action.StraightLaneNavigator;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.DukesVerticle.Status;
 import org.rcdukes.common.Environment;
@@ -107,9 +109,13 @@ public class DukesFxGUI extends BaseGUI
   @FXML
   protected Button cameraButton;
   @FXML
+  protected Button firstPictureButton;
+  @FXML
   protected Button nextPictureButton;
   @FXML
   protected Button prevPictureButton;
+  @FXML
+  protected Button forwardPictureButton;
   @FXML
   protected ComboBox<String> lanevideo;
   @FXML
@@ -134,7 +140,7 @@ public class DukesFxGUI extends BaseGUI
 
   @FXML
   private Label frameIndexLabel;
- 
+
   enum DisplayMode {
     Lane, Start
   }
@@ -188,8 +194,11 @@ public class DukesFxGUI extends BaseGUI
     this.setMenuButtonIcon(helpButton, FontAwesomeIcon.QUESTION_CIRCLE);
     this.setMenuButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN);
     this.setMenuButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN);
+    setButtonIcon(firstPictureButton, MaterialDesignIcon.REWIND);
     setButtonIcon(prevPictureButton, MaterialDesignIcon.ARROW_LEFT_BOLD);
     setButtonIcon(nextPictureButton, MaterialDesignIcon.ARROW_RIGHT_BOLD);
+    setButtonIcon(forwardPictureButton, MaterialDesignIcon.FAST_FORWARD);
+    pictureButtonsEnable(false);
     this.lanevideo.setValue("http://wiki.bitplan.com/videos/full_run.mp4");
     this.startvideo.setValue("http://wiki.bitplan.com/videos/startlamp2.m4v");
     this.showPosition(new ServoPosition(0, 0.0, "m/s", "motor"));
@@ -199,6 +208,14 @@ public class DukesFxGUI extends BaseGUI
     root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
       this.handleKeyInput(event);
     });
+  }
+
+  private void pictureButtonsEnable(boolean enable) {
+    Button pButtons[] = { firstPictureButton, prevPictureButton,
+        nextPictureButton, forwardPictureButton };
+    for (Button b : pButtons) {
+      b.setDisable(!enable);
+    }
   }
 
   protected void setSpeed(double newSpeed) {
@@ -269,10 +286,13 @@ public class DukesFxGUI extends BaseGUI
     File file = fileChooser.showOpenDialog(primaryStage);
     if (file != null) {
       this.lanevideo.setValue(file.getPath());
-      File graphFile=VideoInfo.getNavigationFile(file);
+      this.pictureImageFetcher = null;
+      this.pictureButtonsEnable(true);
+      File graphFile = VideoInfo.getNavigationFile(file);
       if (graphFile.exists()) {
-        this.navigationController.loadDebugGraph(graphFile);
+        this.getPictureNavigator().loadGraph(graphFile);
       }
+      this.nextPictureButton.fire();
     }
   }
 
@@ -390,15 +410,48 @@ public class DukesFxGUI extends BaseGUI
   private void onHelpAbout(final ActionEvent event) {
     this.helpAbout();
   }
-  
+
+  @FXML
+  private void onFirstPicture(final ActionEvent event) {
+    stepPicture(PictureStep.FIRST);
+  }
+
   @FXML
   private void onPrevPicture(final ActionEvent event) {
-    this.laneDetectionController.stepPicture(this.cameraController,this,-1);
+    stepPicture(PictureStep.PREV);
   }
 
   @FXML
   private void onNextPicture(final ActionEvent event) {
-    this.laneDetectionController.stepPicture(this.cameraController,this,1);
+    stepPicture(PictureStep.NEXT);
+  }
+
+  @FXML
+  private void onForwardPicture(final ActionEvent event) {
+    stepPicture(PictureStep.FORWARD);
+  }
+
+  private void stepPicture(PictureStep step) {
+    this.laneDetectionController.stepPicture(this.cameraController,
+        this.getPictureImageFetcher(), this.getPictureNavigator(), step);
+  }
+
+  Navigator pictureNavigator;
+
+  Navigator getPictureNavigator() {
+    if (pictureNavigator == null) {
+      pictureNavigator = new StraightLaneNavigator();
+    }
+    return pictureNavigator;
+  }
+
+  ImageFetcher pictureImageFetcher;
+
+  public ImageFetcher getPictureImageFetcher() {
+    if (pictureImageFetcher == null) {
+      pictureImageFetcher = getImageFetcher();
+    }
+    return pictureImageFetcher;
   }
 
   /**
@@ -493,9 +546,20 @@ public class DukesFxGUI extends BaseGUI
       AppVerticle appVerticle = AppVerticle.getInstance(this);
       return appVerticle.getSimulatorImageFetcher().toObservable();
     } else {
-      ImageFetcher imageFetcher = new ImageFetcher(imageSource);
+      ImageFetcher imageFetcher = getImageFetcher();
       return imageFetcher.toObservable();
     }
+  }
+
+  /**
+   * get an image Fetcher for the current video
+   * 
+   * @return the imageFetcher
+   */
+  public ImageFetcher getImageFetcher() {
+    String imageSource = this.lanevideo.valueProperty().getValue();
+    ImageFetcher imageFetcher = new ImageFetcher(imageSource);
+    return imageFetcher;
   }
 
   /**
@@ -581,7 +645,7 @@ public class DukesFxGUI extends BaseGUI
 
   @Override
   public void showFrameIndex(int frameIndex) {
-    String frameIndexString=String.format("%04d", frameIndex);
+    String frameIndexString = String.format("%04d", frameIndex);
     this.onFXThread(frameIndexLabel.textProperty(), frameIndexString);
   }
 

@@ -1,7 +1,7 @@
 package org.rcdukes.action;
 
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.GraphDatabase;
 import org.rcdukes.geometry.LaneDetectionResult;
 import org.rcdukes.video.VideoRecorders.VideoInfo;
 
@@ -13,7 +13,7 @@ import io.vertx.rxjava.core.eventbus.Message;
  * @author wf
  *
  */
-public interface Navigator {
+public interface Navigator extends GraphDatabase {
   
   public DukesVerticle getSender();
   public void setSender(DukesVerticle sender);
@@ -51,9 +51,5 @@ public interface Navigator {
    * @param videoInfo
    */
   public void videoStopped(VideoInfo videoInfo);
-  /**
-   * access the graph database
-   * @return the graph traversal source
-   */
-  public GraphTraversalSource g();
+ 
 }

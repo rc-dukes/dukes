@@ -13,14 +13,16 @@ import org.rcdukes.video.ImageUtils.CVColor;
 
 /**
  * Wrapper for openCV Images
+ * 
  * @author wf
  *
  */
 public class Image {
-  public static transient final String DATE_FORMAT="HH:mm:ss.SSS";
-  public static transient final DateFormat dateFormat=new SimpleDateFormat(DATE_FORMAT);
+  public static transient final String DATE_FORMAT = "HH:mm:ss.SSS";
+  public static transient final DateFormat dateFormat = new SimpleDateFormat(
+      DATE_FORMAT);
 
-  public static boolean debug=false;
+  public static boolean debug = false;
   public static String ext = ".jpg";
   private String name;
   Mat frame;
@@ -28,7 +30,7 @@ public class Image {
   private int frameIndex;
   private long milliTimeStamp;
   private Date timeStamp;
-  
+
   /**
    * @return the frameIndex
    */
@@ -37,14 +39,16 @@ public class Image {
   }
 
   /**
-   * @param frameIndex the frameIndex to set
+   * @param frameIndex
+   *          the frameIndex to set
    */
   public void setFrameIndex(int frameIndex) {
     this.frameIndex = frameIndex;
   }
-  
+
   /**
    * get the openCV Mat
+   * 
    * @return - the frame
    */
   public Mat getFrame() {
@@ -53,19 +57,19 @@ public class Image {
 
   /**
    * set the openCV frame
+   * 
    * @param frame
    */
   public void setFrame(Mat frame) {
     this.frame = frame;
-    if (frame!=null)
+    if (frame != null)
       refresh();
   }
-  
+
   public void refresh() {
     this.setImageBytes(ImageUtils.mat2ImageBytes(frame, ext));
   }
-  
-  
+
   /**
    * @return the name
    */
@@ -74,7 +78,8 @@ public class Image {
   }
 
   /**
-   * @param name the name to set
+   * @param name
+   *          the name to set
    */
   public void setName(String name) {
     this.name = name;
@@ -88,12 +93,13 @@ public class Image {
   }
 
   /**
-   * @param imageBytes the imageBytes to set
+   * @param imageBytes
+   *          the imageBytes to set
    */
   public void setImageBytes(byte[] imageBytes) {
     this.imageBytes = imageBytes;
   }
-  
+
   /**
    * @return the milliTimeStamp
    */
@@ -102,7 +108,8 @@ public class Image {
   }
 
   /**
-   * @param milliTimeStamp the milliTimeStamp to set
+   * @param milliTimeStamp
+   *          the milliTimeStamp to set
    */
   public void setMilliTimeStamp(long milliTimeStamp) {
     this.milliTimeStamp = milliTimeStamp;
@@ -112,15 +119,15 @@ public class Image {
    * construct me
    * 
    * @param frame
-   * @param milliTimeStamp 
-   * @param frameIndex 
+   * @param milliTimeStamp
+   * @param frameIndex
    */
-  public Image(Mat frame, String name,int frameIndex, long milliTimeStamp) {
+  public Image(Mat frame, String name, int frameIndex, long milliTimeStamp) {
     this.setFrame(frame);
     this.setName(name);
     this.setFrameIndex(frameIndex);
     this.setMilliTimeStamp(milliTimeStamp);
-    this.timeStamp=new Date(milliTimeStamp);
+    this.timeStamp = new Date(milliTimeStamp);
   }
 
   /**
@@ -128,37 +135,51 @@ public class Image {
    */
   public void finalize() {
     if (debug) {
-      String msg=String.format("releasing %s",this.debugInfo());
-      System.out.println(msg);     
+      String msg = String.format("releasing %s", this.debugInfo());
+      System.out.println(msg);
     }
     // this.frame.release();
     // this.frame=null;
   }
-  
+
   /**
    * add my frameIndex as debug info to the given frame
    * 
-   * @param frame - the target frame
+   * @param frame
+   *          - the target frame
+   * @param into
+   *          the info to add
    */
-  public void addImageInfo(Mat frame) {
+  public void addImageInfo(Mat frame, String info) {
     int fontFace = Core.FONT_HERSHEY_SIMPLEX;
     int fontScale = 1;
     Scalar color = CVColor.dodgerblue;
-    String text = String.format("%5d", getFrameIndex());
     Point pos = new Point(frame.width() - 100, 25);
-    Imgproc.putText(frame, text, pos, fontFace, fontScale, color);
+    Imgproc.putText(frame, info, pos, fontFace, fontScale, color);
   }
-  
+
+  /**
+   * add the given info to my frame
+   * 
+   * @param info
+   */
+  public void addImageInfo(String info) {
+    this.addImageInfo(this.frame, info);
+    this.refresh();
+  }
+
   /**
    * add my image info
    */
   public void addImageInfo() {
-    this.addImageInfo(this.frame);
-    this.refresh();
+    String text = String.format("%5d", getFrameIndex());
+    this.addImageInfo(text);
   }
 
   public String debugInfo() {
-    String info=String.format("image %s %dx%d %d of %s",getName(),frame.width(),frame.height(),getFrameIndex(),dateFormat.format(timeStamp));
+    String info = String.format("image %s %dx%d %d of %s", getName(),
+        frame.width(), frame.height(), getFrameIndex(),
+        dateFormat.format(timeStamp));
     return info;
   }
 

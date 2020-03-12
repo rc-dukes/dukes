@@ -143,9 +143,11 @@
 				<HBox>
 					<Button fx:id="cameraButton" alignment="center"
 						onAction="#startCamera" text="Start camera" />
+					<Button fx:id="firstPictureButton" text="first" onAction="#onFirstPicture"/>
 					<Button fx:id="prevPictureButton" text="prev" onAction="#onPrevPicture"/>
 					<Label fx:id="frameIndexLabel" />
 				  <Button fx:id="nextPictureButton" text="next" onAction="#onNextPicture"/>
+					<Button fx:id="forwardPictureButton" text="forward" onAction="#onForwardPicture"/>
 				</HBox>
 			</VBox>
 		</VBox>

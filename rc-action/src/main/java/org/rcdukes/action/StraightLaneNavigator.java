@@ -1,18 +1,14 @@
 package org.rcdukes.action;
 
-import java.io.File;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map.Entry;
 
-import org.apache.tinkerpop.gremlin.process.traversal.IO;
 import org.apache.tinkerpop.gremlin.process.traversal.P;
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.T;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.TinkerPopDatabase;
 import org.rcdukes.geometry.LaneDetectionResult;
 import org.rcdukes.geometry.Line;
 import org.rcdukes.video.VideoRecorders.VideoInfo;
@@ -27,9 +23,8 @@ import stormbots.MiniPID;
  * straight lane navigator
  *
  */
-public class StraightLaneNavigator implements Navigator {
+public class StraightLaneNavigator extends TinkerPopDatabase implements Navigator {
 
-  boolean debug = false;
   public static int COMMAND_LOOP_INTERVAL = 150; // how often to send commands
   // e.g. 6x per second
   public static final int MAX_DURATION_NO_LINES_DETECTED = 8*COMMAND_LOOP_INTERVAL; // max 1.5
@@ -44,7 +39,7 @@ public class StraightLaneNavigator implements Navigator {
   protected static final Logger LOG = LoggerFactory
       .getLogger(StraightLaneNavigator.class);
   DukesVerticle sender;
-  private TinkerGraph graph;
+ 
   private int timeWindow;
   MiniPID pid;
   private Long tsLatestCommand;
@@ -80,33 +75,8 @@ public class StraightLaneNavigator implements Navigator {
   public StraightLaneNavigator(int timeWindow) {
     this.initDefaults();
     this.timeWindow = timeWindow;
-    this.graph = TinkerGraph.open();
     this.graph.createIndex("frameIndex", Vertex.class);
     this.graph.createIndex("milliTimeStamp", Vertex.class);
-  }
-
-  /**
-   * access to graph
-   * 
-   * @return the GraphTraversalSource
-   */
-  public GraphTraversalSource g() {
-    return this.graph.traversal();
-  }
-
-  /**
-   * set a property of the given vertex
-   * 
-   * @param v
-   * @param name
-   *          - name of the property
-   * @param value
-   *          - value of the property
-   */
-  public void setProp(Vertex v, String name, Object value) {
-    if (value != null) {
-      v.property(name, value);
-    }
   }
 
   /**
@@ -123,18 +93,6 @@ public class StraightLaneNavigator implements Navigator {
     setProp(v, "right", ldr.right);
     setProp(v, "course", ldr.courseRelativeToHorizon);
     return v;
-  }
-  
-  /**
-   * add a vertex for the given object
-   * @param o
-   */
-  private void addVertex(Object o) {
-    Vertex v=this.graph.addVertex(T.label,o.getClass().getSimpleName());
-    JsonObject jo = JsonObject.mapFrom(o);
-    for (Entry<String, Object> entry:jo.getMap().entrySet()) {
-      v.property(entry.getKey(),entry.getValue());
-    }
   }
 
   /**
@@ -301,7 +259,7 @@ public class StraightLaneNavigator implements Navigator {
     // set the current time and start time
     setTime(ldr);
     // add the lane detection result to the tinker graph
-    addToGraph(ldr);
+    Vertex ldrVertex=addToGraph(ldr);
     // analyze the LaneDetectionResults of the relevant time Windows
     boolean showDebug = true;
     analyzeAngleRanges(timeWindow, showDebug);
@@ -330,6 +288,9 @@ public class StraightLaneNavigator implements Navigator {
       String msg = ldr.debugInfo() + String.format("\nsteer by %s: %s",
           navigateRange.name, Line.angleString(angle));
       LOG.debug(msg);
+      ldrVertex.property("steer",angle);
+      ldrVertex.property("steerBy",navigateRange.name);
+      ldrVertex.property("debugInfo",msg);
       tsLatestCommand = currentTime;
       message = steerCommand(angle);
     }
@@ -373,18 +334,7 @@ public class StraightLaneNavigator implements Navigator {
   @Override
   public void videoStopped(VideoInfo videoInfo) { 
     addVertex(videoInfo);
-    this.g().io(videoInfo.path).with(IO.writer,IO.graphson).write().iterate();
-  }
-
-  /**
-   * load the given graphFile
-   * @param graphFile
-   */
-  public void loadGraph(File graphFile) {
-    this.g().io(graphFile.getPath()).with(IO.reader,IO.graphson).read().iterate();
-    long nodeCount=this.g().V().count().next().longValue();
-    String msg=String.format("loaded graph %s with %d nodes", graphFile.getPath(),nodeCount);
-    LOG.info(msg);
+    writeGraph(videoInfo.path);
   }
 
 }

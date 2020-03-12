@@ -40,8 +40,6 @@ public class MultipartStreamer implements Runnable {
     this.imageType = imageType;
   }
 
-  
-
   /**
    * serve the next image
    */
@@ -49,7 +47,7 @@ public class MultipartStreamer implements Runnable {
     Image image=this.debugImageServer.getNextImage(imageType);
     if (image != null) {
       Mat frame = image.getFrame().clone();
-      image.addImageInfo(frame);
+      image.addImageInfo(frame,String.format("%6d", image.getFrameIndex()));
       byte[] bytes = ImageUtils.mat2ImageBytes(frame,
           DebugImageServer.exts[DebugImageServer.imageFormat.ordinal()]);
       currentData = Buffer.buffer().appendBytes(bytes);

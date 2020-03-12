@@ -98,6 +98,7 @@ public class VideoRecorders {
     public Integer maxFrameIndex = null;
     public String path;
 
+    public VideoInfo() {};
     /**
      * construct me with given path and frames per second
      * 

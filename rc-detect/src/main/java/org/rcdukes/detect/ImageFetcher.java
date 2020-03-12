@@ -126,6 +126,7 @@ public class ImageFetcher {
     }
     return currentMillis;
   }
+  
   /**
    * fetch an image Matrix - will block to make sure Mat is emitted at the
    * frames per second rate configured
