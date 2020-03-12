@@ -136,8 +136,15 @@ public class NavigationGUI extends BaseGUI {
     // LaneDetectionResult.forceError=!LaneDetectionResult.forceError;
     // super.setButtonActive(recordButton, LaneDetectionResult.forceError);
     if (this.videoRecorders!=null) {
+      // remember frameIndex range - stop of videoRecorders will
+      // null these values
+      Integer minFrameIndex = videoRecorders.minFrameIndex;
+      Integer maxFrameIndex = videoRecorders.maxFrameIndex;
       videoRecorders.toggle();
       super.setButtonActive(recordButton,videoRecorders.isStarted());
+      if (!videoRecorders.isStarted()) {
+        
+      }
     }
   }
   

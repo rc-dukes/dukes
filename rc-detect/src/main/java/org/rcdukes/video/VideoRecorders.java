@@ -17,6 +17,8 @@ import org.rcdukes.video.ImageCollector.ImageType;
 public class VideoRecorders {
   Map<ImageType, VideoRecorder> recorders = new HashMap<ImageType, VideoRecorder>();
   private double fps;
+  public Integer minFrameIndex=null;
+  public Integer maxFrameIndex=null;
 
   /**
    * construct me for the given number of frames per second
@@ -70,6 +72,8 @@ public class VideoRecorders {
       boolean failSafe=false;
       Image image = collector.getImage(imageType, failSafe);
       if (image!=null) {
+        if (minFrameIndex==null) minFrameIndex=image.getFrameIndex();
+        maxFrameIndex=image.getFrameIndex();
         this.recordFrame(image.getFrame(),imageType);
       }
     }
@@ -87,5 +91,7 @@ public class VideoRecorders {
       recorder.stop();
       it.remove();
     }
+    this.minFrameIndex=null;
+    this.maxFrameIndex=null;
   }
 }

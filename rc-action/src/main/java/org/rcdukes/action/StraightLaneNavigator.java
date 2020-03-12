@@ -69,6 +69,10 @@ public class StraightLaneNavigator implements Navigator {
     this(DEFAULT_TIME_WINDOW);
   }
 
+  /**
+   * construct me with the given timeWindow
+   * @param timeWindow - in milliSeconds
+   */
   public StraightLaneNavigator(int timeWindow) {
     this.initDefaults();
     this.timeWindow = timeWindow;
@@ -152,14 +156,16 @@ public class StraightLaneNavigator implements Navigator {
    *
    */
   class AngleRange {
+    String name;
+    int timeWindow;
+    
+    int count;
+    double sum = 0;
+    
     Double min = Double.MAX_VALUE;
     Double max = -Double.MAX_VALUE;
-    double sum = 0;
     Double avg = null;
-    int count;
-    int timeWindow;
-    private String name;
-    private Double stdDev;
+    Double stdDev=null;
 
     /**
      * create an angle Range for the given vertices
@@ -177,7 +183,6 @@ public class StraightLaneNavigator implements Navigator {
       if (count == 0) {
         min = null;
         max = null;
-        stdDev = null;
       }
 
       for (Vertex angleNode : angleNodes) {
@@ -196,9 +201,17 @@ public class StraightLaneNavigator implements Navigator {
       stdDev = Math.sqrt(sum2 / count);
     }
 
+    /**
+     * return the value to steer with for this angle range
+     * @return - the steering value
+     */
     public double steer() {
       double angle = avg;
-      return avg;
+      // @TODO check polarity and factor
+      if (!"course".equals(name)) {
+        angle=-0.5*angle;
+      }
+      return angle;
     }
 
     /**
@@ -302,8 +315,7 @@ public class StraightLaneNavigator implements Navigator {
           navigateRange.name, Line.angleString(angle));
       LOG.debug(msg);
       tsLatestCommand = currentTime;
-      // @TODO check polarity
-      message = steerCommand(-(angle));
+      message = steerCommand(angle);
     }
     return message;
   }
