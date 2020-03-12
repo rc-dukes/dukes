@@ -2,7 +2,9 @@ package org.rcdukes.action;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map.Entry;
 
+import org.apache.tinkerpop.gremlin.process.traversal.IO;
 import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.T;
@@ -12,6 +14,7 @@ import org.rcdukes.common.Characters;
 import org.rcdukes.common.DukesVerticle;
 import org.rcdukes.geometry.LaneDetectionResult;
 import org.rcdukes.geometry.Line;
+import org.rcdukes.video.VideoRecorders.VideoInfo;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -119,6 +122,18 @@ public class StraightLaneNavigator implements Navigator {
     setProp(v, "right", ldr.right);
     setProp(v, "course", ldr.courseRelativeToHorizon);
     return v;
+  }
+  
+  /**
+   * add a vertex for the given object
+   * @param o
+   */
+  private void addVertex(Object o) {
+    Vertex v=this.graph.addVertex(T.label,o.getClass().getSimpleName());
+    JsonObject jo = JsonObject.mapFrom(o);
+    for (Entry<String, Object> entry:jo.getMap().entrySet()) {
+      v.property(entry.getKey(),entry.getValue());
+    }
   }
 
   /**
@@ -352,6 +367,13 @@ public class StraightLaneNavigator implements Navigator {
   public void navigateWithLaneDetectionResult(LaneDetectionResult ldr) {
     JsonObject navigationJo = getNavigationInstruction(ldr);
     navigateWithInstruction(navigationJo);
+  }
+
+  @Override
+  public void videoStopped(VideoInfo videoInfo) {
+    String gPath=videoInfo.path+".json";
+    addVertex(videoInfo);
+    this.g().io(gPath).with(IO.writer,IO.graphson).write().iterate();
   }
 
 }

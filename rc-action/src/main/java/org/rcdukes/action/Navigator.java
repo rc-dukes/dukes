@@ -3,6 +3,7 @@ package org.rcdukes.action;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.rcdukes.common.DukesVerticle;
 import org.rcdukes.geometry.LaneDetectionResult;
+import org.rcdukes.video.VideoRecorders.VideoInfo;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.eventbus.Message;
@@ -44,6 +45,12 @@ public interface Navigator {
    * @param ldr
    */
   public void navigateWithLaneDetectionResult(LaneDetectionResult ldr);
+  
+  /**
+   * handle a stopped video
+   * @param videoInfo
+   */
+  public void videoStopped(VideoInfo videoInfo);
   /**
    * access the graph database
    * @return the graph traversal source

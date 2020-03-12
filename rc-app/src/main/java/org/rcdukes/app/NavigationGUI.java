@@ -6,6 +6,7 @@ import org.rcdukes.common.Config;
 import org.rcdukes.common.Events;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.VideoRecorders;
+import org.rcdukes.video.VideoRecorders.VideoInfo;
 
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import io.vertx.core.json.JsonObject;
@@ -138,12 +139,17 @@ public class NavigationGUI extends BaseGUI {
     if (this.videoRecorders!=null) {
       // remember frameIndex range - stop of videoRecorders will
       // null these values
-      Integer minFrameIndex = videoRecorders.minFrameIndex;
-      Integer maxFrameIndex = videoRecorders.maxFrameIndex;
-      videoRecorders.toggle();
+      VideoInfo videoInfo = videoRecorders.toggle();
       super.setButtonActive(recordButton,videoRecorders.isStarted());
+      
       if (!videoRecorders.isStarted()) {
-        
+        Navigator navigator = this.getAppVerticle().getNavigator();
+        if (navigator!=null) {
+          navigator.videoStopped(videoInfo);
+        }
+        // @TODO implement for Web-GUI
+        // JsonObject videoInfoJo = JsonObject.mapFrom(videoInfo);
+        // getAppVerticle().sendEvent(Characters.LUKE,Events.VIDEO_STOPPED, videoInfoJo);
       }
     }
   }

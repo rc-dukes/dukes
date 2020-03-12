@@ -16,9 +16,7 @@ import org.rcdukes.video.ImageCollector.ImageType;
  */
 public class VideoRecorders {
   Map<ImageType, VideoRecorder> recorders = new HashMap<ImageType, VideoRecorder>();
-  private double fps;
-  public Integer minFrameIndex=null;
-  public Integer maxFrameIndex=null;
+  private VideoInfo info;
 
   /**
    * construct me for the given number of frames per second
@@ -26,28 +24,35 @@ public class VideoRecorders {
    * @param fps
    */
   public VideoRecorders(double fps) {
-    this.fps = fps;
+    info = new VideoInfo(fps);
+    info.fps = fps;
   }
 
   public boolean isStarted() {
     return recorders.size() > 0;
   }
 
-  public void toggle() {
+  /**
+   * toggle the videoInfo state
+   * 
+   * @return
+   */
+  public VideoInfo toggle() {
     if (isStarted())
-      stop();
+      return stop();
     else
-      start();
+      return start();
   }
 
   /**
    * start Recording
    */
-  public void start() {
+  public VideoInfo start() {
     for (ImageType imageType : ImageType.values()) {
-      VideoRecorder recorder = new VideoRecorder(imageType.name(), fps);
+      VideoRecorder recorder = new VideoRecorder(imageType.name(), info.fps);
       recorders.put(imageType, recorder);
     }
+    return info;
   }
 
   /**
@@ -65,16 +70,76 @@ public class VideoRecorders {
 
   /**
    * record a frame for the given image collector
+   * 
    * @param collector
    */
   public void recordFrame(ImageCollector collector) {
     for (ImageType imageType : ImageType.values()) {
-      boolean failSafe=false;
+      boolean failSafe = false;
       Image image = collector.getImage(imageType, failSafe);
-      if (image!=null) {
-        if (minFrameIndex==null) minFrameIndex=image.getFrameIndex();
-        maxFrameIndex=image.getFrameIndex();
-        this.recordFrame(image.getFrame(),imageType);
+      if (image != null) {
+        info.setFrameIndex(image.getFrameIndex());
+        this.recordFrame(image.getFrame(), imageType);
+      }
+    }
+  }
+
+  /**
+   * Video Information to be used for storing Meta-Information
+   * 
+   * @author wf
+   *
+   */
+  public static class VideoInfo {
+    public double fps;
+    public Integer minFrameIndex = null;
+    public Integer maxFrameIndex = null;
+    public String path;
+
+    /**
+     * construct me with given path and frames per second
+     * 
+     * @param path
+     * @param fps
+     */
+    public VideoInfo(double fps) {
+      this.fps = fps;
+    }
+
+    /**
+     * copy constructor to reset frameIndex
+     * 
+     * @param info
+     */
+    public VideoInfo(VideoInfo info) {
+      this(info.fps);
+    }
+
+    /**
+     * set the frameIndex
+     * 
+     * @param frameIndex
+     */
+    public void setFrameIndex(int frameIndex) {
+      if (minFrameIndex == null)
+        minFrameIndex = frameIndex;
+      if (maxFrameIndex == null)
+        maxFrameIndex = frameIndex;
+      minFrameIndex = Math.min(minFrameIndex, frameIndex);
+      maxFrameIndex = Math.max(maxFrameIndex, frameIndex);
+    }
+
+    /**
+     * set the path
+     * 
+     * @param path
+     * @param ext
+     */
+    public void setPath(String pPath, String ext) {
+      if (this.path == null && pPath!=null) {
+        if (pPath.endsWith(ext))
+          pPath = pPath.substring(0, pPath.length() - ext.length());
+        this.path = pPath;
       }
     }
   }
@@ -82,16 +147,18 @@ public class VideoRecorders {
   /**
    * stop Recording
    */
-  public void stop() {
+  public VideoInfo stop() {
     Iterator<Entry<ImageType, VideoRecorder>> it = recorders.entrySet()
         .iterator();
     while (it.hasNext()) {
       Entry<ImageType, VideoRecorder> entry = it.next();
       VideoRecorder recorder = entry.getValue();
+      info.setPath(recorder.getPath(), recorder.getExt());
       recorder.stop();
       it.remove();
     }
-    this.minFrameIndex=null;
-    this.maxFrameIndex=null;
+    VideoInfo result = info;
+    this.info = new VideoInfo(info);
+    return result;
   }
 }
