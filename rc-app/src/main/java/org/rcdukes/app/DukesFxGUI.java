@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
-import org.rcdukes.action.Navigator;
-import org.rcdukes.action.StraightLaneNavigator;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.DukesVerticle.Status;
 import org.rcdukes.common.Environment;
@@ -18,10 +16,10 @@ import org.rcdukes.detect.ImageFetcher;
 import org.rcdukes.error.ErrorHandler;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.ImageCollector.ImageType;
 import org.rcdukes.video.ImageSource;
 import org.rcdukes.video.ImageUtils;
 import org.rcdukes.video.VideoRecorders;
-import org.rcdukes.video.VideoRecorders.VideoInfo;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
@@ -147,6 +145,7 @@ public class DukesFxGUI extends BaseGUI
 
   DisplayMode displayMode = DisplayMode.Lane;
   private int cameraImageWidth;
+  private ImageDebugger imageDebugger;
 
   /**
    * initialize me
@@ -286,13 +285,15 @@ public class DukesFxGUI extends BaseGUI
     File file = fileChooser.showOpenDialog(primaryStage);
     if (file != null) {
       this.lanevideo.setValue(file.getPath());
-      this.pictureImageFetcher = null;
-      this.pictureButtonsEnable(true);
-      File graphFile = VideoInfo.getNavigationFile(file);
-      if (graphFile.exists()) {
-        this.getPictureNavigator().loadGraph(graphFile);
+      try {
+        this.imageDebugger=new ImageDebugger(file);
+        if (imageDebugger.isActive()) {
+          this.pictureButtonsEnable(true);
+          this.nextPictureButton.fire();
+        }
+      } catch (Exception e) {
+        this.handle(e);
       }
-      this.nextPictureButton.fire();
     }
   }
 
@@ -432,28 +433,13 @@ public class DukesFxGUI extends BaseGUI
   }
 
   private void stepPicture(PictureStep step) {
-    this.laneDetectionController.stepPicture(this.cameraController,
-        this.getPictureImageFetcher(), this.getPictureNavigator(), step);
+    imageDebugger.step(step);
+    this.showFrameIndex(imageDebugger.getFrameIndex());
+    displayer.displayImageCollector(imageDebugger.imageCollector);
+    imageDebugger.showDebugInfo(eventbusLogger);
   }
 
-  Navigator pictureNavigator;
-
-  Navigator getPictureNavigator() {
-    if (pictureNavigator == null) {
-      pictureNavigator = new StraightLaneNavigator();
-    }
-    return pictureNavigator;
-  }
-
-  ImageFetcher pictureImageFetcher;
-
-  public ImageFetcher getPictureImageFetcher() {
-    if (pictureImageFetcher == null) {
-      pictureImageFetcher = getImageFetcher();
-    }
-    return pictureImageFetcher;
-  }
-
+  
   /**
    * Handle action related to input (in this case specifically only responds to
    * keyboard event CTRL-A).
@@ -644,9 +630,17 @@ public class DukesFxGUI extends BaseGUI
   }
 
   @Override
-  public void showFrameIndex(int frameIndex) {
+  public void showFrameIndex(long frameIndex) {
     String frameIndexString = String.format("%04d", frameIndex);
     this.onFXThread(frameIndexLabel.textProperty(), frameIndexString);
+  }
+
+  @Override
+  public void displayImageCollector(ImageCollector collector) {
+    this.displayOriginal(collector.getImage(ImageType.camera, true));
+    this.display1(collector.getImage(ImageType.edges, true));
+    this.display2(collector.getImage(ImageType.lines, true));
+    this.display3(collector.getImage(ImageType.birdseye, true));
   }
 
 }

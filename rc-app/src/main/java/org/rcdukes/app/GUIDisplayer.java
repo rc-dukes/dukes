@@ -18,16 +18,18 @@ public interface GUIDisplayer {
   void display1(Image image);
   void display2(Image image);
   void display3(Image image);
+  void displayImageCollector(ImageCollector collector);
   void setImageCollector(ImageCollector imageCollector);
   void setMessageText(String text);
   void setCameraButtonText(String text);
   void setVideoRecorders(VideoRecorders videoRecorders);
   Property<String> getStartVideoProperty();
-  void showFrameIndex(int frameIndex);
+  void showFrameIndex(long frameIndex);
   /** 
    * handle the given error
    * @param th
    */
   void handle(Throwable th);
+
   
 }

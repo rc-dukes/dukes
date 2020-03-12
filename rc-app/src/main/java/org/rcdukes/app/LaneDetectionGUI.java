@@ -1,24 +1,18 @@
 package org.rcdukes.app;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.rcdukes.action.Navigator;
-import org.rcdukes.app.GUIDisplayer.PictureStep;
 import org.rcdukes.camera.CameraMatrix;
 import org.rcdukes.common.Config;
-import org.rcdukes.detect.ImageFetcher;
 import org.rcdukes.detect.ImageObserver;
 import org.rcdukes.detect.LaneDetector;
 import org.rcdukes.detect.linedetection.HoughLinesLineDetector;
 import org.rcdukes.geometry.LaneDetectionResult;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
-import org.rcdukes.video.ImageCollector.ImageType;
 import org.rcdukes.video.ImageSource;
 import org.rcdukes.video.VideoRecorders;
-import org.rcdukes.video.VideoRecorders.VideoInfo;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -73,7 +67,6 @@ public class LaneDetectionGUI extends BaseGUI {
   public class FrameGrabber extends ImageObserver {
     private CameraGUI cameraGUI;
     private VideoRecorders videoRecorders;
-    int grabIndex = 0;
 
     /**
      * construct me for the given cameraGUI
@@ -108,16 +101,10 @@ public class LaneDetectionGUI extends BaseGUI {
             .getNavigator();
         if (navigator != null)
           navigator.navigateWithLaneDetectionResult(ldr);
-        grabIndex++;
-        String info = String.format("%d/%d", this.grabIndex,
-            originalImage.getFrameIndex());
-        collector.addImageInfo(info);
-        displayer.displayOriginal(collector.getImage(ImageType.camera, true));
-        displayer.display1(collector.getImage(ImageType.edges, true));
-        displayer.display2(collector.getImage(ImageType.lines, true));
-        displayer.display3(collector.getImage(ImageType.birdseye, true));
-        videoRecorders.recordFrame(collector);
-      } catch (Throwable t) {
+        if (videoRecorders.isStarted())
+          videoRecorders.recordFrame(collector,true);
+        displayer.displayImageCollector(collector);
+         } catch (Throwable t) {
         onError(t);
         // throw Exceptions.propagate(t);
       }
@@ -194,61 +181,6 @@ public class LaneDetectionGUI extends BaseGUI {
     this.lineDetectThreshold.setValue(ld.getThreshold());
     this.lineDetectMinLineLength.setValue(ld.getMinLineLength());
     this.lineDetectMaxLineGap.setValue(ld.getMaxLineGap());
-  }
-
-  /**
-   * single step thru the pictures of the current Video
-   * showing debug information from graph database
-   * 
-   * @param cameraGUI
-   * @param imageFetcher
-   * @param nav
-   * @param step
-   */
-  public void stepPicture(CameraGUI cameraGUI, ImageFetcher imageFetcher,
-       Navigator nav, PictureStep step) {
-    configureGUI();
-    Image image = null;
-    int index = imageFetcher.getFrameIndex();
-    switch (step) {
-    case FIRST:
-      if (index >= 0)
-        imageFetcher.close();
-      imageFetcher.open();
-      break;
-    case PREV:
-      if (index >= 0)
-        imageFetcher.close();
-      imageFetcher.open();
-      for (int i = 1; i < index - 1; i++)
-        imageFetcher.fetch();
-      break;
-    case NEXT:
-      break;
-
-    case FORWARD:
-      for (int i = 1; i <= 9; i++)
-        imageFetcher.fetch();
-      break;
-    }
-    image = imageFetcher.fetch();
-    if (image != null) {
-      displayer.showFrameIndex(image.getFrameIndex());
-      displayer.display2(image);
-
-      Vertex infoVertex = nav.g().V().hasLabel("VideoInfo").next();
-      VideoInfo info = nav.fromVertex(infoVertex, VideoInfo.class);
-      List<Vertex> navNodes = nav.g().V()
-          .has("frameIndex", info.maxFrameIndex + index).toList();
-      LOG.info(String.format("found %d nav nodes", navNodes.size()));
-      if (navNodes.size() > 0) {
-        for (Vertex navNode:navNodes) {
-          for (String key:navNode.keys()) {
-            this.eventbusLogger.log(String.format("%s=%s\n",key,navNode.property(key).value()));
-          }
-        }
-      }
-    }
   }
 
 }

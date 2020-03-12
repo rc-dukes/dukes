@@ -67,15 +67,15 @@ public class TestVideoRecorder extends OpenCVBasedTest {
     vr.start();
     Mat frame = ImageUtils.fromResource(this.getClass(), imagePath);
     imageCollector.addImage(frame, ImageType.camera);
-    vr.recordFrame(imageCollector);
+    vr.recordFrame(imageCollector,true);
     VideoInfo info = vr.stop();
     if (debug) {
       JsonObject infoJo = JsonObject.mapFrom(info);
       System.out.println(infoJo.encodePrettily());
     }
     assertEquals(10.0,info.fps,0.01);
-    assertEquals(-1,info.minFrameIndex.intValue());
-    assertEquals(-1,info.maxFrameIndex.intValue());
+    assertEquals(1,info.minFrameIndex.intValue());
+    assertEquals(1,info.maxFrameIndex.intValue());
     assertFalse(info.path.contains(".avi"));
     assertTrue(info.path.endsWith(".json"));
     assertTrue(info.path.contains("navigation_")); 

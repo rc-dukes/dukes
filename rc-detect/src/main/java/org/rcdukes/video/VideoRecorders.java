@@ -75,12 +75,15 @@ public class VideoRecorders {
    * 
    * @param collector
    */
-  public void recordFrame(ImageCollector collector) {
+  public void recordFrame(ImageCollector collector, boolean doAddInfo) {
+    String imageInfo = String.format("%d", info.frameIndex);
+    collector.addImageInfo(imageInfo);
     for (ImageType imageType : ImageType.values()) {
       boolean failSafe = false;
       Image image = collector.getImage(imageType, failSafe);
       if (image != null) {
-        info.setFrameIndex(image.getFrameIndex());
+        if (imageType == ImageType.camera)
+          info.setFrameIndex(null);
         this.recordFrame(image.getFrame(), imageType);
       }
     }
@@ -94,11 +97,14 @@ public class VideoRecorders {
    */
   public static class VideoInfo {
     public double fps;
+    public int frameIndex;
     public Integer minFrameIndex = null;
     public Integer maxFrameIndex = null;
     public String path;
 
-    public VideoInfo() {};
+    public VideoInfo() {
+    };
+
     /**
      * construct me with given path and frames per second
      * 
@@ -107,6 +113,7 @@ public class VideoRecorders {
      */
     public VideoInfo(double fps) {
       this.fps = fps;
+      this.frameIndex = 0;
     }
 
     /**
@@ -123,7 +130,11 @@ public class VideoRecorders {
      * 
      * @param frameIndex
      */
-    public void setFrameIndex(int frameIndex) {
+    public void setFrameIndex(Integer newFrameIndex) {
+      if (newFrameIndex != null)
+        frameIndex = newFrameIndex;
+      else
+        frameIndex++;
       if (minFrameIndex == null)
         minFrameIndex = frameIndex;
       if (maxFrameIndex == null)
@@ -139,21 +150,22 @@ public class VideoRecorders {
      * @param ext
      */
     public void setPath(String pPath) {
-      if (this.path == null && pPath!=null) {
+      if (this.path == null && pPath != null) {
         this.path = getNavigationFile(new File(pPath)).getPath();
       }
     }
 
     /**
      * get the navigation File for the given file
+     * 
      * @param file
      * @return - the navigationFile
      */
     public static File getNavigationFile(File file) {
-      String graphFilePath = FilenameUtils
-          .getBaseName(file.getPath()) + ".json";
-      graphFilePath=graphFilePath.replaceAll(".*_mp4v_", "navigation_");
-      File graphFile = new File(file.getParent(),graphFilePath);
+      String graphFilePath = FilenameUtils.getBaseName(file.getPath())
+          + ".json";
+      graphFilePath = graphFilePath.replaceAll(".*_mp4v_", "navigation_");
+      File graphFile = new File(file.getParent(), graphFilePath);
       return graphFile;
     }
   }
