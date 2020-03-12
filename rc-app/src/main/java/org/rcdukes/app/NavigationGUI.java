@@ -1,6 +1,9 @@
 package org.rcdukes.app;
 
+import java.io.File;
+
 import org.rcdukes.action.Navigator;
+import org.rcdukes.action.StraightLaneNavigator;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.Config;
 import org.rcdukes.common.Events;
@@ -90,6 +93,7 @@ public class NavigationGUI extends BaseGUI {
   boolean power = false;
   AppVerticle appVerticle;
   private ImageCollector imageCollector;
+  private StraightLaneNavigator laneNavigator;
 
 
   /**
@@ -312,6 +316,15 @@ public class NavigationGUI extends BaseGUI {
   public void setVideoRecorders(VideoRecorders videoRecorders) {
    this.videoRecorders=videoRecorders;
    this.recordButton.setDisable(false);
+  }
+  
+  /**
+   * load the debugGraph for the given graph file
+   * @param graphFile
+   */
+  public void loadDebugGraph(File graphFile) {
+    laneNavigator=new StraightLaneNavigator();
+    laneNavigator.loadGraph(graphFile);
   }
 
 }

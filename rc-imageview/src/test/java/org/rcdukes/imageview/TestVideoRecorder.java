@@ -75,5 +75,7 @@ public class TestVideoRecorder extends OpenCVBasedTest {
     assertEquals(-1,info.minFrameIndex.intValue());
     assertEquals(-1,info.maxFrameIndex.intValue());
     assertFalse(info.path.contains(".avi"));
+    assertTrue(info.path.endsWith(".json"));
+    assertTrue(info.path.contains("navigation_")); 
   }
 }

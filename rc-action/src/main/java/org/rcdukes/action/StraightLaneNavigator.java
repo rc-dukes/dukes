@@ -1,5 +1,6 @@
 package org.rcdukes.action;
 
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
@@ -370,10 +371,20 @@ public class StraightLaneNavigator implements Navigator {
   }
 
   @Override
-  public void videoStopped(VideoInfo videoInfo) {
-    String gPath=videoInfo.path+".json";
+  public void videoStopped(VideoInfo videoInfo) { 
     addVertex(videoInfo);
-    this.g().io(gPath).with(IO.writer,IO.graphson).write().iterate();
+    this.g().io(videoInfo.path).with(IO.writer,IO.graphson).write().iterate();
+  }
+
+  /**
+   * load the given graphFile
+   * @param graphFile
+   */
+  public void loadGraph(File graphFile) {
+    this.g().io(graphFile.getPath()).with(IO.reader,IO.graphson).read().iterate();
+    long nodeCount=this.g().V().count().next().longValue();
+    String msg=String.format("loaded graph %s with %d nodes", graphFile.getPath(),nodeCount);
+    LOG.info(msg);
   }
 
 }

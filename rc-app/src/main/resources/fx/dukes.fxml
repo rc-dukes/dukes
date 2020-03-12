@@ -140,10 +140,13 @@
 						<RowConstraints />
 					</rowConstraints>
 				</GridPane>
-				<Button fx:id="cameraButton" alignment="center"
-					onAction="#startCamera" text="Start camera" />
-
-				<Label fx:id="currentValues" />
+				<HBox>
+					<Button fx:id="cameraButton" alignment="center"
+						onAction="#startCamera" text="Start camera" />
+					<Button fx:id="prevPictureButton" text="prev" onAction="#onPrevPicture"/>
+					<Label fx:id="frameIndexLabel" />
+				  <Button fx:id="nextPictureButton" text="next" onAction="#onNextPicture"/>
+				</HBox>
 			</VBox>
 		</VBox>
 		<VBox>

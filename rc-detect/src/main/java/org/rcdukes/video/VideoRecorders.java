@@ -1,10 +1,12 @@
 package org.rcdukes.video;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.io.FilenameUtils;
 import org.opencv.core.Mat;
 import org.rcdukes.video.ImageCollector.ImageType;
 
@@ -135,12 +137,23 @@ public class VideoRecorders {
      * @param path
      * @param ext
      */
-    public void setPath(String pPath, String ext) {
+    public void setPath(String pPath) {
       if (this.path == null && pPath!=null) {
-        if (pPath.endsWith(ext))
-          pPath = pPath.substring(0, pPath.length() - ext.length());
-        this.path = pPath;
+        this.path = getNavigationFile(new File(pPath)).getPath();
       }
+    }
+
+    /**
+     * get the navigation File for the given file
+     * @param file
+     * @return - the navigationFile
+     */
+    public static File getNavigationFile(File file) {
+      String graphFilePath = FilenameUtils
+          .getBaseName(file.getPath()) + ".json";
+      graphFilePath=graphFilePath.replaceAll(".*_mp4v_", "navigation_");
+      File graphFile = new File(file.getParent(),graphFilePath);
+      return graphFile;
     }
   }
 
@@ -153,7 +166,7 @@ public class VideoRecorders {
     while (it.hasNext()) {
       Entry<ImageType, VideoRecorder> entry = it.next();
       VideoRecorder recorder = entry.getValue();
-      info.setPath(recorder.getPath(), recorder.getExt());
+      info.setPath(recorder.getPath());
       recorder.stop();
       it.remove();
     }

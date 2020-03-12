@@ -107,6 +107,26 @@ public class ImageFetcher {
   }
 
   /**
+   * wait for the next Frame
+   * @return the current time in milliseconds
+   */
+  public long waitForNextFrame() {
+    long currentMillis = System.nanoTime() / 1000000;
+    int waitMillis = (int) Math.round(1000 / fps);
+    waitMillis -= currentMillis - milliTimeStamp;
+    if (waitMillis > 0) {
+      if (debug)
+        LOG.info(String.format(Locale.ENGLISH, "waiting %3d msecs for %.1f fps",
+            waitMillis, getFps()));
+      try {
+        Thread.sleep(waitMillis);
+      } catch (InterruptedException e) {
+        // ignore
+      }
+    }
+    return currentMillis;
+  }
+  /**
    * fetch an image Matrix - will block to make sure Mat is emitted at the
    * frames per second rate configured
    * 
@@ -122,19 +142,8 @@ public class ImageFetcher {
         throw new IllegalStateException(msg);
       }
     }
-    long currentMillis = System.nanoTime() / 1000000;
-    int waitMillis = (int) Math.round(1000 / fps);
-    waitMillis -= currentMillis - milliTimeStamp;
-    if (waitMillis > 0) {
-      if (debug)
-        LOG.info(String.format(Locale.ENGLISH, "waiting %3d msecs for %.1f fps",
-            waitMillis, getFps()));
-      try {
-        Thread.sleep(waitMillis);
-      } catch (InterruptedException e) {
-        // ignore
-      }
-    }
+    long currentMillis=waitForNextFrame();
+  
     // shall we "replay" the latest current Image?
     if (this.staticImage && currentImage != null) {
       Mat frame = currentImage.getFrame().clone();

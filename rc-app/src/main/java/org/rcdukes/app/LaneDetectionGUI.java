@@ -52,7 +52,9 @@ public class LaneDetectionGUI extends BaseGUI {
   private boolean configured = false;
   Observable<Image> simulatorImageObservable;
   private ImageObserver frameGrabber;
-
+  // @TODO make configurable
+  double fps=10.0;
+  
   public LaneDetectionGUI() {
     Config.configureLogging();
   }
@@ -82,8 +84,7 @@ public class LaneDetectionGUI extends BaseGUI {
     public void onNext(Image originalImage) {
       try {
         super.onNext(originalImage);
-        if (debug)
-          displayCurrentSliderValues();
+        displayer.showFrameIndex(originalImage.getFrameIndex());
         applySliderValuesToConfig();
         cameraGUI.applySliderValues();
         ImageCollector collector = new ImageCollector();
@@ -117,11 +118,16 @@ public class LaneDetectionGUI extends BaseGUI {
     }
   }
 
+  /**
+   * start the camera from the given ImageSource
+   * @param cameraGUI
+   * @param imageSource
+   * @throws Exception
+   */
   public void startCamera(CameraGUI cameraGUI, ImageSource imageSource)
       throws Exception {
     configureGUI();
     if (this.frameGrabber == null) {
-      double fps=10.0;
       frameGrabber = new FrameGrabber(displayer,cameraGUI,fps);
       displayer.setCameraButtonText("Stop Camera");
       Observable<Image> imageObservable = imageSource.getImageObservable();
@@ -161,17 +167,6 @@ public class LaneDetectionGUI extends BaseGUI {
     lineDetector.setMaxLineGap(lineDetectMaxLineGap.getValue());
   }
 
-  private void displayCurrentSliderValues() {
-    // show the current selected HSV range
-    String valuesToPrint = "canny1: " + cannyThreshold1.getValue()
-        + ", canny2: " + cannyThreshold2.getValue() + ", rho: "
-        + lineDetectRho.getValue() + ", theta: " + lineDetectTheta.getValue()
-        + ", threshold: " + lineDetectThreshold.getValue() + ", minLength: "
-        + lineDetectMinLineLength.getValue() + ", maxGap: "
-        + lineDetectMaxLineGap.getValue();
-    displayer.showCurrentValues(valuesToPrint);
-  }
-
   private void configureSliderDefaults() {
     CannyEdgeDetector ed = new CannyEdgeDetector();
     this.cannyThreshold1.setValue(ed.getThreshold1());
@@ -184,5 +179,15 @@ public class LaneDetectionGUI extends BaseGUI {
     this.lineDetectMinLineLength.setValue(ld.getMinLineLength());
     this.lineDetectMaxLineGap.setValue(ld.getMaxLineGap());
   }
+
+  /**
+   * single step thru the pictures of the current Video
+   * @param cameraGUI
+   * @param displayer
+   * @param step
+   */
+  public void stepPicture(CameraGUI cameraGUI, ImageSource imageSource, int step) {
+  }
+
 
 }

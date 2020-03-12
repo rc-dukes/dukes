@@ -8,8 +8,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
 import org.rcdukes.common.Config;
-import org.rcdukes.common.Environment;
 import org.rcdukes.common.DukesVerticle.Status;
+import org.rcdukes.common.Environment;
 import org.rcdukes.common.EventbusLogger;
 import org.rcdukes.common.ServoPosition;
 import org.rcdukes.detect.ImageFetcher;
@@ -19,6 +19,7 @@ import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageSource;
 import org.rcdukes.video.ImageUtils;
 import org.rcdukes.video.VideoRecorders;
+import org.rcdukes.video.VideoRecorders.VideoInfo;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
@@ -28,9 +29,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -108,6 +107,10 @@ public class DukesFxGUI extends BaseGUI
   @FXML
   protected Button cameraButton;
   @FXML
+  protected Button nextPictureButton;
+  @FXML
+  protected Button prevPictureButton;
+  @FXML
   protected ComboBox<String> lanevideo;
   @FXML
   protected ComboBox<String> startvideo;
@@ -128,14 +131,10 @@ public class DukesFxGUI extends BaseGUI
   private CheckBox showStoppingZone;
   @FXML
   protected LabeledValueSlider roih;
-  
-  
-  // FXML label to show the current values set with the sliders
-  @FXML
-  private Label currentValues;
-  // property for object binding
-  private ObjectProperty<String> currentValuesProp;
 
+  @FXML
+  private Label frameIndexLabel;
+ 
   enum DisplayMode {
     Lane, Start
   }
@@ -164,9 +163,6 @@ public class DukesFxGUI extends BaseGUI
     this.laneDetectionController.setPositionDisplay(this);
     this.startDetectionController.setDisplayer(this);
     this.navigationController.setPositionDisplay(this);
-    // bind a text property with the string containing the current Values of
-    currentValuesProp = new SimpleObjectProperty<>();
-    this.currentValues.textProperty().bind(currentValuesProp);
     this.lanevideo.getItems().setAll("simulator",
         "http://wiki.bitplan.com/videos/full_run.mp4",
         "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg/1280px-4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg",
@@ -175,12 +171,12 @@ public class DukesFxGUI extends BaseGUI
         "file:/Users/wf/Documents/workspace/dukes/rc-detect/src/main/resources/images/road.jpg");
     this.cameraController.roiy = roiy;
     this.cameraController.roih = roih;
-    this.cameraController.angleOffset=angleOffset;
-    this.cameraController.showStoppingZone=this.showStoppingZone;
-    this.cameraController.imageWidth=this.cameraImageWidth;
-    File mediaPath=new File(Environment.dukesHome+"media");
+    this.cameraController.angleOffset = angleOffset;
+    this.cameraController.showStoppingZone = this.showStoppingZone;
+    this.cameraController.imageWidth = this.cameraImageWidth;
+    File mediaPath = new File(Environment.dukesHome + "media");
     mediaPath.mkdirs();
-    ImageUtils.MEDIA_PATH=mediaPath.getPath();
+    ImageUtils.MEDIA_PATH = mediaPath.getPath();
   }
 
   @FXML
@@ -192,10 +188,12 @@ public class DukesFxGUI extends BaseGUI
     this.setMenuButtonIcon(helpButton, FontAwesomeIcon.QUESTION_CIRCLE);
     this.setMenuButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN);
     this.setMenuButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN);
+    setButtonIcon(prevPictureButton, MaterialDesignIcon.ARROW_LEFT_BOLD);
+    setButtonIcon(nextPictureButton, MaterialDesignIcon.ARROW_RIGHT_BOLD);
     this.lanevideo.setValue("http://wiki.bitplan.com/videos/full_run.mp4");
     this.startvideo.setValue("http://wiki.bitplan.com/videos/startlamp2.m4v");
-    this.showPosition(new ServoPosition(0,0.0, "m/s","motor"));
-    this.showPosition(new ServoPosition(0,0.0,"°","steering"));
+    this.showPosition(new ServoPosition(0, 0.0, "m/s", "motor"));
+    this.showPosition(new ServoPosition(0, 0.0, "°", "steering"));
     this.navigationController.setEventbusLogger(this);
     this.laneDetectionController.setEventbusLogger(this);
     root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -244,7 +242,7 @@ public class DukesFxGUI extends BaseGUI
   public void display2(Image image) {
     displayImage(cameraController.processedImage2, image);
   }
-  
+
   @Override
   public void display3(Image image) {
     displayImage(cameraController.processedImage3, image);
@@ -253,12 +251,6 @@ public class DukesFxGUI extends BaseGUI
   @Override
   public void setCameraButtonText(String text) {
     this.cameraButton.setText(text);
-  }
-
-  @Override
-  public void showCurrentValues(String text) {
-    LOG.info(text);
-    this.onFXThread(this.currentValuesProp, text);
   }
 
   /**
@@ -270,12 +262,17 @@ public class DukesFxGUI extends BaseGUI
   @FXML
   private void onOpen(final ActionEvent event) {
     final FileChooser fileChooser = new FileChooser();
+    fileChooser.setInitialDirectory(new File(ImageUtils.MEDIA_PATH));
     FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
         "Video and Image Files", "*.jpg", "*.png", "*.avi", "*.mp4", "*.m4v");
     fileChooser.getExtensionFilters().add(extFilter);
     File file = fileChooser.showOpenDialog(primaryStage);
     if (file != null) {
       this.lanevideo.setValue(file.getPath());
+      File graphFile=VideoInfo.getNavigationFile(file);
+      if (graphFile.exists()) {
+        this.navigationController.loadDebugGraph(graphFile);
+      }
     }
   }
 
@@ -392,6 +389,16 @@ public class DukesFxGUI extends BaseGUI
   @FXML
   private void onHelpAbout(final ActionEvent event) {
     this.helpAbout();
+  }
+  
+  @FXML
+  private void onPrevPicture(final ActionEvent event) {
+    this.laneDetectionController.stepPicture(this.cameraController,this,-1);
+  }
+
+  @FXML
+  private void onNextPicture(final ActionEvent event) {
+    this.laneDetectionController.stepPicture(this.cameraController,this,1);
   }
 
   /**
@@ -533,9 +540,9 @@ public class DukesFxGUI extends BaseGUI
 
   @Override
   public void showPosition(ServoPosition position) {
-    switch(position.kind) {
+    switch (position.kind) {
     case "motor":
-      Platform.runLater(()->{
+      Platform.runLater(() -> {
         // motorGauge.setSkinType(eu.hansolo.medusa.Gauge.SkinType.LCD);
         motorGauge.setTitle("Speed");
         motorGauge.setDecimals(1);
@@ -546,7 +553,7 @@ public class DukesFxGUI extends BaseGUI
       });
       break;
     case "steering":
-      Platform.runLater(()->{
+      Platform.runLater(() -> {
         // steeringGauge.setSkinType(SkinType.LCD);
         steeringGauge.setDecimals(1);
         steeringGauge.setMinValue(-30);
@@ -564,12 +571,18 @@ public class DukesFxGUI extends BaseGUI
   }
 
   public void setCameraImageWidth(int imageWidth) {
-    this.cameraImageWidth=imageWidth;
+    this.cameraImageWidth = imageWidth;
   }
 
   @Override
   public void setVideoRecorders(VideoRecorders videoRecorders) {
     this.navigationController.setVideoRecorders(videoRecorders);
+  }
+
+  @Override
+  public void showFrameIndex(int frameIndex) {
+    String frameIndexString=String.format("%04d", frameIndex);
+    this.onFXThread(frameIndexLabel.textProperty(), frameIndexString);
   }
 
 }
