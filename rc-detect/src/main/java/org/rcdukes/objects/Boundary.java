@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.objects;
+package org.rcdukes.objects;
 
 import static java.util.Optional.ofNullable;
 
@@ -8,6 +8,9 @@ import java.util.Optional;
 import org.rcdukes.detect.linedetection.LineFilter;
 import org.rcdukes.geometry.Line;
 
+/**
+ * a Boundary
+ */
 public class Boundary {
 
     private LineFilter filter;

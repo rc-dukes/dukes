@@ -1,9 +1,8 @@
 package org.rcdukes.detectors;
 
+import org.rcdukes.objects.StartLight;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
-
-import nl.vaneijndhoven.objects.StartLight;
 
 /**
  * start light detection

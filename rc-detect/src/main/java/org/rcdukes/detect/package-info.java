@@ -1,5 +1,4 @@
   /**
-   * nl.vaneijndhoven.detect is part of the rc-detect module
-   * @TODO - add description
+   * org.rcdukes.detect is part of the rc-detect module
    */
   package org.rcdukes.detect;

@@ -1,9 +1,13 @@
-package nl.vaneijndhoven.objects;
+package org.rcdukes.objects;
 
 import java.util.Optional;
 
 import org.rcdukes.geometry.Line;
 
+/**
+ * Stopping Zone
+ *
+ */
 public class StoppingZone {
 
     private Optional<Line> entrance;

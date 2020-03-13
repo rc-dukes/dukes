@@ -15,13 +15,13 @@ import org.rcdukes.geometry.Lane;
 import org.rcdukes.geometry.LaneDetectionResult;
 import org.rcdukes.geometry.Line;
 import org.rcdukes.geometry.Point;
+import org.rcdukes.objects.ViewPort;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageCollector.ImageType;
 import org.rcdukes.video.ImageUtils;
 
 import io.vertx.core.json.JsonObject;
-import nl.vaneijndhoven.objects.ViewPort;
 
 /**
  * test the lane detection

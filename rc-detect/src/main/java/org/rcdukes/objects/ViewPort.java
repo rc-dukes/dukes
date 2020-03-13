@@ -1,7 +1,11 @@
-package nl.vaneijndhoven.objects;
+package org.rcdukes.objects;
 
 import org.rcdukes.geometry.Point2D;
 
+/**
+ * a viewport
+ *
+ */
 public class ViewPort {
 
     private Point2D origin;

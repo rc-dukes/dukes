@@ -11,11 +11,15 @@ import org.rcdukes.camera.ImagePolygon;
 import org.rcdukes.camera.PerspectiveShift;
 import org.rcdukes.detect.CameraConfig;
 import org.rcdukes.detect.LaneDetector;
+import org.rcdukes.detect.stopzonedetection.DefaultStoppingZoneDetector;
 import org.rcdukes.geometry.Lane;
 import org.rcdukes.geometry.LaneDetectionResult;
 import org.rcdukes.geometry.Line;
 import org.rcdukes.geometry.Point;
 import org.rcdukes.geometry.Polygon;
+import org.rcdukes.objects.StoppingZone;
+import org.rcdukes.objects.ViewPort;
+import org.rcdukes.objects.stoppingzone.StoppingZoneOrientation;
 import org.rcdukes.roi.ROI;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
@@ -24,11 +28,6 @@ import org.rcdukes.video.ImageUtils;
 import org.rcdukes.video.ImageUtils.CVColor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import nl.vaneijndhoven.objects.StoppingZone;
-import nl.vaneijndhoven.objects.ViewPort;
-import nl.vaneijndhoven.objects.stoppingzone.StoppingZoneOrientation;
-import nl.vaneijndhoven.opencv.stopzonedetection.DefaultStoppingZoneDetector;
 
 /**
  * image lane detection

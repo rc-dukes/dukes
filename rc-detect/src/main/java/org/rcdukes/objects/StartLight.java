@@ -1,8 +1,7 @@
-package nl.vaneijndhoven.objects;
+package org.rcdukes.objects;
 
 /**
  * enumeration representing the StartLight state machine
- * @author wf
  *
  */
 public enum StartLight {

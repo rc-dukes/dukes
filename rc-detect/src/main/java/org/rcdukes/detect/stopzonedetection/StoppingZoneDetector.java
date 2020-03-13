@@ -1,10 +1,13 @@
-package nl.vaneijndhoven.opencv.stopzonedetection;
+package org.rcdukes.detect.stopzonedetection;
 
 import org.rcdukes.geometry.Line;
-import nl.vaneijndhoven.objects.StoppingZone;
+import org.rcdukes.objects.StoppingZone;
 
 import java.util.Collection;
 
+/**
+ * detector for stopping zone
+ */
 public interface StoppingZoneDetector {
 
     StoppingZone detect(Collection<Line> lines);

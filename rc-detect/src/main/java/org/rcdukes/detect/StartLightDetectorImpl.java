@@ -14,12 +14,11 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.rcdukes.detectors.StartLightDetector;
+import org.rcdukes.objects.StartLight;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageCollector.ImageType;
 import org.rcdukes.video.ImageUtils.CVColor;
-
-import nl.vaneijndhoven.objects.StartLight;
 
 /**
  * detector for the start light

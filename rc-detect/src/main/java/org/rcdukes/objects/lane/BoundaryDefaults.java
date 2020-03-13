@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.objects.lane;
+package org.rcdukes.objects.lane;
 
 public class BoundaryDefaults {
   public static double DEFAULT_LANE_BOUNDARY_ANGLE = 45;

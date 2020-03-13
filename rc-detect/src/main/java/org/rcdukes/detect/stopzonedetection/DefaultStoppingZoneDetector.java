@@ -1,9 +1,10 @@
-package nl.vaneijndhoven.opencv.stopzonedetection;
+package org.rcdukes.detect.stopzonedetection;
 
 import org.rcdukes.geometry.Line;
-import nl.vaneijndhoven.objects.StoppingZone;
-import nl.vaneijndhoven.objects.stoppingzone.ZoneEndBoundary;
-import nl.vaneijndhoven.objects.stoppingzone.ZoneStartBoundary;
+import org.rcdukes.objects.StoppingZone;
+import org.rcdukes.objects.stoppingzone.ZoneEndBoundary;
+import org.rcdukes.objects.stoppingzone.ZoneStartBoundary;
+
 import java.util.Collection;
 import java.util.Optional;
 

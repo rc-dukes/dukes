@@ -1,8 +1,7 @@
-package nl.vaneijndhoven.objects.stoppingzone;
+package org.rcdukes.objects.stoppingzone;
 
 import org.rcdukes.detect.linedetection.LineFilter;
-
-import nl.vaneijndhoven.objects.Boundary;
+import org.rcdukes.objects.Boundary;
 
 public class ZoneEndBoundary extends Boundary {
 

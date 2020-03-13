@@ -8,8 +8,7 @@ import org.rcdukes.geometry.Lane;
 import org.rcdukes.geometry.Line;
 import org.rcdukes.geometry.Point;
 import org.rcdukes.geometry.Point2D;
-
-import nl.vaneijndhoven.objects.ViewPort;
+import org.rcdukes.objects.ViewPort;
 
 /**
  * calculates the orientation of a given lane

@@ -1,12 +1,11 @@
-package nl.vaneijndhoven.objects.stoppingzone;
+package org.rcdukes.objects.stoppingzone;
 
 import org.rcdukes.geometry.Lane;
 import org.rcdukes.geometry.Line;
 import org.rcdukes.geometry.Point;
 import org.rcdukes.geometry.Point2D;
-
-import nl.vaneijndhoven.objects.StoppingZone;
-import nl.vaneijndhoven.objects.ViewPort;
+import org.rcdukes.objects.StoppingZone;
+import org.rcdukes.objects.ViewPort;
 
 import java.util.Optional;
 

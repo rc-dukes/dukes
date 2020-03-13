@@ -2,8 +2,7 @@ package org.rcdukes.detectors;
 
 import org.rcdukes.geometry.Lane;
 import org.rcdukes.geometry.Line;
-
-import nl.vaneijndhoven.objects.ViewPort;
+import org.rcdukes.objects.ViewPort;
 
 import java.util.Collection;
 

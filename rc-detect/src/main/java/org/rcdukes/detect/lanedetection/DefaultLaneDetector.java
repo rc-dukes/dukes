@@ -8,10 +8,9 @@ import org.rcdukes.geometry.Lane;
 import org.rcdukes.geometry.Line;
 import org.rcdukes.geometry.Point;
 import org.rcdukes.geometry.Point2D;
-
-import nl.vaneijndhoven.objects.ViewPort;
-import nl.vaneijndhoven.objects.lane.LaneLeftBoundary;
-import nl.vaneijndhoven.objects.lane.LaneRightBoundary;
+import org.rcdukes.objects.ViewPort;
+import org.rcdukes.objects.lane.LaneLeftBoundary;
+import org.rcdukes.objects.lane.LaneRightBoundary;
 
 /**
  * the default lane detector
