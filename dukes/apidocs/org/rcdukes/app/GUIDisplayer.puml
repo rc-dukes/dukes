@@ -1,0 +1,21 @@
+@startuml
+
+    interface GUIDisplayer [[GUIDisplayer.html]] {
+        {abstract} +displayOriginal(Image): void
+        {abstract} +displayOriginal(Mat): void
+        {abstract} +display1(Image): void
+        {abstract} +display2(Image): void
+        {abstract} +display3(Image): void
+        {abstract} +displayImageCollector(ImageCollector): void
+        {abstract} +setImageCollector(ImageCollector): void
+        {abstract} +setMessageText(String): void
+        {abstract} +setCameraButtonText(String): void
+        {abstract} +setVideoRecorders(VideoRecorders): void
+        {abstract} +getStartVideoProperty(): Property<String>
+        {abstract} +showFrameIndex(long): void
+        {abstract} +handle(Throwable): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

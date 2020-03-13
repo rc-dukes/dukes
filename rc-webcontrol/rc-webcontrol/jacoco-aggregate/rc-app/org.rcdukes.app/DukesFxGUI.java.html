@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DukesFxGUI.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-webcontrol</a> &gt; <a href="../index.html" class="el_bundle">rc-app</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.app</a> &gt; <span class="el_source">DukesFxGUI.java</span></div><h1>DukesFxGUI.java</h1><pre class="source lang-java linenums">package org.rcdukes.app;
+
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+import org.opencv.core.Mat;
+import org.rcdukes.common.Config;
+import org.rcdukes.common.DukesVerticle.Status;
+import org.rcdukes.common.Environment;
+import org.rcdukes.common.EventbusLogger;
+import org.rcdukes.common.ServoPosition;
+import org.rcdukes.detect.ImageFetcher;
+import org.rcdukes.error.ErrorHandler;
+import org.rcdukes.video.Image;
+import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.ImageCollector.ImageType;
+import org.rcdukes.video.ImageSource;
+import org.rcdukes.video.ImageUtils;
+import org.rcdukes.video.VideoRecorders;
+
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
+import eu.hansolo.medusa.Gauge;
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import io.vertx.core.json.JsonObject;
+import javafx.application.Platform;
+import javafx.beans.property.Property;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+/**
+ * combined GUI for detectors
+ *
+ */
+<span class="nc" id="L60">public class DukesFxGUI extends BaseGUI</span>
+    implements GUIDisplayer, EventbusLogger, ImageSource, PositionDisplay {
+  @FXML
+  private VBox root;
+  @FXML
+  private VBox vbox;
+  @FXML
+  private MenuBar menuBar;
+  @FXML
+  private TabPane tabPane;
+  // Inject tab content.
+  @FXML
+  private Tab laneTab;
+  @FXML
+  private VBox laneDetection;
+  @FXML
+  private LaneDetectionGUI laneDetectionController;
+  @FXML
+  private VBox navigation;
+  @FXML
+  private NavigationGUI navigationController;
+
+  @FXML
+  private HBox camera;
+  @FXML
+  private CameraGUI cameraController;
+
+  @FXML
+  private Tab startTab;
+  @FXML
+  private VBox startDetection;
+  @FXML
+  private StartLightDetectionGUI startDetectionController;
+  @FXML
+  protected Button homeButton;
+  @FXML
+  protected Button detectButton;
+  @FXML
+  protected Button githubButton;
+  @FXML
+  protected Button chatButton;
+  @FXML
+  protected Button helpButton;
+  @FXML
+  protected Button fullScreenButton;
+  @FXML
+  protected Button hideMenuButton;
+  @FXML
+  protected Button cameraButton;
+  @FXML
+  protected Button firstPictureButton;
+  @FXML
+  protected Button nextPictureButton;
+  @FXML
+  protected Button prevPictureButton;
+  @FXML
+  protected Button forwardPictureButton;
+  @FXML
+  protected ComboBox&lt;String&gt; lanevideo;
+  @FXML
+  protected ComboBox&lt;String&gt; startvideo;
+  @FXML
+  protected Gauge motorGauge;
+  @FXML
+  protected Gauge steeringGauge;
+  @FXML
+  protected TextArea messageArea;
+  @FXML
+  protected TextArea heartbeatArea;
+
+  @FXML
+  protected LabeledValueSlider angleOffset;
+  @FXML
+  protected LabeledValueSlider roiy;
+  @FXML
+  private CheckBox showStoppingZone;
+  @FXML
+  protected LabeledValueSlider roih;
+
+  @FXML
+  private Label frameIndexLabel;
+
+<span class="nc" id="L142">  enum DisplayMode {</span>
+<span class="nc" id="L143">    Lane, Start</span>
+  }
+
+<span class="nc" id="L146">  DisplayMode displayMode = DisplayMode.Lane;</span>
+  private int cameraImageWidth;
+  private ImageDebugger imageDebugger;
+
+  /**
+   * initialize me
+   * 
+   * @param primaryStage
+   */
+  public void init(Stage primaryStage) {
+<span class="nc" id="L156">    this.primaryStage = primaryStage;</span>
+<span class="nc" id="L157">    tabPane.getSelectionModel().selectedItemProperty()</span>
+<span class="nc" id="L158">        .addListener((ObservableValue&lt;? extends Tab&gt; observable, Tab oldValue,</span>
+            Tab newValue) -&gt; {
+<span class="nc bnc" id="L160" title="All 2 branches missed.">          if (newValue == laneTab) {</span>
+<span class="nc" id="L161">            displayMode = DisplayMode.Lane;</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">          } else if (newValue == startTab) {</span>
+<span class="nc" id="L163">            displayMode = DisplayMode.Start;</span>
+          }
+<span class="nc" id="L165">        });</span>
+<span class="nc" id="L166">    this.displayer = this;</span>
+<span class="nc" id="L167">    this.laneDetectionController.setDisplayer(this);</span>
+<span class="nc" id="L168">    this.laneDetectionController.setPositionDisplay(this);</span>
+<span class="nc" id="L169">    this.startDetectionController.setDisplayer(this);</span>
+<span class="nc" id="L170">    this.navigationController.setPositionDisplay(this);</span>
+<span class="nc" id="L171">    this.lanevideo.getItems().setAll(&quot;simulator&quot;,</span>
+        &quot;http://wiki.bitplan.com/videos/full_run.mp4&quot;,
+        &quot;https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg/1280px-4_lane_highway_roads_in_India_NH_48_Karnataka_3.jpg&quot;,
+        &quot;http://picaro/html/cam_pic_new.php&quot;,
+        &quot;http://picarford:8080/?action=stream&quot;,
+        &quot;file:/Users/wf/Documents/workspace/dukes/rc-detect/src/main/resources/images/road.jpg&quot;);
+<span class="nc" id="L177">    this.cameraController.roiy = roiy;</span>
+<span class="nc" id="L178">    this.cameraController.roih = roih;</span>
+<span class="nc" id="L179">    this.cameraController.angleOffset = angleOffset;</span>
+<span class="nc" id="L180">    this.cameraController.showStoppingZone = this.showStoppingZone;</span>
+<span class="nc" id="L181">    this.cameraController.imageWidth = this.cameraImageWidth;</span>
+<span class="nc" id="L182">    File mediaPath = new File(Environment.dukesHome + &quot;media&quot;);</span>
+<span class="nc" id="L183">    mediaPath.mkdirs();</span>
+<span class="nc" id="L184">    ImageUtils.MEDIA_PATH = mediaPath.getPath();</span>
+<span class="nc" id="L185">  }</span>
+
+  @FXML
+  public void initialize() {
+<span class="nc" id="L189">    this.setMenuButtonIcon(homeButton, MaterialDesignIcon.HOME);</span>
+<span class="nc" id="L190">    this.setMenuButtonIcon(detectButton, MaterialDesignIcon.CAMERA);</span>
+<span class="nc" id="L191">    this.setMenuButtonIcon(githubButton, MaterialDesignIcon.GITHUB_BOX);</span>
+<span class="nc" id="L192">    this.setMenuButtonIcon(chatButton, MaterialDesignIcon.COMMENT_TEXT);</span>
+<span class="nc" id="L193">    this.setMenuButtonIcon(helpButton, FontAwesomeIcon.QUESTION_CIRCLE);</span>
+<span class="nc" id="L194">    this.setMenuButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN);</span>
+<span class="nc" id="L195">    this.setMenuButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN);</span>
+<span class="nc" id="L196">    setButtonIcon(firstPictureButton, MaterialDesignIcon.REWIND);</span>
+<span class="nc" id="L197">    setButtonIcon(prevPictureButton, MaterialDesignIcon.ARROW_LEFT_BOLD);</span>
+<span class="nc" id="L198">    setButtonIcon(nextPictureButton, MaterialDesignIcon.ARROW_RIGHT_BOLD);</span>
+<span class="nc" id="L199">    setButtonIcon(forwardPictureButton, MaterialDesignIcon.FAST_FORWARD);</span>
+<span class="nc" id="L200">    pictureButtonsEnable(false);</span>
+<span class="nc" id="L201">    this.lanevideo.setValue(&quot;http://wiki.bitplan.com/videos/full_run.mp4&quot;);</span>
+<span class="nc" id="L202">    this.startvideo.setValue(&quot;http://wiki.bitplan.com/videos/startlamp2.m4v&quot;);</span>
+<span class="nc" id="L203">    this.showPosition(new ServoPosition(0, 0.0, &quot;m/s&quot;, &quot;motor&quot;));</span>
+<span class="nc" id="L204">    this.showPosition(new ServoPosition(0, 0.0, &quot;°&quot;, &quot;steering&quot;));</span>
+<span class="nc" id="L205">    this.navigationController.setEventbusLogger(this);</span>
+<span class="nc" id="L206">    this.laneDetectionController.setEventbusLogger(this);</span>
+<span class="nc" id="L207">    root.addEventFilter(KeyEvent.KEY_PRESSED, event -&gt; {</span>
+<span class="nc" id="L208">      this.handleKeyInput(event);</span>
+<span class="nc" id="L209">    });</span>
+<span class="nc" id="L210">  }</span>
+
+  private void pictureButtonsEnable(boolean enable) {
+<span class="nc" id="L213">    Button pButtons[] = { firstPictureButton, prevPictureButton,</span>
+        nextPictureButton, forwardPictureButton };
+<span class="nc bnc" id="L215" title="All 2 branches missed.">    for (Button b : pButtons) {</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">      b.setDisable(!enable);</span>
+    }
+<span class="nc" id="L218">  }</span>
+
+  protected void setSpeed(double newSpeed) {
+<span class="nc" id="L221">    this.onFXThread(motorGauge.valueProperty(), newSpeed);</span>
+<span class="nc" id="L222">  }</span>
+
+  protected double getSpeed() {
+<span class="nc" id="L225">    return motorGauge.valueProperty().doubleValue();</span>
+  }
+
+  @FXML
+  public void startCamera() throws Exception {
+<span class="nc bnc" id="L230" title="All 3 branches missed.">    switch (displayMode) {</span>
+    case Lane:
+<span class="nc" id="L232">      this.laneDetectionController.startCamera(this.cameraController, this);</span>
+<span class="nc" id="L233">      break;</span>
+    case Start:
+<span class="nc" id="L235">      this.startDetectionController.startCamera();</span>
+<span class="nc" id="L236">      break;</span>
+    default:
+      break;
+    }
+<span class="nc" id="L240">  }</span>
+
+  @Override
+  public void displayOriginal(Image image) {
+<span class="nc" id="L244">    displayImage(cameraController.originalFrame, image);</span>
+<span class="nc" id="L245">  }</span>
+
+  @Override
+  public void displayOriginal(Mat openCvImage) {
+<span class="nc" id="L249">    this.displayImage(cameraController.originalFrame, openCvImage);</span>
+<span class="nc" id="L250">  }</span>
+
+  @Override
+  public void display1(Image image) {
+<span class="nc" id="L254">    displayImage(cameraController.processedImage1, image);</span>
+<span class="nc" id="L255">  }</span>
+
+  @Override
+  public void display2(Image image) {
+<span class="nc" id="L259">    displayImage(cameraController.processedImage2, image);</span>
+<span class="nc" id="L260">  }</span>
+
+  @Override
+  public void display3(Image image) {
+<span class="nc" id="L264">    displayImage(cameraController.processedImage3, image);</span>
+<span class="nc" id="L265">  }</span>
+
+  @Override
+  public void setCameraButtonText(String text) {
+<span class="nc" id="L269">    this.cameraButton.setText(text);</span>
+<span class="nc" id="L270">  }</span>
+
+  /**
+   * File/Open clicked
+   * 
+   * @param event
+   *          Event on &quot;File/Open&quot; menu item.
+   */
+  @FXML
+  private void onOpen(final ActionEvent event) {
+<span class="nc" id="L280">    final FileChooser fileChooser = new FileChooser();</span>
+<span class="nc" id="L281">    fileChooser.setInitialDirectory(new File(ImageUtils.MEDIA_PATH));</span>
+<span class="nc" id="L282">    FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(</span>
+        &quot;Video and Image Files&quot;, &quot;*.jpg&quot;, &quot;*.png&quot;, &quot;*.avi&quot;, &quot;*.mp4&quot;, &quot;*.m4v&quot;);
+<span class="nc" id="L284">    fileChooser.getExtensionFilters().add(extFilter);</span>
+<span class="nc" id="L285">    File file = fileChooser.showOpenDialog(primaryStage);</span>
+<span class="nc bnc" id="L286" title="All 2 branches missed.">    if (file != null) {</span>
+<span class="nc" id="L287">      this.lanevideo.setValue(file.getPath());</span>
+      try {
+<span class="nc" id="L289">        this.imageDebugger=new ImageDebugger(file);</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">        if (imageDebugger.isActive()) {</span>
+<span class="nc" id="L291">          this.pictureButtonsEnable(true);</span>
+<span class="nc" id="L292">          this.nextPictureButton.fire();</span>
+        }
+<span class="nc" id="L294">      } catch (Exception e) {</span>
+<span class="nc" id="L295">        this.handle(e);</span>
+<span class="nc" id="L296">      }</span>
+    }
+<span class="nc" id="L298">  }</span>
+
+  /**
+   * File/Quit clicked
+   * 
+   * @param event
+   *          Event on &quot;File/Quit&quot; menu item.
+   */
+  @FXML
+  private void onQuit(final ActionEvent event) {
+<span class="nc" id="L308">    Platform.exit();</span>
+<span class="nc" id="L309">    System.exit(0);</span>
+<span class="nc" id="L310">  }</span>
+
+  /**
+   * Online Manual clicked
+   * 
+   * @param event
+   *          Event on &quot;Help/Online Manual&quot; menu item.
+   */
+  @FXML
+  private void onHelp(final ActionEvent event) {
+<span class="nc" id="L320">    this.help();</span>
+<span class="nc" id="L321">  }</span>
+
+  /**
+   * fullscreen toggle clicked
+   * 
+   * @param event
+   */
+  @FXML
+  private void onFullScreen(final ActionEvent event) {
+<span class="nc bnc" id="L330" title="All 2 branches missed.">    this.primaryStage.setMaximized(!primaryStage.isMaximized());</span>
+    // this.primaryStage.setFullScreen(!primaryStage.isFullScreen());
+<span class="nc" id="L332">    addJustFullScreenButton();</span>
+<span class="nc" id="L333">  }</span>
+
+  public void addJustFullScreenButton() {
+<span class="nc bnc" id="L336" title="All 2 branches missed.">    if (primaryStage.isMaximized()) {</span>
+<span class="nc" id="L337">      this.setMenuButtonIcon(fullScreenButton,</span>
+          MaterialDesignIcon.FULLSCREEN_EXIT);
+<span class="nc" id="L339">      setButtonTooltip(fullScreenButton, &quot;part Screen&quot;);</span>
+    } else {
+<span class="nc" id="L341">      this.setMenuButtonIcon(fullScreenButton, MaterialDesignIcon.FULLSCREEN);</span>
+<span class="nc" id="L342">      setButtonTooltip(fullScreenButton, &quot;full Screen&quot;);</span>
+    }
+
+<span class="nc" id="L345">  }</span>
+
+  @FXML
+  private void onHideMenu(final ActionEvent event) {
+<span class="nc bnc" id="L349" title="All 2 branches missed.">    showMenuBar(primaryStage.getScene(), menuBar, !menuBar.isVisible());</span>
+<span class="nc" id="L350">  }</span>
+
+  /**
+   * show or hide the menuBar
+   * 
+   * @param scene
+   * @param pMenuBar
+   */
+  public void showMenuBar(Scene scene, MenuBar pMenuBar, boolean show) {
+<span class="nc" id="L359">    Parent sroot = scene.getRoot();</span>
+<span class="nc" id="L360">    ObservableList&lt;Node&gt; rootChilds = null;</span>
+<span class="nc bnc" id="L361" title="All 2 branches missed.">    if (sroot instanceof VBox)</span>
+<span class="nc" id="L362">      rootChilds = ((VBox) sroot).getChildren();</span>
+<span class="nc bnc" id="L363" title="All 2 branches missed.">    if (rootChilds == null)</span>
+<span class="nc" id="L364">      throw new RuntimeException(</span>
+          &quot;showMenuBar can not handle scene root of type &quot;
+<span class="nc" id="L366">              + sroot.getClass().getName());</span>
+<span class="nc bnc" id="L367" title="All 4 branches missed.">    if (!show &amp;&amp; rootChilds.contains(pMenuBar)) {</span>
+<span class="nc" id="L368">      rootChilds.remove(pMenuBar);</span>
+<span class="nc bnc" id="L369" title="All 2 branches missed.">    } else if (show) {</span>
+<span class="nc" id="L370">      rootChilds.add(0, pMenuBar);</span>
+    }
+<span class="nc" id="L372">    pMenuBar.setVisible(show);</span>
+<span class="nc bnc" id="L373" title="All 2 branches missed.">    if (pMenuBar.isVisible()) {</span>
+<span class="nc" id="L374">      this.setMenuButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_DOWN);</span>
+<span class="nc" id="L375">      setButtonTooltip(hideMenuButton, &quot;hide Menu&quot;);</span>
+    } else {
+<span class="nc" id="L377">      this.setMenuButtonIcon(hideMenuButton, MaterialDesignIcon.MENU_UP);</span>
+<span class="nc" id="L378">      setButtonTooltip(hideMenuButton, &quot;show Menu&quot;);</span>
+    }
+<span class="nc" id="L380">  }</span>
+
+  /**
+   * Report Issue clicked
+   * 
+   * @param event
+   *          Event on &quot;Help/&quot; menu item.
+   */
+  @FXML
+  private void onReportIssue(final ActionEvent event) {
+<span class="nc" id="L390">    this.reportIssue();</span>
+<span class="nc" id="L391">  }</span>
+
+  /**
+   * Chat clicked
+   * 
+   * @param event
+   *          Event e.g. Button chat
+   */
+  @FXML
+  private void onChat(final ActionEvent event) {
+<span class="nc" id="L401">    this.linkToChat();</span>
+<span class="nc" id="L402">  }</span>
+
+  /**
+   * Help/About clicked
+   * 
+   * @param event
+   *          Event on &quot;Help/About&quot; menu item.
+   */
+  @FXML
+  private void onHelpAbout(final ActionEvent event) {
+<span class="nc" id="L412">    this.helpAbout();</span>
+<span class="nc" id="L413">  }</span>
+
+  @FXML
+  private void onFirstPicture(final ActionEvent event) {
+<span class="nc" id="L417">    stepPicture(PictureStep.FIRST);</span>
+<span class="nc" id="L418">  }</span>
+
+  @FXML
+  private void onPrevPicture(final ActionEvent event) {
+<span class="nc" id="L422">    stepPicture(PictureStep.PREV);</span>
+<span class="nc" id="L423">  }</span>
+
+  @FXML
+  private void onNextPicture(final ActionEvent event) {
+<span class="nc" id="L427">    stepPicture(PictureStep.NEXT);</span>
+<span class="nc" id="L428">  }</span>
+
+  @FXML
+  private void onForwardPicture(final ActionEvent event) {
+<span class="nc" id="L432">    stepPicture(PictureStep.FORWARD);</span>
+<span class="nc" id="L433">  }</span>
+
+  private void stepPicture(PictureStep step) {
+<span class="nc" id="L436">    imageDebugger.step(step);</span>
+<span class="nc" id="L437">    this.showFrameIndex(imageDebugger.getFrameIndex());</span>
+<span class="nc" id="L438">    displayer.displayImageCollector(imageDebugger.imageCollector);</span>
+<span class="nc" id="L439">    imageDebugger.showDebugInfo(eventbusLogger);</span>
+<span class="nc" id="L440">  }</span>
+
+  
+  /**
+   * Handle action related to input (in this case specifically only responds to
+   * keyboard event CTRL-A).
+   * 
+   * @param event
+   *          Input event.
+   */
+  @FXML
+  private void handleKeyInput(final InputEvent event) {
+<span class="nc bnc" id="L452" title="All 2 branches missed.">    if (event instanceof KeyEvent) {</span>
+<span class="nc" id="L453">      final KeyEvent keyEvent = (KeyEvent) event;</span>
+<span class="nc bnc" id="L454" title="All 2 branches missed.">      if (isKey(keyEvent, KeyCode.A))</span>
+<span class="nc" id="L455">        helpAbout();</span>
+<span class="nc bnc" id="L456" title="All 2 branches missed.">      else if (isKey(keyEvent, KeyCode.H))</span>
+<span class="nc" id="L457">        help();</span>
+      else
+<span class="nc" id="L459">        navigationController.handleNavigationKey(keyEvent);</span>
+    }
+<span class="nc" id="L461">  }</span>
+
+  public boolean isKey(KeyEvent keyEvent, KeyCode keyCode) {
+<span class="nc bnc" id="L464" title="All 4 branches missed.">    return keyEvent.isControlDown() &amp;&amp; keyEvent.getCode() == keyCode;</span>
+  }
+
+  private void help() {
+<span class="nc" id="L468">    browse(&quot;http://wiki.bitplan.com/index.php/Self_Driving_RC_Car/App&quot;);</span>
+<span class="nc" id="L469">  }</span>
+
+  private void reportIssue() {
+<span class="nc" id="L472">    browse(&quot;https://github.com/rc-dukes/dukes/issues/new&quot;);</span>
+<span class="nc" id="L473">  }</span>
+
+  /**
+   * &quot;About&quot; menu selected or CTRL-A pressed.
+   */
+  private void helpAbout() {
+<span class="nc" id="L479">    browse(&quot;https://github.com/rc-dukes/dukes&quot;);</span>
+<span class="nc" id="L480">  }</span>
+
+  private void linkToChat() {
+<span class="nc" id="L483">    browse(&quot;https://gitter.im/rc-dukes/community&quot;);</span>
+<span class="nc" id="L484">  }</span>
+
+  @Override
+  public Property&lt;String&gt; getStartVideoProperty() {
+<span class="nc" id="L488">    return this.startvideo.valueProperty();</span>
+  }
+
+  @Override
+  public void setMessageText(String text) {
+<span class="nc" id="L493">    this.messageArea.setText(text);</span>
+<span class="nc" id="L494">  }</span>
+
+<span class="nc" id="L496">  public static DateFormat isoDateFormat = new SimpleDateFormat(</span>
+      &quot;yyyy-MM-dd HH:mm:ss&quot;);
+
+  public static String getIsoTimeStamp() {
+<span class="nc" id="L500">    Date now = new Date();</span>
+<span class="nc" id="L501">    String isoTimeStamp = isoDateFormat.format(now);</span>
+<span class="nc" id="L502">    return isoTimeStamp;</span>
+  }
+
+  @Override
+  public void logEvent(String address, JsonObject jo) {
+<span class="nc" id="L507">    String msg = String.format(&quot;%s:\n %s-&gt;%s\n&quot;, getIsoTimeStamp(), address,</span>
+<span class="nc" id="L508">        jo.encode());</span>
+<span class="nc" id="L509">    TextArea target = messageArea;</span>
+<span class="nc bnc" id="L510" title="All 2 branches missed.">    if (jo.containsKey(&quot;type&quot;)) {</span>
+<span class="nc" id="L511">      String type = jo.getString(&quot;type&quot;);</span>
+<span class="nc bnc" id="L512" title="All 2 branches missed.">      if (&quot;heartbeat&quot;.equals(type)) {</span>
+<span class="nc" id="L513">        target = heartbeatArea;</span>
+      }
+    }
+<span class="nc" id="L516">    this.logToArea(target, msg);</span>
+<span class="nc" id="L517">  }</span>
+
+  @Override
+  public void log(String message) {
+<span class="nc" id="L521">    logToArea(messageArea, message);</span>
+<span class="nc" id="L522">  }</span>
+
+  public void logToArea(TextArea target, String msg) {
+<span class="nc" id="L525">    Platform.runLater(() -&gt; target.appendText(msg));</span>
+<span class="nc" id="L526">  }</span>
+
+  @Override
+  public Observable&lt;Image&gt; getImageObservable() {
+<span class="nc" id="L530">    String imageSource = this.lanevideo.valueProperty().getValue();</span>
+<span class="nc bnc" id="L531" title="All 2 branches missed.">    if (&quot;simulator&quot;.equals(imageSource)) {</span>
+<span class="nc" id="L532">      AppVerticle appVerticle = AppVerticle.getInstance(this);</span>
+<span class="nc" id="L533">      return appVerticle.getSimulatorImageFetcher().toObservable();</span>
+    } else {
+<span class="nc" id="L535">      ImageFetcher imageFetcher = getImageFetcher();</span>
+<span class="nc" id="L536">      return imageFetcher.toObservable();</span>
+    }
+  }
+
+  /**
+   * get an image Fetcher for the current video
+   * 
+   * @return the imageFetcher
+   */
+  public ImageFetcher getImageFetcher() {
+<span class="nc" id="L546">    String imageSource = this.lanevideo.valueProperty().getValue();</span>
+<span class="nc" id="L547">    ImageFetcher imageFetcher = new ImageFetcher(imageSource);</span>
+<span class="nc" id="L548">    return imageFetcher;</span>
+  }
+
+  /**
+   * auto start me optionally with the simulator
+   * 
+   * @param simulator
+   */
+  public void autoStart(boolean simulator) {
+    try {
+<span class="nc" id="L558">      String cameraUrl = &quot;simulator&quot;;</span>
+<span class="nc bnc" id="L559" title="All 2 branches missed.">      if (!simulator)</span>
+<span class="nc" id="L560">        cameraUrl = Config.getEnvironment().getString(Config.CAMERA_URL);</span>
+<span class="nc" id="L561">      this.lanevideo.setValue(cameraUrl);</span>
+<span class="nc" id="L562">      this.hideMenuButton.fire();</span>
+<span class="nc" id="L563">      this.primaryStage.setMaximized(true);</span>
+<span class="nc" id="L564">      this.navigationController.powerButton.fire();</span>
+      // create a wait loop on a different thread
+<span class="nc" id="L566">      int timeOut = 8000;</span>
+<span class="nc" id="L567">      int waitStep = 40;</span>
+<span class="nc" id="L568">      Disposable waitLoop[] = { null };</span>
+<span class="nc" id="L569">      waitLoop[0] = Observable.timer(waitStep, TimeUnit.MILLISECONDS).repeat()</span>
+<span class="nc" id="L570">          .timeout(timeOut, TimeUnit.MILLISECONDS)</span>
+<span class="nc" id="L571">          .subscribeOn(Schedulers.newThread()).subscribe(e -&gt; {</span>
+<span class="nc" id="L572">            AppVerticle appVerticle = navigationController.appVerticle;</span>
+<span class="nc bnc" id="L573" title="All 2 branches missed.">            boolean verticleStarted = appVerticle != null</span>
+<span class="nc bnc" id="L574" title="All 2 branches missed.">                &amp;&amp; appVerticle.getStatus() == Status.started;</span>
+<span class="nc bnc" id="L575" title="All 2 branches missed.">            if (verticleStarted) {</span>
+<span class="nc" id="L576">              Platform.runLater(() -&gt; this.cameraButton.fire());</span>
+<span class="nc bnc" id="L577" title="All 2 branches missed.">              if (waitLoop[0] != null)</span>
+<span class="nc" id="L578">                waitLoop[0].dispose();</span>
+            }
+<span class="nc" id="L580">          });</span>
+<span class="nc" id="L581">    } catch (Exception e) {</span>
+<span class="nc" id="L582">      ErrorHandler.getInstance().handle(e);</span>
+<span class="nc" id="L583">    }</span>
+<span class="nc" id="L584">  }</span>
+
+  public void setDebug(boolean debug) {
+<span class="nc" id="L587">    super.debug = debug;</span>
+<span class="nc" id="L588">    SimulatorImageFetcher.debug = debug;</span>
+<span class="nc" id="L589">  }</span>
+
+  @Override
+  public void showPosition(ServoPosition position) {
+<span class="nc bnc" id="L593" title="All 3 branches missed.">    switch (position.kind) {</span>
+    case &quot;motor&quot;:
+<span class="nc" id="L595">      Platform.runLater(() -&gt; {</span>
+        // motorGauge.setSkinType(eu.hansolo.medusa.Gauge.SkinType.LCD);
+<span class="nc" id="L597">        motorGauge.setTitle(&quot;Speed&quot;);</span>
+<span class="nc" id="L598">        motorGauge.setDecimals(1);</span>
+<span class="nc" id="L599">        motorGauge.setMaxValue(1.0);</span>
+<span class="nc" id="L600">        motorGauge.setUnit(position.unit);</span>
+<span class="nc" id="L601">        motorGauge.setLcdVisible(true);</span>
+<span class="nc" id="L602">        motorGauge.valueProperty().setValue(Math.abs(position.getValue()));</span>
+<span class="nc" id="L603">      });</span>
+<span class="nc" id="L604">      break;</span>
+    case &quot;steering&quot;:
+<span class="nc" id="L606">      Platform.runLater(() -&gt; {</span>
+        // steeringGauge.setSkinType(SkinType.LCD);
+<span class="nc" id="L608">        steeringGauge.setDecimals(1);</span>
+<span class="nc" id="L609">        steeringGauge.setMinValue(-30);</span>
+<span class="nc" id="L610">        steeringGauge.setMaxValue(30);</span>
+<span class="nc" id="L611">        steeringGauge.setUnit(position.unit);</span>
+<span class="nc" id="L612">        steeringGauge.valueProperty().setValue(position.getValue());</span>
+<span class="nc" id="L613">      });</span>
+      break;
+    }
+<span class="nc" id="L616">  }</span>
+
+  @Override
+  public void setImageCollector(ImageCollector imageCollector) {
+<span class="nc" id="L620">    this.navigationController.setImageCollector(imageCollector);</span>
+<span class="nc" id="L621">  }</span>
+
+  public void setCameraImageWidth(int imageWidth) {
+<span class="nc" id="L624">    this.cameraImageWidth = imageWidth;</span>
+<span class="nc" id="L625">  }</span>
+
+  @Override
+  public void setVideoRecorders(VideoRecorders videoRecorders) {
+<span class="nc" id="L629">    this.navigationController.setVideoRecorders(videoRecorders);</span>
+<span class="nc" id="L630">  }</span>
+
+  @Override
+  public void showFrameIndex(long frameIndex) {
+<span class="nc" id="L634">    String frameIndexString = String.format(&quot;%04d&quot;, frameIndex);</span>
+<span class="nc" id="L635">    this.onFXThread(frameIndexLabel.textProperty(), frameIndexString);</span>
+<span class="nc" id="L636">  }</span>
+
+  @Override
+  public void displayImageCollector(ImageCollector collector) {
+<span class="nc" id="L640">    this.displayOriginal(collector.getImage(ImageType.camera, true));</span>
+<span class="nc" id="L641">    this.display1(collector.getImage(ImageType.edges, true));</span>
+<span class="nc" id="L642">    this.display2(collector.getImage(ImageType.lines, true));</span>
+<span class="nc" id="L643">    this.display3(collector.getImage(ImageType.birdseye, true));</span>
+<span class="nc" id="L644">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

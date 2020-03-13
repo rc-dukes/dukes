@@ -1,0 +1,22 @@
+@startuml
+
+    class LaneDetectionResult [[LaneDetectionResult.html]] {
+        {static} +forceError: boolean
+        +left: Double
+        +middle: Double
+        +right: Double
+        +distanceMiddle: Double
+        +distanceLeft: Double
+        +distanceRight: Double
+        +courseRelativeToHorizon: Double
+        +distanceToStoppingZone: Double
+        +distanceToStoppingZoneEnd: Double
+        +frameIndex: int
+        +milliTimeStamp: long
+        +checkError(): void
+        +debugInfo(): String
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

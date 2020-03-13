@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AppVerticle.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-webcontrol</a> &gt; <a href="../index.html" class="el_bundle">rc-app</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.app</a> &gt; <span class="el_source">AppVerticle.java</span></div><h1>AppVerticle.java</h1><pre class="source lang-java linenums">package org.rcdukes.app;
+
+import java.util.concurrent.TimeUnit;
+
+import org.rcdukes.action.Navigator;
+import org.rcdukes.action.StraightLaneNavigator;
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.ClusterStarter;
+import org.rcdukes.common.Config;
+import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.EventbusLogger;
+import org.rcdukes.common.Events;
+import org.rcdukes.common.ServoPosition;
+import org.rcdukes.common.WebStarter;
+import org.rcdukes.error.ErrorHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import io.vertx.core.json.JsonObject;
+import io.vertx.rxjava.core.eventbus.Message;
+
+/**
+ * JavaFx Application Verticle
+ *
+ */
+public class AppVerticle extends DukesVerticle {
+<span class="nc" id="L30">  boolean debug = false;</span>
+<span class="nc" id="L31">  protected static final Logger LOG = LoggerFactory</span>
+<span class="nc" id="L32">      .getLogger(AppVerticle.class);</span>
+  private static AppVerticle instance;
+  private ClusterStarter starter;
+<span class="nc" id="L35">  private int HEARTBEAT_INTERVAL = 150; // send a heartbeat every 150 millisecs</span>
+  private Disposable heartBeatSubscription;
+  private SimulatorImageFetcher simulatorImageFetcher;
+  private Navigator navigator;
+  private PositionDisplay positionDisplay;
+
+  public Navigator getNavigator() {
+<span class="nc" id="L42">    return navigator;</span>
+  }
+
+  public void setNavigator(Navigator navigator) {
+<span class="nc" id="L46">    this.navigator = navigator;</span>
+<span class="nc" id="L47">  }</span>
+
+  /**
+   * JavaFX Application verticle
+   * 
+   * @param eventbusLogger
+   */
+  public AppVerticle(EventbusLogger eventbusLogger) {
+<span class="nc" id="L55">    super(Characters.UNCLE_JESSE);</span>
+<span class="nc" id="L56">    super.setEventbusLogger(eventbusLogger);</span>
+<span class="nc" id="L57">  }</span>
+
+  public void enableNavigator() {
+<span class="nc" id="L60">    navigator = new StraightLaneNavigator();</span>
+<span class="nc" id="L61">    navigator.setSender(this);</span>
+<span class="nc" id="L62">  }</span>
+
+  public void stopNavigator() {
+<span class="nc" id="L65">    navigator = null;</span>
+<span class="nc" id="L66">  }</span>
+
+  @Override
+  public void start() throws Exception {
+<span class="nc" id="L70">    super.preStart();</span>
+<span class="nc" id="L71">    int port = Config.getEnvironment().getInteger(Config.WEBCONTROL_PORT);</span>
+<span class="nc" id="L72">    WebStarter webStarter = new WebStarter(vertx, port);</span>
+<span class="nc" id="L73">    webStarter.mountEventBus(&quot;.*&quot;, &quot;.*&quot;);</span>
+<span class="nc" id="L74">    webStarter.startHttpServer();</span>
+
+<span class="nc" id="L76">    JsonObject startjo = new JsonObject();</span>
+<span class="nc" id="L77">    startjo.put(&quot;started&quot;, this.character.name());</span>
+<span class="nc" id="L78">    setSimulatorImageFetcher(new SimulatorImageFetcher());</span>
+<span class="nc" id="L79">    consumer(Characters.ROSCO, Events.SIMULATOR_IMAGE,</span>
+<span class="nc" id="L80">        getSimulatorImageFetcher()::receiveSimulatorImage);</span>
+<span class="nc" id="L81">    consumer(Characters.ROSCO, Events.ECHO_REPLY, this::receiveEchoReply);</span>
+<span class="nc" id="L82">    consumer(Characters.BOSS_HOGG, Events.CAR_POSITION,</span>
+        this::receiveCarPosition);
+<span class="nc" id="L84">    super.postStart();</span>
+<span class="nc" id="L85">  }</span>
+
+  /**
+   * receive an echo reply
+   * 
+   * @param message
+   */
+  protected void receiveEchoReply(Message&lt;JsonObject&gt; message) {
+<span class="nc" id="L93">    JsonObject echoJo = message.body();</span>
+<span class="nc" id="L94">    this.eventbusLogger.log(echoJo.encodePrettily());</span>
+<span class="nc" id="L95">  }</span>
+
+  /**
+   * receive an car position
+   * 
+   * @param message
+   */
+  protected void receiveCarPosition(Message&lt;JsonObject&gt; message) {
+<span class="nc" id="L103">    JsonObject carPosJo = message.body();</span>
+    // this.eventbusLogger.log(carPosJo.encodePrettily());
+<span class="nc" id="L105">    ServoPosition carPos = carPosJo.mapTo(ServoPosition.class);</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">    if (positionDisplay != null)</span>
+<span class="nc" id="L107">      this.positionDisplay.showPosition(carPos);</span>
+    // TODO - use the received car position in the navigation
+<span class="nc" id="L109">  }</span>
+
+  /***
+   * send a command of the given type with the given name and value to the given
+   * character via vert.x
+   * 
+   * @param character
+   * @param type
+   * @param name
+   * @param value
+   */
+  public void sendCarCommand(Characters character, String type, String name,
+      String value) {
+<span class="nc bnc" id="L122" title="All 2 branches missed.">    if (getStatus() != Status.started) {</span>
+<span class="nc" id="L123">      String msg = String.format(</span>
+          &quot;Can't send %s:%s car command AppVerticle not started yet&quot;, name,
+          value);
+<span class="nc" id="L126">      throw new IllegalStateException(msg);</span>
+    }
+<span class="nc" id="L128">    JsonObject jo = new JsonObject();</span>
+<span class="nc" id="L129">    jo.put(&quot;type&quot;, type);</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">    if (name != null)</span>
+<span class="nc" id="L131">      jo.put(name, value);</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">    if (debug) {</span>
+<span class="nc bnc" id="L133" title="All 4 branches missed.">      String msg = String.format(&quot;car command %s %s=%s&quot;, type,</span>
+          name == null ? &quot;?&quot; : name, value == null ? &quot;?&quot; : value);
+<span class="nc" id="L135">      LOG.info(msg);</span>
+    }
+<span class="nc" id="L137">    super.send(character, jo);</span>
+<span class="nc" id="L138">  }</span>
+
+  /**
+   * send the given speed command
+   * 
+   * @param speed
+   */
+  public void sendSpeedCommand(String speed) {
+<span class="nc" id="L146">    this.sendCarCommand(Characters.BO, &quot;motor&quot;, &quot;speed&quot;, speed);</span>
+<span class="nc" id="L147">  }</span>
+
+  /**
+   * send the given wheel command
+   * 
+   * @param position
+   */
+  public void sendWheelCommand(String position) {
+<span class="nc" id="L155">    this.sendCarCommand(Characters.BO, &quot;servo&quot;, &quot;position&quot;, position);</span>
+<span class="nc" id="L156">  }</span>
+
+  /**
+   * start this verticle
+   */
+  public void startUp() {
+<span class="nc" id="L162">    starter = new ClusterStarter();</span>
+<span class="nc" id="L163">    starter.prepare();</span>
+<span class="nc" id="L164">    String clusterHostname = null;</span>
+<span class="nc" id="L165">    String publicHost = null;</span>
+<span class="nc" id="L166">    starter.configureCluster(clusterHostname, publicHost);</span>
+    // bootstrap the deployment by deploying me
+    try {
+<span class="nc" id="L169">      starter.deployVerticles(this);</span>
+<span class="nc" id="L170">    } catch (Exception e) {</span>
+<span class="nc" id="L171">      ErrorHandler.getInstance().handle(e);</span>
+<span class="nc" id="L172">    }</span>
+<span class="nc" id="L173">  }</span>
+
+  /**
+   * get instance singleton
+   * 
+   * @param eventbusLogger
+   * @return - the instance
+   */
+  public static AppVerticle getInstance(EventbusLogger eventbusLogger) {
+<span class="nc bnc" id="L182" title="All 2 branches missed.">    if (instance == null) {</span>
+<span class="nc" id="L183">      instance = new AppVerticle(eventbusLogger);</span>
+<span class="nc" id="L184">      instance.startUp();</span>
+    }
+<span class="nc" id="L186">    return instance;</span>
+  }
+
+  /**
+   * switch on the heartBeat
+   * 
+   * @param on
+   */
+  public void heartBeat(boolean on) {
+<span class="nc bnc" id="L195" title="All 2 branches missed.">    if (on) {</span>
+<span class="nc" id="L196">      heartBeatSubscription = Observable</span>
+<span class="nc" id="L197">          .timer(HEARTBEAT_INTERVAL, TimeUnit.MILLISECONDS).repeat()</span>
+<span class="nc" id="L198">          .subscribeOn(Schedulers.newThread()).subscribe(e -&gt; {</span>
+<span class="nc" id="L199">            sendHeartBeat();</span>
+<span class="nc" id="L200">          });</span>
+    } else {
+<span class="nc" id="L202">      heartBeatSubscription.dispose();</span>
+<span class="nc" id="L203">      heartBeatSubscription = null;</span>
+    }
+<span class="nc" id="L205">  }</span>
+
+  /**
+   * send a heartbeat
+   */
+  public void sendHeartBeat() {
+<span class="nc bnc" id="L211" title="All 2 branches missed.">    if (getStatus() == Status.started)</span>
+<span class="nc" id="L212">      this.sendCarCommand(Characters.FLASH, &quot;heartbeat&quot;, null, null);</span>
+<span class="nc" id="L213">  }</span>
+
+  /**
+   * @return the simulatorImageFetcher
+   */
+  public SimulatorImageFetcher getSimulatorImageFetcher() {
+<span class="nc" id="L219">    return simulatorImageFetcher;</span>
+  }
+
+  /**
+   * @param simulatorImageFetcher
+   *          the simulatorImageFetcher to set
+   */
+  public void setSimulatorImageFetcher(
+      SimulatorImageFetcher simulatorImageFetcher) {
+<span class="nc" id="L228">    this.simulatorImageFetcher = simulatorImageFetcher;</span>
+<span class="nc" id="L229">  }</span>
+
+  public void setPositionDisplay(PositionDisplay positionDisplay) {
+<span class="nc" id="L232">    this.positionDisplay = positionDisplay;</span>
+<span class="nc" id="L233">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

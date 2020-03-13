@@ -1,0 +1,14 @@
+@startuml
+
+    class TestEventBus [[TestEventBus.html]] {
+        {static} +configureLogging(): void
+        +example0_5(Vertx): void
+        +checkStart(VertxOptions, int): void
+        +createKeyStore(String, String): void
+        +testExample13(): void
+        +testExample14(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

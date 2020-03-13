@@ -1,0 +1,60 @@
+@startuml
+
+    class DukesFxGUI [[DukesFxGUI.html]] {
+        {static} +isoDateFormat: DateFormat
+        #homeButton: Button
+        #detectButton: Button
+        #githubButton: Button
+        #chatButton: Button
+        #helpButton: Button
+        #fullScreenButton: Button
+        #hideMenuButton: Button
+        #cameraButton: Button
+        #firstPictureButton: Button
+        #nextPictureButton: Button
+        #prevPictureButton: Button
+        #forwardPictureButton: Button
+        #lanevideo: ComboBox<String>
+        #startvideo: ComboBox<String>
+        #motorGauge: Gauge
+        #steeringGauge: Gauge
+        #messageArea: TextArea
+        #heartbeatArea: TextArea
+        #angleOffset: LabeledValueSlider
+        #roiy: LabeledValueSlider
+        #roih: LabeledValueSlider
+        +init(Stage): void
+        +initialize(): void
+        #setSpeed(double): void
+        #getSpeed(): double
+        +startCamera(): void
+        +displayOriginal(Image): void
+        +displayOriginal(Mat): void
+        +display1(Image): void
+        +display2(Image): void
+        +display3(Image): void
+        +setCameraButtonText(String): void
+        +addJustFullScreenButton(): void
+        +showMenuBar(Scene, MenuBar, boolean): void
+        +isKey(KeyEvent, KeyCode): boolean
+        +getStartVideoProperty(): Property<String>
+        +setMessageText(String): void
+        {static} +getIsoTimeStamp(): String
+        +logEvent(String, JsonObject): void
+        +log(String): void
+        +logToArea(TextArea, String): void
+        +getImageObservable(): Observable<Image>
+        +getImageFetcher(): ImageFetcher
+        +autoStart(boolean): void
+        +setDebug(boolean): void
+        +showPosition(ServoPosition): void
+        +setImageCollector(ImageCollector): void
+        +setCameraImageWidth(int): void
+        +setVideoRecorders(VideoRecorders): void
+        +showFrameIndex(long): void
+        +displayImageCollector(ImageCollector): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

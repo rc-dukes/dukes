@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>StartLightDetectionGUI.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-webcontrol</a> &gt; <a href="../index.html" class="el_bundle">rc-app</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.app</a> &gt; <span class="el_source">StartLightDetectionGUI.java</span></div><h1>StartLightDetectionGUI.java</h1><pre class="source lang-java linenums">package org.rcdukes.app;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.videoio.VideoCapture;
+import org.rcdukes.detectors.StartLightDetector;
+import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.ImageCollector.ImageType;
+
+import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
+import javafx.fxml.FXML;
+import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
+import org.rcdukes.common.Config;
+import nl.vaneijndhoven.objects.StartLight;
+import nl.vaneijndhoven.opencv.startlightdetection.DefaultStartLightDetector;
+
+/**
+ * StartLight DetectionController
+ * @author wf
+ *
+ */
+public class StartLightDetectionGUI extends BaseGUI {
+
+  private Vertx vertx;
+<span class="nc" id="L35">  private DefaultStartLightDetector.Config startLineConfig = new DefaultStartLightDetector.Config();</span>
+<span class="nc" id="L36">  private StartLightDetector detector = new DefaultStartLightDetector();</span>
+
+<span class="nc" id="L38">  public StartLightDetectionGUI() {</span>
+<span class="nc" id="L39">    Config.configureLogging();</span>
+<span class="nc" id="L40">  }</span>
+
+<span class="nc" id="L42">  private boolean lightOn = false;</span>
+<span class="nc" id="L43">  private int frameIndex=0;</span>
+
+<span class="nc" id="L45">  String lastCommandSent = &quot;&quot;;</span>
+
+<span class="nc" id="L47">  private int numberOfLightOffEvents = 0;</span>
+
+  // FXML slider for setting HSV ranges
+  @FXML
+  private Slider hueStart;
+  @FXML
+  private Slider hueStop;
+  @FXML
+  private Slider saturationStart;
+  @FXML
+  private Slider saturationStop;
+  @FXML
+  private Slider valueStart;
+  @FXML
+  private Slider valueStop;
+ 
+  // a timer for acquiring the video stream
+  private ScheduledExecutorService timer;
+  // the OpenCV object that performs the video capture
+<span class="nc" id="L66">  private VideoCapture capture = new VideoCapture();</span>
+  // a flag to change the button behavior
+  private boolean cameraActive;
+
+  public void startCamera() {
+<span class="nc" id="L71">    this.hueStart.adjustValue(0.0d);</span>
+<span class="nc" id="L72">    this.hueStop.adjustValue(28.3d);</span>
+
+<span class="nc" id="L74">    this.saturationStart.adjustValue(71.9d);</span>
+<span class="nc" id="L75">    this.saturationStop.adjustValue(98.7);</span>
+
+<span class="nc" id="L77">    this.valueStart.adjustValue(213.9d);</span>
+<span class="nc" id="L78">    this.valueStop.adjustValue(240.6d);</span>
+
+<span class="nc bnc" id="L80" title="All 2 branches missed.">    if (!this.cameraActive) {</span>
+      // start the video capture
+<span class="nc" id="L82">      this.capture.open(displayer.getStartVideoProperty().getValue());</span>
+ 
+      // is the video stream available?
+<span class="nc bnc" id="L85" title="All 2 branches missed.">      if (this.capture.isOpened()) {</span>
+<span class="nc" id="L86">        this.cameraActive = true;</span>
+
+        // grab a frame every 33 ms (30 frames/sec)
+<span class="nc" id="L89">        Runnable frameGrabber = () -&gt; {</span>
+<span class="nc" id="L90">          ImageCollector imageCollector = new ImageCollector();</span>
+          // detector.withImageCollector(imageCollector);
+<span class="nc" id="L92">          StartLight startLight = detectStartLight(imageCollector);</span>
+<span class="nc" id="L93">          displayer.displayOriginal(imageCollector.getImage(ImageType.camera,true));</span>
+<span class="nc" id="L94">          displayer.display1(imageCollector.getImage(ImageType.mask,true));</span>
+<span class="nc" id="L95">          displayer.display2(imageCollector.getImage(ImageType.morph,true));</span>
+          // displayer.displayOriginal(imageCollector.startLight());
+<span class="nc bnc" id="L97" title="All 2 branches missed.">          if (this.vertx != null) {</span>
+
+            // int minimumNumberOfLightOffEvents = 2;
+<span class="nc bnc" id="L100" title="All 4 branches missed.">            if (startLight.started() &amp;&amp; !lastCommandSent.equals(&quot;on&quot;)) {</span>
+<span class="nc" id="L101">              System.out.println(&quot;Enough light off events received, starting&quot;);</span>
+              // power on
+<span class="nc" id="L103">              lastCommandSent = &quot;on&quot;;</span>
+<span class="nc" id="L104">              eventBusSendAfterMS(10, &quot;setspeed:3&quot;); // in percentage</span>
+              // eventBusSendAfterMS(100, &quot;speed:up&quot;);
+              // eventBusSendAfterMS(30, &quot;speed:up&quot;);
+
+              // vertx-eventBus().send(&quot;control&quot;, &quot;speed:up&quot;);
+              // vertx-eventBus().send(&quot;control&quot;, &quot;speed:up&quot;);
+
+<span class="nc" id="L111">              Executors.newSingleThreadScheduledExecutor()</span>
+<span class="nc" id="L112">                  .schedule(() -&gt; stopCamera(), 500, TimeUnit.MILLISECONDS);</span>
+
+              // vertx-eventBus().send(&quot;control&quot;, &quot;speed:up&quot;);
+              // vertx-eventBus().send(&quot;control&quot;, &quot;speed:up&quot;);
+              // vertx-eventBus().send(&quot;control&quot;, &quot;speed:up&quot;);
+              // Platform.runLater(() -&gt; this.cameraButton.setText(&quot;Stop
+              // Camera&quot;));
+            }
+
+<span class="nc bnc" id="L121" title="All 4 branches missed.">            if (!startLight.started() &amp;&amp; !lastCommandSent.equals(&quot;off&quot;)) {</span>
+              // power off
+<span class="nc" id="L123">              System.out.println(&quot;light is on, stopping&quot;);</span>
+<span class="nc" id="L124">              lastCommandSent = &quot;off&quot;;</span>
+              // eventBusSendAfterMS(10, &quot;speed:stop&quot;);
+
+            }
+
+          }
+
+<span class="nc" id="L131">        };</span>
+
+<span class="nc" id="L133">        this.timer = Executors.newSingleThreadScheduledExecutor();</span>
+<span class="nc" id="L134">        this.timer.scheduleAtFixedRate(frameGrabber, 0, 50,</span>
+            TimeUnit.MILLISECONDS);
+
+        // update the button content
+<span class="nc" id="L138">        displayer.setCameraButtonText(&quot;Stop Camera&quot;);</span>
+<span class="nc" id="L139">      } else {</span>
+        // log the error
+<span class="nc" id="L141">        System.err.println(&quot;Failed to open the camera connection...&quot;);</span>
+      }
+    } else {
+<span class="nc" id="L144">      displayer.setCameraButtonText(&quot;Start Camera&quot;);</span>
+<span class="nc" id="L145">      stopCamera();</span>
+    }
+<span class="nc" id="L147">  }</span>
+
+  private void stopCamera() {
+    // the camera is not active at this point
+<span class="nc" id="L151">    this.cameraActive = false;</span>
+    // update again the button content
+    // this.cameraButton.setText(&quot;Start Camera&quot;);
+
+    // stop the timer
+    try {
+<span class="nc" id="L157">      this.timer.shutdown();</span>
+<span class="nc" id="L158">      this.timer.awaitTermination(33, TimeUnit.MILLISECONDS);</span>
+<span class="nc" id="L159">    } catch (InterruptedException e) {</span>
+      // log the exception
+<span class="nc" id="L161">      System.err.println(</span>
+          &quot;Exception in stopping the frame capture, trying to release the camera now... &quot;
+              + e);
+<span class="nc" id="L164">    }</span>
+
+    // release the camera
+<span class="nc" id="L167">    this.capture.release();</span>
+
+<span class="nc" id="L169">  }</span>
+
+  /**
+   * Get a frame from the opened video stream (if any)
+   *
+   * @return the {@link Image} to show
+   * @param imageCollector
+   */
+  private StartLight detectStartLight(ImageCollector imageCollector) {
+    /* @FIXME - use ImageFetcher in calling part ...
+    // init everything
+    Image imageToShow = null;
+    Mat frame = new Mat();
+
+    // check if the capture is open
+    if (this.capture.isOpened()) {
+      try {
+        // read the current frame
+        this.capture.read(frame);
+
+        // if the frame is not empty, process it
+        if (!frame.empty()) {
+          imageCollector.originalFrame(frame);
+          startLineConfig.setHueStart(hueStart.getValue());
+          startLineConfig.setHueStop(hueStop.getValue());
+          startLineConfig.setSaturationStart(saturationStart.getValue());
+          startLineConfig.setSaturationStop(saturationStop.getValue());
+          startLineConfig.setValueStart(valueStart.getValue());
+          startLineConfig.setValueStop(valueStop.getValue());
+
+          StartLight detect = detector.withImageCollector(imageCollector)
+              .detect(frame);
+
+          if (lightOn) {
+             numberOfLightOffEvents = 0;
+          } else {
+             numberOfLightOffEvents++;
+          }
+          // // show the current selected HSV range
+          String valuesToPrint = String.format(
+              &quot;%4d: light %s h:%.1f-%.1f s:%.1f-%.1f v:%.1f-%.1f&quot;,
+              ++frameIndex,
+              lightOn?&quot;on&quot;:&quot;off&quot;,
+              hueStart.getValue(),hueStop.getValue(),
+              saturationStart.getValue(), saturationStop.getValue(),
+              valueStart.getValue(),valueStop.getValue());
+          displayer.showCurrentValues(valuesToPrint);
+        }
+
+      } catch (Exception e) {
+        displayer.handle(e);
+      }
+    }
+  */
+<span class="nc" id="L223">    return null;</span>
+  }
+
+  private void eventBusSendAfterMS(long ms, String command) {
+<span class="nc" id="L227">    new java.util.Timer().schedule(new java.util.TimerTask() {</span>
+      @Override
+      public void run() {
+<span class="nc" id="L230">        System.out.println(&quot;Sending command '&quot; + command + &quot;'.&quot;);</span>
+<span class="nc bnc" id="L231" title="All 2 branches missed.">        if (vertx != null) {</span>
+<span class="nc" id="L232">          vertx.eventBus().send(&quot;control&quot;, command);</span>
+        } else {
+<span class="nc" id="L234">          System.out.println(</span>
+              &quot;Couldn't send command '&quot; + command + &quot;', Vert.x not inited&quot;);
+        }
+<span class="nc" id="L237">      }</span>
+    }, ms);
+
+<span class="nc" id="L240">  }</span>
+
+  /**
+   * Given a binary image containing one or more closed surfaces, use it as a
+   * mask to find and highlight the objects contours
+   *
+   * @param maskedImage
+   *          the binary image to be used as a mask
+   * @param frame
+   *          the original {@link Mat} image to be used for drawing the objects
+   *          contours
+   * @return the {@link Mat} image with the objects contours framed
+   */
+  private Mat findAndDrawBalls(Mat maskedImage, Mat frame) {
+    // init
+<span class="nc" id="L255">    List&lt;MatOfPoint&gt; contours = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L256">    Mat hierarchy = new Mat();</span>
+
+    // find contours
+<span class="nc" id="L259">    Imgproc.findContours(maskedImage, contours, hierarchy, Imgproc.RETR_CCOMP,</span>
+        Imgproc.CHAIN_APPROX_SIMPLE);
+
+<span class="nc" id="L262">    boolean lightDetected = false;</span>
+
+    // if any contour exist...
+<span class="nc bnc" id="L265" title="All 4 branches missed.">    if (hierarchy.size().height &gt; 0 &amp;&amp; hierarchy.size().width &gt; 0) {</span>
+      // for each contour, display it in blue
+<span class="nc bnc" id="L267" title="All 2 branches missed.">      for (int idx = 0; idx &gt;= 0; idx = (int) hierarchy.get(0, idx)[0]) {</span>
+
+        // Imgproc.drawMarker(frame, , new Scalar(250, 0, 0));
+        // Imgproc.drawContours(frame, contours, idx, new Scalar(0, 0, 255));
+<span class="nc" id="L271">        Imgproc.drawContours(frame, contours, idx, new Scalar(10, 250, 20), 1);</span>
+<span class="nc" id="L272">        lightDetected = true;</span>
+
+      }
+    }
+
+<span class="nc" id="L277">    lightOn = lightDetected;</span>
+
+<span class="nc" id="L279">    return frame;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

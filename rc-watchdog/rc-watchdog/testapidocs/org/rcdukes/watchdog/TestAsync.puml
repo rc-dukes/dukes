@@ -1,0 +1,11 @@
+@startuml
+
+    class TestAsync [[TestAsync.html]] {
+        +testWatchDog(): void
+        +setUp(TestContext): void
+        +testAsync(TestContext): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

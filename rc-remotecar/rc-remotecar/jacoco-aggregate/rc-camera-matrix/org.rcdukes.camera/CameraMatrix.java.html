@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CameraMatrix.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-remotecar</a> &gt; <a href="../index.html" class="el_bundle">rc-camera-matrix</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.camera</a> &gt; <span class="el_source">CameraMatrix.java</span></div><h1>CameraMatrix.java</h1><pre class="source lang-java linenums">package org.rcdukes.camera;
+
+import static org.opencv.imgproc.Imgproc.COLOR_BGR2GRAY;
+import static org.opencv.imgproc.Imgproc.undistort;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.UnaryOperator;
+
+import org.opencv.calib3d.Calib3d;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.MatOfPoint3f;
+import org.opencv.core.Point;
+import org.opencv.core.Point3;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
+
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+
+/**
+ * camera matrix operations
+ *
+ */
+public class CameraMatrix implements UnaryOperator&lt;Mat&gt; {
+
+<span class="nc" id="L30">    public static final CameraMatrix DEFAULT = new CameraMatrix(0, 0);</span>
+<span class="nc" id="L31">    Mat cameraMatrix = null;</span>
+<span class="nc" id="L32">    Mat distCoeffs = null;</span>
+
+<span class="nc" id="L34">    private List&lt;Mat&gt; rvecs = null;</span>
+<span class="nc" id="L35">    private List&lt;Mat&gt; tvecs = null;</span>
+
+<span class="nc" id="L37">    List&lt;Mat&gt; imagePoints = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L38">    List&lt;Mat&gt; objectPoints = new ArrayList&lt;&gt;();</span>
+
+    private int columns;
+    private int rows;
+
+    public List&lt;Mat&gt; getRvecs() {
+<span class="nc" id="L44">      return rvecs;</span>
+    }
+
+    public List&lt;Mat&gt; getTvecs() {
+<span class="nc" id="L48">      return tvecs;</span>
+    }
+
+    /**
+     * create me with the given number of columns and rows
+     * @param columns
+     * @param rows
+     */
+<span class="nc" id="L56">    public CameraMatrix(int columns, int rows) {</span>
+<span class="nc" id="L57">        this.columns = columns;</span>
+<span class="nc" id="L58">        this.rows = rows;</span>
+<span class="nc" id="L59">    }</span>
+
+    /**
+     * calibrate me with the given images
+     * @param images
+     */
+    public void calibrate(Mat... images) {
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        for (Mat image : images) {</span>
+<span class="nc" id="L67">            addCalibrationImage(image);</span>
+        }
+<span class="nc" id="L69">    }</span>
+
+    /**
+     * calculate me with the given size
+     * @param size
+     */
+    private void calculate(Size size) {
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (imagePoints.isEmpty()) {</span>
+<span class="nc" id="L77">            System.err.println(&quot;Could not find chessboard corners&quot;);</span>
+<span class="nc" id="L78">            return;</span>
+        }
+
+<span class="nc" id="L81">        Mat cameraMatrix = new Mat();</span>
+<span class="nc" id="L82">        Mat distCoeffs = new Mat();</span>
+<span class="nc" id="L83">        List&lt;Mat&gt; rvecs = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L84">        List&lt;Mat&gt; tvecs= new ArrayList&lt;&gt;();</span>
+
+<span class="nc" id="L86">        Calib3d.calibrateCamera(objectPoints, imagePoints, size, cameraMatrix, distCoeffs, rvecs, tvecs);</span>
+
+<span class="nc" id="L88">        this.cameraMatrix = cameraMatrix;</span>
+<span class="nc" id="L89">        this.distCoeffs = distCoeffs;</span>
+<span class="nc" id="L90">        this.rvecs = rvecs;</span>
+<span class="nc" id="L91">        this.tvecs = tvecs;</span>
+<span class="nc" id="L92">    }</span>
+    
+    MatOfPoint2f findChessBoardCorners(Mat image) {
+<span class="nc" id="L95">      Mat grey = new Mat();</span>
+<span class="nc" id="L96">      Imgproc.cvtColor(image, grey, COLOR_BGR2GRAY);</span>
+
+<span class="nc" id="L98">      MatOfPoint2f corners = new MatOfPoint2f();</span>
+<span class="nc" id="L99">      boolean patternWasFound = findCorners(grey, columns, rows, corners);</span>
+
+<span class="nc" id="L101">      Calib3d.drawChessboardCorners(image, new Size(columns, rows), corners, patternWasFound);</span>
+
+<span class="nc bnc" id="L103" title="All 2 branches missed.">      if (!patternWasFound) {</span>
+<span class="nc" id="L104">          return null;</span>
+      }
+<span class="nc" id="L106">      return corners;</span>
+    }
+    
+    /**
+     * find the outer chess board corners for the given image
+     * @param image
+     * @return - the outer chessboard corners
+     */
+    public Point[] findOuterChessBoardCornerPoints(Mat image) {
+<span class="nc" id="L115">      MatOfPoint2f corners = this.findChessBoardCorners(image);</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">      if (corners==null)</span>
+<span class="nc" id="L117">        return null;</span>
+<span class="nc" id="L118">      Point[] points = corners.toArray();</span>
+<span class="nc" id="L119">      int l=points.length;</span>
+<span class="nc" id="L120">      Point[] outer= {points[l-1],points[l-columns], points[0],points[columns-1]};</span>
+<span class="nc" id="L121">      Scalar blue = new Scalar(255,0,0);</span>
+      //Scalar green = new Scalar(0,255,0);
+      //Scalar red = new Scalar(0,0,255);
+      //Scalar gray = new Scalar(128,128,128);
+<span class="nc" id="L125">      int stroke=4;</span>
+<span class="nc" id="L126">      Imgproc.line(image, outer[0], outer[1], blue, stroke);</span>
+<span class="nc" id="L127">      Imgproc.line(image, outer[1], outer[2], blue, stroke);</span>
+<span class="nc" id="L128">      Imgproc.line(image, outer[2], outer[3], blue, stroke);</span>
+<span class="nc" id="L129">      Imgproc.line(image, outer[3], outer[0], blue, stroke);</span>
+<span class="nc" id="L130">      return outer;</span>
+    }
+
+    /**
+     * add the given calibration image
+     * @param image
+     * @return the corner points found
+     */
+    public void addCalibrationImage(Mat image) {
+<span class="nc" id="L139">        MatOfPoint2f corners = this.findChessBoardCorners(image);</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (corners==null)</span>
+<span class="nc" id="L141">            return;</span>
+<span class="nc" id="L142">        imagePoints.add(corners);</span>
+
+<span class="nc" id="L144">        MatOfPoint3f obj = new MatOfPoint3f();</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        for (int y = 0; y &lt; rows; y++) {</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">            for (int x = 0; x &lt; columns; x++) {</span>
+<span class="nc" id="L147">                obj.push_back(new MatOfPoint3f(new Point3(y, x, 0.0)));</span>
+            }
+        }
+
+<span class="nc" id="L151">        objectPoints.add(obj);</span>
+
+<span class="nc" id="L153">        calculate(image.size());</span>
+<span class="nc" id="L154">    }</span>
+
+
+    /**
+     * find the corners
+     * @param image - the image
+     * @param columns - the columns
+     * @param rows - rows
+     * @param corners - corners
+     * @return - true if found
+     */
+    private boolean findCorners(Mat image, int columns, int rows, MatOfPoint2f corners) {
+<span class="nc" id="L166">        return Calib3d.findChessboardCorners(image, new Size(columns, rows), corners);</span>
+    }
+
+
+    @Override
+    public Mat apply(Mat image) {
+//        Objects.requireNonNull(cameraMatrix, &quot;CameraMatrix must first be calibrated by calling calibrate&quot;);
+
+<span class="nc bnc" id="L174" title="All 2 branches missed.">        if (cameraMatrix == null) {</span>
+<span class="nc" id="L175">            return image;</span>
+        }
+
+<span class="nc" id="L178">        Mat newImage = new Mat();</span>
+<span class="nc" id="L179">        undistort(image, newImage, cameraMatrix, distCoeffs);</span>
+<span class="nc" id="L180">        return newImage;</span>
+    }
+
+    public String serialize() {
+<span class="nc" id="L184">        JsonObject matrix = serializeMat(cameraMatrix);</span>
+<span class="nc" id="L185">        JsonObject dists = serializeMat(distCoeffs);</span>
+
+<span class="nc" id="L187">        return new JsonObject()</span>
+<span class="nc" id="L188">                .put(&quot;cameraMatrix&quot;, matrix)</span>
+<span class="nc" id="L189">                .put(&quot;distCoeffs&quot;, dists)</span>
+<span class="nc" id="L190">                .toString();</span>
+    }
+
+    private JsonObject serializeMat(Mat mat) {
+<span class="nc" id="L194">        JsonObject matrix = new JsonObject();</span>
+<span class="nc" id="L195">        matrix.put(&quot;size&quot;, new JsonObject()</span>
+<span class="nc" id="L196">                .put(&quot;cols&quot;, mat.size().width)</span>
+<span class="nc" id="L197">                .put(&quot;rows&quot;, mat.size().height));</span>
+
+<span class="nc" id="L199">        matrix.put(&quot;type&quot;, mat.type());</span>
+
+<span class="nc" id="L201">        JsonArray entries = new JsonArray();</span>
+
+<span class="nc bnc" id="L203" title="All 2 branches missed.">        for (int x = 0; x &lt; mat.size().width; x++) {</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">            for (int y = 0; y &lt; mat.size().height; y++) {</span>
+<span class="nc" id="L205">                double[] vals = mat.get(y,x);</span>
+<span class="nc" id="L206">                JsonArray jsonVals = new JsonArray();</span>
+
+<span class="nc" id="L208">                Arrays.stream(vals).forEach(jsonVals::add);</span>
+
+<span class="nc" id="L210">                entries.add(new JsonObject()</span>
+<span class="nc" id="L211">                        .put(&quot;x&quot;, x)</span>
+<span class="nc" id="L212">                        .put(&quot;y&quot;, y)</span>
+<span class="nc" id="L213">                        .put(&quot;val&quot;, jsonVals));</span>
+            }
+        }
+
+<span class="nc" id="L217">        matrix = matrix.put(&quot;entries&quot;, entries);</span>
+<span class="nc" id="L218">        return matrix;</span>
+    }
+
+    public static CameraMatrix deserizalize(String serialized) {
+<span class="nc" id="L222">        JsonObject object = new JsonObject(serialized);</span>
+
+<span class="nc" id="L224">        JsonObject cameraMatrixJson = object.getJsonObject(&quot;cameraMatrix&quot;);</span>
+<span class="nc" id="L225">        JsonObject distCoeffsJson = object.getJsonObject(&quot;distCoeffs&quot;);</span>
+
+<span class="nc" id="L227">        CameraMatrix cameraMatrix = new CameraMatrix(0, 0);</span>
+
+<span class="nc" id="L229">        cameraMatrix.cameraMatrix = deserializeMat(cameraMatrixJson);</span>
+<span class="nc" id="L230">        cameraMatrix.distCoeffs = deserializeMat(distCoeffsJson);</span>
+
+<span class="nc" id="L232">        return cameraMatrix;</span>
+    }
+
+    private static Mat deserializeMat(JsonObject matJson) {
+<span class="nc" id="L236">        Mat mat = new Mat(</span>
+<span class="nc" id="L237">                matJson.getJsonObject(&quot;size&quot;).getInteger(&quot;rows&quot;),</span>
+<span class="nc" id="L238">                matJson.getJsonObject(&quot;size&quot;).getInteger(&quot;cols&quot;),</span>
+<span class="nc" id="L239">                matJson.getInteger(&quot;type&quot;));</span>
+
+<span class="nc" id="L241">        matJson.getJsonArray(&quot;entries&quot;).forEach(obj -&gt; {</span>
+<span class="nc" id="L242">            JsonObject entry = (JsonObject)obj;</span>
+
+<span class="nc" id="L244">            double[] values = entry.getJsonArray(&quot;val&quot;).stream()</span>
+<span class="nc" id="L245">                    .mapToDouble(x -&gt; (Double)x)</span>
+<span class="nc" id="L246">                    .toArray();</span>
+
+<span class="nc" id="L248">            mat.put(entry.getInteger(&quot;y&quot;), entry.getInteger(&quot;x&quot;), values);</span>
+<span class="nc" id="L249">        });</span>
+
+<span class="nc" id="L251">        return mat;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

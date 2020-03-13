@@ -1,0 +1,21 @@
+@startuml
+
+    class Car [[Car.html]] {
+        {static} +servoCommand: ServoCommand
+        +configure(Engine, Steering, Led): void
+        +setPowerOn(): void
+        +setPowerOff(): void
+        +powerIsOn(): boolean
+        +stop(): void
+        +turn(ServoPosition): void
+        +drive(ServoPosition): void
+        +getEngine(): Engine
+        +getSteering(): Steering
+        +getLed(): Led
+        {static} +getInstance(): Car
+        {static} +resetInstance(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+
+    class ErrorHandler [[ErrorHandler.html]] {
+        +handle(Throwable, String): void
+        +warn(String): void
+        +handle(Throwable): void
+        {static} +getInstance(): ErrorHandler
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

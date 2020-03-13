@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>LaneDetector.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-webcontrol</a> &gt; <a href="../index.html" class="el_bundle">rc-detect</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.detect</a> &gt; <span class="el_source">LaneDetector.java</span></div><h1>LaneDetector.java</h1><pre class="source lang-java linenums">package org.rcdukes.detect;
+
+import org.rcdukes.camera.CameraMatrix;
+import org.rcdukes.detect.edgedectection.CannyEdgeDetector;
+import org.rcdukes.detect.lanedetection.ImageLaneDetection;
+import org.rcdukes.detect.linedetection.HoughLinesLineDetector;
+import org.rcdukes.detectors.EdgeDetector;
+import org.rcdukes.detectors.LineDetector;
+import org.rcdukes.geometry.LaneDetectionResult;
+import org.rcdukes.video.Image;
+import org.rcdukes.video.ImageCollector;
+
+/**
+ * detector for lanes
+ *
+ */
+public class LaneDetector {
+
+  private EdgeDetector edgeDetector;
+  private LineDetector lineDetector;
+  private CameraMatrix matrix;
+  private CameraConfig cameraConfig;
+
+  private ImageCollector collector;
+
+  /**
+   * get a default lanedetector
+   * @return - the lane detector
+   */
+  public static LaneDetector getDefault() {
+<span class="nc" id="L31">    ImageCollector collector = new ImageCollector();</span>
+<span class="nc" id="L32">    CameraMatrix matrix = CameraMatrix.DEFAULT;</span>
+<span class="nc" id="L33">    EdgeDetector edgeDetector = new CannyEdgeDetector();</span>
+<span class="nc" id="L34">    CameraConfig cameraConfig = new CameraConfig();</span>
+<span class="nc" id="L35">    LineDetector lineDetector = new HoughLinesLineDetector();</span>
+<span class="nc" id="L36">    LaneDetector laneDetector = new LaneDetector(</span>
+        edgeDetector,
+        lineDetector, cameraConfig, matrix,
+        collector);
+<span class="nc" id="L40">    return laneDetector;</span>
+  }
+
+  /**
+   * create a Lane Detector
+   * 
+   * @param edgeDetector
+   * @param lineDetector
+   * @param cameraConfig
+   * @param matrix
+   * @param collector
+   */
+  public LaneDetector(EdgeDetector edgeDetector, LineDetector lineDetector,
+      CameraConfig cameraConfig, CameraMatrix matrix,
+<span class="nc" id="L54">      ImageCollector collector) {</span>
+<span class="nc" id="L55">    this.setEdgeDetector(edgeDetector);</span>
+<span class="nc" id="L56">    this.setLineDetector(lineDetector);</span>
+<span class="nc" id="L57">    this.setCameraConfig(cameraConfig);</span>
+<span class="nc" id="L58">    this.setMatrix(matrix);</span>
+<span class="nc" id="L59">    this.setCollector(collector);</span>
+<span class="nc" id="L60">  }</span>
+
+  /**
+   * detect the lane for the given image
+   * @param image
+   * @return - the laneDetection result
+   */
+  public LaneDetectionResult detect(Image image) {
+<span class="nc" id="L68">    ImageLaneDetection laneDetect = new ImageLaneDetection(this);</span>
+<span class="nc" id="L69">    return laneDetect.detectLane(image, getCollector());</span>
+  }
+
+  /**
+   * @return the matrix
+   */
+  public CameraMatrix getMatrix() {
+<span class="nc" id="L76">    return matrix;</span>
+  }
+
+  /**
+   * @param matrix
+   *          the matrix to set
+   */
+  public void setMatrix(CameraMatrix matrix) {
+<span class="nc" id="L84">    this.matrix = matrix;</span>
+<span class="nc" id="L85">  }</span>
+
+  public CameraConfig getCameraConfig() {
+<span class="nc" id="L88">    return cameraConfig;</span>
+  }
+
+  public void setCameraConfig(CameraConfig cameraConfig) {
+<span class="nc" id="L92">    this.cameraConfig = cameraConfig;</span>
+<span class="nc" id="L93">  }</span>
+
+  /**
+   * @return the edgeDetector
+   */
+  public EdgeDetector getEdgeDetector() {
+<span class="nc" id="L99">    return edgeDetector;</span>
+  }
+
+  /**
+   * @param edgeDetector
+   *          the edgeDetector to set
+   */
+  public void setEdgeDetector(EdgeDetector edgeDetector) {
+<span class="nc" id="L107">    this.edgeDetector = edgeDetector;</span>
+<span class="nc" id="L108">  }</span>
+
+  /**
+   * @return the lineDetector
+   */
+  public LineDetector getLineDetector() {
+<span class="nc" id="L114">    return lineDetector;</span>
+  }
+
+  /**
+   * @param lineDetector
+   *          the lineDetector to set
+   */
+  public void setLineDetector(LineDetector lineDetector) {
+<span class="nc" id="L122">    this.lineDetector = lineDetector;</span>
+<span class="nc" id="L123">  }</span>
+
+  /**
+   * @return the collector
+   */
+  public ImageCollector getCollector() {
+<span class="nc" id="L129">    return collector;</span>
+  }
+
+  /**
+   * @param collector
+   *          the collector to set
+   */
+  public void setCollector(ImageCollector collector) {
+<span class="nc" id="L137">    this.collector = collector;</span>
+<span class="nc" id="L138">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

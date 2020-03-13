@@ -1,0 +1,15 @@
+@startuml
+
+    class ImageDebugger [[ImageDebugger.html]] {
+        {static} #LOG: Logger
+        +ImageDebugger(File)
+        +isActive(): boolean
+        +step(ImageFetcher, GUIDisplayer.PictureStep): Image
+        +step(GUIDisplayer.PictureStep): void
+        +getFrameIndex(): long
+        +showDebugInfo(EventbusLogger): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

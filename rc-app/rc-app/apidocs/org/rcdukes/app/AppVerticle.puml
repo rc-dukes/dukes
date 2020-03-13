@@ -1,0 +1,27 @@
+@startuml
+
+    class AppVerticle [[AppVerticle.html]] {
+        {static} #LOG: Logger
+        +AppVerticle(EventbusLogger)
+        +getNavigator(): Navigator
+        +setNavigator(Navigator): void
+        +enableNavigator(): void
+        +stopNavigator(): void
+        +start(): void
+        #receiveEchoReply(Message<JsonObject>): void
+        #receiveCarPosition(Message<JsonObject>): void
+        +sendCarCommand(Characters, String, String, String): void
+        +sendSpeedCommand(String): void
+        +sendWheelCommand(String): void
+        +startUp(): void
+        {static} +getInstance(EventbusLogger): AppVerticle
+        +heartBeat(boolean): void
+        +sendHeartBeat(): void
+        +getSimulatorImageFetcher(): SimulatorImageFetcher
+        +setSimulatorImageFetcher(SimulatorImageFetcher): void
+        +setPositionDisplay(PositionDisplay): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

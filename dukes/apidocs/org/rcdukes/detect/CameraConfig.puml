@@ -1,0 +1,21 @@
+@startuml
+
+    class CameraConfig [[CameraConfig.html]] {
+        +getAngleOffset(): double
+        +setAngleOffset(double): void
+        +getInterval(): long
+        +getRoiy(): double
+        +setRoiy(double): void
+        +getRoih(): double
+        +setRoih(double): void
+        +getSource(): String
+        +setSource(String): void
+        +getFps(): double
+        +setFps(double): void
+        +isShowStoppingZone(): boolean
+        +setShowStoppingZone(boolean): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

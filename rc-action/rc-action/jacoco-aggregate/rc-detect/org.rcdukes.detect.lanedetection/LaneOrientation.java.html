@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>LaneOrientation.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-action</a> &gt; <a href="../index.html" class="el_bundle">rc-detect</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.detect.lanedetection</a> &gt; <span class="el_source">LaneOrientation.java</span></div><h1>LaneOrientation.java</h1><pre class="source lang-java linenums">package org.rcdukes.detect.lanedetection;
+
+import static java.util.Optional.of;
+
+import java.util.Optional;
+
+import org.rcdukes.geometry.Lane;
+import org.rcdukes.geometry.Line;
+import org.rcdukes.geometry.Point;
+import org.rcdukes.geometry.Point2D;
+import org.rcdukes.objects.ViewPort;
+
+/**
+ * calculates the orientation of a given lane
+ *
+ */
+public class LaneOrientation {
+
+  private final Lane lane;
+  private final ViewPort viewPort;
+<span class="nc" id="L21">  private Line middle = null;</span>
+<span class="nc" id="L22">  private Line left = null;</span>
+<span class="nc" id="L23">  private Line right = null;</span>
+
+  /**
+   * construct me for the given lane and viewport
+   * 
+   * @param lane
+   * @param viewPort
+   */
+<span class="nc" id="L31">  public LaneOrientation(Lane lane, ViewPort viewPort) {</span>
+<span class="nc" id="L32">    this.lane = lane;</span>
+<span class="nc" id="L33">    this.viewPort = viewPort;</span>
+<span class="nc" id="L34">  }</span>
+
+  /**
+   * determine the lines
+   */
+  public void determineLines() {
+<span class="nc" id="L40">    setMiddle(determineLaneMiddle().orElse(null));</span>
+<span class="nc" id="L41">    setLeft(lane.getLeftBoundary().orElse(null));</span>
+<span class="nc" id="L42">    setRight(lane.getRightBoundary().orElse(null));</span>
+<span class="nc" id="L43">  }</span>
+
+  /**
+   * get lines
+   * 
+   * @return - the three optional lines
+   */
+  public Line[] getLines() {
+<span class="nc" id="L51">    Line lolines[] = { getLeft(), getMiddle(), getRight() };</span>
+<span class="nc" id="L52">    return lolines;</span>
+  }
+
+  public double distanceFromLeftBoundary() {
+<span class="nc" id="L56">    Optional&lt;Point2D&gt; viewPortMiddle = determineViewPortMiddle();</span>
+<span class="nc" id="L57">    return viewPortMiddle</span>
+<span class="nc" id="L58">        .flatMap(middle -&gt; lane.getLeftBoundary()</span>
+<span class="nc" id="L59">            .map(boundary -&gt; boundary.bottomMost().distance(middle)))</span>
+<span class="nc" id="L60">        .orElse(Double.NaN);</span>
+  }
+
+  public double distanceFromRightBoundary() {
+<span class="nc" id="L64">    Optional&lt;Point2D&gt; viewPortMiddle = determineViewPortMiddle();</span>
+<span class="nc" id="L65">    return viewPortMiddle</span>
+<span class="nc" id="L66">        .flatMap(middle -&gt; lane.getRightBoundary()</span>
+<span class="nc" id="L67">            .map(boundary -&gt; boundary.bottomMost().distance(middle)))</span>
+<span class="nc" id="L68">        .orElse(Double.NaN);</span>
+  }
+
+  private Optional&lt;Point2D&gt; determineViewPortMiddle() {
+<span class="nc" id="L72">    double positionFraction = determineFractionalPosition();</span>
+
+<span class="nc" id="L74">    Optional&lt;Line&gt; base = determineBase();</span>
+<span class="nc" id="L75">    return base.map(line -&gt; line.pointAt(positionFraction));</span>
+  }
+
+  private double determineFractionalPosition() {
+<span class="nc" id="L79">    double distanceToMiddle = determineDistanceToMiddle();</span>
+<span class="nc" id="L80">    double fraction = distanceToMiddle / viewPort.getWidth();</span>
+
+<span class="nc" id="L82">    return 0.5 + fraction;</span>
+  }
+
+  public double determineDistanceToMiddle() {
+<span class="nc" id="L86">    Optional&lt;Line&gt; middle = determineLaneMiddle();</span>
+<span class="nc" id="L87">    return middle.map(line -&gt; {</span>
+<span class="nc" id="L88">      Point2D middleBottom = line.bottomMost();</span>
+
+<span class="nc" id="L90">      double distanceToMiddle = -1 * middleBottom.distance(</span>
+<span class="nc" id="L91">          new Point(viewPort.getOrigin().getX() + (viewPort.getWidth() / 2),</span>
+<span class="nc" id="L92">              middleBottom.getY()));</span>
+
+<span class="nc" id="L94">      return distanceToMiddle;</span>
+<span class="nc" id="L95">    }).orElse(Double.NaN);</span>
+  }
+
+  /**
+   * determine the course relative to Horizon
+   * 
+   * @return
+   */
+  public Double determineCourseRelativeToHorizon() {
+<span class="nc bnc" id="L104" title="All 2 branches missed.">    if (middle == null) {</span>
+<span class="nc" id="L105">      return null;</span>
+    }
+<span class="nc" id="L107">    double middleAtHorizonX = middle.topMost().getX();</span>
+<span class="nc" id="L108">    double middleHere=middle.bottomMost().getX();</span>
+<span class="nc" id="L109">    double maxX = viewPort.getWidth();</span>
+    // @TODO - distance to horizon is taken as 1 here ...
+<span class="nc" id="L111">    double tan = (middleAtHorizonX-middleHere) / maxX;</span>
+<span class="nc" id="L112">    return Math.atan(tan);</span>
+  }
+
+  public Optional&lt;Line&gt; determineLaneMiddle() {
+<span class="nc bnc" id="L116" title="All 2 branches missed.">    if (!lane.getLeftBoundary().isPresent()</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        || !lane.getRightBoundary().isPresent()) {</span>
+<span class="nc" id="L118">      return Optional.empty();</span>
+    }
+<span class="nc" id="L120">    Line left = lane.getLeftBoundary().get();</span>
+<span class="nc" id="L121">    Line right = lane.getRightBoundary().get();</span>
+
+<span class="nc" id="L123">    Optional&lt;Line&gt; extendedBase = determineBase();</span>
+<span class="nc" id="L124">    return extendedBase.map(base -&gt; {</span>
+<span class="nc" id="L125">      Point2D infHorizon = left.intersect(right)</span>
+<span class="nc" id="L126">          .orElseThrow(() -&gt; new RuntimeException(</span>
+              &quot;Left and Right boundary do not intersect ...&quot;));
+<span class="nc" id="L128">      Point2D baseMiddle = base.pointAt(0.5);</span>
+
+<span class="nc" id="L130">      return new Line(baseMiddle, infHorizon);</span>
+    });
+  }
+
+  public Optional&lt;Line&gt; determineBase() {
+<span class="nc bnc" id="L135" title="All 2 branches missed.">    if (!lane.getLeftBoundary().isPresent()</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">        || !lane.getRightBoundary().isPresent()) {</span>
+<span class="nc" id="L137">      return Optional.empty();</span>
+    }
+
+<span class="nc" id="L140">    Line left = lane.getLeftBoundary().get();</span>
+<span class="nc" id="L141">    Line right = lane.getRightBoundary().get();</span>
+
+<span class="nc" id="L143">    Point2D leftLow = left.bottomMost();</span>
+<span class="nc" id="L144">    Point2D leftLeft = left.leftMost();</span>
+<span class="nc" id="L145">    Point2D rightLow = right.bottomMost();</span>
+<span class="nc" id="L146">    Point2D rightRight = right.rightMost();</span>
+
+<span class="nc bnc" id="L148" title="All 2 branches missed.">    Point2D lowest = leftLow.getY() &gt; rightLow.getY() ? leftLow : rightLow;</span>
+
+<span class="nc" id="L150">    Line base = new Line(new Point(leftLeft.getX(), lowest.getY()),</span>
+<span class="nc" id="L151">        new Point(rightRight.getX(), lowest.getY()));</span>
+
+<span class="nc" id="L153">    Point2D leftIntersect = base.intersect(left).orElseThrow(</span>
+<span class="nc" id="L154">        () -&gt; new RuntimeException(&quot;Left does not intersect base ...&quot;));</span>
+<span class="nc" id="L155">    Point2D rightIntersect = base.intersect(right).orElseThrow(</span>
+<span class="nc" id="L156">        () -&gt; new RuntimeException(&quot;Right does not intersect base ...&quot;));</span>
+
+<span class="nc" id="L158">    return of(new Line(leftIntersect, rightIntersect));</span>
+  }
+
+  /**
+   * @return the middle
+   */
+  public Line getMiddle() {
+<span class="nc" id="L165">    return middle;</span>
+  }
+
+  /**
+   * @param middle
+   *          the middle to set
+   */
+  public void setMiddle(Line middle) {
+<span class="nc" id="L173">    this.middle = middle;</span>
+<span class="nc" id="L174">  }</span>
+
+  /**
+   * @return the left
+   */
+  public Line getLeft() {
+<span class="nc" id="L180">    return left;</span>
+  }
+
+  /**
+   * @param left
+   *          the left to set
+   */
+  public void setLeft(Line left) {
+<span class="nc" id="L188">    this.left = left;</span>
+<span class="nc" id="L189">  }</span>
+
+  /**
+   * @return the right
+   */
+  public Line getRight() {
+<span class="nc" id="L195">    return right;</span>
+  }
+
+  /**
+   * @param right
+   *          the right to set
+   */
+  public void setRight(Line right) {
+<span class="nc" id="L203">    this.right = right;</span>
+<span class="nc" id="L204">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

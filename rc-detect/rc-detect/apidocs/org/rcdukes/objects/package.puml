@@ -1,0 +1,39 @@
+@startuml
+
+    namespace org.rcdukes.objects {
+
+        class ViewPort [[ViewPort.html]] {
+            +ViewPort(Point2D, double, double)
+            +getOrigin(): Point2D
+            +getWidth(): double
+            +getHeight(): double
+        }
+
+        enum StartLight [[StartLight.html]] {
+            {static} +OFF
+            {static} +LIT
+            {static} +DIMMED
+            #nrOfOffs: int
+            {static} +init(): StartLight
+            +on(): StartLight
+            +off(): StartLight
+            +started(): boolean
+        }
+
+        class StoppingZone [[StoppingZone.html]] {
+            +StoppingZone(Optional<Line>, Optional<Line>)
+            +getEntrance(): Optional<Line>
+            +getExit(): Optional<Line>
+        }
+
+        class Boundary [[Boundary.html]] {
+            +Boundary(LineFilter)
+            +boundary(Collection<Line>): Optional<Line>
+            +candidates(Collection<Line>): Collection<Line>
+        }
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

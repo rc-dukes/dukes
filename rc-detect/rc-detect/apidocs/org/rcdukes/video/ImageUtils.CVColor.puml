@@ -1,0 +1,15 @@
+@startuml
+
+    class ImageUtils.CVColor [[ImageUtils.CVColor.html]] {
+        {static} +red: Scalar
+        {static} +lightgreen: Scalar
+        {static} +green: Scalar
+        {static} +dodgerblue: Scalar
+        {static} +cyan: Scalar
+        {static} +yellow: Scalar
+        {static} +indigo: Scalar
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

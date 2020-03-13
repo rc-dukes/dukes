@@ -1,11 +1,11 @@
-nl.vaneijndhoven.objects
-nl.vaneijndhoven.objects.lane
-nl.vaneijndhoven.objects.stoppingzone
-nl.vaneijndhoven.opencv.startlightdetection
-nl.vaneijndhoven.opencv.stopzonedetection
 org.rcdukes.detect
 org.rcdukes.detect.edgedectection
 org.rcdukes.detect.lanedetection
 org.rcdukes.detect.linedetection
+org.rcdukes.detect.startlightdetection
+org.rcdukes.detect.stopzonedetection
 org.rcdukes.detectors
+org.rcdukes.objects
+org.rcdukes.objects.lane
+org.rcdukes.objects.stoppingzone
 org.rcdukes.video

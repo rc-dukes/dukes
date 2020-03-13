@@ -1,0 +1,32 @@
+@startuml
+
+    class BaseGUI [[BaseGUI.html]] {
+        {static} #LOG: Logger
+        +getDisplayer(): GUIDisplayer
+        +setDisplayer(GUIDisplayer): void
+        {static} +getScreenWidth(): double
+        {static} +getScreenHeight(): double
+        +getEventbusLogger(): EventbusLogger
+        +setEventbusLogger(EventbusLogger): void
+        #displayImage(ImageView, byte[]): void
+        #displayImage(ImageView, Image): void
+        #displayImage(ImageView, Mat): void
+        #imageViewProperties(ImageView, int): void
+        #onFXThread(ObjectProperty<T>, T): void
+        #onFXThread(DoubleProperty, Double): void
+        #onFXThread(StringProperty, String): void
+        #browse(String): void
+        +handle(Throwable): void
+        +setButtonIcon(Button, GlyphIcons, String, String, String): void
+        +setButtonIcon(Button, GlyphIcons): void
+        +setMenuButtonIcon(Button, GlyphIcons): void
+        +setButtonTooltip(Button, String): void
+        +setButtonColor(Button, String, String): void
+        +setButtonActive(Button, boolean): void
+        +setPositionDisplay(PositionDisplay): void
+        #getAppVerticle(): AppVerticle
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

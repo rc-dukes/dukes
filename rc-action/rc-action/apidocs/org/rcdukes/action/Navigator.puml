@@ -1,0 +1,16 @@
+@startuml
+
+    interface Navigator [[Navigator.html]] {
+        {abstract} +getSender(): DukesVerticle
+        {abstract} +setSender(DukesVerticle): void
+        {abstract} +fromJsonObject(JsonObject): LaneDetectionResult
+        {abstract} +getNavigationInstruction(LaneDetectionResult): JsonObject
+        {abstract} +navigateWithInstruction(JsonObject): void
+        {abstract} +navigateWithMessage(Message<JsonObject>): void
+        {abstract} +navigateWithLaneDetectionResult(LaneDetectionResult): void
+        {abstract} +videoStopped(VideoRecorders.VideoInfo): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

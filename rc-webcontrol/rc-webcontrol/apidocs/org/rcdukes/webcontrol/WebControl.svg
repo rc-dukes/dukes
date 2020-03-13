@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="102px" preserveAspectRatio="none" style="width:194px;height:102px;" version="1.1" viewBox="0 0 194 102" width="194px" zoomAndPan="magnify"><defs><filter height="300%" id="fkk0vzyukvdae" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--class WebControl--><a href="WebControl.html" target="_top" xlink:actuate="onRequest" xlink:show="new" xlink:title="WebControl.html" xlink:type="simple"><rect fill="#FEFECE" filter="url(#fkk0vzyukvdae)" height="60.9551" id="WebControl" style="stroke: #A80036; stroke-width: 1.5;" width="98" x="36" y="8"/><ellipse cx="51" cy="24" fill="#ADD1B2" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M53.9731,29.6431 Q53.3921,29.9419 52.7529,30.0913 Q52.1138,30.2407 51.4082,30.2407 Q48.9014,30.2407 47.5815,28.5889 Q46.2617,26.937 46.2617,23.8159 Q46.2617,20.6865 47.5815,19.0347 Q48.9014,17.3828 51.4082,17.3828 Q52.1138,17.3828 52.7612,17.5322 Q53.4087,17.6816 53.9731,17.9805 L53.9731,20.7031 Q53.3423,20.1221 52.7488,19.8523 Q52.1553,19.5825 51.5244,19.5825 Q50.1797,19.5825 49.4949,20.6492 Q48.8101,21.7158 48.8101,23.8159 Q48.8101,25.9077 49.4949,26.9744 Q50.1797,28.041 51.5244,28.041 Q52.1553,28.041 52.7488,27.7712 Q53.3423,27.5015 53.9731,26.9204 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="66" x="65" y="28.5352">WebControl</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="37" x2="133" y1="40" y2="40"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="37" x2="133" y1="48" y2="48"/><ellipse cx="47" cy="59.9775" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="62" x="56" y="62.6348">start(): void</text></a><text fill="#888888" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="182" x="0" y="88.668">UMLDoclet 1.1.4, PlantUML 1.2019.05</text><!--
+@startuml
+
+    class WebControl [[WebControl.html]] {
+        +start(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml
+
+PlantUML version 1.2019.05(Sat Apr 20 18:45:36 CEST 2019)
+(APACHE source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Java Version: 1.8.0_152-b16
+Operating System: Mac OS X
+OS Version: 10.13.6
+Default Encoding: UTF-8
+Language: de
+Country: DE
+--></g></svg>

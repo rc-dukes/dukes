@@ -1,0 +1,36 @@
+@startuml
+
+    class Line [[Line.html]] {
+        +Line()
+        +Line(double[])
+        +Line(Point, Point)
+        +Line(Point2D, Point2D)
+        {static} +fromHough(boolean, int, int, double[]): Line
+        +init(Point, Point): void
+        +length(): double
+        +angleRad(): double
+        +angleDeg(): double
+        +angleDeg90(): double
+        +getPoint1(): Point2D
+        +getPoint2(): Point2D
+        {static} +average(Line[]): Line
+        {static} +average(Collection<Line>): Line
+        +isLeftOfLine(Point2D): boolean
+        +isRightOfLine(Point2D): boolean
+        +existsOnLine(Point2D): boolean
+        +bottomMost(): Point2D
+        +leftMost(): Point2D
+        +rightMost(): Point2D
+        +topMost(): Point2D
+        +pointAt(double): Point2D
+        +width(): double
+        +height(): double
+        {static} +angleString(Double): String
+        {static} +lineAngleString(Line): String
+        +intersect(Line): Optional<Point2D>
+        +distance(Point2D): double
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

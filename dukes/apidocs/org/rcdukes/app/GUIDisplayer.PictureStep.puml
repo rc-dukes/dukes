@@ -1,0 +1,12 @@
+@startuml
+
+    enum GUIDisplayer.PictureStep [[GUIDisplayer.PictureStep.html]] {
+        {static} +FIRST
+        {static} +PREV
+        {static} +NEXT
+        {static} +FORWARD
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

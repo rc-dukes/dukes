@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ImageLaneDetection.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-remotecar</a> &gt; <a href="../index.html" class="el_bundle">rc-detect</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.detect.lanedetection</a> &gt; <span class="el_source">ImageLaneDetection.java</span></div><h1>ImageLaneDetection.java</h1><pre class="source lang-java linenums">package org.rcdukes.detect.lanedetection;
+
+import static java.util.Arrays.asList;
+
+import java.util.Collection;
+import java.util.Optional;
+
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.rcdukes.camera.ImagePolygon;
+import org.rcdukes.camera.PerspectiveShift;
+import org.rcdukes.detect.CameraConfig;
+import org.rcdukes.detect.LaneDetector;
+import org.rcdukes.geometry.Lane;
+import org.rcdukes.geometry.LaneDetectionResult;
+import org.rcdukes.geometry.Line;
+import org.rcdukes.geometry.Point;
+import org.rcdukes.geometry.Polygon;
+import org.rcdukes.roi.ROI;
+import org.rcdukes.video.Image;
+import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.ImageCollector.ImageType;
+import org.rcdukes.video.ImageUtils;
+import org.rcdukes.video.ImageUtils.CVColor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import nl.vaneijndhoven.objects.StoppingZone;
+import nl.vaneijndhoven.objects.ViewPort;
+import nl.vaneijndhoven.objects.stoppingzone.StoppingZoneOrientation;
+import nl.vaneijndhoven.opencv.stopzonedetection.DefaultStoppingZoneDetector;
+
+/**
+ * image lane detection
+ *
+ */
+public class ImageLaneDetection {
+<span class="nc" id="L38">  protected static final Logger LOG = LoggerFactory</span>
+<span class="nc" id="L39">      .getLogger(ImageLaneDetection.class);</span>
+  private LaneDetector ld;
+
+  /**
+   * create me for the given LaneDetector
+   * 
+   * @param laneDetector
+   */
+<span class="nc" id="L47">  public ImageLaneDetection(LaneDetector laneDetector) {</span>
+<span class="nc" id="L48">    this.ld = laneDetector;</span>
+<span class="nc" id="L49">  }</span>
+
+  /**
+   * detect the lane
+   * 
+   * @param image
+   * @param imageCollector
+   * @return a map with information
+   */
+  public LaneDetectionResult detectLane(Image image,
+      ImageCollector imageCollector) {
+<span class="nc" id="L60">    LaneDetectionResult ldr = new LaneDetectionResult();</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">    if (image == null) {</span>
+<span class="nc" id="L62">      LOG.error(&quot;detectLane: original is null&quot;);</span>
+<span class="nc" id="L63">      return ldr;</span>
+    }
+<span class="nc" id="L65">    CameraConfig cameraConfig = ld.getCameraConfig();</span>
+<span class="nc" id="L66">    imageCollector.addImage(image, ImageType.camera);</span>
+<span class="nc" id="L67">    ldr.frameIndex = image.getFrameIndex();</span>
+<span class="nc" id="L68">    ldr.milliTimeStamp = image.getMilliTimeStamp();</span>
+    // ! important - create a copy of the image because debug info might be
+    // written on it
+<span class="nc" id="L71">    Mat imageCopy = image.getFrame().clone();</span>
+<span class="nc" id="L72">    Mat undistorted = ld.getMatrix().apply(imageCopy);</span>
+    // get the configured Region of interest
+<span class="nc" id="L74">    double ry = cameraConfig.getRoiy() / 100.0;</span>
+<span class="nc" id="L75">    double rh = (1 - ry) * cameraConfig.getRoih() / 100.0;</span>
+<span class="nc" id="L76">    Mat frame = new ROI(&quot;camera&quot;, 0, ry, 1, rh).region(undistorted);</span>
+<span class="nc" id="L77">    Size imageSize = frame.size();</span>
+<span class="nc" id="L78">    ViewPort viewPort = new ViewPort(new Point(0.0, 0.0), imageSize.width,</span>
+        imageSize.height);
+<span class="nc" id="L80">    Polygon imagePolygon = new ImagePolygon(frame.size(), 0, 0, 1, 0, 1, 1, 0,</span>
+        1);
+<span class="nc" id="L82">    Polygon worldPolygon = new ImagePolygon(frame.size(), 0, 0, 1, 0, 1, 1, 0,</span>
+        1);
+
+<span class="nc" id="L85">    PerspectiveShift perspectiveShift = new PerspectiveShift(imagePolygon,</span>
+        worldPolygon);
+<span class="nc" id="L87">    Mat birdseye = perspectiveShift.apply(frame);</span>
+<span class="nc" id="L88">    imageCollector.addImage(birdseye, ImageType.birdseye);</span>
+
+    // step1 edge detection
+<span class="nc" id="L91">    Mat imgEdges = ld.getEdgeDetector().detect(frame);</span>
+<span class="nc" id="L92">    imageCollector.addImage(imgEdges, ImageType.edges);</span>
+
+    // step 2 line detection
+<span class="nc" id="L95">    Collection&lt;Line&gt; lines = ld.getLineDetector().detect(imgEdges);</span>
+<span class="nc" id="L96">    Lane lane = new DefaultLaneDetector().detect(lines, viewPort);</span>
+<span class="nc" id="L97">    StoppingZone stoppingZone = new DefaultStoppingZoneDetector().detect(lines);</span>
+
+<span class="nc" id="L99">    LaneOrientation laneOrientation = new LaneOrientation(lane, viewPort);</span>
+<span class="nc" id="L100">    laneOrientation.determineLines();</span>
+<span class="nc" id="L101">    StoppingZoneOrientation stoppingZoneOrientation = new StoppingZoneOrientation(</span>
+        stoppingZone, lane, viewPort);
+
+<span class="nc" id="L104">    Optional&lt;Line&gt; middle = Optional.ofNullable(laneOrientation.getMiddle());</span>
+
+<span class="nc" id="L106">    ImageUtils iu = new ImageUtils();</span>
+<span class="nc" id="L107">    lane.getLeftBoundary().ifPresent(boundary -&gt; iu.drawLinesToImage(frame,</span>
+<span class="nc" id="L108">        asList(boundary), CVColor.green));</span>
+<span class="nc" id="L109">    lane.getRightBoundary().ifPresent(boundary -&gt; iu.drawLinesToImage(frame,</span>
+<span class="nc" id="L110">        asList(boundary), CVColor.dodgerblue));</span>
+<span class="nc" id="L111">    middle.ifPresent(</span>
+<span class="nc" id="L112">        line -&gt; iu.drawLinesToImage(frame, asList(line), CVColor.red));</span>
+
+<span class="nc" id="L114">    ldr.distanceToStoppingZone = -1.0;</span>
+<span class="nc" id="L115">    ldr.distanceToStoppingZoneEnd = -1.0;</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">    if (stoppingZone.getEntrance() != null) {</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">      if (cameraConfig.isShowStoppingZone())</span>
+<span class="nc" id="L118">        stoppingZone.getEntrance().ifPresent(entrance -&gt; iu</span>
+<span class="nc" id="L119">            .drawLinesToImage(frame, asList(entrance), CVColor.cyan));</span>
+<span class="nc" id="L120">      ldr.distanceToStoppingZone = stoppingZoneOrientation</span>
+<span class="nc" id="L121">          .determineDistanceToStoppingZone();</span>
+    }
+
+<span class="nc bnc" id="L124" title="All 2 branches missed.">    if (stoppingZone.getExit() != null) {</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">      if (cameraConfig.isShowStoppingZone())</span>
+<span class="nc" id="L126">        stoppingZone.getExit().ifPresent(</span>
+<span class="nc" id="L127">            exit -&gt; iu.drawLinesToImage(frame, asList(exit), CVColor.yellow));</span>
+<span class="nc" id="L128">      ldr.distanceToStoppingZoneEnd = stoppingZoneOrientation</span>
+<span class="nc" id="L129">          .determineDistanceToStoppingZoneEnd();</span>
+    }
+<span class="nc" id="L131">    imageCollector.addImage(frame, ImageType.lines);</span>
+
+<span class="nc" id="L133">    Double angleOffset = cameraConfig.getAngleOffset();</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">    if (laneOrientation.getLeft() != null)</span>
+<span class="nc" id="L135">      ldr.left = laneOrientation.getLeft().angleDeg90() + angleOffset;</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">    if (laneOrientation.getMiddle() != null)</span>
+<span class="nc" id="L137">      ldr.middle = laneOrientation.getMiddle().angleDeg90() + angleOffset;</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">    if (laneOrientation.getRight() != null)</span>
+<span class="nc" id="L139">      ldr.right = laneOrientation.getRight().angleDeg90() + angleOffset;</span>
+<span class="nc" id="L140">    ldr.distanceMiddle = laneOrientation.determineDistanceToMiddle();</span>
+<span class="nc" id="L141">    ldr.distanceLeft = laneOrientation.distanceFromLeftBoundary();</span>
+<span class="nc" id="L142">    ldr.distanceRight = laneOrientation.distanceFromRightBoundary();</span>
+<span class="nc" id="L143">    ldr.courseRelativeToHorizon = laneOrientation</span>
+<span class="nc" id="L144">        .determineCourseRelativeToHorizon();</span>
+<span class="nc" id="L145">    return ldr;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,35 @@
+@startuml
+
+    namespace org.rcdukes.objects.lane {
+
+        class BoundaryDefaults [[BoundaryDefaults.html]] {
+            {static} +DEFAULT_LANE_BOUNDARY_ANGLE: double
+            {static} +DEFAULT_LANE_BOUNDARY_TOLERANCE: double
+        }
+
+        class LaneRightBoundary [[LaneRightBoundary.html]] {
+            {static} +DEFAULT_ANGLE: double
+            {static} +DEFAULT_TOLERANCE: double
+            +LaneRightBoundary()
+            +LaneRightBoundary(double, double, boolean)
+            +boundary(Collection<Line>): Optional<Line>
+        }
+
+        class LaneLeftBoundary [[LaneLeftBoundary.html]] {
+            {static} +DEFAULT_ANGLE: double
+            {static} +DEFAULT_TOLERANCE: double
+            +LaneLeftBoundary()
+            +LaneLeftBoundary(double, double, boolean)
+            +boundary(Collection<Line>): Optional<Line>
+        }
+
+        class org.rcdukes.objects.Boundary
+        org.rcdukes.objects.Boundary <|-- LaneRightBoundary
+
+        org.rcdukes.objects.Boundary <|-- LaneLeftBoundary
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

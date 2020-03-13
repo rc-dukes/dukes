@@ -1,0 +1,17 @@
+@startuml
+
+    class ServoCalibration [[ServoCalibration.html]] {
+        {static} +fromJo(JsonObject): ServoCalibration
+        +getVehicle(): String
+        +setVehicle(String): void
+        +getType(): String
+        +setType(String): void
+        +getUnit(): String
+        +setUnit(String): void
+        +getValueMap(): Map<Integer, Double>
+        +setValueMap(Map<Integer, Double>): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

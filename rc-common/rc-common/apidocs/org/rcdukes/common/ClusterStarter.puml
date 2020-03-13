@@ -1,0 +1,19 @@
+@startuml
+
+    class ClusterStarter [[ClusterStarter.html]] {
+        {static} +MAX_START_TIME: int
+        +getVertx(): Vertx
+        +prepare(): void
+        +configureCluster(String, String): void
+        +clusteredVertx(Handler<AsyncResult<Vertx>>): void
+        +getDeployMentOptions(boolean): DeploymentOptions
+        +deployVerticles(AbstractVerticle[]): void
+        +getOptions(): VertxOptions
+        +undeployVerticle(DukesVerticle): void
+        +getHostname(): String
+        +setHostname(String): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

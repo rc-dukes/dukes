@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SimulatorImageFetcher.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-server</a> &gt; <a href="../index.html" class="el_bundle">rc-app</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.app</a> &gt; <span class="el_source">SimulatorImageFetcher.java</span></div><h1>SimulatorImageFetcher.java</h1><pre class="source lang-java linenums">package org.rcdukes.app;
+
+import java.io.IOException;
+
+import org.opencv.core.Mat;
+import org.rcdukes.error.ErrorHandler;
+import org.rcdukes.video.Image;
+import org.rcdukes.video.ImageUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.reactivex.Observable;
+import io.reactivex.subjects.ReplaySubject;
+import io.vertx.rxjava.core.eventbus.Message;
+
+/**
+ * supplies images from the simulator
+ * @author wf
+ *
+ */
+public class SimulatorImageFetcher {
+<span class="nc" id="L22">  public static boolean debug=false;</span>
+  private int frameIndex;
+  // http://reactivex.io/RxJava/javadoc/rx/subjects/ReplaySubject.html
+  ReplaySubject&lt;Image&gt; subject;
+<span class="nc" id="L26">  protected static final Logger LOG = LoggerFactory</span>
+<span class="nc" id="L27">      .getLogger(SimulatorImageFetcher.class);</span>
+<span class="nc" id="L28">  Image Empty=new Image(null,&quot;simulator&quot;,-1,0);</span>
+  
+  /**
+   * construct me
+   */
+<span class="nc" id="L33">  public SimulatorImageFetcher() {</span>
+<span class="nc" id="L34">    frameIndex=0;</span>
+<span class="nc" id="L35">    subject=ReplaySubject.create();</span>
+<span class="nc" id="L36">  }</span>
+  
+  /**
+   * receive an image from the simulator
+   */
+  protected void receiveSimulatorImage(Message&lt;String&gt; message) {
+<span class="nc" id="L42">    String imgData = message.body(); // in DataURL format ...</span>
+    try {
+<span class="nc" id="L44">      Mat frame=ImageUtils.matFromDataUrl(imgData, &quot;jpg&quot;);</span>
+<span class="nc" id="L45">      long milliTimeStamp = System.currentTimeMillis();</span>
+<span class="nc" id="L46">      Image image = new Image(frame, &quot;simulator&quot;, frameIndex++,</span>
+          milliTimeStamp);
+<span class="nc bnc" id="L48" title="All 2 branches missed.">      if (debug) {</span>
+<span class="nc" id="L49">        String msg=image.debugInfo();</span>
+<span class="nc" id="L50">        LOG.info(msg);</span>
+      }
+<span class="nc" id="L52">      subject.onNext(image);</span>
+<span class="nc" id="L53">    } catch (IOException e) {</span>
+<span class="nc" id="L54">      ErrorHandler.getInstance().handle(e);</span>
+<span class="nc" id="L55">    }</span>
+<span class="nc" id="L56">  }</span>
+
+  /**
+   * get my Observable
+   * @return my observable
+   */
+  public Observable&lt;Image&gt; toObservable() {
+<span class="nc" id="L63">    return subject;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

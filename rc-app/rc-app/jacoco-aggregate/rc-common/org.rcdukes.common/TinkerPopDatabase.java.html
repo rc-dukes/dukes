@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TinkerPopDatabase.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-app</a> &gt; <a href="../index.html" class="el_bundle">rc-common</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.common</a> &gt; <span class="el_source">TinkerPopDatabase.java</span></div><h1>TinkerPopDatabase.java</h1><pre class="source lang-java linenums">package org.rcdukes.common;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.tinkerpop.gremlin.process.traversal.IO;
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
+import org.apache.tinkerpop.gremlin.structure.T;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
+import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph;
+
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+
+/**
+ * a Gremlin/TinkerPop based in memory database
+ * 
+ * @author wf
+ *
+ */
+public class TinkerPopDatabase implements GraphDatabase {
+<span class="nc" id="L25">  protected static final Logger LOG = LoggerFactory</span>
+<span class="nc" id="L26">      .getLogger(TinkerPopDatabase.class);</span>
+  protected TinkerGraph graph;
+<span class="nc" id="L28">  protected boolean debug=false;</span>
+
+  /**
+   * construct me
+   */
+<span class="nc" id="L33">  public TinkerPopDatabase() {</span>
+<span class="nc" id="L34">    graph = TinkerGraph.open();</span>
+<span class="nc" id="L35">  }</span>
+
+  /**
+   * access to graph
+   * 
+   * @return the GraphTraversalSource
+   */
+  public GraphTraversalSource g() {
+<span class="nc" id="L43">    return this.graph.traversal();</span>
+  }
+
+  /**
+   * set a property of the given vertex
+   * 
+   * @param v
+   * @param name
+   *          - name of the property
+   * @param value
+   *          - value of the property
+   */
+  public void setProp(Vertex v, String name, Object value) {
+<span class="nc bnc" id="L56" title="All 2 branches missed.">    if (value != null) {</span>
+<span class="nc" id="L57">      v.property(name, value);</span>
+    }
+<span class="nc" id="L59">  }</span>
+
+  /**
+   * write me to the given path
+   * 
+   * @param path
+   */
+  public void writeGraph(String path) {
+<span class="nc" id="L67">    this.g().io(path).with(IO.writer, IO.graphson).write().iterate();</span>
+<span class="nc" id="L68">  }</span>
+
+  /**
+   * load the given graphFile
+   * 
+   * @param graphFile
+   */
+  public void loadGraph(File graphFile) {
+<span class="nc" id="L76">    this.g().io(graphFile.getPath()).with(IO.reader, IO.graphson).read()</span>
+<span class="nc" id="L77">        .iterate();</span>
+<span class="nc" id="L78">    long nodeCount = this.g().V().count().next().longValue();</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">    if (debug) {</span>
+<span class="nc" id="L80">      String msg = String.format(&quot;loaded graph %s with %d nodes&quot;,</span>
+<span class="nc" id="L81">          graphFile.getPath(), nodeCount);</span>
+<span class="nc" id="L82">      LOG.info(msg);</span>
+    }
+<span class="nc" id="L84">  }</span>
+
+  /**
+   * add a vertex for the given object
+   * 
+   * @param o
+   */
+  public void addVertex(Object o) {
+<span class="nc" id="L92">    Vertex v = this.graph.addVertex(T.label, o.getClass().getSimpleName());</span>
+<span class="nc" id="L93">    JsonObject jo = JsonObject.mapFrom(o);</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">    for (Entry&lt;String, Object&gt; entry : jo.getMap().entrySet()) {</span>
+<span class="nc" id="L95">      Object value=entry.getValue();</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">      if (value!=null)</span>
+<span class="nc" id="L97">        v.property(entry.getKey(), value);</span>
+<span class="nc" id="L98">    }</span>
+<span class="nc" id="L99">  }</span>
+
+  @Override
+  public &lt;TYPE&gt; TYPE fromVertex(Vertex v, Class&lt;TYPE&gt; clazz) {
+<span class="nc" id="L103">    Map&lt;String, Object&gt; map = new HashMap&lt;String, Object&gt;();</span>
+<span class="nc" id="L104">    JsonObject jo = new JsonObject(map);</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">    for (String key : v.keys()) {</span>
+<span class="nc" id="L106">      jo.put(key, v.property(key).value());</span>
+<span class="nc" id="L107">    }</span>
+<span class="nc" id="L108">    return jo.mapTo(clazz);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

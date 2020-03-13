@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Image.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-server</a> &gt; <a href="../index.html" class="el_bundle">rc-detect</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.video</a> &gt; <span class="el_source">Image.java</span></div><h1>Image.java</h1><pre class="source lang-java linenums">package org.rcdukes.video;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+import org.rcdukes.video.ImageUtils.CVColor;
+
+/**
+ * Wrapper for openCV Images
+ * 
+ * @author wf
+ *
+ */
+public class Image {
+  public static transient final String DATE_FORMAT = &quot;HH:mm:ss.SSS&quot;;
+<span class="nc" id="L22">  public static transient final DateFormat dateFormat = new SimpleDateFormat(</span>
+      DATE_FORMAT);
+
+<span class="nc" id="L25">  public static boolean debug = false;</span>
+<span class="nc" id="L26">  public static String ext = &quot;.jpg&quot;;</span>
+  private String name;
+  Mat frame;
+  private byte[] imageBytes;
+  private int frameIndex;
+  private long milliTimeStamp;
+  private Date timeStamp;
+
+  /**
+   * @return the frameIndex
+   */
+  public int getFrameIndex() {
+<span class="nc" id="L38">    return frameIndex;</span>
+  }
+
+  /**
+   * @param frameIndex
+   *          the frameIndex to set
+   */
+  public void setFrameIndex(int frameIndex) {
+<span class="nc" id="L46">    this.frameIndex = frameIndex;</span>
+<span class="nc" id="L47">  }</span>
+
+  /**
+   * get the openCV Mat
+   * 
+   * @return - the frame
+   */
+  public Mat getFrame() {
+<span class="nc" id="L55">    return frame;</span>
+  }
+
+  /**
+   * set the openCV frame
+   * 
+   * @param frame
+   */
+  public void setFrame(Mat frame) {
+<span class="nc" id="L64">    this.frame = frame;</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">    if (frame != null)</span>
+<span class="nc" id="L66">      refresh();</span>
+<span class="nc" id="L67">  }</span>
+
+  public void refresh() {
+<span class="nc" id="L70">    this.setImageBytes(ImageUtils.mat2ImageBytes(frame, ext));</span>
+<span class="nc" id="L71">  }</span>
+
+  /**
+   * @return the name
+   */
+  public String getName() {
+<span class="nc" id="L77">    return name;</span>
+  }
+
+  /**
+   * @param name
+   *          the name to set
+   */
+  public void setName(String name) {
+<span class="nc" id="L85">    this.name = name;</span>
+<span class="nc" id="L86">  }</span>
+
+  /**
+   * @return the imageBytes
+   */
+  public byte[] getImageBytes() {
+<span class="nc" id="L92">    return imageBytes;</span>
+  }
+
+  /**
+   * @param imageBytes
+   *          the imageBytes to set
+   */
+  public void setImageBytes(byte[] imageBytes) {
+<span class="nc" id="L100">    this.imageBytes = imageBytes;</span>
+<span class="nc" id="L101">  }</span>
+
+  /**
+   * @return the milliTimeStamp
+   */
+  public long getMilliTimeStamp() {
+<span class="nc" id="L107">    return milliTimeStamp;</span>
+  }
+
+  /**
+   * @param milliTimeStamp
+   *          the milliTimeStamp to set
+   */
+  public void setMilliTimeStamp(long milliTimeStamp) {
+<span class="nc" id="L115">    this.milliTimeStamp = milliTimeStamp;</span>
+<span class="nc" id="L116">  }</span>
+
+  /**
+   * construct me
+   * 
+   * @param frame
+   * @param milliTimeStamp
+   * @param frameIndex
+   */
+<span class="nc" id="L125">  public Image(Mat frame, String name, int frameIndex, long milliTimeStamp) {</span>
+<span class="nc" id="L126">    this.setFrame(frame);</span>
+<span class="nc" id="L127">    this.setName(name);</span>
+<span class="nc" id="L128">    this.setFrameIndex(frameIndex);</span>
+<span class="nc" id="L129">    this.setMilliTimeStamp(milliTimeStamp);</span>
+<span class="nc" id="L130">    this.timeStamp = new Date(milliTimeStamp);</span>
+<span class="nc" id="L131">  }</span>
+
+  /**
+   * make sure we release our frame when we are garbage collected
+   */
+  public void finalize() {
+<span class="nc bnc" id="L137" title="All 2 branches missed.">    if (debug) {</span>
+<span class="nc" id="L138">      String msg = String.format(&quot;releasing %s&quot;, this.debugInfo());</span>
+<span class="nc" id="L139">      System.out.println(msg);</span>
+    }
+    // this.frame.release();
+    // this.frame=null;
+<span class="nc" id="L143">  }</span>
+
+  /**
+   * add my frameIndex as debug info to the given frame
+   * 
+   * @param frame
+   *          - the target frame
+   * @param into
+   *          the info to add
+   */
+  public void addImageInfo(Mat frame, String info) {
+<span class="nc" id="L154">    int fontFace = Core.FONT_HERSHEY_SIMPLEX;</span>
+<span class="nc" id="L155">    int fontScale = 1;</span>
+<span class="nc" id="L156">    Scalar color = CVColor.dodgerblue;</span>
+<span class="nc" id="L157">    Point pos = new Point(frame.width() - 100, 25);</span>
+<span class="nc" id="L158">    Imgproc.putText(frame, info, pos, fontFace, fontScale, color);</span>
+<span class="nc" id="L159">  }</span>
+
+  /**
+   * add the given info to my frame
+   * 
+   * @param info
+   */
+  public void addImageInfo(String info) {
+<span class="nc" id="L167">    this.addImageInfo(this.frame, info);</span>
+<span class="nc" id="L168">    this.refresh();</span>
+<span class="nc" id="L169">  }</span>
+
+  /**
+   * add my image info
+   */
+  public void addImageInfo() {
+<span class="nc" id="L175">    String text = String.format(&quot;%5d&quot;, getFrameIndex());</span>
+<span class="nc" id="L176">    this.addImageInfo(text);</span>
+<span class="nc" id="L177">  }</span>
+
+  public String debugInfo() {
+<span class="nc" id="L180">    String info = String.format(&quot;image %s %dx%d %d of %s&quot;, getName(),</span>
+<span class="nc" id="L181">        frame.width(), frame.height(), getFrameIndex(),</span>
+<span class="nc" id="L182">        dateFormat.format(timeStamp));</span>
+<span class="nc" id="L183">    return info;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

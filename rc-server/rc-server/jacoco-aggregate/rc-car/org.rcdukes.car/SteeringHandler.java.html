@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SteeringHandler.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-server</a> &gt; <a href="../index.html" class="el_bundle">rc-car</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.car</a> &gt; <span class="el_source">SteeringHandler.java</span></div><h1>SteeringHandler.java</h1><pre class="source lang-java linenums">package org.rcdukes.car;
+
+import org.rcdukes.common.Config;
+import org.rcdukes.common.ServoPosition;
+import org.rcdukes.drivecontrol.Car;
+
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+
+/**
+ * handle the steering of the car from given command messages
+ *
+ */
+class SteeringHandler {
+
+<span class="nc" id="L17">  private static final Logger LOG = LoggerFactory</span>
+<span class="nc" id="L18">      .getLogger(SteeringHandler.class);</span>
+
+  private Car car;
+  private ServoRangeMap steeringMap;
+
+  private int steerFactor;
+  
+  /**
+   * create a steering handler for the given car
+   * 
+   * @param car
+   */
+<span class="nc" id="L30">  SteeringHandler(Car car) {</span>
+<span class="nc" id="L31">    this.car = car;</span>
+<span class="nc" id="L32">    this.steeringMap=car.getSteering().getSteeringMap(); </span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">    steerFactor=steeringMap.turnedOrientation()?-1:1;</span>
+<span class="nc" id="L34">  }</span>
+
+  /**
+   * handle direct servo Messages - the position is to be absolutely set
+   * 
+   * @param messageBody
+   *          containing a double value &quot;position&quot; element
+   * @return the new servo position
+   */
+  ServoPosition handleServoDirect(JsonObject messageBody) {
+<span class="nc" id="L44">    LOG.debug(&quot;Received direct message for servo: &quot; + messageBody);</span>
+<span class="nc" id="L45">    String position = messageBody.getString(&quot;position&quot;);</span>
+<span class="nc" id="L46">    int percent = Double.valueOf(position).intValue()*steerFactor;</span>
+<span class="nc" id="L47">    ServoPosition newPosition=this.steeringMap.atPercent(percent);</span>
+<span class="nc" id="L48">    car.turn(newPosition);</span>
+<span class="nc" id="L49">    return newPosition;</span>
+  }
+  
+  /**
+   * handle the given servo Angle
+   * @param angleJo
+   * @return
+   */
+  public ServoPosition handleServoAngle(JsonObject angleJo) {
+<span class="nc" id="L58">    Double angle = angleJo.getDouble(&quot;angle&quot;);</span>
+<span class="nc" id="L59">    ServoPosition newPosition=this.steeringMap.atValue(angle*steerFactor);</span>
+<span class="nc" id="L60">    String msg=String.format(&quot;steering %5.1f° for wanted angle %5.1f°&quot;, newPosition.getValue(),angle);</span>
+<span class="nc" id="L61">    LOG.debug(msg);</span>
+<span class="nc" id="L62">    car.turn(newPosition);</span>
+<span class="nc" id="L63">    return newPosition;</span>
+  }
+
+  /**
+   * handle a message for the steering servo
+   * 
+   * @param messageBody
+   *          - containing a position element with &quot;left&quot;/&quot;right&quot; commands
+   * @return 
+   */
+  ServoPosition handleServo(JsonObject messageBody) {
+<span class="nc" id="L74">    LOG.debug(&quot;Received message for servo: &quot; + messageBody);</span>
+<span class="nc" id="L75">    String position = messageBody.getString(&quot;position&quot;);</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">    if (Config.POSITION_LEFT.equals(position)) {</span>
+<span class="nc" id="L77">      steeringMap.step(-1*steerFactor);</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">    } else if (Config.POSITION_RIGHT.equals(position)) {</span>
+<span class="nc" id="L79">      steeringMap.step(1*steerFactor);</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">    } else if (Config.POSITION_CENTER.equals(position)) {</span>
+<span class="nc" id="L81">      steeringMap.setZero();</span>
+    }
+<span class="nc" id="L83">    ServoPosition newPosition=steeringMap.getCurrentPosition();</span>
+<span class="nc" id="L84">    car.turn(newPosition);</span>
+<span class="nc" id="L85">    return newPosition;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

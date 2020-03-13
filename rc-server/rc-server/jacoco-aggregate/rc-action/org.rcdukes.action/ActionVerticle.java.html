@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ActionVerticle.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-server</a> &gt; <a href="../index.html" class="el_bundle">rc-action</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.action</a> &gt; <span class="el_source">ActionVerticle.java</span></div><h1>ActionVerticle.java</h1><pre class="source lang-java linenums">package org.rcdukes.action;
+
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.Events;
+
+import io.vertx.core.json.JsonObject;
+import io.vertx.rxjava.core.eventbus.Message;
+import rx.Subscription;
+
+/**
+ * action (aka Luke) control Verticle
+ *
+ */
+public class ActionVerticle extends DukesVerticle {
+
+  private Subscription laneDetection;
+  private Subscription stoppingZoneDetection;
+  private Subscription startLightDetection;
+  private Navigator navigator;
+
+  /**
+   * construct me
+   */
+  public ActionVerticle() {
+<span class="nc" id="L26">    super(Characters.LUKE);</span>
+<span class="nc" id="L27">  }</span>
+
+  @Override
+  public void start() throws Exception {
+<span class="nc" id="L31">    super.preStart();</span>
+<span class="nc" id="L32">    consumer(Events.START_DRAG_NAVIGATION, x -&gt; startDragNavigator());</span>
+<span class="nc" id="L33">    consumer(Events.STOP_NAVIGATION, x -&gt; stopNavigator());</span>
+<span class="nc" id="L34">    super.postStart();</span>
+<span class="nc" id="L35">  }</span>
+
+  private void stopNavigator() {
+<span class="nc" id="L38">    LOG.info(&quot;Stopping navigator&quot;);</span>
+
+<span class="nc bnc" id="L40" title="All 2 branches missed.">    if (laneDetection != null) {</span>
+<span class="nc" id="L41">      laneDetection.unsubscribe();</span>
+    }
+
+<span class="nc bnc" id="L44" title="All 2 branches missed.">    if (startLightDetection != null) {</span>
+<span class="nc" id="L45">      startLightDetection.unsubscribe();</span>
+    }
+
+<span class="nc bnc" id="L48" title="All 2 branches missed.">    if (stoppingZoneDetection != null) {</span>
+<span class="nc" id="L49">      stoppingZoneDetection.unsubscribe();</span>
+    }
+
+<span class="nc" id="L52">  }</span>
+
+  /**
+   * return an emergencyStopCommand
+   * 
+   * @return - the emergency stop command
+   */
+  public static JsonObject emergencyStopCommand() {
+<span class="nc" id="L60">    JsonObject cmd = new JsonObject().put(&quot;type&quot;, &quot;motor&quot;).put(&quot;speed&quot;, &quot;stop&quot;);</span>
+<span class="nc" id="L61">    return cmd;</span>
+  }
+
+  private void startDragNavigator() {
+<span class="nc" id="L65">    LOG.info(&quot;Starting drag navigator&quot;);</span>
+<span class="nc" id="L66">    StartLightObserver startLightObserver = new StartLightObserver();</span>
+<span class="nc" id="L67">    navigator = new StraightLaneNavigator();</span>
+<span class="nc" id="L68">    navigator.setSender(this);</span>
+<span class="nc" id="L69">    StoppingZoneDetector stoppingZoneDetector = new StoppingZoneDetector();</span>
+<span class="nc" id="L70">    super.consumer(Events.LANE_DETECTED, navigator::navigateWithMessage);</span>
+    /*
+     * stoppingZoneDetection =
+     * vertx.eventBus().consumer(Events.LANEDETECTION.name()).toObservable() //
+     * .doOnNext(evt -&gt;
+     * LOG.trace(&quot;Received lane detection event (stopping zone detector): {}&quot;,
+     * evt.body())) .map(Message::body) .cast(String.class)
+     * .map(JsonObject::new) .flatMap(stoppingZoneDetector::detect) .subscribe(
+     * instruction -&gt; vertx.eventBus().publish(Characters.BO.getCallsign(),
+     * instruction), error -&gt; LOG.error(&quot;Error stopping zone detection&quot;, error),
+     * () -&gt; LOG.info(&quot;Completed stopping zone detection&quot;));
+     */
+<span class="nc" id="L82">    startLightDetection = vertx.eventBus()</span>
+<span class="nc" id="L83">        .consumer(Events.STARTLIGHT_DETECTED.name()).toObservable()</span>
+<span class="nc" id="L84">        .doOnNext(</span>
+<span class="nc" id="L85">            evt -&gt; LOG.trace(&quot;Received start light detection event: {}&quot;, evt))</span>
+<span class="nc" id="L86">        .map(Message::body).cast(String.class).map(JsonObject::new)</span>
+<span class="nc" id="L87">        .flatMap(startLightObserver::observe).subscribe(instruction -&gt; vertx</span>
+<span class="nc" id="L88">            .eventBus().publish(Characters.BO.getCallsign(), instruction));</span>
+<span class="nc" id="L89">    LOG.info(&quot;drag navigator started&quot;);</span>
+<span class="nc" id="L90">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

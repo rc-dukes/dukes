@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>NativeLibrary.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-detect</a> &gt; <a href="../index.html" class="el_bundle">rc-roi</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.opencv</a> &gt; <span class="el_source">NativeLibrary.java</span></div><h1>NativeLibrary.java</h1><pre class="source lang-java linenums">package org.rcdukes.opencv;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+
+import org.opencv.core.Core;
+
+/**
+ * load &lt;a href='https://opencv.org/'&gt;OpenCV&lt;/a&gt; NativeLibrary properly
+ */
+<span class="nc" id="L12">public class NativeLibrary {</span>
+<span class="nc" id="L13">  protected static File nativeLibPath = new File(&quot;../lib&quot;);</span>
+<span class="nc" id="L14">  protected static String[] currentLibraryPath=System.getProperty(&quot;java.library.path&quot;).split(File.pathSeparator);</span>
+
+  /**
+   * get the native library path
+   * 
+   * @return the file for the native library
+   */
+  public static File getNativeLibPath() {
+<span class="nc" id="L22">    return nativeLibPath;</span>
+  }
+
+  /**
+   * set the native library path
+   * 
+   * @param pNativeLibPath
+   *          - the library path to use
+   */
+  public static void setNativeLibPath(File pNativeLibPath) {
+<span class="nc" id="L32">    nativeLibPath = pNativeLibPath;</span>
+<span class="nc" id="L33">  }</span>
+
+  /**
+   * get the current library path
+   * 
+   * @return the current library path as an array of strings
+   */
+  public static String[] getCurrentLibraryPath() {
+<span class="nc" id="L41">    return currentLibraryPath;</span>
+  }
+
+  /**
+   * Adds the specified path to the java library path
+   *
+   * @param pathToAdd
+   *          the path to add
+   * @throws Exception
+   * @see &lt;a href=
+   *      'https://stackoverflow.com/questions/15409223/adding-new-paths-for-native-libraries-at-runtime-in-java'&gt;Stackoverflow
+   *      question how to add path entry to native library search path at
+   *      runtime&lt;/a&gt;
+   */
+  public static void addLibraryPath(String pathToAdd) throws Exception {
+<span class="nc" id="L56">    final Field usrPathsField = ClassLoader.class.getDeclaredField(&quot;usr_paths&quot;);</span>
+<span class="nc" id="L57">    usrPathsField.setAccessible(true);</span>
+
+    // get array of paths
+<span class="nc" id="L60">    final String[] paths = (String[]) usrPathsField.get(null);</span>
+
+    // check if the path to add is already present
+<span class="nc bnc" id="L63" title="All 2 branches missed.">    for (String path : paths) {</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">      if (path.equals(pathToAdd)) {</span>
+<span class="nc" id="L65">        return;</span>
+      }
+    }
+
+    // add the new path
+<span class="nc" id="L70">    final String[] newPaths = Arrays.copyOf(paths, paths.length + 1);</span>
+<span class="nc" id="L71">    newPaths[newPaths.length - 1] = pathToAdd;</span>
+<span class="nc" id="L72">    usrPathsField.set(null, newPaths);</span>
+<span class="nc" id="L73">    currentLibraryPath=newPaths;</span>
+<span class="nc" id="L74">  }</span>
+
+  /**
+   * get the library Filename
+   * 
+   * @return the library file name
+   */
+  public static String getLibraryFileName() {
+<span class="nc" id="L82">    String libraryFileName = Core.NATIVE_LIBRARY_NAME;</span>
+<span class="nc bnc" id="L83" title="All 4 branches missed.">    switch (OsCheck.getOperatingSystemType()) {</span>
+    case MacOS:
+<span class="nc" id="L85">      libraryFileName = &quot;lib&quot; + Core.NATIVE_LIBRARY_NAME + &quot;.dylib&quot;;</span>
+<span class="nc" id="L86">      break;</span>
+    case Linux:
+<span class="nc" id="L88">      libraryFileName = &quot;lib&quot; + Core.NATIVE_LIBRARY_NAME + &quot;.so&quot;;</span>
+<span class="nc" id="L89">      break;</span>
+    case Windows:
+<span class="nc" id="L91">      libraryFileName = Core.NATIVE_LIBRARY_NAME + &quot;.so&quot;;</span>
+<span class="nc" id="L92">      break;</span>
+    default:
+      // might be unsupported 
+    }
+<span class="nc" id="L96">    return libraryFileName;</span>
+  }
+
+  /**
+   * get the native library file
+   * 
+   * @return - the file
+   */
+  public static File getNativeLib() {
+<span class="nc" id="L105">    File nativeLib = new File(getNativeLibPath(), getLibraryFileName());</span>
+<span class="nc" id="L106">    return nativeLib;</span>
+  }
+
+  /**
+   * load the native library by adding the proper library path
+   * 
+   * @throws Exception
+   *           - if reflection access fails (e.g. in Java9/10)
+   */
+  public static void load() throws Exception {
+<span class="nc" id="L116">    addLibraryPath(getNativeLibPath().getAbsolutePath());</span>
+<span class="nc" id="L117">    System.loadLibrary(Core.NATIVE_LIBRARY_NAME);</span>
+<span class="nc" id="L118">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>WatchDog.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-webcontrol</a> &gt; <a href="../index.html" class="el_bundle">rc-watchdog</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.watchdog</a> &gt; <span class="el_source">WatchDog.java</span></div><h1>WatchDog.java</h1><pre class="source lang-java linenums">package org.rcdukes.watchdog;
+
+import io.vertx.core.json.JsonObject;
+import io.vertx.rxjava.core.eventbus.Message;
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.Config;
+import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.Environment;
+import org.rcdukes.drivecontrol.Car;
+import rx.Subscription;
+
+/**
+ * WatchDog that will check if the vehicle is still reachable and send stop
+ * command if not
+ */
+public class WatchDog extends DukesVerticle {
+
+<span class="nc" id="L18">	protected static int HEARTBEAT_INTERVAL_MS = 150;</span>
+<span class="nc" id="L19">	protected static int MAX_MISSED_BEATS=6;</span>
+<span class="nc" id="L20">	private long lastHeartbeat = 0;</span>
+<span class="nc" id="L21">	private long heartBeatCount=0;</span>
+	private Car car;
+	protected Subscription subscription;
+	
+	/**
+	 * create watch dog for the given car
+	 * 
+	 * @param car
+	 * @throws Exception 
+	 */
+	public WatchDog(Car car) throws Exception {
+<span class="nc" id="L32">	  super(Characters.FLASH);</span>
+<span class="nc" id="L33">		this.car = car;</span>
+<span class="nc" id="L34">		Environment env = Config.getEnvironment();</span>
+<span class="nc" id="L35">		HEARTBEAT_INTERVAL_MS=env.getInteger(Config.WATCHDOG_HEARTBEAT_INTERVAL_MS);</span>
+<span class="nc" id="L36">		MAX_MISSED_BEATS=env.getInteger(Config.WATCHDOG_MAX_MISSED_BEATS);</span>
+<span class="nc" id="L37">	}</span>
+
+	@Override
+	public void start() {
+<span class="nc" id="L41">	  super.preStart();</span>
+		// Command.statusLedOff();
+
+<span class="nc" id="L44">		vertx.setPeriodic(HEARTBEAT_INTERVAL_MS, id -&gt; checkHeartbeat());</span>
+<span class="nc" id="L45">		subscription = vertx.eventBus().consumer(Characters.FLASH.getCallsign()).toObservable()</span>
+<span class="nc" id="L46">				.subscribe(this::heartbeat);</span>
+
+<span class="nc" id="L48">		super.postStart();</span>
+<span class="nc" id="L49">	}</span>
+
+	/**
+	 * receive heartbeat messages
+	 * @param message
+	 */
+	private void heartbeat(Message&lt;Object&gt; message) {
+<span class="nc" id="L56">		JsonObject messageBody = (JsonObject) message.body();</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">		if (&quot;heartbeat&quot;.equals(messageBody.getString(&quot;type&quot;))) {</span>
+<span class="nc" id="L58">			lastHeartbeat = System.currentTimeMillis();</span>
+<span class="nc" id="L59">		  this.heartBeatCount++;</span>
+			// LOG.trace(&quot;Heartbeat received, set last heartbeat to {}&quot;,
+			// lastHeartbeat);
+<span class="nc bnc" id="L62" title="All 2 branches missed.">			if (!car.powerIsOn()) {</span>
+<span class="nc" id="L63">				LOG.info(&quot;First heartbeat received, power on&quot;);</span>
+<span class="nc" id="L64">				car.setPowerOn();</span>
+			}
+		} else {
+<span class="nc" id="L67">		  String msg=String.format(&quot;heartbeat message has wrong type:\n%s&quot;,messageBody.encodePrettily());</span>
+<span class="nc" id="L68">		  LOG.warn(msg);</span>
+		}
+<span class="nc bnc" id="L70" title="All 2 branches missed.">		if (heartBeatCount%12==0) {</span>
+<span class="nc" id="L71">		  LOG.info(String.format(&quot;heartbeat %d&quot;,this.heartBeatCount));</span>
+		}
+<span class="nc" id="L73">	}</span>
+
+	private void checkHeartbeat() {
+<span class="nc" id="L76">		long currentTime = System.currentTimeMillis();</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">		if (currentTime - lastHeartbeat &gt; (MAX_MISSED_BEATS * HEARTBEAT_INTERVAL_MS)) {</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">			if (car.powerIsOn()) {</span>
+				// missed maximum number of allowed heartbeats
+<span class="nc" id="L80">				LOG.trace(&quot;Missed at least &quot;+MAX_MISSED_BEATS+&quot; heartbeats.&quot;);</span>
+<span class="nc" id="L81">				LOG.error(&quot;Client connection lost, stopping car and turning off led&quot;);</span>
+<span class="nc" id="L82">				LOG.info(&quot;Heartbeat off -&gt; power off&quot;);</span>
+<span class="nc" id="L83">				sendStopCommand();</span>
+				
+				// failsafe: send stop command again after 200ms
+<span class="nc" id="L86">				vertx.setTimer(200, fired -&gt; sendStopCommand());</span>
+
+<span class="nc" id="L88">				car.setPowerOff();</span>
+			}
+		}
+<span class="nc" id="L91">	}</span>
+
+	private void sendStopCommand() {
+<span class="nc" id="L94">	  send(Characters.BO,&quot;type&quot;, &quot;motor&quot;,&quot;speed&quot;, &quot;stop&quot;);</span>
+<span class="nc" id="L95">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,99 @@
+@startuml
+
+    namespace org.rcdukes.action {
+
+        class TestMiniPID [[TestMiniPID.html]] {
+            +testMiniPID(): void
+            +testMain(): void
+            {static} +redirectStdErr(): void
+            {static} +restoreStdErr(): String
+        }
+
+        class TestAction [[TestAction.html]] {
+            {static} +debug: boolean
+            +check(JsonObject, String[]): void
+            +testAction(): void
+        }
+
+        class TestStraightLaneNavigator [[TestStraightLaneNavigator.html]] {
+            {static} +debug: boolean
+            {static} +setUp(): void
+            +getLdr(int, int, Double, Double, Double): LaneDetectionResult
+            +testStraightLaneNavigator(): void
+            +testFromJson(): void
+            +testFromVideo(): void
+        }
+
+        class TestSuite [[TestSuite.html]] {
+            {static} +debug: boolean
+            {static} +isTravis(): boolean
+        }
+
+        interface Navigator [[Navigator.html]] {
+            {abstract} +fromJsonObject(JsonObject): LaneDetectionResult
+            {abstract} +getNavigationInstruction(LaneDetectionResult): JsonObject
+            {abstract} +navigateWithInstruction(JsonObject): void
+            {abstract} +navigateWithMessage(Message<JsonObject>): void
+            {abstract} +navigateWithLaneDetectionResult(LaneDetectionResult): void
+            {abstract} +videoStopped(VideoRecorders.VideoInfo): void
+        }
+
+        class StartLightObserver [[StartLightObserver.html]] {
+            +observe(JsonObject): Observable<JsonObject>
+        }
+
+        class ActionVerticle [[ActionVerticle.html]] {
+            +start(): void
+            {static} +emergencyStopCommand(): JsonObject
+        }
+
+        class StoppingZoneDetector [[StoppingZoneDetector.html]] {
+            +detect(JsonObject): Observable<JsonObject>
+        }
+
+        class StraightLaneNavigator [[StraightLaneNavigator.html]] {
+            {static} +COMMAND_LOOP_INTERVAL: int
+            {static} +MAX_DURATION_NO_LINES_DETECTED: int
+            {static} +DEFAULT_TIME_WINDOW: int
+            {static} #LOG: Logger
+            +StraightLaneNavigator()
+            +StraightLaneNavigator(int)
+            +addToGraph(LaneDetectionResult): Vertex
+            +fromJsonObject(JsonObject): LaneDetectionResult
+            +cmdOk(StraightLaneNavigator.AngleRange, int): boolean
+            +setTime(LaneDetectionResult): void
+            +analyzeAngleRanges(int, boolean): void
+            +getNavigationInstruction(LaneDetectionResult): JsonObject
+            +steerCommand(Double): JsonObject
+            +navigateWithInstruction(JsonObject): void
+            +navigateWithMessage(Message<JsonObject>): void
+            +navigateWithLaneDetectionResult(LaneDetectionResult): void
+            +videoStopped(VideoRecorders.VideoInfo): void
+        }
+
+        interface org.rcdukes.common.GraphDatabase {
+            {abstract} +g(): GraphTraversalSource
+            {abstract} +writeGraph(String): void
+            {abstract} +loadGraph(File): void
+            {abstract} +fromVertex(Vertex, Class<T>): T
+            {abstract} +addVertex(Object): void
+        }
+        org.rcdukes.common.GraphDatabase <|.. Navigator
+
+        abstract class org.rcdukes.common.DukesVerticle
+        org.rcdukes.common.DukesVerticle <|-- ActionVerticle
+
+        class org.rcdukes.common.TinkerPopDatabase
+        org.rcdukes.common.TinkerPopDatabase <|-- StraightLaneNavigator
+
+        Navigator <|.. StraightLaneNavigator
+
+        Navigator --> org.rcdukes.common.DukesVerticle: sender
+
+        StraightLaneNavigator --> org.rcdukes.common.DukesVerticle: sender
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

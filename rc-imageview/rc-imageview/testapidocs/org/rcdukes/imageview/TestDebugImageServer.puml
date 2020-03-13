@@ -1,0 +1,13 @@
+@startuml
+
+    class TestDebugImageServer [[TestDebugImageServer.html]] {
+        +startImageServer(): void
+        +testDebugImageServerStart(): void
+        +testTestImage(): void
+        +testMJpegStream(): void
+        +testOpenCV(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

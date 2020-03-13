@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ImageFetcher.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-action</a> &gt; <a href="../index.html" class="el_bundle">rc-detect</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.detect</a> &gt; <span class="el_source">ImageFetcher.java</span></div><h1>ImageFetcher.java</h1><pre class="source lang-java linenums">package org.rcdukes.detect;
+
+import java.util.Locale;
+
+import org.apache.commons.io.FilenameUtils;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.videoio.VideoCapture;
+import org.rcdukes.video.Image;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+
+/**
+ * fetcher for Images - will block at the given FPS rate
+ *
+ */
+public class ImageFetcher {
+<span class="nc" id="L22">  protected static final Logger LOG = LoggerFactory</span>
+<span class="nc" id="L23">      .getLogger(ImageFetcher.class);</span>
+
+<span class="nc" id="L25">  public boolean debug = false;</span>
+<span class="nc" id="L26">  public static double DEFAULT_FPS = 25;</span>
+  // OpenCV video capture
+<span class="nc" id="L28">  private VideoCapture capture = new VideoCapture();</span>
+  private String source;
+  protected int frameIndex;
+<span class="nc" id="L31">  protected int failureCount = 0;</span>
+<span class="nc" id="L32">  protected int maxFailureCount = 3;</span>
+<span class="nc" id="L33">  protected double fps = DEFAULT_FPS; // frames per second</span>
+  private long milliTimeStamp;
+  private boolean staticImage;
+<span class="nc" id="L36">  private boolean closed = false;</span>
+<span class="nc" id="L37">  private boolean hasNext=false;</span>
+
+<span class="nc" id="L39">  private Image currentImage = null;</span>
+
+  private Mat frame;
+  private Size size;
+  public double getFps() {
+<span class="nc" id="L44">    return fps;</span>
+  }
+
+  public void setFps(double fps) {
+<span class="nc" id="L48">    this.fps = fps;</span>
+<span class="nc" id="L49">  }</span>
+
+  public int getFrameIndex() {
+<span class="nc" id="L52">    return frameIndex;</span>
+  }
+
+  /**
+   * @return the staticImage
+   */
+  public boolean isStaticImage() {
+<span class="nc" id="L59">    return staticImage;</span>
+  }
+
+  /**
+   * @param staticImage
+   *          the staticImage to set
+   */
+  public void setStaticImage(boolean staticImage) {
+<span class="nc" id="L67">    this.staticImage = staticImage;</span>
+<span class="nc" id="L68">  }</span>
+
+  /**
+   * fetch from the given source
+   * 
+   * @param source
+   *          - the source to fetch from
+   */
+<span class="nc" id="L76">  public ImageFetcher(String source) {</span>
+<span class="nc" id="L77">    this.source = source;</span>
+<span class="nc" id="L78">  }</span>
+
+  /**
+   * try opening my source
+   * 
+   * @return true if successful
+   */
+  public boolean open() {
+<span class="nc" id="L86">    boolean ret = this.capture.open(source);</span>
+<span class="nc" id="L87">    String ext = FilenameUtils.getExtension(source).toLowerCase();</span>
+<span class="nc" id="L88">    setStaticImage(false);</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">    switch (ext) {</span>
+    case &quot;jpg&quot;:
+    case &quot;png&quot;:
+    case &quot;jpeg&quot;:
+<span class="nc" id="L93">      setStaticImage(true);</span>
+    }
+<span class="nc" id="L95">    frameIndex = 0;</span>
+<span class="nc" id="L96">    failureCount = 0;</span>
+<span class="nc" id="L97">    milliTimeStamp = System.nanoTime() / 1000000;</span>
+<span class="nc" id="L98">    hasNext=true;</span>
+<span class="nc" id="L99">    return ret;</span>
+  }
+
+  public void close() {
+<span class="nc bnc" id="L103" title="All 2 branches missed.">    if (!isClosed()) {</span>
+<span class="nc" id="L104">      this.capture.release();</span>
+    }
+<span class="nc" id="L106">    closed=true;</span>
+<span class="nc" id="L107">  }</span>
+
+  /**
+   * wait for the next Frame
+   * @return the current time in milliseconds
+   */
+  public long waitForNextFrame() {
+<span class="nc" id="L114">    long currentMillis = System.nanoTime() / 1000000;</span>
+<span class="nc" id="L115">    int waitMillis = (int) Math.round(1000 / fps);</span>
+<span class="nc" id="L116">    waitMillis -= currentMillis - milliTimeStamp;</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">    if (waitMillis &gt; 0) {</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">      if (debug)</span>
+<span class="nc" id="L119">        LOG.info(String.format(Locale.ENGLISH, &quot;waiting %3d msecs for %.1f fps&quot;,</span>
+<span class="nc" id="L120">            waitMillis, getFps()));</span>
+      try {
+<span class="nc" id="L122">        Thread.sleep(waitMillis);</span>
+<span class="nc" id="L123">      } catch (InterruptedException e) {</span>
+        // ignore
+<span class="nc" id="L125">      }</span>
+    }
+<span class="nc" id="L127">    return currentMillis;</span>
+  }
+  
+  /**
+   * fetch an image Matrix - will block to make sure Mat is emitted at the
+   * frames per second rate configured
+   * 
+   * @return - the image fetched
+   */
+  public Image fetch() {
+<span class="nc bnc" id="L137" title="All 2 branches missed.">    if (!this.capture.isOpened()) {</span>
+<span class="nc" id="L138">      boolean ret = this.open();</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">      if (!ret) {</span>
+<span class="nc" id="L140">        String msg = String.format(</span>
+            &quot;Trying to fetch image from unopened VideoCapture and open '%s' failed&quot;,
+            source);
+<span class="nc" id="L143">        throw new IllegalStateException(msg);</span>
+      }
+    }
+<span class="nc" id="L146">    long currentMillis=waitForNextFrame();</span>
+  
+    // shall we &quot;replay&quot; the latest current Image?
+<span class="nc bnc" id="L149" title="All 4 branches missed.">    if (this.staticImage &amp;&amp; currentImage != null) {</span>
+<span class="nc" id="L150">      Mat frame = currentImage.getFrame().clone();</span>
+<span class="nc" id="L151">      currentImage = createNextImage(frame, currentMillis);</span>
+<span class="nc" id="L152">    } else {</span>
+<span class="nc" id="L153">      Mat frame = new Mat();</span>
+<span class="nc" id="L154">      this.capture.read(frame);</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">      if (!frame.empty()) {</span>
+<span class="nc" id="L156">        currentImage = createNextImage(frame, currentMillis);</span>
+<span class="nc" id="L157">        failureCount = 0;</span>
+      } else {
+<span class="nc" id="L159">        failureCount++;</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">        if (maxFailureCount &lt; getFps()</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">            &amp;&amp; failureCount % Math.round(getFps() * 2) == 0) {</span>
+<span class="nc" id="L162">          String msg = String.format(&quot;%d read failures for %s&quot;, failureCount,</span>
+              source);
+<span class="nc" id="L164">          LOG.info(msg);</span>
+        }
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        if (failureCount &gt; maxFailureCount) {</span>
+<span class="nc" id="L167">          hasNext=false;</span>
+<span class="nc" id="L168">          return null;</span>
+        }
+      }
+    }
+<span class="nc" id="L172">    milliTimeStamp = currentMillis;</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">    frame = currentImage != null ? currentImage.getFrame() : null;</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">    size = frame != null ? frame.size() : new Size(0, 0);</span>
+<span class="nc bnc" id="L175" title="All 6 branches missed.">    hasNext = currentImage != null &amp;&amp; size.width &gt; 0 &amp;&amp; size.height &gt; 0;</span>
+<span class="nc" id="L176">    return currentImage;</span>
+  }
+
+  /**
+   * create the next Image
+   * 
+   * @param frame
+   *          - the frame to use
+   * @param currentMillis
+   *          - the timestamp to use
+   * @return the new next image
+   */
+  public Image createNextImage(Mat frame, long currentMillis) {
+<span class="nc" id="L189">    frameIndex++;</span>
+<span class="nc" id="L190">    milliTimeStamp = currentMillis;</span>
+<span class="nc" id="L191">    Image image = new Image(frame, source, frameIndex, milliTimeStamp);</span>
+<span class="nc" id="L192">    return image;</span>
+  }
+
+  @Override
+  protected void finalize() throws Throwable {
+<span class="nc" id="L197">    super.finalize();</span>
+<span class="nc" id="L198">  }</span>
+
+  /**
+   * convert me to an observable
+   * 
+   * @return an Image emitting Observable
+   */
+  public Observable&lt;Image&gt; toObservable() {
+<span class="nc" id="L206">    Observable&lt;Image&gt; observable = Observable</span>
+<span class="nc" id="L207">        .create(new ObservableOnSubscribe&lt;Image&gt;() {</span>
+          @Override
+          public void subscribe(ObservableEmitter&lt;Image&gt; observableEmitter)
+              throws Exception {
+<span class="nc" id="L211">            hasNext=true;</span>
+<span class="nc bnc" id="L212" title="All 4 branches missed.">            while (hasNext &amp;&amp; !isClosed()) {</span>
+<span class="nc" id="L213">              final Image image = ImageFetcher.this.fetch();</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">              if (hasNext) {</span>
+<span class="nc bnc" id="L215" title="All 4 branches missed.">                if (debug &amp;&amp; frameIndex % Math.round(getFps()) == 0) {</span>
+<span class="nc" id="L216">                  String msg = String.format(&quot;-&gt;%6d:%4.0fx%4.0f&quot;, frameIndex,</span>
+<span class="nc" id="L217">                      size.width, size.height);</span>
+<span class="nc" id="L218">                  LOG.info(msg);</span>
+                }
+<span class="nc" id="L220">                observableEmitter.onNext(image);</span>
+              }
+<span class="nc" id="L222">            }</span>
+<span class="nc" id="L223">            observableEmitter.onComplete();</span>
+<span class="nc" id="L224">          }</span>
+        });
+<span class="nc" id="L226">    return observable;</span>
+  }
+
+  public boolean hasNext() {
+<span class="nc" id="L230">    return hasNext;</span>
+  }
+
+  /**
+   * @return the closed
+   */
+  public boolean isClosed() {
+<span class="nc" id="L237">    return closed;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

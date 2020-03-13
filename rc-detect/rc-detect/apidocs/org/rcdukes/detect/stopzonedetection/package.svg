@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="274px" preserveAspectRatio="none" style="width:318px;height:274px;" version="1.1" viewBox="0 0 318 274" width="318px" zoomAndPan="magnify"><defs><filter height="300%" id="fc7r9wwkv2jf9" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--cluster org.rcdukes.detect.stopzonedetection--><polygon fill="#FFFFFF" filter="url(#fc7r9wwkv2jf9)" points="14,16,286,16,293,38.4883,296,38.4883,296,233,14,233,14,16" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="14" x2="293" y1="38.4883" y2="38.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="266" x="18" y="31.5352">org.rcdukes.detect.stopzonedetection</text><!--class org.rcdukes.detect.stopzonedetection.StoppingZoneDetector--><a href="StoppingZoneDetector.html" target="_top" xlink:actuate="onRequest" xlink:show="new" xlink:title="StoppingZoneDetector.html" xlink:type="simple"><rect fill="#FEFECE" filter="url(#fc7r9wwkv2jf9)" height="60.9551" id="org.rcdukes.detect.stopzonedetection.StoppingZoneDetector" style="stroke: #A80036; stroke-width: 1.5;" width="242" x="34" y="43"/><ellipse cx="87.25" cy="59" fill="#B4A7E5" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M83.1777,54.7651 L83.1777,52.6069 L90.5571,52.6069 L90.5571,54.7651 L88.0918,54.7651 L88.0918,62.8418 L90.5571,62.8418 L90.5571,65 L83.1777,65 L83.1777,62.8418 L85.6431,62.8418 L85.6431,54.7651 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="127" x="107.75" y="63.5352">StoppingZoneDetector</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="35" x2="275" y1="75" y2="75"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="35" x2="275" y1="83" y2="83"/><ellipse cx="45" cy="94.9775" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="216" x="54" y="97.6348">detect(Collection&lt;Line&gt;): StoppingZone</text></a><!--class org.rcdukes.detect.stopzonedetection.DefaultStoppingZoneDetector--><a href="DefaultStoppingZoneDetector.html" target="_top" xlink:actuate="onRequest" xlink:show="new" xlink:title="DefaultStoppingZoneDetector.html" xlink:type="simple"><rect fill="#FEFECE" filter="url(#fc7r9wwkv2jf9)" height="60.9551" id="org.rcdukes.detect.stopzonedetection.DefaultStoppingZoneDetector" style="stroke: #A80036; stroke-width: 1.5;" width="242" x="34" y="164"/><ellipse cx="67.9" cy="180" fill="#ADD1B2" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M70.8731,185.6431 Q70.2921,185.9419 69.6529,186.0913 Q69.0138,186.2407 68.3082,186.2407 Q65.8014,186.2407 64.4815,184.5889 Q63.1617,182.937 63.1617,179.8159 Q63.1617,176.6865 64.4815,175.0347 Q65.8014,173.3828 68.3082,173.3828 Q69.0138,173.3828 69.6612,173.5322 Q70.3087,173.6816 70.8731,173.9805 L70.8731,176.7031 Q70.2423,176.1221 69.6488,175.8523 Q69.0553,175.5825 68.4244,175.5825 Q67.0797,175.5825 66.3949,176.6492 Q65.7101,177.7158 65.7101,179.8159 Q65.7101,181.9077 66.3949,182.9744 Q67.0797,184.041 68.4244,184.041 Q69.0553,184.041 69.6488,183.7712 Q70.2423,183.5015 70.8731,182.9204 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="168" x="86.1" y="184.5352">DefaultStoppingZoneDetector</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="35" x2="275" y1="196" y2="196"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="35" x2="275" y1="204" y2="204"/><ellipse cx="45" cy="215.9775" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="216" x="54" y="218.6348">detect(Collection&lt;Line&gt;): StoppingZone</text></a><!--link org.rcdukes.detect.stopzonedetection.StoppingZoneDetector to org.rcdukes.detect.stopzonedetection.DefaultStoppingZoneDetector--><path d="M155,124.2927 C155,137.7857 155,151.9401 155,163.9764 " fill="none" id="org.rcdukes.detect.stopzonedetection.StoppingZoneDetector-org.rcdukes.detect.stopzonedetection.DefaultStoppingZoneDetector" style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><polygon fill="none" points="148.0001,124.0334,155,104.0334,162.0001,124.0334,148.0001,124.0334" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#888888" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="182" x="70" y="260.668">UMLDoclet 1.1.4, PlantUML 1.2019.05</text><!--
+@startuml
+
+    namespace org.rcdukes.detect.stopzonedetection {
+
+        interface StoppingZoneDetector [[StoppingZoneDetector.html]] {
+            {abstract} +detect(Collection<Line>): StoppingZone
+        }
+
+        class DefaultStoppingZoneDetector [[DefaultStoppingZoneDetector.html]] {
+            +detect(Collection<Line>): StoppingZone
+        }
+
+        StoppingZoneDetector <|.. DefaultStoppingZoneDetector
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml
+
+PlantUML version 1.2019.05(Sat Apr 20 18:45:36 CEST 2019)
+(APACHE source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Java Version: 1.8.0_152-b16
+Operating System: Mac OS X
+OS Version: 10.13.6
+Default Encoding: UTF-8
+Language: de
+Country: DE
+--></g></svg>

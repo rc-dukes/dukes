@@ -1,0 +1,24 @@
+@startuml
+
+    namespace org.rcdukes.error {
+
+        class ErrorHandler [[ErrorHandler.html]] {
+            +handle(Throwable, String): void
+            +warn(String): void
+            +handle(Throwable): void
+            {static} +getInstance(): ErrorHandler
+        }
+
+        interface ExceptionHandler [[ExceptionHandler.html]] {
+            {abstract} +handle(Throwable, String): void
+            {abstract} +handle(Throwable): void
+            {abstract} +warn(String): void
+        }
+
+        ExceptionHandler <|.. ErrorHandler
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

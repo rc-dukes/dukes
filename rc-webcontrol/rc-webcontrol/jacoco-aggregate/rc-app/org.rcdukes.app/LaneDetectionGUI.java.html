@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>LaneDetectionGUI.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-webcontrol</a> &gt; <a href="../index.html" class="el_bundle">rc-app</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.app</a> &gt; <span class="el_source">LaneDetectionGUI.java</span></div><h1>LaneDetectionGUI.java</h1><pre class="source lang-java linenums">package org.rcdukes.app;
+
+import java.util.concurrent.TimeUnit;
+
+import org.rcdukes.action.Navigator;
+import org.rcdukes.camera.CameraMatrix;
+import org.rcdukes.common.Config;
+import org.rcdukes.detect.ImageObserver;
+import org.rcdukes.detect.LaneDetector;
+import org.rcdukes.detect.linedetection.HoughLinesLineDetector;
+import org.rcdukes.geometry.LaneDetectionResult;
+import org.rcdukes.video.Image;
+import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.ImageSource;
+import org.rcdukes.video.VideoRecorders;
+
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
+import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
+import org.rcdukes.detect.edgedectection.CannyEdgeDetector;
+
+/**
+ * Graphical user interface for lane detection
+ * 
+ * @author wf
+ *
+ */
+public class LaneDetectionGUI extends BaseGUI {
+  @FXML
+  private CheckBox probabilistic;
+
+  @FXML
+  private LabeledValueSlider cannyThreshold1;
+  @FXML
+  private LabeledValueSlider cannyThreshold2;
+  @FXML
+  private LabeledValueSlider lineDetectRho;
+  @FXML
+  private LabeledValueSlider lineDetectTheta;
+  @FXML
+  private LabeledValueSlider lineDetectThreshold;
+  @FXML
+  private LabeledValueSlider lineDetectMinLineLength;
+  @FXML
+  private LabeledValueSlider lineDetectMaxLineGap;
+
+<span class="nc" id="L48">  private CannyEdgeDetector edgeDetector = new CannyEdgeDetector();</span>
+<span class="nc" id="L49">  private HoughLinesLineDetector lineDetector = new HoughLinesLineDetector();</span>
+
+<span class="nc" id="L51">  private boolean configured = false;</span>
+  Observable&lt;Image&gt; simulatorImageObservable;
+  private ImageObserver frameGrabber;
+  // @TODO make configurable
+<span class="nc" id="L55">  double fps = 15.0;</span>
+
+<span class="nc" id="L57">  public LaneDetectionGUI() {</span>
+<span class="nc" id="L58">    Config.configureLogging();</span>
+<span class="nc" id="L59">  }</span>
+
+  /**
+   * ImageObserver for JavaFX
+   * 
+   * @author wf
+   *
+   */
+  public class FrameGrabber extends ImageObserver {
+    private CameraGUI cameraGUI;
+    private VideoRecorders videoRecorders;
+
+    /**
+     * construct me for the given cameraGUI
+     * 
+     * @param displayer
+     * @param cameraGUI
+     * @param fps
+     */
+    public FrameGrabber(GUIDisplayer displayer, CameraGUI cameraGUI,
+<span class="nc" id="L79">        double fps) {</span>
+<span class="nc" id="L80">      this.cameraGUI = cameraGUI;</span>
+<span class="nc" id="L81">      this.videoRecorders = new VideoRecorders(fps);</span>
+<span class="nc" id="L82">      displayer.setVideoRecorders(videoRecorders);</span>
+<span class="nc" id="L83">    }</span>
+
+    @Override
+    public void onNext(Image originalImage) {
+      try {
+<span class="nc" id="L88">        super.onNext(originalImage);</span>
+<span class="nc" id="L89">        displayer.showFrameIndex(originalImage.getFrameIndex());</span>
+<span class="nc" id="L90">        applySliderValuesToConfig();</span>
+<span class="nc" id="L91">        cameraGUI.applySliderValues();</span>
+<span class="nc" id="L92">        ImageCollector collector = new ImageCollector();</span>
+<span class="nc" id="L93">        displayer.setImageCollector(collector);</span>
+<span class="nc" id="L94">        CameraMatrix cameraMatrix = CameraMatrix.DEFAULT;</span>
+
+<span class="nc" id="L96">        LaneDetector laneDetector = new LaneDetector(edgeDetector, lineDetector,</span>
+            cameraGUI.cameraConfig, cameraMatrix, collector);
+<span class="nc" id="L98">        LaneDetectionResult ldr = laneDetector.detect(originalImage);</span>
+<span class="nc" id="L99">        ldr.checkError();</span>
+<span class="nc" id="L100">        Navigator navigator = LaneDetectionGUI.this.getAppVerticle()</span>
+<span class="nc" id="L101">            .getNavigator();</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        if (navigator != null)</span>
+<span class="nc" id="L103">          navigator.navigateWithLaneDetectionResult(ldr);</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (videoRecorders.isStarted())</span>
+<span class="nc" id="L105">          videoRecorders.recordFrame(collector,true);</span>
+<span class="nc" id="L106">        displayer.displayImageCollector(collector);</span>
+<span class="nc" id="L107">         } catch (Throwable t) {</span>
+<span class="nc" id="L108">        onError(t);</span>
+        // throw Exceptions.propagate(t);
+<span class="nc" id="L110">      }</span>
+<span class="nc" id="L111">    }</span>
+
+    @Override
+    public void onError(Throwable th) {
+<span class="nc" id="L115">      super.onError(th);</span>
+<span class="nc" id="L116">      handleError(th);</span>
+<span class="nc" id="L117">    }</span>
+  }
+
+  /**
+   * start the camera from the given ImageSource
+   * 
+   * @param cameraGUI
+   * @param imageSource
+   * @throws Exception
+   */
+  public void startCamera(CameraGUI cameraGUI, ImageSource imageSource)
+      throws Exception {
+<span class="nc" id="L129">    configureGUI();</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">    if (this.frameGrabber == null) {</span>
+<span class="nc" id="L131">      frameGrabber = new FrameGrabber(displayer, cameraGUI, fps);</span>
+<span class="nc" id="L132">      displayer.setCameraButtonText(&quot;Stop Camera&quot;);</span>
+<span class="nc" id="L133">      Observable&lt;Image&gt; imageObservable = imageSource.getImageObservable();</span>
+<span class="nc" id="L134">      imageObservable.subscribeOn(Schedulers.newThread())</span>
+<span class="nc" id="L135">          .throttleFirst(Math.round(1000 / fps), TimeUnit.MILLISECONDS) // 10</span>
+                                                                        // Frames
+                                                                        // Per
+                                                                        // second
+          // some 2.5 times slower
+          // than original ...
+<span class="nc" id="L141">          .subscribe(frameGrabber);</span>
+<span class="nc" id="L142">    } else {</span>
+<span class="nc" id="L143">      frameGrabber.stop();</span>
+<span class="nc" id="L144">      frameGrabber = null;</span>
+<span class="nc" id="L145">      displayer.setCameraButtonText(&quot;Start Camera&quot;);</span>
+    }
+<span class="nc" id="L147">  }</span>
+
+  private void handleError(Throwable th) {
+<span class="nc" id="L150">    th.printStackTrace();</span>
+<span class="nc" id="L151">    displayer.handle(th);</span>
+<span class="nc" id="L152">  }</span>
+
+  private void configureGUI() {
+<span class="nc bnc" id="L155" title="All 2 branches missed.">    if (!configured) {</span>
+<span class="nc" id="L156">      configureSliderDefaults();</span>
+<span class="nc" id="L157">      configured = true;</span>
+    }
+<span class="nc" id="L159">  }</span>
+
+  private void applySliderValuesToConfig() {
+<span class="nc" id="L162">    edgeDetector.setThreshold1(cannyThreshold1.getValue());</span>
+<span class="nc" id="L163">    edgeDetector.setThreshold2(cannyThreshold2.getValue());</span>
+<span class="nc" id="L164">    lineDetector.setProbabilistic(probabilistic.isSelected());</span>
+<span class="nc" id="L165">    lineDetector.setRho(lineDetectRho.getValue());</span>
+<span class="nc" id="L166">    lineDetector.setTheta(lineDetectTheta.getValue());</span>
+<span class="nc" id="L167">    lineDetector</span>
+<span class="nc" id="L168">        .setThreshold(new Double(lineDetectThreshold.getValue()).intValue());</span>
+<span class="nc" id="L169">    lineDetector.setMinLineLength(lineDetectMinLineLength.getValue());</span>
+<span class="nc" id="L170">    lineDetector.setMaxLineGap(lineDetectMaxLineGap.getValue());</span>
+<span class="nc" id="L171">  }</span>
+
+  private void configureSliderDefaults() {
+<span class="nc" id="L174">    CannyEdgeDetector ed = new CannyEdgeDetector();</span>
+<span class="nc" id="L175">    this.cannyThreshold1.setValue(ed.getThreshold1());</span>
+<span class="nc" id="L176">    this.cannyThreshold2.setValue(ed.getThreshold2());</span>
+<span class="nc" id="L177">    HoughLinesLineDetector ld = new HoughLinesLineDetector();</span>
+<span class="nc" id="L178">    this.probabilistic.setSelected(ld.isProbabilistic());</span>
+<span class="nc" id="L179">    this.lineDetectRho.setValue(ld.getRho());</span>
+<span class="nc" id="L180">    this.lineDetectTheta.setValue(ld.getTheta());</span>
+<span class="nc" id="L181">    this.lineDetectThreshold.setValue(ld.getThreshold());</span>
+<span class="nc" id="L182">    this.lineDetectMinLineLength.setValue(ld.getMinLineLength());</span>
+<span class="nc" id="L183">    this.lineDetectMaxLineGap.setValue(ld.getMaxLineGap());</span>
+<span class="nc" id="L184">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,41 @@
+@startuml
+
+    namespace org.rcdukes.detect.startlightdetection {
+
+        class DefaultStartLightDetector [[DefaultStartLightDetector.html]] {
+            +DefaultStartLightDetector()
+            +DefaultStartLightDetector(int, int, int, int, int, int)
+            +DefaultStartLightDetector(DefaultStartLightDetector.Config)
+            +detect(Image): StartLight
+            +getFrame(): Mat
+            +withImageCollector(ImageCollector): DefaultStartLightDetector
+        }
+
+        class org.rcdukes.detect.startlightdetection.DefaultStartLightDetector.Config [[DefaultStartLightDetector.Config.html]] {
+            +getHueStart(): double
+            +setHueStart(double): void
+            +getHueStop(): double
+            +setHueStop(double): void
+            +getSaturationStart(): double
+            +setSaturationStart(double): void
+            +getSaturationStop(): double
+            +setSaturationStop(double): void
+            +getValueStart(): double
+            +setValueStart(double): void
+            +getValueStop(): double
+            +setValueStop(double): void
+        }
+
+        interface org.rcdukes.detectors.StartLightDetector {
+            {abstract} +detect(Image): StartLight
+            {abstract} +withImageCollector(ImageCollector): StartLightDetector
+        }
+        org.rcdukes.detectors.StartLightDetector <|.. DefaultStartLightDetector
+
+        DefaultStartLightDetector +-- org.rcdukes.detect.startlightdetection.DefaultStartLightDetector.Config
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

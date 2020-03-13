@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ImageCollector.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-webcontrol</a> &gt; <a href="../index.html" class="el_bundle">rc-detect</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.video</a> &gt; <span class="el_source">ImageCollector.java</span></div><h1>ImageCollector.java</h1><pre class="source lang-java linenums">package org.rcdukes.video;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.opencv.core.Mat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+
+
+/**
+ * a set of images to be used for display/debugging
+ */
+public class ImageCollector {
+<span class="nc" id="L21">  public static enum ImageType {</span>
+<span class="nc" id="L22">    camera, edges, birdseye, lines, startlight, mask, morph, simulator</span>
+  }
+
+<span class="nc" id="L25">  protected static final Logger LOG = LoggerFactory</span>
+<span class="nc" id="L26">      .getLogger(ImageCollector.class);</span>
+
+<span class="nc" id="L28">  private Map&lt;ImageType, Image&gt; images = new HashMap&lt;ImageType, Image&gt;();</span>
+<span class="nc" id="L29">  private static Map&lt;ImageType, Image&gt; testImages = new HashMap&lt;ImageType, Image&gt;();</span>
+<span class="nc" id="L30">  private Map&lt;ImageType, List&lt;ObservableEmitter&lt;Image&gt;&gt;&gt; emitterMap=new HashMap&lt;ImageType,List&lt;ObservableEmitter&lt;Image&gt;&gt;&gt;();</span>
+  private String ext;
+<span class="nc" id="L32">  public static String[] testImagePaths = {</span>
+      &quot;images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3&quot;,
+      &quot;images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3&quot;,
+      &quot;images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3&quot;,
+      &quot;images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3&quot;,
+      &quot;images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3&quot;,
+      &quot;images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3&quot;,
+      &quot;images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3&quot;,
+      &quot;images/640px-4_lane_highway_roads_in_India_NH_48_Karnataka_3&quot; };
+
+  /**
+   * supply a default testImage
+   * 
+   * @return - the bytes of the test Image
+   */
+  public Image getTestImage(ImageType imageType) {
+<span class="nc bnc" id="L48" title="All 2 branches missed.">    if (!testImages.containsKey(imageType)) {</span>
+<span class="nc" id="L49">      String testImagePath = testImagePaths[imageType.ordinal()] + ext;</span>
+      try {
+<span class="nc" id="L51">        Mat frame = ImageUtils.fromResource(this.getClass(), testImagePath);</span>
+<span class="nc" id="L52">        Image image = new Image(frame, imageType.name(), 0,</span>
+<span class="nc" id="L53">            System.currentTimeMillis());</span>
+<span class="nc" id="L54">        testImages.put(imageType, image);</span>
+<span class="nc" id="L55">      } catch (IOException e) {</span>
+<span class="nc" id="L56">        LOG.trace(e.getMessage());</span>
+<span class="nc" id="L57">      }</span>
+    }
+<span class="nc" id="L59">    Image testImage = testImages.get(imageType);</span>
+<span class="nc" id="L60">    return testImage;</span>
+  }
+
+  /**
+   * default constructor
+   */
+  public ImageCollector() {
+    // construct me for preloaded jpg images ...
+<span class="nc" id="L68">    this(&quot;.jpg&quot;, true);</span>
+<span class="nc" id="L69">  }</span>
+
+  /**
+   * construct me
+   */
+<span class="nc" id="L74">  public ImageCollector(String ext, boolean preLoadTestImages) {</span>
+<span class="nc" id="L75">    this.ext = ext;</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">    if (preLoadTestImages) {</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">      for (ImageType imageType : ImageType.values()) {</span>
+<span class="nc" id="L78">        this.getTestImage(imageType);</span>
+      }
+    }
+<span class="nc" id="L81">  }</span>
+
+  /**
+   * add the given image
+   * 
+   * @param frame
+   *          - the frame to add
+   * @param -
+   *          the imageType to use
+   * @return - the image
+   */
+  public Image createImage(Mat frame, ImageType imageType) {
+<span class="nc" id="L93">    long milliTimeStamp = System.currentTimeMillis();</span>
+<span class="nc" id="L94">    int frameIndex = -1;</span>
+<span class="nc" id="L95">    Image originalFrame = getImages().get(ImageType.camera);</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">    if (originalFrame != null) {</span>
+<span class="nc" id="L97">      milliTimeStamp = originalFrame.getMilliTimeStamp();</span>
+<span class="nc" id="L98">      frameIndex = originalFrame.getFrameIndex();</span>
+    }
+<span class="nc" id="L100">    Image image = new Image(frame, imageType.name(), frameIndex,</span>
+        milliTimeStamp);
+<span class="nc" id="L102">    return image;</span>
+  }
+
+  /**
+   * add the given frame as an image with the given imageType
+   * 
+   * @param frame
+   * @param imageType
+   * @return - the Image
+   */
+  public Image addImage(Mat frame, ImageType imageType) {
+<span class="nc" id="L113">    Image image = createImage(frame, imageType);</span>
+<span class="nc" id="L114">    this.addImage(image, imageType);</span>
+<span class="nc" id="L115">    return image;</span>
+  }
+
+  /**
+   * add the given image with the given Image type
+   * 
+   * @param image
+   * @param imageType
+   * @return
+   */
+  public Image addImage(Image image, ImageType imageType) {
+<span class="nc" id="L126">    images.put(imageType, image);</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">    if (this.emitterMap.containsKey(imageType)) {</span>
+<span class="nc" id="L128">      List&lt;ObservableEmitter&lt;Image&gt;&gt; emitterList = emitterMap.get(imageType);</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">      for (ObservableEmitter&lt;Image&gt; emitter:emitterList)</span>
+<span class="nc" id="L130">        emitter.onNext(image);</span>
+    }
+<span class="nc" id="L132">    return image;</span>
+  }
+
+  /**
+   * @return the images
+   */
+  protected Map&lt;ImageType, Image&gt; getImages() {
+<span class="nc" id="L139">    return images;</span>
+  }
+
+  /**
+   * get the image for the given imageType
+   * 
+   * @param imageType
+   * @param failSafe
+   *          - if true return a test Image if the image is not available
+   * @return the Image
+   */
+  public Image getImage(ImageType imageType, boolean failSafe) {
+<span class="nc" id="L151">    Image image = null;</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">    if (images.containsKey(imageType))</span>
+<span class="nc" id="L153">      image = images.get(imageType);</span>
+<span class="nc bnc" id="L154" title="All 4 branches missed.">    if (image == null &amp;&amp; failSafe)</span>
+<span class="nc" id="L155">      image = testImages.get(imageType);</span>
+<span class="nc" id="L156">    return image;</span>
+  }
+  
+  
+  /**
+   * create an observable for the given Image type
+   * @param imageType
+   * @return the observable
+   */
+  public Observable&lt;Image&gt; createObservable(ImageType imageType) {
+<span class="nc" id="L166">    Observable&lt;Image&gt; imageObservable=Observable.create(emitter-&gt;{</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">       if (!emitterMap.containsKey(imageType)) {</span>
+<span class="nc" id="L168">         emitterMap.put(imageType, new ArrayList&lt;ObservableEmitter&lt;Image&gt;&gt;());</span>
+       }
+<span class="nc" id="L170">       List&lt;ObservableEmitter&lt;Image&gt;&gt; emitterList = emitterMap.get(imageType);</span>
+<span class="nc" id="L171">       emitterList.add(emitter);     </span>
+<span class="nc" id="L172">    });</span>
+<span class="nc" id="L173">    return imageObservable;</span>
+  }
+
+  /**
+   * write the images
+   */
+  public void writeImages() {
+<span class="nc bnc" id="L180" title="All 2 branches missed.">    for (ImageType imageType : ImageType.values()) {</span>
+<span class="nc" id="L181">      String filepath=ImageUtils.filePath(imageType.name(), &quot;.jpg&quot;);</span>
+<span class="nc" id="L182">      Image image=this.getImage(imageType, false);</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">      if (image!=null)</span>
+<span class="nc" id="L184">        ImageUtils.writeImageToFilepath(image.getFrame(), filepath);</span>
+    }
+<span class="nc" id="L186">  }</span>
+
+  /**
+   * add the given info to my images
+   * @param info
+   */
+  public void addImageInfo(String info) {
+<span class="nc bnc" id="L193" title="All 2 branches missed.">    for (Image image:this.images.values()) {</span>
+<span class="nc" id="L194">      image.addImageInfo(info);</span>
+<span class="nc" id="L195">    }</span>
+<span class="nc" id="L196">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

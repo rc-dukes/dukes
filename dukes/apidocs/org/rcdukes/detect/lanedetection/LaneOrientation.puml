@@ -1,0 +1,23 @@
+@startuml
+
+    class LaneOrientation [[LaneOrientation.html]] {
+        +LaneOrientation(Lane, ViewPort)
+        +determineLines(): void
+        +getLines(): Line[]
+        +distanceFromLeftBoundary(): double
+        +distanceFromRightBoundary(): double
+        +determineDistanceToMiddle(): double
+        +determineCourseRelativeToHorizon(): Double
+        +determineLaneMiddle(): Optional<Line>
+        +determineBase(): Optional<Line>
+        +getMiddle(): Line
+        +setMiddle(Line): void
+        +getLeft(): Line
+        +setLeft(Line): void
+        +getRight(): Line
+        +setRight(Line): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CrossingNumber.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-camera-matrix</a> &gt; <a href="../index.html" class="el_bundle">rc-geometry</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.geometry.pointinplane</a> &gt; <span class="el_source">CrossingNumber.java</span></div><h1>CrossingNumber.java</h1><pre class="source lang-java linenums">package org.rcdukes.geometry.pointinplane;
+
+import org.rcdukes.geometry.Point2D;
+import org.rcdukes.geometry.Polygon;
+
+/**
+ * Created by jpoint on 16/08/16.
+ */
+<span class="nc" id="L9">public class CrossingNumber implements PointInPlane {</span>
+    @Override
+    public boolean isPointInPlane(Point2D point, Polygon polygon) {
+<span class="nc bnc" id="L12" title="All 2 branches missed.">        return crossingNumber(point, polygon.getPoints().toArray(new Point2D[]{})) != 0;</span>
+    }
+
+    // Copyright 2000 softSurfer, 2012 Dan Sunday
+    // This code may be freely used and modified for any purpose
+    // providing that this copyright notice is included with it.
+    // SoftSurfer makes no warranty for this code, and cannot be held
+    // liable for any real or imagined damage resulting from its use.
+    // Users of this code must verify correctness for their application.
+
+    /**
+     * crossingNumber(): crossing number test for a point in a polygon
+     *      Input:   P = a point,
+     *               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
+     *      Return:  0 = outside, 1 = inside
+     * This code is patterned after [Franklin, 2000]
+     */
+    int crossingNumber(Point2D P, Point2D[] V) {
+<span class="nc" id="L30">        int    cn = 0;    // the  crossing number counter</span>
+
+        // loop through all edges of the polygon
+<span class="nc bnc" id="L33" title="All 2 branches missed.">        for (int i=0; i&lt;V.length; i++) {                            // edge from V[i]  to V[i+1]</span>
+<span class="nc bnc" id="L34" title="All 4 branches missed.">            if (((V[i].getY() &lt;= P.getY()) &amp;&amp; (V[i+1].getY() &gt; P.getY()))               // an upward crossing</span>
+<span class="nc bnc" id="L35" title="All 4 branches missed.">                    || ((V[i].getY() &gt; P.getY()) &amp;&amp; (V[i+1].getY() &lt;=  P.getY()))) {    // a downward crossing</span>
+                // compute  the actual edge-ray intersect x-coordinate
+<span class="nc" id="L37">                double vt = (P.getY()  - V[i].getY()) / (V[i+1].getY() - V[i].getY());</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">                if (P.getX() &lt;  V[i].getX() + vt * (V[i+1].getX() - V[i].getX()))       // P.getX() &lt; intersect</span>
+<span class="nc" id="L39">                    ++cn;                                           // a valid crossing of y=P.getY() right of P.getX()</span>
+            }
+        }
+<span class="nc" id="L42">        return (cn&amp;1);    // 0 if even (out), and 1 if  odd (in)</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

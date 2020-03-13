@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>BaseGUI.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-server</a> &gt; <a href="../index.html" class="el_bundle">rc-app</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.app</a> &gt; <span class="el_source">BaseGUI.java</span></div><h1>BaseGUI.java</h1><pre class="source lang-java linenums">package org.rcdukes.app;
+
+import java.awt.Desktop;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.opencv.core.Mat;
+import org.rcdukes.video.ImageUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jensd.fx.glyphs.GlyphIcons;
+import de.jensd.fx.glyphs.GlyphsDude;
+import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.StringProperty;
+import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+
+import org.rcdukes.common.ErrorHandler;
+import org.rcdukes.common.EventbusLogger;
+
+/**
+ * base java fx GUI functionality
+ * 
+ * @author wf
+ *
+ */
+<span class="nc" id="L36">public class BaseGUI {</span>
+<span class="nc" id="L37">  protected static final Logger LOG = LoggerFactory.getLogger(BaseGUI.class);</span>
+<span class="nc" id="L38">  boolean debug = false;</span>
+  Stage primaryStage;
+  GUIDisplayer displayer;
+<span class="nc" id="L41">  String menuButtonColor = &quot;white&quot;;</span>
+<span class="nc" id="L42">  String buttonInactiveColor = &quot;gray&quot;;</span>
+<span class="nc" id="L43">  String buttonColor = &quot;blue&quot;;</span>
+<span class="nc" id="L44">  String buttonActiveColor = &quot;red&quot;;</span>
+<span class="nc" id="L45">  String buttonBgColor = &quot;transparent&quot;;</span>
+
+  public GUIDisplayer getDisplayer() {
+<span class="nc" id="L48">    return displayer;</span>
+  }
+
+  public void setDisplayer(GUIDisplayer displayer) {
+<span class="nc" id="L52">    this.displayer = displayer;</span>
+<span class="nc" id="L53">  }</span>
+
+  public static double getScreenWidth() {
+<span class="nc" id="L56">    return Screen.getPrimary().getVisualBounds().getWidth();</span>
+  }
+
+  public static double getScreenHeight() {
+<span class="nc" id="L60">    return Screen.getPrimary().getVisualBounds().getHeight();</span>
+  }
+
+  EventbusLogger eventbusLogger;
+
+  public EventbusLogger getEventbusLogger() {
+<span class="nc" id="L66">    return eventbusLogger;</span>
+  }
+
+  public void setEventbusLogger(EventbusLogger eventbusLogger) {
+<span class="nc" id="L70">    this.eventbusLogger = eventbusLogger;</span>
+<span class="nc" id="L71">  }</span>
+
+  /**
+   * show the given imageFrame in the given JavaFX imageView Control
+   * 
+   * @param imageView
+   * @param imageFrame
+   */
+  protected void displayImage(ImageView imageView, byte[] imageFrame) {
+<span class="nc bnc" id="L80" title="All 2 branches missed.">    if (imageFrame == null)</span>
+<span class="nc" id="L81">      return;</span>
+<span class="nc" id="L82">    Image image = new Image(new ByteArrayInputStream(imageFrame));</span>
+<span class="nc" id="L83">    this.onFXThread(imageView.imageProperty(), image);</span>
+<span class="nc" id="L84">  }</span>
+
+  /**
+   * display the given dukes Image in the given imageView
+   * 
+   * @param imageView
+   * @param dukesImage
+   */
+  protected void displayImage(ImageView imageView,
+      org.rcdukes.video.Image dukesImage) {
+<span class="nc" id="L94">    displayImage(imageView, dukesImage.getImageBytes());</span>
+<span class="nc" id="L95">  }</span>
+
+  protected void displayImage(ImageView fxImage, Mat openCvImage) {
+<span class="nc bnc" id="L98" title="All 2 branches missed.">    if (openCvImage.rows() &gt; 0) {</span>
+<span class="nc" id="L99">      Image image = ImageUtils.mat2Image(openCvImage, &quot;.png&quot;);</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">      if (image != null)</span>
+<span class="nc" id="L101">        this.onFXThread(fxImage.imageProperty(), image);</span>
+    }
+<span class="nc" id="L103">  }</span>
+
+  /**
+   * Set typical {@link ImageView} properties: a fixed width and the information
+   * to preserve the original image ration
+   *
+   * @param imageView
+   *          the {@link ImageView} to use
+   * @param width
+   *          the width of the image to set
+   */
+  protected void imageViewProperties(ImageView imageView, int width) {
+    // preserve the image ratio
+<span class="nc" id="L116">    imageView.setPreserveRatio(true);</span>
+    // set a fixed width for the given ImageView
+<span class="nc" id="L118">    imageView.setFitWidth(width);</span>
+<span class="nc" id="L119">  }</span>
+
+  /**
+   * Generic method for putting element running on a non-JavaFX thread on the
+   * JavaFX thread, to properly update the UI
+   *
+   * @param property
+   *          a {@link ObjectProperty}
+   * @param value
+   *          the value to set for the given {@link ObjectProperty}
+   */
+  protected &lt;T&gt; void onFXThread(final ObjectProperty&lt;T&gt; property,
+      final T value) {
+<span class="nc bnc" id="L132" title="All 2 branches missed.">    if (Platform.isFxApplicationThread()) {</span>
+<span class="nc" id="L133">      property.set(value);</span>
+    } else {
+<span class="nc" id="L135">      Platform.runLater(() -&gt; property.set(value));</span>
+    }
+<span class="nc" id="L137">  }</span>
+
+  /**
+   * Generic method for putting element running on a non-JavaFX thread on the
+   * JavaFX thread, to properly update the UI
+   *
+   * @param property
+   *          a {@link DoubleProperty}
+   * @param value
+   *          the value to set for the given {@link DoubleProperty}
+   */
+  protected void onFXThread(final DoubleProperty property, final Double value) {
+<span class="nc bnc" id="L149" title="All 2 branches missed.">    if (Platform.isFxApplicationThread()) {</span>
+<span class="nc" id="L150">      property.set(value);</span>
+    } else {
+<span class="nc" id="L152">      Platform.runLater(() -&gt; property.set(value));</span>
+    }
+<span class="nc" id="L154">  }</span>
+  
+  /**
+   * Generic method for putting element running on a non-JavaFX thread on the
+   * JavaFX thread, to properly update the UI
+   *
+   * @param property
+   *          a {@link StringProperty}
+   * @param value
+   *          the value to set for the given {@link StringProperty}
+   */
+  protected void onFXThread(final StringProperty property, final String value) {
+<span class="nc bnc" id="L166" title="All 2 branches missed.">    if (Platform.isFxApplicationThread()) {</span>
+<span class="nc" id="L167">      property.set(value);</span>
+    } else {
+<span class="nc" id="L169">      Platform.runLater(() -&gt; property.set(value));</span>
+    }
+<span class="nc" id="L171">  }</span>
+
+  /**
+   * browse the given url
+   * 
+   * @param url
+   */
+  protected void browse(String url) {
+    try {
+<span class="nc" id="L180">      Desktop.getDesktop().browse(new URI(url));</span>
+<span class="nc" id="L181">    } catch (IOException | URISyntaxException e) {</span>
+<span class="nc" id="L182">      handle(e);</span>
+<span class="nc" id="L183">    }</span>
+<span class="nc" id="L184">  }</span>
+
+  public void handle(Throwable th) {
+<span class="nc" id="L187">    String text = ErrorHandler.getStackTraceText(th);</span>
+<span class="nc" id="L188">    displayer.setMessageText(text);</span>
+<span class="nc" id="L189">  }</span>
+
+  /**
+   * set the icon for the given button
+   * 
+   * @param button
+   *          the button to modify
+   * @param icon
+   *          - the icon to use
+   * @param color
+   *          - the color of the icon
+   * @param bgColor
+   *          - the background color of the icon
+   * @param size
+   *          - the size of the icon
+   */
+  public void setButtonIcon(Button button, GlyphIcons icon, String color,
+      String bgColor, String size) {
+<span class="nc" id="L207">    GlyphsDude.setIcon(button, icon, size);</span>
+<span class="nc" id="L208">    String text = button.getText();</span>
+<span class="nc" id="L209">    button.setText(&quot;&quot;);</span>
+<span class="nc" id="L210">    setButtonTooltip(button, text);</span>
+<span class="nc" id="L211">    setButtonColor(button, color, bgColor);</span>
+<span class="nc" id="L212">  }</span>
+
+  public void setButtonIcon(Button button, GlyphIcons icon) {
+<span class="nc" id="L215">    this.setButtonIcon(button, icon, buttonColor, buttonBgColor, &quot;3em&quot;);</span>
+<span class="nc" id="L216">  }</span>
+
+  public void setMenuButtonIcon(Button button, GlyphIcons icon) {
+<span class="nc" id="L219">    this.setButtonIcon(button, icon, menuButtonColor, buttonBgColor, &quot;2em&quot;);</span>
+<span class="nc" id="L220">  }</span>
+
+  public void setButtonTooltip(Button button, String toolTipText) {
+<span class="nc" id="L223">    button.setTooltip(new Tooltip(toolTipText));</span>
+<span class="nc" id="L224">  }</span>
+
+  /**
+   * set the color of the given button
+   * 
+   * @param button
+   * @param bgColor
+   * @param color
+   */
+  public void setButtonColor(Button button, String color, String bgColor) {
+<span class="nc" id="L234">    String bstyle = String.format(</span>
+        &quot;-icons-color:%s;-fx-text-fill: %s;-fx-fill: %s;-fx-background-color: %s;&quot;,
+        color, color, color, bgColor);
+<span class="nc" id="L237">    button.setStyle(bstyle);</span>
+    /**
+     * uncomment to debug
+     *  String buttonName = button.getTooltip().getText();
+     * if (debug) System.out.println(
+     * String.format(&quot;button %s now has style '%s'&quot;, buttonName, bstyle));
+     */
+<span class="nc" id="L244">  }</span>
+
+  /**
+   * change the color of the given button according to the active flage
+   * 
+   * @param button
+   *          - the button to change
+   * @param active
+   *          - the state
+   */
+  public void setButtonActive(Button button, boolean active) {
+<span class="nc bnc" id="L255" title="All 2 branches missed.">    String activeButtonColor = active ? buttonActiveColor : buttonColor;</span>
+<span class="nc" id="L256">    setButtonColor(button, activeButtonColor, buttonBgColor);</span>
+<span class="nc" id="L257">    String buttonName = button.getTooltip().getText();</span>
+<span class="nc bnc" id="L258" title="All 2 branches missed.">    if (debug)</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">      System.out.println(</span>
+<span class="nc" id="L260">          String.format(&quot;%s is now %s&quot;, buttonName, active ? &quot;on&quot; : &quot;off&quot;));</span>
+<span class="nc" id="L261">  }</span>
+
+  private PositionDisplay positionDisplay;
+
+  public void setPositionDisplay(PositionDisplay positionDisplay) {
+<span class="nc" id="L266">    this.positionDisplay = positionDisplay;</span>
+<span class="nc" id="L267">  }</span>
+
+  /**
+   * get the AppVerticle
+   * 
+   * @return - the singleton
+   */
+  protected AppVerticle getAppVerticle() {
+<span class="nc" id="L275">    AppVerticle appVerticle = AppVerticle.getInstance(eventbusLogger);</span>
+<span class="nc" id="L276">    appVerticle.setPositionDisplay(this.positionDisplay);</span>
+<span class="nc" id="L277">    return appVerticle;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

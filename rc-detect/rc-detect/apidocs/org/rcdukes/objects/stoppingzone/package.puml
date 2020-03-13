@@ -1,0 +1,35 @@
+@startuml
+
+    namespace org.rcdukes.objects.stoppingzone {
+
+        class ZoneStartBoundary [[ZoneStartBoundary.html]] {
+            {static} +DEFAULT_ANGLE: double
+            {static} +DEFAULT_TOLERANCE: double
+            +ZoneStartBoundary()
+            +ZoneStartBoundary(double, double, boolean)
+            +boundary(Collection<Line>): Optional<Line>
+        }
+
+        class StoppingZoneOrientation [[StoppingZoneOrientation.html]] {
+            +StoppingZoneOrientation(StoppingZone, Lane, ViewPort)
+            +determineDistanceToStoppingZone(): double
+            +determineDistanceToStoppingZoneEnd(): double
+        }
+
+        class ZoneEndBoundary [[ZoneEndBoundary.html]] {
+            {static} +DEFAULT_ANGLE: double
+            {static} +DEFAULT_TOLERANCE: double
+            +ZoneEndBoundary()
+            +ZoneEndBoundary(double, double, boolean)
+        }
+
+        class org.rcdukes.objects.Boundary
+        org.rcdukes.objects.Boundary <|-- ZoneStartBoundary
+
+        org.rcdukes.objects.Boundary <|-- ZoneEndBoundary
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

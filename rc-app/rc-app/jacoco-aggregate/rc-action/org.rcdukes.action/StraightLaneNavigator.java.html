@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>StraightLaneNavigator.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-app</a> &gt; <a href="../index.html" class="el_bundle">rc-action</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.action</a> &gt; <span class="el_source">StraightLaneNavigator.java</span></div><h1>StraightLaneNavigator.java</h1><pre class="source lang-java linenums">package org.rcdukes.action;
+
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.tinkerpop.gremlin.process.traversal.P;
+import org.apache.tinkerpop.gremlin.structure.T;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.TinkerPopDatabase;
+import org.rcdukes.geometry.LaneDetectionResult;
+import org.rcdukes.geometry.Line;
+import org.rcdukes.video.VideoRecorders.VideoInfo;
+
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rxjava.core.eventbus.Message;
+import stormbots.MiniPID;
+
+/**
+ * straight lane navigator
+ *
+ */
+public class StraightLaneNavigator extends TinkerPopDatabase implements Navigator {
+
+<span class="nc" id="L28">  public static int COMMAND_LOOP_INTERVAL = 150; // how often to send commands</span>
+  // e.g. 6x per second
+<span class="nc" id="L30">  public static final int MAX_DURATION_NO_LINES_DETECTED = 8*COMMAND_LOOP_INTERVAL; // max 1.5</span>
+  // secs
+  // @TODO
+  // should be
+  // speed
+  // dependent
+  // ...
+<span class="nc" id="L37">  public static final int DEFAULT_TIME_WINDOW=2*COMMAND_LOOP_INTERVAL;</span>
+
+<span class="nc" id="L39">  protected static final Logger LOG = LoggerFactory</span>
+<span class="nc" id="L40">      .getLogger(StraightLaneNavigator.class);</span>
+  DukesVerticle sender;
+ 
+  private int timeWindow;
+  MiniPID pid;
+  private Long tsLatestCommand;
+<span class="nc" id="L46">  private boolean emergencyStopActivated = false;</span>
+  private long currentTime;
+  private Long startTime;
+  private AngleRange middleRange;
+  private AngleRange stopRangeLeft;
+  private AngleRange stopRangeRight;
+  private AngleRange leftRange;
+  private AngleRange rightRange;
+  private AngleRange courseRange;
+
+  public DukesVerticle getSender() {
+<span class="nc" id="L57">    return sender;</span>
+  }
+
+  public void setSender(DukesVerticle sender) {
+<span class="nc" id="L61">    this.sender = sender;</span>
+<span class="nc" id="L62">  }</span>
+
+  /**
+   * default constructor
+   */
+  public StraightLaneNavigator() {
+<span class="nc" id="L68">    this(DEFAULT_TIME_WINDOW);</span>
+<span class="nc" id="L69">  }</span>
+
+  /**
+   * construct me with the given timeWindow
+   * @param timeWindow - in milliSeconds
+   */
+<span class="nc" id="L75">  public StraightLaneNavigator(int timeWindow) {</span>
+<span class="nc" id="L76">    this.initDefaults();</span>
+<span class="nc" id="L77">    this.timeWindow = timeWindow;</span>
+<span class="nc" id="L78">    this.graph.createIndex(&quot;frameIndex&quot;, Vertex.class);</span>
+<span class="nc" id="L79">    this.graph.createIndex(&quot;milliTimeStamp&quot;, Vertex.class);</span>
+<span class="nc" id="L80">  }</span>
+
+  /**
+   * convert the given lane Detection Result to a vertex and add it to the graph
+   * 
+   * @param ldr
+   * @return the new Vertex
+   */
+  public Vertex addToGraph(LaneDetectionResult ldr) {
+<span class="nc" id="L89">    Vertex v = graph.addVertex(T.label, &quot;pos&quot;, &quot;frameIndex&quot;, ldr.frameIndex,</span>
+<span class="nc" id="L90">        &quot;milliTimeStamp&quot;, ldr.milliTimeStamp);</span>
+<span class="nc" id="L91">    setProp(v, &quot;left&quot;, ldr.left);</span>
+<span class="nc" id="L92">    setProp(v, &quot;middle&quot;, ldr.middle);</span>
+<span class="nc" id="L93">    setProp(v, &quot;right&quot;, ldr.right);</span>
+<span class="nc" id="L94">    setProp(v, &quot;course&quot;, ldr.courseRelativeToHorizon);</span>
+<span class="nc" id="L95">    return v;</span>
+  }
+
+  /**
+   * initialize my defaults
+   */
+  private void initDefaults() {
+<span class="nc" id="L102">    pid = new MiniPID(1, 0, 0);</span>
+<span class="nc" id="L103">  }</span>
+
+  @Override
+  public LaneDetectionResult fromJsonObject(JsonObject jo) {
+<span class="nc" id="L107">    LaneDetectionResult ldr = jo.mapTo(LaneDetectionResult.class);</span>
+<span class="nc" id="L108">    return ldr;</span>
+  }
+
+  /**
+   * is it o.k to send a command with the given AngleRange?
+   * 
+   * @param angleRange
+   *          - the angle Range to check
+   * @param minFound
+   * @return true if the angleRange is not null has enough found entries and
+   *         enough time has passed since the latest command
+   */
+  public boolean cmdOk(AngleRange angleRange, int minFound) {
+<span class="nc bnc" id="L121" title="All 4 branches missed.">    boolean ok = angleRange != null &amp;&amp; angleRange.count &gt; minFound</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">        &amp;&amp; currentTime - tsLatestCommand &gt; COMMAND_LOOP_INTERVAL;</span>
+<span class="nc" id="L123">    return ok;</span>
+  }
+
+  /**
+   * staticical analysis of angles in the given past timeWindow
+   * 
+   * @author wf
+   *
+   */
+  class AngleRange {
+    String name;
+    int timeWindow;
+    
+    int count;
+<span class="nc" id="L137">    double sum = 0;</span>
+    
+<span class="nc" id="L139">    Double min = Double.MAX_VALUE;</span>
+<span class="nc" id="L140">    Double max = -Double.MAX_VALUE;</span>
+<span class="nc" id="L141">    Double avg = null;</span>
+<span class="nc" id="L142">    Double stdDev=null;</span>
+
+    /**
+     * create an angle Range for the given vertices
+     * 
+     * @param name
+     * @param currentTime
+     * @param timeWindow
+     */
+<span class="nc" id="L151">    public AngleRange(String name, long currentTime, int timeWindow) {</span>
+<span class="nc" id="L152">      this.name = name;</span>
+<span class="nc" id="L153">      List&lt;Vertex&gt; angleNodes = g().V().has(name)</span>
+<span class="nc" id="L154">          .has(&quot;milliTimeStamp&quot;, P.gt(currentTime - timeWindow)).toList();</span>
+<span class="nc" id="L155">      count = angleNodes.size();</span>
+<span class="nc" id="L156">      this.timeWindow = timeWindow;</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">      if (count == 0) {</span>
+<span class="nc" id="L158">        min = null;</span>
+<span class="nc" id="L159">        max = null;</span>
+      }
+
+<span class="nc bnc" id="L162" title="All 2 branches missed.">      for (Vertex angleNode : angleNodes) {</span>
+<span class="nc" id="L163">        double angle = (Double) angleNode.property(name).value();</span>
+<span class="nc" id="L164">        sum += angle;</span>
+<span class="nc" id="L165">        max = Math.max(max, angle);</span>
+<span class="nc" id="L166">        min = Math.min(min, angle);</span>
+<span class="nc" id="L167">      }</span>
+<span class="nc" id="L168">      avg = sum / count;</span>
+<span class="nc" id="L169">      double sum2 = 0;</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">      for (Vertex angleNode : angleNodes) {</span>
+<span class="nc" id="L171">        Double angle = (Double) angleNode.property(name).value();</span>
+<span class="nc" id="L172">        Double avgDiff = angle - avg;</span>
+<span class="nc" id="L173">        sum2 += avgDiff * avgDiff;</span>
+<span class="nc" id="L174">      }</span>
+<span class="nc" id="L175">      stdDev = Math.sqrt(sum2 / count);</span>
+<span class="nc" id="L176">    }</span>
+
+    /**
+     * return the value to steer with for this angle range
+     * @return - the steering value
+     */
+    public double steer() {
+<span class="nc" id="L183">      double angle = avg;</span>
+      // @TODO check polarity and factor
+<span class="nc bnc" id="L185" title="All 2 branches missed.">      if (!&quot;course&quot;.equals(name)) {</span>
+<span class="nc" id="L186">        angle=-0.5*angle;</span>
+      }
+<span class="nc" id="L188">      return angle;</span>
+    }
+
+    /**
+     * get the debug info
+     * 
+     * @return
+     */
+    public String debugInfo() {
+<span class="nc" id="L197">      String info = String.format(&quot;%6s: %s &lt;- %s ± %s -&gt; %s / %3d in %3d msecs&quot;,</span>
+<span class="nc" id="L198">          name, Line.angleString(min), Line.angleString(avg),</span>
+<span class="nc" id="L199">          Line.angleString(stdDev), Line.angleString(max), count, timeWindow);</span>
+<span class="nc" id="L200">      return info;</span>
+    }
+  }
+
+  /**
+   * set the time stamps
+   * 
+   * @param ldr
+   */
+  public void setTime(LaneDetectionResult ldr) {
+<span class="nc" id="L210">    currentTime = ldr.milliTimeStamp;</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">    if (startTime == null)</span>
+<span class="nc" id="L212">      startTime = currentTime;</span>
+<span class="nc bnc" id="L213" title="All 2 branches missed.">    if (tsLatestCommand == null)</span>
+<span class="nc" id="L214">      tsLatestCommand = currentTime;</span>
+<span class="nc" id="L215">  }</span>
+
+  /**
+   * analyze the angle ranges int the given timeWindow
+   * 
+   * @param showDebug
+   */
+  public void analyzeAngleRanges(int timeWindow, boolean showDebug) {
+<span class="nc" id="L223">    long aStart = System.nanoTime();</span>
+<span class="nc" id="L224">    middleRange = new AngleRange(&quot;middle&quot;, currentTime, timeWindow);</span>
+<span class="nc" id="L225">    stopRangeLeft = new AngleRange(&quot;left&quot;, currentTime,</span>
+        MAX_DURATION_NO_LINES_DETECTED);
+<span class="nc" id="L227">    stopRangeRight = new AngleRange(&quot;right&quot;, currentTime,</span>
+        MAX_DURATION_NO_LINES_DETECTED);
+<span class="nc" id="L229">    leftRange = new AngleRange(&quot;left&quot;, currentTime, timeWindow);</span>
+<span class="nc" id="L230">    rightRange = new AngleRange(&quot;right&quot;, currentTime, timeWindow);</span>
+<span class="nc" id="L231">    courseRange = new AngleRange(&quot;course&quot;, currentTime, timeWindow);</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">    if (showDebug) {</span>
+<span class="nc" id="L233">      long aTime = System.nanoTime()-aStart;</span>
+<span class="nc" id="L234">      LOG.info(String.format(&quot;analysis took %5.3f msecs&quot;, aTime/1000000.0));</span>
+<span class="nc" id="L235">      LOG.info(stopRangeLeft.debugInfo());</span>
+<span class="nc" id="L236">      LOG.info(stopRangeRight.debugInfo());</span>
+<span class="nc" id="L237">      LOG.info(middleRange.debugInfo());</span>
+<span class="nc" id="L238">      LOG.info(leftRange.debugInfo());</span>
+<span class="nc" id="L239">      LOG.info(rightRange.debugInfo());</span>
+<span class="nc" id="L240">      LOG.info(courseRange.debugInfo());</span>
+    }
+<span class="nc" id="L242">  }</span>
+
+  /**
+   * process the laneDetectResult
+   * 
+   * @param ldr
+   *          - the lane detection result
+   * @return - a message to be sent to the vehicle or null on error
+   */
+  @Override
+  public JsonObject getNavigationInstruction(LaneDetectionResult ldr) {
+    // empty message signals no navigation
+<span class="nc" id="L254">    JsonObject message = null;</span>
+
+    // if in emergency stop mode do not continue
+<span class="nc bnc" id="L257" title="All 2 branches missed.">    if (this.emergencyStopActivated)</span>
+<span class="nc" id="L258">      return message;</span>
+    // set the current time and start time
+<span class="nc" id="L260">    setTime(ldr);</span>
+    // add the lane detection result to the tinker graph
+<span class="nc" id="L262">    Vertex ldrVertex=addToGraph(ldr);</span>
+    // analyze the LaneDetectionResults of the relevant time Windows
+<span class="nc" id="L264">    boolean showDebug = true;</span>
+<span class="nc" id="L265">    analyzeAngleRanges(timeWindow, showDebug);</span>
+
+    // do we need to stop since there have been no lines for too long?
+<span class="nc bnc" id="L268" title="All 6 branches missed.">    if (currentTime - startTime &gt; MAX_DURATION_NO_LINES_DETECTED</span>
+        &amp;&amp; stopRangeLeft.count + stopRangeRight.count == 0
+        || emergencyStopActivated) {
+<span class="nc" id="L271">      this.emergencyStopActivated = true;</span>
+<span class="nc" id="L272">      return ActionVerticle.emergencyStopCommand();</span>
+    }
+    // if we have enough detections for statistics we'll use this information
+<span class="nc" id="L275">    int MIN_FOUND_PER_TIMEWINDOW = 3;</span>
+    // decide which angleRange to use
+<span class="nc" id="L277">    AngleRange navigateRange = null;</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">    if (middleRange.count &gt;= MIN_FOUND_PER_TIMEWINDOW) {</span>
+<span class="nc" id="L279">      navigateRange = courseRange;</span>
+    } else {
+      // are we left or right heavy?
+<span class="nc bnc" id="L282" title="All 2 branches missed.">      navigateRange = leftRange.count &gt; rightRange.count ? leftRange</span>
+          : rightRange;
+    }
+    // check that we can send a command
+<span class="nc bnc" id="L286" title="All 2 branches missed.">    if (this.cmdOk(navigateRange, MIN_FOUND_PER_TIMEWINDOW)) {</span>
+<span class="nc" id="L287">      double angle = navigateRange.steer();</span>
+<span class="nc" id="L288">      String msg = ldr.debugInfo() + String.format(&quot;\nsteer by %s: %s&quot;,</span>
+<span class="nc" id="L289">          navigateRange.name, Line.angleString(angle));</span>
+<span class="nc" id="L290">      LOG.debug(msg);</span>
+<span class="nc" id="L291">      ldrVertex.property(&quot;steer&quot;,angle);</span>
+<span class="nc" id="L292">      ldrVertex.property(&quot;steerBy&quot;,navigateRange.name);</span>
+<span class="nc" id="L293">      ldrVertex.property(&quot;debugInfo&quot;,msg);</span>
+<span class="nc" id="L294">      tsLatestCommand = currentTime;</span>
+<span class="nc" id="L295">      message = steerCommand(angle);</span>
+    }
+<span class="nc" id="L297">    return message;</span>
+  }
+
+  /**
+   * get the command to steer the vehicle
+   * 
+   * @param angle
+   * @return - the command message
+   */
+  public JsonObject steerCommand(Double angle) {
+<span class="nc" id="L307">    String angleStr = String.format(Locale.ENGLISH, &quot;%5.1f°&quot;, angle);</span>
+<span class="nc" id="L308">    JsonObject message = new JsonObject().put(&quot;type&quot;, &quot;servoAngle&quot;).put(&quot;angle&quot;,</span>
+        angle);
+<span class="nc" id="L310">    String debugMsg = String.format(&quot;sending servoAngle %s&quot;, angleStr);</span>
+<span class="nc bnc" id="L311" title="All 2 branches missed.">    if (debug)</span>
+<span class="nc" id="L312">      LOG.debug(debugMsg);</span>
+<span class="nc" id="L313">    return message;</span>
+  }
+
+  @Override
+  public void navigateWithInstruction(JsonObject navigationInstruction) {
+<span class="nc bnc" id="L318" title="All 2 branches missed.">    if (navigationInstruction != null)</span>
+<span class="nc" id="L319">      sender.send(Characters.BO, navigationInstruction);</span>
+<span class="nc" id="L320">  }</span>
+
+  @Override
+  public void navigateWithMessage(Message&lt;JsonObject&gt; ldrMessage) {
+<span class="nc" id="L324">    LaneDetectionResult ldr = fromJsonObject(ldrMessage.body());</span>
+<span class="nc" id="L325">    this.navigateWithLaneDetectionResult(ldr);</span>
+<span class="nc" id="L326">  }</span>
+
+  @Override
+  public void navigateWithLaneDetectionResult(LaneDetectionResult ldr) {
+<span class="nc" id="L330">    JsonObject navigationJo = getNavigationInstruction(ldr);</span>
+<span class="nc" id="L331">    navigateWithInstruction(navigationJo);</span>
+<span class="nc" id="L332">  }</span>
+
+  @Override
+  public void videoStopped(VideoInfo videoInfo) { 
+<span class="nc" id="L336">    addVertex(videoInfo);</span>
+<span class="nc" id="L337">    writeGraph(videoInfo.path);</span>
+<span class="nc" id="L338">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

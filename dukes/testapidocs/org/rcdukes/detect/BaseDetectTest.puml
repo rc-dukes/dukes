@@ -1,0 +1,10 @@
+@startuml
+
+    class BaseDetectTest [[BaseDetectTest.html]] {
+        {static} +setup(): void
+        +getTestImage(): Mat
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

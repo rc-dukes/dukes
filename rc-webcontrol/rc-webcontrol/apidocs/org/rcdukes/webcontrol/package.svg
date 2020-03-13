@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="261px" preserveAspectRatio="none" style="width:231px;height:261px;" version="1.1" viewBox="0 0 231 261" width="231px" zoomAndPan="magnify"><defs><filter height="300%" id="fkp1jmnqrb7ar" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--cluster org.rcdukes.webcontrol--><polygon fill="#FFFFFF" filter="url(#fkp1jmnqrb7ar)" points="27,124,199,124,206,146.4883,209,146.4883,209,220,27,220,27,124" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="27" x2="206" y1="146.4883" y2="146.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="166" x="31" y="139.5352">org.rcdukes.webcontrol</text><!--cluster org.rcdukes.common--><polygon fill="#FFFFFF" filter="url(#fkp1jmnqrb7ar)" points="14,16,168,16,175,38.4883,178,38.4883,178,99,14,99,14,16" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="14" x2="175" y1="38.4883" y2="38.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="148" x="18" y="31.5352">org.rcdukes.common</text><!--class org.rcdukes.webcontrol.WebControl--><a href="WebControl.html" target="_top" xlink:actuate="onRequest" xlink:show="new" xlink:title="WebControl.html" xlink:type="simple"><rect fill="#FEFECE" filter="url(#fkp1jmnqrb7ar)" height="60.9551" id="org.rcdukes.webcontrol.WebControl" style="stroke: #A80036; stroke-width: 1.5;" width="98" x="47" y="151"/><ellipse cx="62" cy="167" fill="#ADD1B2" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M64.9731,172.6431 Q64.3921,172.9419 63.7529,173.0913 Q63.1138,173.2407 62.4082,173.2407 Q59.9014,173.2407 58.5815,171.5889 Q57.2617,169.937 57.2617,166.8159 Q57.2617,163.6865 58.5815,162.0347 Q59.9014,160.3828 62.4082,160.3828 Q63.1138,160.3828 63.7612,160.5322 Q64.4087,160.6816 64.9731,160.9805 L64.9731,163.7031 Q64.3423,163.1221 63.7488,162.8523 Q63.1553,162.5825 62.5244,162.5825 Q61.1797,162.5825 60.4949,163.6492 Q59.8101,164.7158 59.8101,166.8159 Q59.8101,168.9077 60.4949,169.9744 Q61.1797,171.041 62.5244,171.041 Q63.1553,171.041 63.7488,170.7712 Q64.3423,170.5015 64.9731,169.9204 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="66" x="76" y="171.5352">WebControl</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="48" x2="144" y1="183" y2="183"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="48" x2="144" y1="191" y2="191"/><ellipse cx="58" cy="202.9775" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="62" x="67" y="205.6348">start(): void</text></a><!--class org.rcdukes.common.DukesVerticle--><rect fill="#FEFECE" filter="url(#fkp1jmnqrb7ar)" height="48" id="org.rcdukes.common.DukesVerticle" style="stroke: #A80036; stroke-width: 1.5;" width="111" x="40.5" y="43"/><ellipse cx="55.5" cy="59" fill="#A9DCDF" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M55.6133,54.3481 L54.4595,59.4199 L56.7754,59.4199 Z M54.1191,52.1069 L57.1157,52.1069 L60.4609,64.5 L58.0122,64.5 L57.2485,61.437 L53.9697,61.437 L53.2227,64.5 L50.7739,64.5 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="79" x="69.5" y="63.5352">DukesVerticle</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="41.5" x2="150.5" y1="75" y2="75"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="41.5" x2="150.5" y1="83" y2="83"/><!--link org.rcdukes.common.DukesVerticle to org.rcdukes.webcontrol.WebControl--><path d="M96,111.2477 C96,124.5296 96,138.7972 96,150.9818 " fill="none" id="org.rcdukes.common.DukesVerticle-org.rcdukes.webcontrol.WebControl" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="none" points="89.0001,111.003,96,91.003,103.0001,111.0029,89.0001,111.003" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#888888" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="182" x="26.5" y="247.668">UMLDoclet 1.1.4, PlantUML 1.2019.05</text><!--
+@startuml
+
+    namespace org.rcdukes.webcontrol {
+
+        class WebControl [[WebControl.html]] {
+            +start(): void
+        }
+
+        abstract class org.rcdukes.common.DukesVerticle
+        org.rcdukes.common.DukesVerticle <|- - WebControl
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml
+
+PlantUML version 1.2019.05(Sat Apr 20 18:45:36 CEST 2019)
+(APACHE source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Java Version: 1.8.0_152-b16
+Operating System: Mac OS X
+OS Version: 10.13.6
+Default Encoding: UTF-8
+Language: de
+Country: DE
+--></g></svg>

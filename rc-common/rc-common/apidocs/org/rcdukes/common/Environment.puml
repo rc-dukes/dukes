@@ -1,0 +1,26 @@
+@startuml
+
+    class Environment [[Environment.html]] {
+        {static} +dukesHome: String
+        +propFilePath: String
+        +Environment(String)
+        {static} +readFirstLine(File): String
+        {static} +osRelease(): String
+        +isPi(): boolean
+        {static} +getInstance(): Environment
+        +runningOnRaspberryPi(): boolean
+        +getProperties(): Properties
+        +asJsonObject(): JsonObject
+        {static} +from(JsonObject): void
+        +getMyIpAddresses(): List<String>
+        +getString(String): String
+        +getInteger(String): int
+        +getDouble(String): double
+        {static} +reset(): void
+        {static} +from(String): void
+        {static} +mock(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

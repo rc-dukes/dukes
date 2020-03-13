@@ -1,0 +1,24 @@
+@startuml
+
+    namespace org.rcdukes.roi {
+
+        class TestROI [[TestROI.html]] {
+            {static} +debug: boolean
+            +isTravis(): boolean
+            +testNativeLibrary(): void
+            +testLogStderr(): void
+            +testROI(): void
+            +writeImage(String, Mat): void
+        }
+
+        class ROI [[ROI.html]] {
+            +ROI(String, double, double, double, double)
+            +roiRect(Size): Rect
+            +region(Mat): Mat
+        }
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

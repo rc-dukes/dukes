@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ErrorHandler.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-drivecontrol</a> &gt; <a href="../index.html" class="el_bundle">rc-common</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.error</a> &gt; <span class="el_source">ErrorHandler.java</span></div><h1>ErrorHandler.java</h1><pre class="source lang-java linenums">/**
+ *
+ * This file is part of the https://github.com/BITPlan/com.bitplan.gui open source project
+ *
+ * Copyright 2017 BITPlan GmbH https://github.com/BITPlan
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ *
+ *  You may obtain a copy of the License at
+ *
+ *  http:www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.rcdukes.error;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * simple ErrorHandler
+ * @author wf
+ *
+ */
+public class ErrorHandler implements ExceptionHandler {
+<span class="nc" id="L35">  private static final Logger LOG=LoggerFactory.getLogger(ErrorHandler.class);</span>
+
+  @Override
+  public void handle(Throwable th, String msg) {
+<span class="nc bnc" id="L39" title="All 2 branches missed.">    if (msg==null) {</span>
+<span class="nc" id="L40">      msg=&quot;&quot;;</span>
+    } else {
+<span class="nc" id="L42">      msg=&quot;(&quot;+msg+&quot;)&quot;;</span>
+    }
+<span class="nc" id="L44">    LOG.warn(&quot;Error &quot; + th.getClass().getName()+msg+&quot;:&quot;+ th.getMessage());</span>
+<span class="nc" id="L45">    StringWriter sw = new StringWriter();</span>
+<span class="nc" id="L46">    th.printStackTrace(new PrintWriter(sw));</span>
+<span class="nc" id="L47">    LOG.warn(&quot;Stacktrace: &quot; + sw.toString());</span>
+<span class="nc" id="L48">  }</span>
+
+  @Override
+  public void warn(String msg) {
+<span class="nc" id="L52">    LOG.warn(msg);</span>
+<span class="nc" id="L53">  }</span>
+
+  @Override
+  public void handle(Throwable th) {
+<span class="nc" id="L57">    handle(th,null);</span>
+<span class="nc" id="L58">  }</span>
+  private static ErrorHandler instance;
+  private ErrorHandler() {
+    
+  }
+  
+  /**
+   * singleton access
+   * @return the singleton
+   */
+  public static ErrorHandler getInstance() {
+<span class="nc bnc" id="L69" title="All 2 branches missed.">    if (instance==null)</span>
+<span class="nc" id="L70">      instance=new ErrorHandler();</span>
+<span class="nc" id="L71">    return instance;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,107 @@
+@startuml
+
+    namespace org.rcdukes.drivecontrol {
+
+        class Car [[Car.html]] {
+            {static} +servoCommand: ServoCommand
+            +configure(Engine, Steering, Led): void
+            +setPowerOn(): void
+            +setPowerOff(): void
+            +powerIsOn(): boolean
+            +stop(): void
+            +turn(ServoPosition): void
+            +drive(ServoPosition): void
+            +getEngine(): Engine
+            +getSteering(): Steering
+            +getLed(): Led
+            {static} +getInstance(): Car
+            {static} +resetInstance(): void
+        }
+
+        class EngineMap [[EngineMap.html]] {
+            +EngineMap(ServoCommand)
+        }
+
+        class LedMap [[LedMap.html]] {
+            +LedMap(ServoCommand)
+            +ledOff(): int
+            +ledOn(): int
+            +configureOrientation(): void
+        }
+
+        abstract class ServoMap [[ServoMap.html]] {
+            {static} #LOG: Logger
+            #servoCommand: ServoCommand
+            #gpioPin: int
+            #turnedOrientation: boolean
+            +getCurrentPosition(): ServoPosition
+            +setCurrentPosition(ServoPosition): void
+            +newPosition(ServoPosition): ServoPosition
+            +gpioPin(): int
+            +servoCommand(): ServoCommand
+            +configure(int, ServoCommand, String): void
+            +turnedOrientation(): boolean
+        }
+
+        class SteeringMap [[SteeringMap.html]] {
+            +SteeringMap(ServoCommand)
+        }
+
+        abstract class ServoRangeMap [[ServoRangeMap.html]] {
+            +getRange(): ServoRange
+            +setRange(ServoRange): void
+            +getUnit(): String
+            +setUnit(String): void
+            +getName(): String
+            +setName(String): void
+            +atPercent(double): ServoPosition
+            +atValue(double): ServoPosition
+            +step(int): void
+            +newPosition(ServoPosition): ServoPosition
+            +setZero(): void
+            +positionInfo(): String
+            #assertGreater(double, double, String, String): void
+            #checkSide(ServoSide): void
+            #check(): void
+            +configureOrientation(): void
+        }
+
+        ServoRangeMap <|-- EngineMap
+
+        ServoMap <|-- LedMap
+
+        interface org.rcdukes.car.LedMap {
+            {abstract} +ledOff(): int
+            {abstract} +ledOn(): int
+        }
+        org.rcdukes.car.LedMap <|.. LedMap
+
+        interface org.rcdukes.car.ServoMap {
+            {abstract} +gpioPin(): int
+            {abstract} +servoCommand(): ServoCommand
+            {abstract} +turnedOrientation(): boolean
+            {abstract} +getCurrentPosition(): ServoPosition
+            {abstract} +newPosition(ServoPosition): ServoPosition
+            {abstract} +configure(int, ServoCommand, String): void
+            {abstract} +configureOrientation(): void
+        }
+        org.rcdukes.car.ServoMap <|.. ServoMap
+
+        ServoRangeMap <|-- SteeringMap
+
+        ServoMap <|-- ServoRangeMap
+
+        interface org.rcdukes.car.ServoRangeMap {
+            {abstract} +getRange(): ServoRange
+            {abstract} +atPercent(double): ServoPosition
+            {abstract} +atValue(double): ServoPosition
+            {abstract} +step(int): void
+            {abstract} +setZero(): void
+        }
+        org.rcdukes.car.ServoRangeMap <|.. ServoRangeMap
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

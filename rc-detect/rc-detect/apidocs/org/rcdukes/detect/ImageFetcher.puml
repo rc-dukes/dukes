@@ -1,0 +1,29 @@
+@startuml
+
+    class ImageFetcher [[ImageFetcher.html]] {
+        {static} #LOG: Logger
+        {static} +DEFAULT_FPS: double
+        +debug: boolean
+        #frameIndex: int
+        #failureCount: int
+        #maxFailureCount: int
+        #fps: double
+        +ImageFetcher(String)
+        +getFps(): double
+        +setFps(double): void
+        +getFrameIndex(): int
+        +isStaticImage(): boolean
+        +setStaticImage(boolean): void
+        +open(): boolean
+        +close(): void
+        +waitForNextFrame(): long
+        +fetch(): Image
+        +createNextImage(Mat, long): Image
+        +toObservable(): Observable<Image>
+        +hasNext(): boolean
+        +isClosed(): boolean
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

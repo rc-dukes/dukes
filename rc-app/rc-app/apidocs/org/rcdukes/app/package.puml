@@ -1,0 +1,278 @@
+@startuml
+
+    namespace org.rcdukes.app {
+
+        class ImageDebugger [[ImageDebugger.html]] {
+            {static} #LOG: Logger
+            +ImageDebugger(File)
+            +isActive(): boolean
+            +step(ImageFetcher, GUIDisplayer.PictureStep): Image
+            +step(GUIDisplayer.PictureStep): void
+            +getFrameIndex(): long
+            +showDebugInfo(EventbusLogger): void
+        }
+
+        interface PositionDisplay [[PositionDisplay.html]] {
+            {abstract} +showPosition(ServoPosition): void
+        }
+
+        class LabeledValueSlider [[LabeledValueSlider.html]] {
+            {static} +debug: boolean
+            {static} #LOG: Logger
+            +getFormat(): String
+            +setFormat(String): void
+            +getBlockIncrement(): double
+            +setBlockIncrement(double): void
+            +getMax(): double
+            +setMax(double): void
+            +getMin(): double
+            +setMin(double): void
+            +getValue(): double
+            +setValue(double): void
+            +getText(): String
+            +setText(String): void
+            +getResource(String): URL
+        }
+
+        interface GUIDisplayer [[GUIDisplayer.html]] {
+            {abstract} +displayOriginal(Image): void
+            {abstract} +displayOriginal(Mat): void
+            {abstract} +display1(Image): void
+            {abstract} +display2(Image): void
+            {abstract} +display3(Image): void
+            {abstract} +displayImageCollector(ImageCollector): void
+            {abstract} +setImageCollector(ImageCollector): void
+            {abstract} +setMessageText(String): void
+            {abstract} +setCameraButtonText(String): void
+            {abstract} +setVideoRecorders(VideoRecorders): void
+            {abstract} +getStartVideoProperty(): Property<String>
+            {abstract} +showFrameIndex(long): void
+            {abstract} +handle(Throwable): void
+        }
+
+        enum org.rcdukes.app.GUIDisplayer.PictureStep [[GUIDisplayer.PictureStep.html]] {
+            {static} +FIRST
+            {static} +PREV
+            {static} +NEXT
+            {static} +FORWARD
+        }
+
+        class DukesFxGUI [[DukesFxGUI.html]] {
+            {static} +isoDateFormat: DateFormat
+            #homeButton: Button
+            #detectButton: Button
+            #githubButton: Button
+            #chatButton: Button
+            #helpButton: Button
+            #fullScreenButton: Button
+            #hideMenuButton: Button
+            #cameraButton: Button
+            #firstPictureButton: Button
+            #nextPictureButton: Button
+            #prevPictureButton: Button
+            #forwardPictureButton: Button
+            #lanevideo: ComboBox<String>
+            #startvideo: ComboBox<String>
+            #motorGauge: Gauge
+            #steeringGauge: Gauge
+            #messageArea: TextArea
+            #heartbeatArea: TextArea
+            +init(Stage): void
+            +initialize(): void
+            #setSpeed(double): void
+            #getSpeed(): double
+            +startCamera(): void
+            +displayOriginal(Image): void
+            +displayOriginal(Mat): void
+            +display1(Image): void
+            +display2(Image): void
+            +display3(Image): void
+            +setCameraButtonText(String): void
+            +addJustFullScreenButton(): void
+            +showMenuBar(Scene, MenuBar, boolean): void
+            +isKey(KeyEvent, KeyCode): boolean
+            +getStartVideoProperty(): Property<String>
+            +setMessageText(String): void
+            {static} +getIsoTimeStamp(): String
+            +logEvent(String, JsonObject): void
+            +log(String): void
+            +logToArea(TextArea, String): void
+            +getImageObservable(): Observable<Image>
+            +getImageFetcher(): ImageFetcher
+            +autoStart(boolean): void
+            +setDebug(boolean): void
+            +showPosition(ServoPosition): void
+            +setImageCollector(ImageCollector): void
+            +setCameraImageWidth(int): void
+            +setVideoRecorders(VideoRecorders): void
+            +showFrameIndex(long): void
+            +displayImageCollector(ImageCollector): void
+        }
+
+        class BaseGUI [[BaseGUI.html]] {
+            {static} #LOG: Logger
+            {static} +getScreenWidth(): double
+            {static} +getScreenHeight(): double
+            #displayImage(ImageView, byte[]): void
+            #displayImage(ImageView, Image): void
+            #displayImage(ImageView, Mat): void
+            #imageViewProperties(ImageView, int): void
+            #onFXThread(ObjectProperty<T>, T): void
+            #onFXThread(DoubleProperty, Double): void
+            #onFXThread(StringProperty, String): void
+            #browse(String): void
+            +handle(Throwable): void
+            +setButtonIcon(Button, GlyphIcons, String, String, String): void
+            +setButtonIcon(Button, GlyphIcons): void
+            +setMenuButtonIcon(Button, GlyphIcons): void
+            +setButtonTooltip(Button, String): void
+            +setButtonColor(Button, String, String): void
+            +setButtonActive(Button, boolean): void
+        }
+
+        class AppVerticle [[AppVerticle.html]] {
+            {static} #LOG: Logger
+            +AppVerticle(EventbusLogger)
+            +getNavigator(): Navigator
+            +setNavigator(Navigator): void
+            +enableNavigator(): void
+            +stopNavigator(): void
+            +start(): void
+            #receiveEchoReply(Message<JsonObject>): void
+            #receiveCarPosition(Message<JsonObject>): void
+            +sendCarCommand(Characters, String, String, String): void
+            +sendSpeedCommand(String): void
+            +sendWheelCommand(String): void
+            +startUp(): void
+            {static} +getInstance(EventbusLogger): AppVerticle
+            +heartBeat(boolean): void
+            +sendHeartBeat(): void
+        }
+
+        class DukesFxApp [[DukesFxApp.html]] {
+            #debug: boolean
+            #autostart: boolean
+            #imageWidth: int
+            #simulator: boolean
+            +getResource(String): URL
+            +start(Stage): void
+            +parseArguments(): void
+            {static} +main(String[]): void
+        }
+
+        class NavigationGUI [[NavigationGUI.html]] {
+            #upButton: Button
+            #autoPilotButton: Button
+            #leftButton: Button
+            #rightButton: Button
+            #stopButton: Button
+            #downButton: Button
+            #manualButton: Button
+            #brakeButton: Button
+            #centerButton: Button
+            #powerButton: Button
+            #photoButton: Button
+            #recordButton: Button
+            #startCarButton: Button
+            #requestConfigButton: Button
+            #echoButton: Button
+            #videoRecorders: VideoRecorders
+            +initialize(): void
+            +setControlState(boolean): void
+            +handleNavigationKey(KeyEvent): void
+            +setImageCollector(ImageCollector): void
+            +setVideoRecorders(VideoRecorders): void
+        }
+
+        class LaneDetectionGUI [[LaneDetectionGUI.html]] {
+            +startCamera(CameraGUI, ImageSource): void
+        }
+
+        class org.rcdukes.app.LaneDetectionGUI.FrameGrabber [[LaneDetectionGUI.FrameGrabber.html]] {
+            +FrameGrabber(GUIDisplayer, CameraGUI, double)
+            +onNext(Image): void
+            +onError(Throwable): void
+        }
+
+        class StartLightDetectionGUI [[StartLightDetectionGUI.html]] {
+            +startCamera(): void
+        }
+
+        class CameraGUI [[CameraGUI.html]] {
+            +imageWidth: int
+            +showStoppingZone: CheckBox
+            +initialize(): void
+            +applySliderValues(): void
+        }
+
+        class SimulatorImageFetcher [[SimulatorImageFetcher.html]] {
+            {static} +debug: boolean
+            {static} #LOG: Logger
+            #receiveSimulatorImage(Message<String>): void
+            +toObservable(): Observable<Image>
+        }
+
+        class javafx.scene.layout.HBox
+        javafx.scene.layout.HBox <|-- LabeledValueSlider
+
+        GUIDisplayer +-- org.rcdukes.app.GUIDisplayer.PictureStep
+
+        BaseGUI <|-- DukesFxGUI
+
+        GUIDisplayer <|.. DukesFxGUI
+
+        interface org.rcdukes.common.EventbusLogger {
+            {abstract} +logEvent(String, JsonObject): void
+            {abstract} +log(String): void
+        }
+        org.rcdukes.common.EventbusLogger <|.. DukesFxGUI
+
+        interface org.rcdukes.video.ImageSource {
+            {abstract} +getImageObservable(): Observable<Image>
+        }
+        org.rcdukes.video.ImageSource <|.. DukesFxGUI
+
+        PositionDisplay <|.. DukesFxGUI
+
+        abstract class org.rcdukes.common.DukesVerticle
+        org.rcdukes.common.DukesVerticle <|-- AppVerticle
+
+        abstract class javafx.application.Application {
+            {abstract} +start(Stage): void
+        }
+        javafx.application.Application <|-- DukesFxApp
+
+        BaseGUI <|-- NavigationGUI
+
+        BaseGUI <|-- LaneDetectionGUI
+
+        class org.rcdukes.detect.ImageObserver
+        org.rcdukes.detect.ImageObserver <|-- org.rcdukes.app.LaneDetectionGUI.FrameGrabber
+
+        LaneDetectionGUI +-- org.rcdukes.app.LaneDetectionGUI.FrameGrabber
+
+        BaseGUI <|-- StartLightDetectionGUI
+
+        BaseGUI <|-- CameraGUI
+
+        DukesFxGUI --> LabeledValueSlider: angleOffset\nroiy\nroih
+
+        BaseGUI --> GUIDisplayer: displayer
+
+        BaseGUI --> org.rcdukes.common.EventbusLogger: eventbusLogger
+
+        BaseGUI --> PositionDisplay: positionDisplay
+
+        BaseGUI --> AppVerticle: appVerticle
+
+        AppVerticle --> SimulatorImageFetcher: simulatorImageFetcher
+
+        AppVerticle --> PositionDisplay: positionDisplay
+
+        CameraGUI --> LabeledValueSlider: roiy\nroih\nangleOffset
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

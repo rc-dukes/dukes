@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Point.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-detect</a> &gt; <a href="../index.html" class="el_bundle">rc-geometry</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.geometry</a> &gt; <span class="el_source">Point.java</span></div><h1>Point.java</h1><pre class="source lang-java linenums">package org.rcdukes.geometry;
+
+/**
+ * implementation of point with multiple dimensions with 2D  interfaces
+ *
+ */
+public class Point implements Point2D, Comparable&lt;Point&gt; {
+
+  public static final int X = 0;
+  public static final int Y = 1;
+  public static final int Z = 2;
+
+<span class="nc" id="L13">  Double[] dimensions = { null, null, null };</span>
+
+<span class="nc" id="L15">  public Point() {</span>
+<span class="nc" id="L16">  }</span>
+  
+  /**
+   * convenience constructor
+   * @param x
+   * @param y
+   */
+  public Point(int x,int y) {
+<span class="nc" id="L24">    this(new Double(x),new Double(y));</span>
+<span class="nc" id="L25">  }</span>
+  
+  /**
+   * convenience constructor
+   * @param x
+   * @param y
+   */
+  public Point(long x,long y) {
+<span class="nc" id="L33">    this(new Double(x),new Double(y));</span>
+<span class="nc" id="L34">  }</span>
+
+  /**
+   * create a point with the given dimensions
+   * 
+   * @param dimensions
+   *          - the dimensions to use
+   */
+<span class="nc" id="L42">  public Point(Double... dimensions) {</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">    if (dimensions.length &lt; 1) {</span>
+<span class="nc" id="L44">      throw new IllegalArgumentException(</span>
+          &quot;Point must have at least 1 dimension&quot;);
+    }
+
+<span class="nc" id="L48">    this.dimensions = dimensions;</span>
+<span class="nc" id="L49">  }</span>
+
+  /**
+   * calculate the distance to another point
+   * 
+   * @param otherDimensons
+   *          - the dimensions of the other point
+   * @return - the distance
+   */
+  public double distance(Double... otherDimensons) {
+<span class="nc bnc" id="L59" title="All 2 branches missed.">    if (this.dimensions.length != otherDimensons.length) {</span>
+<span class="nc" id="L60">      throw new IllegalArgumentException(</span>
+          &quot;Can only calculate distance between two points with similar dimensions.&quot;);
+    }
+
+<span class="nc" id="L64">    double totalDistance = 0d;</span>
+
+<span class="nc bnc" id="L66" title="All 2 branches missed.">    for (int i = 0; i &lt; this.dimensions.length; i++) {</span>
+<span class="nc" id="L67">      double myVal = this.dimensions[i];</span>
+<span class="nc" id="L68">      double otherVal = otherDimensons[i];</span>
+
+<span class="nc" id="L70">      totalDistance += Math.pow(myVal - otherVal, 2d);</span>
+    }
+
+<span class="nc" id="L73">    return Math.sqrt(totalDistance);</span>
+  }
+
+  @Override
+  public double distance(Point2D other) {
+<span class="nc" id="L78">    Double[] otherDimensons = new Double[2];</span>
+<span class="nc" id="L79">    otherDimensons[X] = other.getX();</span>
+<span class="nc" id="L80">    otherDimensons[Y] = other.getY();</span>
+<span class="nc" id="L81">    return distance(otherDimensons);</span>
+  }
+
+  public String valueStr(Double d) {
+<span class="nc bnc" id="L85" title="All 2 branches missed.">    String text = d == null ? &quot;?&quot; : &quot;&quot; + d;</span>
+<span class="nc" id="L86">    return text;</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L91">    String text = &quot;?&quot;;</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">    switch (dimensions.length) {</span>
+    case 2:
+<span class="nc" id="L94">      text = String.format(&quot;{%s,%s}&quot;, valueStr(getX()), valueStr(getY()));</span>
+      break;
+    }
+<span class="nc" id="L97">    return text;</span>
+  }
+
+  @Override
+  public double getX() {
+<span class="nc" id="L102">    return dimensions[X];</span>
+  }
+  
+  public void setX(double x) {
+<span class="nc" id="L106">    dimensions[X]=x;</span>
+<span class="nc" id="L107">  }</span>
+
+  @Override
+  public double getY() {
+<span class="nc" id="L111">    return dimensions[Y];</span>
+  }
+  
+  public void setY(double y) {
+<span class="nc" id="L115">    dimensions[Y]=y;</span>
+<span class="nc" id="L116">  }</span>
+  
+  public void setZ(Double z) {
+<span class="nc" id="L119">    dimensions[Z]=z;</span>
+<span class="nc" id="L120">  }</span>
+
+  private Double getMax() {
+<span class="nc" id="L123">    Double max = Double.MIN_VALUE;</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">    for (double val : dimensions) {</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">      if (val &gt; max)</span>
+<span class="nc" id="L126">        max = val;</span>
+    }
+<span class="nc" id="L128">    return max;</span>
+  }
+
+  @Override
+  public int compareTo(Point o) {
+<span class="nc" id="L133">    Double max = getMax();</span>
+<span class="nc" id="L134">    Double omax = o.getMax();</span>
+<span class="nc" id="L135">    return max.compareTo(omax);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Polygon.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-camera-matrix</a> &gt; <a href="../index.html" class="el_bundle">rc-geometry</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.geometry</a> &gt; <span class="el_source">Polygon.java</span></div><h1>Polygon.java</h1><pre class="source lang-java linenums">package org.rcdukes.geometry;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+/**
+ * implements a polygon as a list of {@link Point2D}
+ *
+ */
+public class Polygon {
+
+<span class="nc" id="L16">  public static boolean debug = false;</span>
+  List&lt;Point2D&gt; points;
+
+  // private PointInPlane pointInPlaneStrategy = new CrossingNumber();
+
+  /**
+   * create a Polygon from the given points
+   * 
+   * @param points
+   */
+<span class="nc" id="L26">  public Polygon(Point2D... points) {</span>
+<span class="nc" id="L27">    init(points);</span>
+<span class="nc" id="L28">  }</span>
+
+  /**
+   * initialize my points
+   * @param points
+   */
+  public void init(Point2D... points) {
+<span class="nc" id="L35">    this.points = Arrays.asList(points);</span>
+<span class="nc" id="L36">  }</span>
+
+  /**
+   * getter for the points of this polygon
+   * 
+   * @return - the points
+   */
+  public List&lt;Point2D&gt; getPoints() {
+<span class="nc" id="L44">    return points;</span>
+  }
+
+  /**
+   * get the points of the polygon in clockwise manner
+   * 
+   * @return the list of points
+   */
+  public List&lt;Point2D&gt; getPointsClockwise() {
+<span class="nc" id="L53">    List&lt;Point2D&gt; copy = new ArrayList&lt;&gt;(points);</span>
+
+<span class="nc bnc" id="L55" title="All 2 branches missed.">    if (shoelace() &lt; 0) {</span>
+<span class="nc" id="L56">      Collections.reverse(copy);</span>
+    }
+
+<span class="nc" id="L59">    return copy;</span>
+  }
+
+  /**
+   * get the points of the polygon in counter-clockwise manner
+   * 
+   * @return the list of points
+   */
+  public List&lt;Point2D&gt; getPointsCounterClockwise() {
+<span class="nc" id="L68">    List&lt;Point2D&gt; copy = new ArrayList&lt;&gt;(points);</span>
+
+<span class="nc bnc" id="L70" title="All 2 branches missed.">    if (shoelace() &gt;= 0) {</span>
+<span class="nc" id="L71">      Collections.reverse(copy);</span>
+    }
+
+<span class="nc" id="L74">    return copy;</span>
+  }
+
+  /**
+   * create a square from the given two points
+   * 
+   * @param origin
+   *          - first point
+   * @param opposite
+   *          - second point
+   * @return - the polygon representing the square
+   */
+  public static Polygon square(Point2D origin, Point2D opposite) {
+<span class="nc" id="L87">    Point2D point1 = origin;</span>
+<span class="nc" id="L88">    Point2D point2 = new Point(opposite.getX(), origin.getY());</span>
+<span class="nc" id="L89">    Point2D point3 = opposite;</span>
+<span class="nc" id="L90">    Point2D point4 = new Point(origin.getX(), opposite.getY());</span>
+
+<span class="nc" id="L92">    return new Polygon(point1, point2, point3, point4);</span>
+  }
+
+  /**
+   * get the list of points where the given line intersects with the polygon
+   * 
+   * @param line
+   *          - the line to test
+   * @return - the intersection point
+   */
+  public Set&lt;Point2D&gt; intersect(Line line) {
+<span class="nc" id="L103">    Set&lt;Point2D&gt; intersections = new TreeSet&lt;&gt;();</span>
+
+<span class="nc bnc" id="L105" title="All 2 branches missed.">    for (int i = 0; i &lt; points.size(); i++) {</span>
+<span class="nc" id="L106">      Point2D point1 = points.get(i);</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">      Point2D point2 = points.get(i == points.size() - 1 ? 0 : i + 1);</span>
+<span class="nc" id="L108">      Line boundary = new Line(point1, point2);</span>
+<span class="nc" id="L109">      boundary.intersect(line).filter(boundary::existsOnLine)</span>
+<span class="nc" id="L110">          .ifPresent(intersections::add);</span>
+    }
+
+<span class="nc bnc" id="L113" title="All 2 branches missed.">    if (debug)</span>
+<span class="nc" id="L114">      System.out.println(&quot;Intersections found at: &quot; + intersections);</span>
+<span class="nc" id="L115">    return intersections;</span>
+  }
+
+  /**
+   * get the edges of the polygon
+   * 
+   * @return - the lines for the edges
+   */
+  public List&lt;Line&gt; edges() {
+<span class="nc" id="L124">    List&lt;Line&gt; edges = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">    for (int i = 0; i &lt; points.size(); i++) {</span>
+<span class="nc" id="L126">      Point2D point1 = points.get(i);</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">      Point2D point2 = points.get(i == points.size() - 1 ? 0 : i + 1);</span>
+<span class="nc" id="L128">      edges.add(new Line(point1, point2));</span>
+    }
+<span class="nc" id="L130">    return edges;</span>
+  }
+
+  /*
+   * public void setPointInPlaneStrategy(PointInPlane pointInPlaneStrategy) {
+   * this.pointInPlaneStrategy = pointInPlaneStrategy; }
+   */
+
+  /**
+   * Calculate polygon surface using shoe lace method.
+   * 
+   * @see &lt;a href='https://en.wikipedia.org/wiki/Shoelace_formula'&gt;Shoelace
+   *      formula on Wikipedia&lt;/a&gt;
+   * @return the surface
+   */
+  public double shoelace() {
+<span class="nc" id="L146">    Point2D previous = points.get(points.size() - 1);</span>
+
+<span class="nc" id="L148">    double size = 0;</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">    for (Point2D current : points) {</span>
+<span class="nc" id="L150">      size += (previous.getX() - current.getX())</span>
+<span class="nc" id="L151">          * (previous.getY() + current.getY());</span>
+<span class="nc" id="L152">      previous = current;</span>
+<span class="nc" id="L153">    }</span>
+
+<span class="nc" id="L155">    return size;</span>
+  }
+  
+  public String toString() {
+<span class="nc" id="L159">    String text=this.points.toString();</span>
+<span class="nc" id="L160">    return text;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

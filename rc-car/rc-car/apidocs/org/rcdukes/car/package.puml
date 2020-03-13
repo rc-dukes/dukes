@@ -1,0 +1,147 @@
+@startuml
+
+    namespace org.rcdukes.car {
+
+        class CarVerticle [[CarVerticle.html]] {
+            +start(): void
+        }
+
+        class Steering [[Steering.html]] {
+            +Steering(Car, ServoRangeMap)
+            +center(): void
+            +forceCenter(): void
+            +setWheelPosition(ServoPosition): void
+        }
+
+        class ServoSide [[ServoSide.html]] {
+            +ServoSide(String, double, ServoPosition, ServoPosition)
+            +getMin(): ServoPosition
+            +setMin(ServoPosition): void
+            +getMax(): ServoPosition
+            +setMax(ServoPosition): void
+            +getPolarity(): double
+            +setPolarity(double): void
+            +getName(): String
+            +setName(String): void
+            +clampValue(double): double
+            +clampServoPos(long): int
+            +interpolate(double): ServoPosition
+            +percentToFactor(double): double
+            +interpolateServoPos(double): int
+            +valueRange(): double
+            +interpolateValue(double): double
+            +interpolateValueFromPos(int): double
+            +isServoPosOnSide(int): boolean
+            +isValueOnSide(double): boolean
+        }
+
+        interface ServoRangeMap [[ServoRangeMap.html]] {
+            {abstract} +atPercent(double): ServoPosition
+            {abstract} +atValue(double): ServoPosition
+            {abstract} +step(int): void
+            {abstract} +setZero(): void
+        }
+
+        class ServoRange [[ServoRange.html]] {
+            +ServoRange(int, ServoSide, ServoPosition, ServoSide)
+            +getStepSize(): int
+            +setStepSize(int): void
+            +getZeroPosition(): ServoPosition
+            +setZeroPosition(ServoPosition): void
+            +getMax(): ServoPosition
+            +getMin(): ServoPosition
+            +setMinMax(): void
+            +clampServoPos(long): int
+        }
+
+        interface ServoMap [[ServoMap.html]] {
+            {abstract} +gpioPin(): int
+            {abstract} +servoCommand(): ServoCommand
+            {abstract} +turnedOrientation(): boolean
+            {abstract} +getCurrentPosition(): ServoPosition
+            {abstract} +newPosition(ServoPosition): ServoPosition
+            {abstract} +configure(int, ServoCommand, String): void
+            {abstract} +configureOrientation(): void
+        }
+
+        interface ServoCommand [[ServoCommand.html]] {
+            {abstract} +setServo(int, int): void
+        }
+
+        class ServoBlaster [[ServoBlaster.html]] {
+            {static} +WRITE_DIRECT: boolean
+            +setServo(int, int): void
+        }
+
+        class Servo [[Servo.html]] {
+            {static} #LOG: Logger
+            +Servo(ServoMap)
+            +setServo(int): void
+            +getServo(): int
+        }
+
+        interface LedMap [[LedMap.html]] {
+            {abstract} +ledOff(): int
+            {abstract} +ledOn(): int
+        }
+
+        class Led [[Led.html]] {
+            +Led(LedMap)
+            +statusLedOn(): void
+            +statusLedOff(): void
+        }
+
+        class Engine [[Engine.html]] {
+            +Engine(Car, ServoRangeMap)
+            +neutral(): void
+            +forceInNeutral(): void
+            +setSpeed(ServoPosition): void
+            +neutral(boolean): void
+        }
+
+        class AdaFruit [[AdaFruit.html]] {
+            #parser: CmdLineParser
+            #debug: boolean
+            #ioId: int
+            #value: int
+            +AdaFruit()
+            +AdaFruit(double, double)
+            #provisionPwmOutputs(PCA9685GpioProvider): GpioPinPwmOutput[]
+            +setServo(int, int): void
+            +parseArguments(String[]): void
+            +work(): void
+            {static} +main(String[]): void
+        }
+
+        abstract class org.rcdukes.common.DukesVerticle
+        org.rcdukes.common.DukesVerticle <|-- CarVerticle
+
+        Servo <|-- Steering
+
+        ServoMap <|.. ServoRangeMap
+
+        ServoCommand <|.. ServoBlaster
+
+        ServoMap <|.. LedMap
+
+        Servo <|-- Led
+
+        Servo <|-- Engine
+
+        ServoCommand <|.. AdaFruit
+
+        Steering --> ServoRangeMap: steeringMap
+
+        ServoRangeMap --> ServoRange: range
+
+        ServoRange --> ServoSide: sideN\nsideP
+
+        Servo --> ServoMap: servoMap
+
+        Engine --> ServoRangeMap: engineMap
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

@@ -1,0 +1,118 @@
+@startuml
+
+    namespace org.rcdukes.geometry {
+
+        class Line [[Line.html]] {
+            +Line()
+            +Line(double[])
+            +Line(Point, Point)
+            +Line(Point2D, Point2D)
+            {static} +fromHough(boolean, int, int, double[]): Line
+            +init(Point, Point): void
+            +length(): double
+            +angleRad(): double
+            +angleDeg(): double
+            +angleDeg90(): double
+            {static} +average(Line[]): Line
+            {static} +average(Collection<Line>): Line
+            +isLeftOfLine(Point2D): boolean
+            +isRightOfLine(Point2D): boolean
+            +existsOnLine(Point2D): boolean
+            +bottomMost(): Point2D
+            +leftMost(): Point2D
+            +rightMost(): Point2D
+            +topMost(): Point2D
+            +pointAt(double): Point2D
+            +width(): double
+            +height(): double
+            {static} +angleString(Double): String
+            {static} +lineAngleString(Line): String
+            +intersect(Line): Optional<Point2D>
+            +distance(Point2D): double
+        }
+
+        class org.rcdukes.geometry.Line.Vector [[Line.Vector.html]] {
+            +Vector(double, double)
+            +calculate(Point2D, double): Point2D
+            +calculateX(double): double
+            +calculateY(double): double
+            {static} +forY(double): Line.Vector
+            {static} +forX(double): Line.Vector
+        }
+
+        class Lane [[Lane.html]] {
+            +Lane(Optional<Line>, Optional<Line>)
+        }
+
+        class Point [[Point.html]] {
+            {static} +X: int
+            {static} +Y: int
+            {static} +Z: int
+            +Point()
+            +Point(int, int)
+            +Point(long, long)
+            +Point(Double[])
+            +distance(Double[]): double
+            +distance(Point2D): double
+            +valueStr(Double): String
+            +getX(): double
+            +setX(double): void
+            +getY(): double
+            +setY(double): void
+            +setZ(Double): void
+            +compareTo(Point): int
+        }
+
+        interface Point2D [[Point2D.html]] {
+            {abstract} +getX(): double
+            {abstract} +getY(): double
+            {abstract} +distance(Point2D): double
+        }
+
+        class LaneDetectionResult [[LaneDetectionResult.html]] {
+            {static} +forceError: boolean
+            +left: Double
+            +middle: Double
+            +right: Double
+            +distanceMiddle: Double
+            +distanceLeft: Double
+            +distanceRight: Double
+            +courseRelativeToHorizon: Double
+            +distanceToStoppingZone: Double
+            +distanceToStoppingZoneEnd: Double
+            +frameIndex: int
+            +milliTimeStamp: long
+            +checkError(): void
+            +debugInfo(): String
+        }
+
+        class Polygon [[Polygon.html]] {
+            {static} +debug: boolean
+            +Polygon(Point2D[])
+            +init(Point2D[]): void
+            {static} +square(Point2D, Point2D): Polygon
+            +intersect(Line): Set<Point2D>
+            +edges(): List<Line>
+            +shoelace(): double
+        }
+
+        Line +-- org.rcdukes.geometry.Line.Vector
+
+        Point2D <|.. Point
+
+        interface java.lang.Comparable<T> {
+            {abstract} +compareTo(T): int
+        }
+        java.lang.Comparable <|.. Point
+
+        Line --> Point2D: point1\npoint2
+
+        Lane --> "0..1" Line: leftBoundary\nrightBoundary
+
+        Polygon --> "*" Point2D: points\npointsClockwise\npointsCounterClockwise
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

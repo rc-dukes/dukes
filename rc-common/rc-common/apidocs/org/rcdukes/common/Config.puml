@@ -1,0 +1,46 @@
+@startuml
+
+    class Config [[Config.html]] {
+        {static} +WEBCONTROL_PORT: String
+        {static} +IMAGEVIEW_PORT: String
+        {static} +REMOTECAR_HOST: String
+        {static} +CAMERA_URL: String
+        {static} +WATCHDOG_HEARTBEAT_INTERVAL_MS: String
+        {static} +WATCHDOG_MAX_MISSED_BEATS: String
+        {static} +WHEEL_GPIO: String
+        {static} +WHEEL_ORIENTATION: String
+        {static} +WHEEL_CENTER: String
+        {static} +WHEEL_STEP_SIZE: String
+        {static} +WHEEL_MAX_LEFT: String
+        {static} +WHEEL_MAX_RIGHT: String
+        {static} +WHEEL_MAX_LEFT_ANGLE: String
+        {static} +WHEEL_MAX_RIGHT_ANGLE: String
+        {static} +LED_ON: String
+        {static} +LED_OFF: String
+        {static} +LED_GPIO: String
+        {static} +ENGINE_GPIO: String
+        {static} +ENGINE_ORIENTATION: String
+        {static} +ENGINE_SPEED_ZERO: String
+        {static} +ENGINE_STEP_SIZE: String
+        {static} +ENGINE_MIN_SPEED_REVERSE: String
+        {static} +ENGINE_MAX_SPEED_REVERSE: String
+        {static} +ENGINE_MIN_SPEED_FORWARD: String
+        {static} +ENGINE_MAX_SPEED_FORWARD: String
+        {static} +ENGINE_MIN_VELOCITY_FORWARD: String
+        {static} +ENGINE_MAX_VELOCITY_FORWARD: String
+        {static} +ENGINE_MIN_VELOCITY_REVERSE: String
+        {static} +ENGINE_MAX_VELOCITY_REVERSE: String
+        {static} +POSITION_LEFT: String
+        {static} +POSITION_RIGHT: String
+        {static} +POSITION_CENTER: String
+        {static} +SERVO_COMMAND: String
+        {static} +ZERO: String
+        {static} +configureLogging(): void
+        {static} +createHazelcastConfig(): ClusterManager
+        {static} +getMyIpAddresses(): List<String>
+        {static} +getEnvironment(): Environment
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

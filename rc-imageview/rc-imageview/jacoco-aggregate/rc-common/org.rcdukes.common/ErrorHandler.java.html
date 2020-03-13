@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ErrorHandler.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-imageview</a> &gt; <a href="../index.html" class="el_bundle">rc-common</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.common</a> &gt; <span class="el_source">ErrorHandler.java</span></div><h1>ErrorHandler.java</h1><pre class="source lang-java linenums">package org.rcdukes.common;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+<span class="nc" id="L6">public class ErrorHandler {</span>
+  /**
+   * get the stack trace for the given exception
+   * 
+   * @param th
+   * @return - the stack trace
+   */
+  public static String getStackTraceText(Throwable th) {
+<span class="nc" id="L14">    StringWriter sw = new StringWriter();</span>
+<span class="nc" id="L15">    PrintWriter pw = new PrintWriter(sw);</span>
+<span class="nc" id="L16">    th.printStackTrace(pw);</span>
+<span class="nc" id="L17">    String exceptionText = sw.toString();</span>
+<span class="nc" id="L18">    return exceptionText;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

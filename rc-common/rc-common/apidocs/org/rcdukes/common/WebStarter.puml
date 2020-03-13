@@ -1,0 +1,14 @@
+@startuml
+
+    class WebStarter [[WebStarter.html]] {
+        {static} #LOG: Logger
+        +WebStarter(Vertx, int)
+        +getRouter(): Router
+        +setRouter(Router): void
+        +mountEventBus(String, String): void
+        +startHttpServer(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

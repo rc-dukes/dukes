@@ -1,0 +1,25 @@
+@startuml
+
+    namespace org.rcdukes.geometry.pointinplane {
+
+        interface PointInPlane [[PointInPlane.html]] {
+            {abstract} +isPointInPlane(Point2D, Polygon): boolean
+        }
+
+        class WindingNumbers [[WindingNumbers.html]] {
+            +isPointInPlane(Point2D, Polygon): boolean
+        }
+
+        class CrossingNumber [[CrossingNumber.html]] {
+            +isPointInPlane(Point2D, Polygon): boolean
+        }
+
+        PointInPlane <|.. WindingNumbers
+
+        PointInPlane <|.. CrossingNumber
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

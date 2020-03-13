@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Main.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-server</a> &gt; <a href="../index.html" class="el_bundle">rc-action</a> &gt; <a href="index.source.html" class="el_package">stormbots</a> &gt; <span class="el_source">Main.java</span></div><h1>Main.java</h1><pre class="source lang-java linenums">package stormbots;
+
+import java.util.Locale;
+
+<span class="nc" id="L5">public class Main {</span>
+
+	/**
+	 * @param args Any arguments passed from stdin
+	 */
+	public static void main(String[] args) {
+		MiniPID miniPID; 
+		
+<span class="nc" id="L13">		miniPID = new MiniPID(0.25, 0.01, 0.4);</span>
+<span class="nc" id="L14">		miniPID.setOutputLimits(10);</span>
+		//miniPID.setMaxIOutput(2);
+		//miniPID.setOutputRampRate(3);
+		//miniPID.setOutputFilter(.3);
+<span class="nc" id="L18">		miniPID.setSetpointRange(40);</span>
+
+<span class="nc" id="L20">		double target=100;</span>
+		
+<span class="nc" id="L22">		double actual=0;</span>
+<span class="nc" id="L23">		double output=0;</span>
+		
+<span class="nc" id="L25">		miniPID.setSetpoint(0);</span>
+<span class="nc" id="L26">		miniPID.setSetpoint(target);</span>
+		
+<span class="nc" id="L28">		System.err.printf(&quot;Target | Actual | Output | Error\n&quot;);</span>
+		//System.err.printf(&quot;Output\tP\tI\tD\n&quot;);
+<span class="nc" id="L30">	  System.err.println(&quot;=======+========+========+========&quot;); </span>
+		// Position based test code
+<span class="nc bnc" id="L32" title="All 2 branches missed.">		for (int i = 0; i &lt; 100; i++){</span>
+			
+			//if(i==50)miniPID.setI(.05);
+			
+<span class="nc bnc" id="L36" title="All 2 branches missed.">			if (i == 60)</span>
+<span class="nc" id="L37">				target = 50;</span>
+				
+			//if(i==75)target=(100);
+			//if(i&gt;50 &amp;&amp; i%4==0)target=target+(Math.random()-.5)*50;
+			
+<span class="nc" id="L42">			output = miniPID.getOutput(actual, target);</span>
+<span class="nc" id="L43">			actual = actual + output;</span>
+			
+			//System.out.printf(&quot;Current: %3.2f , Actual: %3.2f, Error: %3.2f\n&quot;,actual, output, (target-actual));
+<span class="nc" id="L46">			String line=String.format(Locale.ENGLISH,&quot;%6.2f | %6.2f | %6.2f | %6.2f&quot;, target, actual, output, (target-actual));</span>
+<span class="nc" id="L47">			System.err.println(line);</span>
+			
+			//if(i&gt;80 &amp;&amp; i%5==0)actual+=(Math.random()-.5)*20;
+		}		
+<span class="nc" id="L51">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

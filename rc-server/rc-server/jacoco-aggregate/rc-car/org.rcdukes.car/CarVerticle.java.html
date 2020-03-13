@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CarVerticle.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-server</a> &gt; <a href="../index.html" class="el_bundle">rc-car</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.car</a> &gt; <span class="el_source">CarVerticle.java</span></div><h1>CarVerticle.java</h1><pre class="source lang-java linenums">package org.rcdukes.car;
+
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.Events;
+import org.rcdukes.common.ServoPosition;
+import org.rcdukes.drivecontrol.Car;
+
+import io.vertx.core.json.JsonObject;
+import io.vertx.rxjava.core.eventbus.Message;
+import rx.Subscription;
+
+/**
+ * Motor and steering output aka Bo
+ */
+public class CarVerticle extends DukesVerticle {
+
+  /**
+   * start the car verticle
+   */
+  public CarVerticle() {
+<span class="nc" id="L22">    super(Characters.BO);</span>
+<span class="nc" id="L23">  }</span>
+
+<span class="nc" id="L25">  private Car car = Car.getInstance(); // there is only one car for the time</span>
+                                       // being
+<span class="nc" id="L27">  private SpeedHandler speedHandler = new SpeedHandler(car);</span>
+<span class="nc" id="L28">  private SteeringHandler steeringHandler = new SteeringHandler(car);</span>
+
+  @Override
+  public void start() {
+<span class="nc" id="L32">    super.preStart();</span>
+<span class="nc" id="L33">    Subscription subscription = vertx.eventBus()</span>
+<span class="nc" id="L34">        .consumer(Characters.BO.getCallsign()).toObservable()</span>
+<span class="nc" id="L35">        .doOnNext(x -&gt; LOG.trace(&quot;Received instruction&quot;)).map(Message::body)</span>
+<span class="nc" id="L36">        .cast(JsonObject.class).subscribe(message -&gt; handleCarMessage(message));</span>
+<span class="nc" id="L37">    super.postStart();</span>
+<span class="nc" id="L38">  }</span>
+
+  private void handleCarMessage(JsonObject message) {
+<span class="nc" id="L41">    LOG.trace(&quot;Instruction: {}&quot;, message);</span>
+<span class="nc" id="L42">    String type = message.getString(&quot;type&quot;);</span>
+<span class="nc" id="L43">    ServoPosition newPosition = null;</span>
+<span class="nc bnc" id="L44" title="All 7 branches missed.">    switch (type) {</span>
+    case &quot;motor&quot;:
+<span class="nc" id="L46">      newPosition = speedHandler.handleMotor(message);</span>
+<span class="nc" id="L47">      newPosition.kind=&quot;motor&quot;;</span>
+<span class="nc" id="L48">      break;</span>
+    case &quot;servo&quot;:
+<span class="nc" id="L50">      newPosition = steeringHandler.handleServo(message);</span>
+<span class="nc" id="L51">      newPosition.kind=&quot;steering&quot;;</span>
+<span class="nc" id="L52">      break;</span>
+    case &quot;servoAngle&quot;:
+<span class="nc" id="L54">      newPosition=steeringHandler.handleServoAngle(message);</span>
+<span class="nc" id="L55">      newPosition.kind=&quot;steering&quot;;</span>
+<span class="nc" id="L56">      break;</span>
+    case &quot;servoDirect&quot;:
+<span class="nc" id="L58">      newPosition = steeringHandler.handleServoDirect(message);</span>
+<span class="nc" id="L59">      newPosition.kind=&quot;steering&quot;;</span>
+<span class="nc" id="L60">      break;</span>
+    case &quot;speedDirect&quot;:
+<span class="nc" id="L62">      newPosition = speedHandler.handleSpeedDirect(message);</span>
+<span class="nc" id="L63">      newPosition.kind=&quot;motor&quot;;</span>
+<span class="nc" id="L64">      break;</span>
+    case &quot;log&quot;:
+<span class="nc" id="L66">      String logMessage = message.getString(&quot;message&quot;);</span>
+<span class="nc" id="L67">      LOG.debug(&quot;Received log message: &quot; + logMessage);</span>
+<span class="nc" id="L68">      break;</span>
+    default:
+<span class="nc" id="L70">      LOG.error(&quot;Unknown message type {}&quot;, type);</span>
+    }
+<span class="nc bnc" id="L72" title="All 2 branches missed.">    if (newPosition!=null) {</span>
+<span class="nc" id="L73">      JsonObject posReply=JsonObject.mapFrom(newPosition);</span>
+<span class="nc" id="L74">      this.sendEvent(Characters.BOSS_HOGG, Events.CAR_POSITION, posReply);</span>
+    }
+
+<span class="nc" id="L77">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

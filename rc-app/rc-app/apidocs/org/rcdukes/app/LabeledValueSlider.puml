@@ -1,0 +1,23 @@
+@startuml
+
+    class LabeledValueSlider [[LabeledValueSlider.html]] {
+        {static} +debug: boolean
+        {static} #LOG: Logger
+        +getFormat(): String
+        +setFormat(String): void
+        +getBlockIncrement(): double
+        +setBlockIncrement(double): void
+        +getMax(): double
+        +setMax(double): void
+        +getMin(): double
+        +setMin(double): void
+        +getValue(): double
+        +setValue(double): void
+        +getText(): String
+        +setText(String): void
+        +getResource(String): URL
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

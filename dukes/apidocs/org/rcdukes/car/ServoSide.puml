@@ -1,0 +1,27 @@
+@startuml
+
+    class ServoSide [[ServoSide.html]] {
+        +ServoSide(String, double, ServoPosition, ServoPosition)
+        +getMin(): ServoPosition
+        +setMin(ServoPosition): void
+        +getMax(): ServoPosition
+        +setMax(ServoPosition): void
+        +getPolarity(): double
+        +setPolarity(double): void
+        +getName(): String
+        +setName(String): void
+        +clampValue(double): double
+        +clampServoPos(long): int
+        +interpolate(double): ServoPosition
+        +percentToFactor(double): double
+        +interpolateServoPos(double): int
+        +valueRange(): double
+        +interpolateValue(double): double
+        +interpolateValueFromPos(int): double
+        +isServoPosOnSide(int): boolean
+        +isValueOnSide(double): boolean
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

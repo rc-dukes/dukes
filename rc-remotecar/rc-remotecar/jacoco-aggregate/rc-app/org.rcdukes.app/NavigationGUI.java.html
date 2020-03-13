@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>NavigationGUI.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-remotecar</a> &gt; <a href="../index.html" class="el_bundle">rc-app</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.app</a> &gt; <span class="el_source">NavigationGUI.java</span></div><h1>NavigationGUI.java</h1><pre class="source lang-java linenums">package org.rcdukes.app;
+
+import org.rcdukes.action.Navigator;
+import org.rcdukes.action.StraightLaneNavigator;
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.Config;
+import org.rcdukes.common.Events;
+import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.VideoRecorders;
+import org.rcdukes.video.VideoRecorders.VideoInfo;
+
+import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
+import io.vertx.core.json.JsonObject;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+
+/**
+ * navigation GUI
+ * 
+ * @author wf
+ */
+<span class="nc" id="L25">public class NavigationGUI extends BaseGUI {</span>
+  @FXML
+  protected Button upButton;
+  @FXML
+  protected Button autoPilotButton;
+  @FXML
+  protected Button leftButton;
+  @FXML
+  protected Button rightButton;
+  @FXML
+  protected Button stopButton;
+  @FXML
+  protected Button downButton;
+  @FXML
+  protected Button manualButton;
+  @FXML
+  protected Button brakeButton;
+  @FXML
+  protected Button centerButton;
+  @FXML
+  protected Button powerButton;
+  @FXML
+  protected Button photoButton;
+  @FXML
+  protected Button recordButton;
+  @FXML
+  protected Button startCarButton;
+  @FXML
+  protected Button requestConfigButton;
+  @FXML
+  protected Button echoButton;
+  
+  protected VideoRecorders videoRecorders;
+
+  @FXML
+  public void initialize() {
+<span class="nc" id="L61">    setButtonIcon(upButton, MaterialDesignIcon.ARROW_UP_BOLD);</span>
+<span class="nc" id="L62">    setButtonIcon(autoPilotButton, MaterialDesignIcon.UPLOAD);</span>
+<span class="nc" id="L63">    setButtonIcon(leftButton, MaterialDesignIcon.ARROW_LEFT_BOLD);</span>
+<span class="nc" id="L64">    setButtonIcon(stopButton, MaterialDesignIcon.STOP);</span>
+<span class="nc" id="L65">    setButtonIcon(rightButton, MaterialDesignIcon.ARROW_RIGHT_BOLD);</span>
+<span class="nc" id="L66">    setButtonIcon(downButton, MaterialDesignIcon.ARROW_DOWN_BOLD);</span>
+<span class="nc" id="L67">    setButtonIcon(manualButton, MaterialDesignIcon.ACCOUNT);</span>
+<span class="nc" id="L68">    setButtonIcon(brakeButton, MaterialDesignIcon.CLOSE);</span>
+<span class="nc" id="L69">    setButtonIcon(centerButton, MaterialDesignIcon.IMAGE_FILTER_CENTER_FOCUS);</span>
+<span class="nc" id="L70">    setButtonIcon(powerButton, MaterialDesignIcon.POWER);</span>
+<span class="nc" id="L71">    setButtonIcon(photoButton, MaterialDesignIcon.CAMERA);</span>
+<span class="nc" id="L72">    setButtonIcon(recordButton, MaterialDesignIcon.RECORD);</span>
+<span class="nc" id="L73">    setButtonIcon(startCarButton, MaterialDesignIcon.CAR);</span>
+<span class="nc" id="L74">    setButtonIcon(requestConfigButton, MaterialDesignIcon.SETTINGS);</span>
+<span class="nc" id="L75">    setButtonIcon(echoButton, MaterialDesignIcon.BULLHORN);</span>
+<span class="nc" id="L76">    setControlState(power);</span>
+<span class="nc" id="L77">    recordButton.setDisable(true);</span>
+<span class="nc" id="L78">  }</span>
+
+  public void setControlState(boolean enable) {
+<span class="nc bnc" id="L81" title="All 2 branches missed.">    String color = enable ? &quot;blue&quot; : &quot;grey&quot;;</span>
+<span class="nc" id="L82">    Button[] buttons = { manualButton, autoPilotButton, leftButton, rightButton,</span>
+        upButton, downButton, centerButton, stopButton, brakeButton,
+        photoButton };
+<span class="nc bnc" id="L85" title="All 2 branches missed.">    for (Button button : buttons) {</span>
+<span class="nc" id="L86">      super.setButtonColor(button, color, buttonBgColor);</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">      button.setDisable(!enable);</span>
+    }
+<span class="nc" id="L89">  }</span>
+
+<span class="nc" id="L91">  boolean power = false;</span>
+  AppVerticle appVerticle;
+  private ImageCollector imageCollector;
+
+
+  /**
+   * handle navigation key events
+   * 
+   * @param evt
+   *          - the key event to handle
+   */
+  public void handleNavigationKey(KeyEvent evt) {
+<span class="nc" id="L103">    KeyCode code = evt.getCode();</span>
+<span class="nc bnc" id="L104" title="All 8 branches missed.">    switch (code) {</span>
+    case UP:
+<span class="nc" id="L106">      up();</span>
+<span class="nc" id="L107">      break;</span>
+    case DOWN:
+<span class="nc" id="L109">      down();</span>
+<span class="nc" id="L110">      break;</span>
+    case LEFT:
+<span class="nc" id="L112">      left();</span>
+<span class="nc" id="L113">      break;</span>
+    case RIGHT:
+<span class="nc" id="L115">      right();</span>
+<span class="nc" id="L116">      break;</span>
+    case SPACE:
+<span class="nc" id="L118">      stop();</span>
+<span class="nc" id="L119">      break;</span>
+    case PLUS:
+<span class="nc" id="L121">      autopilot();</span>
+<span class="nc" id="L122">      break;</span>
+    case MINUS:
+<span class="nc" id="L124">      manual();</span>
+<span class="nc" id="L125">      break;</span>
+    default:
+    }
+<span class="nc" id="L128">  }</span>
+  
+  @FXML
+  private void onPhoto(final ActionEvent event) {
+<span class="nc bnc" id="L132" title="All 2 branches missed.">    if (this.imageCollector!=null)</span>
+<span class="nc" id="L133">      imageCollector.writeImages();</span>
+<span class="nc" id="L134">  }</span>
+  
+  @FXML
+  private void onRecord(final ActionEvent event) {
+    // LaneDetectionResult.forceError=!LaneDetectionResult.forceError;
+    // super.setButtonActive(recordButton, LaneDetectionResult.forceError);
+<span class="nc bnc" id="L140" title="All 2 branches missed.">    if (this.videoRecorders!=null) {</span>
+      // remember frameIndex range - stop of videoRecorders will
+      // null these values
+<span class="nc" id="L143">      VideoInfo videoInfo = videoRecorders.toggle();</span>
+<span class="nc" id="L144">      super.setButtonActive(recordButton,videoRecorders.isStarted());</span>
+      
+<span class="nc bnc" id="L146" title="All 2 branches missed.">      if (!videoRecorders.isStarted()) {</span>
+<span class="nc" id="L147">        Navigator navigator = this.getAppVerticle().getNavigator();</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">        if (navigator!=null) {</span>
+<span class="nc" id="L149">          navigator.videoStopped(videoInfo);</span>
+        }
+        // @TODO implement for Web-GUI
+        // JsonObject videoInfoJo = JsonObject.mapFrom(videoInfo);
+        // getAppVerticle().sendEvent(Characters.LUKE,Events.VIDEO_STOPPED, videoInfoJo);
+      }
+    }
+<span class="nc" id="L156">  }</span>
+  
+  @FXML
+  private void onEcho(final ActionEvent event) {
+<span class="nc" id="L160">    appVerticle = getAppVerticle();</span>
+<span class="nc" id="L161">    JsonObject jo=new JsonObject();</span>
+<span class="nc" id="L162">    jo.put(&quot;type&quot;, &quot;message&quot;);</span>
+<span class="nc" id="L163">    jo.put(&quot;text&quot;, &quot;Hello &quot;+Characters.GENERAL_LEE.description());</span>
+<span class="nc" id="L164">    appVerticle.sendEvent(Characters.GENERAL_LEE, Events.ECHO,jo);</span>
+<span class="nc" id="L165">  }</span>
+ 
+  @FXML
+  private void onPower(final ActionEvent event) {
+<span class="nc bnc" id="L169" title="All 2 branches missed.">    power = !power;</span>
+<span class="nc" id="L170">    super.setButtonActive(powerButton, power);</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">    if (power) {</span>
+<span class="nc" id="L172">      appVerticle = getAppVerticle();</span>
+<span class="nc" id="L173">      super.setButtonActive(requestConfigButton, false);</span>
+<span class="nc" id="L174">      super.setButtonActive(startCarButton, false);</span>
+    } else {
+<span class="nc" id="L176">      setControlState(false);</span>
+    }
+<span class="nc" id="L178">    appVerticle.heartBeat(power);</span>
+<span class="nc" id="L179">  }</span>
+
+  @FXML
+  private void onManual(final ActionEvent event) {
+<span class="nc" id="L183">    manual();</span>
+<span class="nc" id="L184">  }</span>
+
+  private void manual() {
+<span class="nc bnc" id="L187" title="All 2 branches missed.">    if (!manualButton.isDisabled()) {</span>
+<span class="nc" id="L188">      super.setButtonActive(autoPilotButton, false);</span>
+<span class="nc" id="L189">      super.setButtonActive(manualButton, true);</span>
+    }
+<span class="nc" id="L191">  }</span>
+  
+  @FXML void onAutoPilot(final ActionEvent event) {
+<span class="nc" id="L194">    autopilot();</span>
+<span class="nc" id="L195">  }</span>
+  
+  private void autopilot() {
+<span class="nc bnc" id="L198" title="All 2 branches missed.">    if (!autoPilotButton.isDisabled()) {</span>
+<span class="nc" id="L199">      Navigator navigator = this.getAppVerticle().getNavigator();</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">      if (navigator==null) {</span>
+<span class="nc" id="L201">        this.getAppVerticle().enableNavigator();</span>
+<span class="nc" id="L202">        super.setButtonActive(autoPilotButton, true);</span>
+<span class="nc" id="L203">        super.setButtonActive(manualButton, false);</span>
+      } else {
+<span class="nc" id="L205">        this.getAppVerticle().stopNavigator();</span>
+<span class="nc" id="L206">        super.setButtonActive(autoPilotButton, false);</span>
+<span class="nc" id="L207">        super.setButtonActive(manualButton, true);     </span>
+      }
+     }
+<span class="nc" id="L210">  }</span>
+
+  @FXML
+  private void onUp(final ActionEvent event) {
+<span class="nc" id="L214">    up();</span>
+<span class="nc" id="L215">  }</span>
+
+  private void up() {
+<span class="nc bnc" id="L218" title="All 2 branches missed.">    if (!upButton.isDisabled())</span>
+<span class="nc" id="L219">      sendSpeedCommand(&quot;up&quot;);</span>
+<span class="nc" id="L220">  }</span>
+
+  @FXML
+  private void onDown(final ActionEvent event) {
+<span class="nc" id="L224">    down();</span>
+<span class="nc" id="L225">  }</span>
+
+  private void down() {
+<span class="nc bnc" id="L228" title="All 2 branches missed.">    if (!downButton.isDisabled())</span>
+<span class="nc" id="L229">      sendSpeedCommand(&quot;down&quot;);</span>
+<span class="nc" id="L230">  }</span>
+
+  @FXML
+  private void onLeft(final ActionEvent event) {
+<span class="nc" id="L234">    left();</span>
+<span class="nc" id="L235">  }</span>
+
+  private void left() {
+<span class="nc bnc" id="L238" title="All 2 branches missed.">    if (!leftButton.isDisabled())</span>
+<span class="nc" id="L239">      sendWheelCommand(&quot;left&quot;);</span>
+<span class="nc" id="L240">  }</span>
+
+  @FXML
+  private void onRight(final ActionEvent event) {
+<span class="nc" id="L244">    right();</span>
+<span class="nc" id="L245">  }</span>
+
+  private void right() {
+<span class="nc bnc" id="L248" title="All 2 branches missed.">    if (!rightButton.isDisabled())</span>
+<span class="nc" id="L249">      sendWheelCommand(&quot;right&quot;);</span>
+<span class="nc" id="L250">  }</span>
+
+  @FXML
+  private void onStop(final ActionEvent event) {
+<span class="nc" id="L254">    stop();</span>
+<span class="nc" id="L255">  }</span>
+
+  private void stop() {
+<span class="nc bnc" id="L258" title="All 2 branches missed.">    if (!stopButton.isDisabled()) {</span>
+<span class="nc" id="L259">      sendSpeedCommand(&quot;stop&quot;);</span>
+<span class="nc" id="L260">      sendWheelCommand(&quot;center&quot;);</span>
+    }
+<span class="nc" id="L262">  }</span>
+
+  @FXML
+  private void onBrake(final ActionEvent event) {
+<span class="nc" id="L266">    sendSpeedCommand(&quot;brake&quot;);</span>
+<span class="nc" id="L267">  }</span>
+
+  @FXML
+  private void onCenter(final ActionEvent event) {
+<span class="nc" id="L271">    sendWheelCommand(&quot;center&quot;);</span>
+<span class="nc" id="L272">  }</span>
+
+  @FXML
+  private void onStartCar(final ActionEvent event) throws Exception {
+    // @TODO - receive config from BOARS_NEST?
+<span class="nc" id="L277">    JsonObject configJo = Config.getEnvironment().asJsonObject();</span>
+<span class="nc" id="L278">    getAppVerticle().sendEvent(Characters.GENERAL_LEE,</span>
+        Events.START_CAR, configJo);
+<span class="nc" id="L280">    super.setButtonActive(startCarButton, true);</span>
+<span class="nc" id="L281">    setControlState(true);</span>
+<span class="nc" id="L282">  }</span>
+
+  @FXML
+  private void onRequestConfig(final ActionEvent event) {
+<span class="nc" id="L286">    getAppVerticle().sendEvent(Characters.BOARS_NEST,</span>
+        Events.REQUEST_CONFIG, null);
+<span class="nc" id="L288">    super.setButtonActive(requestConfigButton, true);</span>
+<span class="nc" id="L289">  }</span>
+
+  /**
+   * send the given speed command
+   * 
+   * @param speed
+   */
+  private void sendSpeedCommand(String speed) {
+<span class="nc" id="L297">    getAppVerticle().sendSpeedCommand(speed);</span>
+<span class="nc" id="L298">  }</span>
+
+  /**
+   * send the given wheel command
+   * 
+   * @param position
+   */
+  private void sendWheelCommand(String position) {
+<span class="nc" id="L306">    getAppVerticle().sendWheelCommand(position);</span>
+<span class="nc" id="L307">  }</span>
+
+  public void setImageCollector(ImageCollector imageCollector) {
+<span class="nc" id="L310">    this.imageCollector=imageCollector;</span>
+<span class="nc" id="L311">  }</span>
+
+  public void setVideoRecorders(VideoRecorders videoRecorders) {
+<span class="nc" id="L314">   this.videoRecorders=videoRecorders;</span>
+<span class="nc" id="L315">   this.recordButton.setDisable(false);</span>
+<span class="nc" id="L316">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

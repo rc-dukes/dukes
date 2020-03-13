@@ -1,0 +1,16 @@
+@startuml
+
+    class DukesFxApp [[DukesFxApp.html]] {
+        #debug: boolean
+        #autostart: boolean
+        #imageWidth: int
+        #simulator: boolean
+        +getResource(String): URL
+        +start(Stage): void
+        +parseArguments(): void
+        {static} +main(String[]): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

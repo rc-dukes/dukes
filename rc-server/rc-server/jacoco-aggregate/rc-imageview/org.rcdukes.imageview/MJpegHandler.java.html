@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>MJpegHandler.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-server</a> &gt; <a href="../index.html" class="el_bundle">rc-imageview</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.imageview</a> &gt; <span class="el_source">MJpegHandler.java</span></div><h1>MJpegHandler.java</h1><pre class="source lang-java linenums">package org.rcdukes.imageview;
+
+import static org.asynchttpclient.Dsl.asyncHttpClient;
+
+import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.util.concurrent.Future;
+
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.Response;
+import org.asynchttpclient.handler.BodyDeferringAsyncHandler;
+import org.asynchttpclient.handler.BodyDeferringAsyncHandler.BodyDeferringInputStream;
+
+/**
+ * handler for MJPeg Streams
+ * @author wf
+ *
+ */
+public class MJpegHandler {
+
+  AsyncHttpClient asyncHttpClient;
+  private PipedInputStream pipedInputStream;
+  private PipedOutputStream pipedOutputStream;
+  private BodyDeferringAsyncHandler outputHandler;
+  BodyDeferringInputStream inputStream;
+  
+  public BodyDeferringInputStream getInputStream() {
+<span class="nc" id="L29">    return inputStream;</span>
+  }
+
+  /**
+   * get an mjpeg stream from the given url
+   * 
+   * @param url
+   * @return - the MJPeg Stream
+   * @throws Exception
+   */
+<span class="nc" id="L39">  public MJpegHandler(String url) throws Exception {</span>
+    // https://stackoverflow.com/a/50402629/1497139
+<span class="nc" id="L41">    asyncHttpClient = asyncHttpClient();</span>
+<span class="nc" id="L42">    asyncHttpClient.prepareGet(url);</span>
+<span class="nc" id="L43">    pipedInputStream = new PipedInputStream();</span>
+<span class="nc" id="L44">    pipedOutputStream = new PipedOutputStream(</span>
+        pipedInputStream);
+<span class="nc" id="L46">    outputHandler = new BodyDeferringAsyncHandler(</span>
+        pipedOutputStream);
+<span class="nc" id="L48">    Future&lt;Response&gt; futureResponse = asyncHttpClient.prepareGet(url)</span>
+<span class="nc" id="L49">        .execute(outputHandler);</span>
+<span class="nc" id="L50">    Response response = outputHandler.getResponse();</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">    if (response.getStatusCode() == 200) {</span>
+<span class="nc" id="L52">      inputStream=new BodyDeferringAsyncHandler.BodyDeferringInputStream(</span>
+          futureResponse, outputHandler, pipedInputStream);
+    } 
+<span class="nc" id="L55">  }</span>
+
+<span class="nc" id="L57">  public MJpegHandler() {</span>
+<span class="nc" id="L58">  }</span>
+
+  /**
+   * open me with the given bufferSize
+   * 
+   * @param url
+   * @return
+   * @throws Exception
+   */
+  public MJpegDecoder open(int bufferSize) throws Exception {
+<span class="nc" id="L68">    MJpegDecoder mjpegDecoder = new MJpegDecoder(this);</span>
+<span class="nc" id="L69">    mjpegDecoder.open(bufferSize);</span>
+<span class="nc" id="L70">    return mjpegDecoder;</span>
+  }
+  
+  /**
+   * close this handler
+   * @throws IOException
+   */
+  public void close() throws IOException {
+<span class="nc" id="L78">     this.asyncHttpClient.close();</span>
+<span class="nc" id="L79">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>WindingNumbers.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-camera-matrix</a> &gt; <a href="../index.html" class="el_bundle">rc-geometry</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.geometry.pointinplane</a> &gt; <span class="el_source">WindingNumbers.java</span></div><h1>WindingNumbers.java</h1><pre class="source lang-java linenums">package org.rcdukes.geometry.pointinplane;
+
+import java.util.ArrayList;
+
+import org.rcdukes.geometry.Line;
+import org.rcdukes.geometry.Point2D;
+import org.rcdukes.geometry.Polygon;
+
+/**
+ * Created by jpoint on 16/08/16.
+ */
+<span class="nc" id="L12">public class WindingNumbers implements PointInPlane {</span>
+
+    @Override
+    public boolean isPointInPlane(Point2D point, Polygon polygon) {
+<span class="nc" id="L16">        ArrayList&lt;Point2D&gt; copy = new ArrayList(polygon.getPoints());</span>
+<span class="nc" id="L17">        copy.add(copy.get(0));</span>
+<span class="nc bnc" id="L18" title="All 2 branches missed.">        return windingNumber(point, copy.toArray(new Point2D[]{})) != 0;</span>
+    }
+
+    // Copyright 2000 softSurfer, 2012 Dan Sunday
+    // This code may be freely used and modified for any purpose
+    // providing that this copyright notice is included with it.
+    // SoftSurfer makes no warranty for this code, and cannot be held
+    // liable for any real or imagined damage resulting from its use.
+    // Users of this code must verify correctness for their application.
+
+    /**
+     * isLeft(): tests if a point is Left|On|Right of an infinite line.
+     *    Input:  three points P0, P1, and P2
+     *    Return: &gt;0 for P2 left of the line through P0 and P1
+     *            =0 for P2  on the line
+     *            &lt;0 for P2  right of the line
+     *    See: Algorithm 1 &quot;Area of Triangles and Polygons&quot;
+     */
+    int howLeft( Point2D P0, Point2D P1, Point2D P2 ) {
+<span class="nc" id="L37">        return (int)((P1.getX() - P0.getX()) * (P2.getY() - P0.getY())</span>
+<span class="nc" id="L38">                - (P2.getX() -  P0.getX()) * (P1.getY() - P0.getY()) );</span>
+    }
+
+    boolean isLeft( Point2D P0, Point2D P1, Point2D P2 ) {
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        return howLeft(P0, P1, P2) &gt; 0;</span>
+    }
+
+    boolean isRight( Point2D P0, Point2D P1, Point2D P2 ) {
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        return howLeft(P0, P1, P2) &lt; 0;</span>
+    }
+    //===================================================================
+
+    //===================================================================
+
+
+    /**
+     * windingNumber(): winding number test for a point in a polygon
+     *      Input:   point = a point,
+     *               vertex[] = vertex points of a polygon vertex[n+1] with vertex[n]=vertex[0]
+     *      Return:  wn = the winding number (=0 only when point is outside)
+     */
+    int windingNumber(Point2D point, Point2D[] vertex)
+    {
+<span class="nc" id="L61">        int    wn = 0;    // the  winding number counter</span>
+
+        // loop through all edges of the polygon
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        for (int i=0; i&lt;vertex.length-1; i++) {   // edge from vertex[i] to  vertex[i+1]</span>
+<span class="nc" id="L65">            Point2D currentVertexPoint = vertex[i];</span>
+<span class="nc" id="L66">            Point2D nextVertexPoint = vertex[i + 1];</span>
+<span class="nc" id="L67">            Line line = new Line(currentVertexPoint, nextVertexPoint);</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">            if (isAboveOrEqual(point, currentVertexPoint)) {          // start y &lt;= point.getY()</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">                if (isBelow(point, nextVertexPoint))      // an upward crossing</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">                    if (line.isLeftOfLine(point))  // point left of  edge</span>
+<span class="nc" id="L71">                        ++wn;            // have  a valid up intersect</span>
+            } else {                        // start y &gt; point.getY() (no test needed)
+<span class="nc bnc" id="L73" title="All 2 branches missed.">                if (isAboveOrEqual(point, nextVertexPoint))     // a downward crossing</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">                    if (line.isRightOfLine(point))  // point right of  edge</span>
+<span class="nc" id="L75">                        --wn;            // have  a valid down intersect</span>
+            }
+        }
+<span class="nc" id="L78">        return wn;</span>
+    }
+
+    private boolean isBelow(Point2D point, Point2D nextVertexPoint) {
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        return nextVertexPoint.getY()  &gt; point.getY();</span>
+    }
+
+    private boolean isAboveOrEqual(Point2D point, Point2D reference) {
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        return reference.getY() &lt;= point.getY();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,22 @@
+@startuml
+
+    class DebugImageServer [[DebugImageServer.html]] {
+        {static} +SERVE_TEST_IMAGES: boolean
+        {static} +imageFormat: DebugImageServer.ImageFormat
+        {static} +exts: String[]
+        {static} +contentTypes: String[]
+        {static} +fps: double
+        #server: HttpServer
+        +start(Future<Void>): void
+        #receiveSimulatorImage(Message<String>): void
+        +getNextImage(ImageCollector.ImageType): Image
+        #shootPhoto(): void
+        +sendImage(HttpServerRequest): void
+        +sendSingleImage(HttpServerRequest, ImageCollector.ImageType): void
+        +sendImageBytes(HttpServerRequest, byte[]): void
+        +recordFrame(Mat, ImageCollector.ImageType): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

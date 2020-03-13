@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>VideoRecorders.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-remotecar</a> &gt; <a href="../index.html" class="el_bundle">rc-detect</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.video</a> &gt; <span class="el_source">VideoRecorders.java</span></div><h1>VideoRecorders.java</h1><pre class="source lang-java linenums">package org.rcdukes.video;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.commons.io.FilenameUtils;
+import org.opencv.core.Mat;
+import org.rcdukes.video.ImageCollector.ImageType;
+
+/**
+ * a set of VideoRecorders which can be started and stopped in Parallel
+ * 
+ * @author wf
+ *
+ */
+public class VideoRecorders {
+<span class="nc" id="L20">  Map&lt;ImageType, VideoRecorder&gt; recorders = new HashMap&lt;ImageType, VideoRecorder&gt;();</span>
+  private VideoInfo info;
+
+  /**
+   * construct me for the given number of frames per second
+   * 
+   * @param fps
+   */
+<span class="nc" id="L28">  public VideoRecorders(double fps) {</span>
+<span class="nc" id="L29">    info = new VideoInfo(fps);</span>
+<span class="nc" id="L30">    info.fps = fps;</span>
+<span class="nc" id="L31">  }</span>
+
+  public boolean isStarted() {
+<span class="nc bnc" id="L34" title="All 2 branches missed.">    return recorders.size() &gt; 0;</span>
+  }
+
+  /**
+   * toggle the videoInfo state
+   * 
+   * @return
+   */
+  public VideoInfo toggle() {
+<span class="nc bnc" id="L43" title="All 2 branches missed.">    if (isStarted())</span>
+<span class="nc" id="L44">      return stop();</span>
+    else
+<span class="nc" id="L46">      return start();</span>
+  }
+
+  /**
+   * start Recording
+   */
+  public VideoInfo start() {
+<span class="nc bnc" id="L53" title="All 2 branches missed.">    for (ImageType imageType : ImageType.values()) {</span>
+<span class="nc" id="L54">      VideoRecorder recorder = new VideoRecorder(imageType.name(), info.fps);</span>
+<span class="nc" id="L55">      recorders.put(imageType, recorder);</span>
+    }
+<span class="nc" id="L57">    return info;</span>
+  }
+
+  /**
+   * record the given frame if the videorecorder for it's imageType is active
+   * 
+   * @param frame
+   * @param imageType
+   */
+  public void recordFrame(Mat frame, ImageType imageType) {
+<span class="nc bnc" id="L67" title="All 4 branches missed.">    if (recorders.containsKey(imageType) &amp;&amp; frame != null) {</span>
+<span class="nc" id="L68">      VideoRecorder recorder = recorders.get(imageType);</span>
+<span class="nc" id="L69">      recorder.recordMat(frame);</span>
+    }
+<span class="nc" id="L71">  }</span>
+
+  /**
+   * record a frame for the given image collector
+   * 
+   * @param collector
+   */
+  public void recordFrame(ImageCollector collector, boolean doAddInfo) {
+<span class="nc" id="L79">    String imageInfo = String.format(&quot;%d&quot;, info.frameIndex);</span>
+<span class="nc" id="L80">    collector.addImageInfo(imageInfo);</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">    for (ImageType imageType : ImageType.values()) {</span>
+<span class="nc" id="L82">      boolean failSafe = false;</span>
+<span class="nc" id="L83">      Image image = collector.getImage(imageType, failSafe);</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">      if (image != null) {</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        if (imageType == ImageType.camera)</span>
+<span class="nc" id="L86">          info.setFrameIndex(null);</span>
+<span class="nc" id="L87">        this.recordFrame(image.getFrame(), imageType);</span>
+      }
+    }
+<span class="nc" id="L90">  }</span>
+
+  /**
+   * Video Information to be used for storing Meta-Information
+   * 
+   * @author wf
+   *
+   */
+  public static class VideoInfo {
+    public double fps;
+    public int frameIndex;
+<span class="nc" id="L101">    public Integer minFrameIndex = null;</span>
+<span class="nc" id="L102">    public Integer maxFrameIndex = null;</span>
+    public String path;
+
+<span class="nc" id="L105">    public VideoInfo() {</span>
+<span class="nc" id="L106">    };</span>
+
+    /**
+     * construct me with given path and frames per second
+     * 
+     * @param path
+     * @param fps
+     */
+<span class="nc" id="L114">    public VideoInfo(double fps) {</span>
+<span class="nc" id="L115">      this.fps = fps;</span>
+<span class="nc" id="L116">      this.frameIndex = 0;</span>
+<span class="nc" id="L117">    }</span>
+
+    /**
+     * copy constructor to reset frameIndex
+     * 
+     * @param info
+     */
+    public VideoInfo(VideoInfo info) {
+<span class="nc" id="L125">      this(info.fps);</span>
+<span class="nc" id="L126">    }</span>
+
+    /**
+     * set the frameIndex
+     * 
+     * @param frameIndex
+     */
+    public void setFrameIndex(Integer newFrameIndex) {
+<span class="nc bnc" id="L134" title="All 2 branches missed.">      if (newFrameIndex != null)</span>
+<span class="nc" id="L135">        frameIndex = newFrameIndex;</span>
+      else
+<span class="nc" id="L137">        frameIndex++;</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">      if (minFrameIndex == null)</span>
+<span class="nc" id="L139">        minFrameIndex = frameIndex;</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">      if (maxFrameIndex == null)</span>
+<span class="nc" id="L141">        maxFrameIndex = frameIndex;</span>
+<span class="nc" id="L142">      minFrameIndex = Math.min(minFrameIndex, frameIndex);</span>
+<span class="nc" id="L143">      maxFrameIndex = Math.max(maxFrameIndex, frameIndex);</span>
+<span class="nc" id="L144">    }</span>
+
+    /**
+     * set the path
+     * 
+     * @param path
+     * @param ext
+     */
+    public void setPath(String pPath) {
+<span class="nc bnc" id="L153" title="All 4 branches missed.">      if (this.path == null &amp;&amp; pPath != null) {</span>
+<span class="nc" id="L154">        this.path = getNavigationFile(new File(pPath)).getPath();</span>
+      }
+<span class="nc" id="L156">    }</span>
+
+    /**
+     * get the navigation File for the given file
+     * 
+     * @param file
+     * @return - the navigationFile
+     */
+    public static File getNavigationFile(File file) {
+<span class="nc" id="L165">      String graphFilePath = FilenameUtils.getBaseName(file.getPath())</span>
+          + &quot;.json&quot;;
+<span class="nc" id="L167">      graphFilePath = graphFilePath.replaceAll(&quot;.*_mp4v_&quot;, &quot;navigation_&quot;);</span>
+<span class="nc" id="L168">      File graphFile = new File(file.getParent(), graphFilePath);</span>
+<span class="nc" id="L169">      return graphFile;</span>
+    }
+  }
+
+  /**
+   * stop Recording
+   */
+  public VideoInfo stop() {
+<span class="nc" id="L177">    Iterator&lt;Entry&lt;ImageType, VideoRecorder&gt;&gt; it = recorders.entrySet()</span>
+<span class="nc" id="L178">        .iterator();</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">    while (it.hasNext()) {</span>
+<span class="nc" id="L180">      Entry&lt;ImageType, VideoRecorder&gt; entry = it.next();</span>
+<span class="nc" id="L181">      VideoRecorder recorder = entry.getValue();</span>
+<span class="nc" id="L182">      info.setPath(recorder.getPath());</span>
+<span class="nc" id="L183">      recorder.stop();</span>
+<span class="nc" id="L184">      it.remove();</span>
+<span class="nc" id="L185">    }</span>
+<span class="nc" id="L186">    VideoInfo result = info;</span>
+<span class="nc" id="L187">    this.info = new VideoInfo(info);</span>
+<span class="nc" id="L188">    return result;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,8 +1,3 @@
-nl.vaneijndhoven.objects
-nl.vaneijndhoven.objects.lane
-nl.vaneijndhoven.objects.stoppingzone
-nl.vaneijndhoven.opencv.startlightdetection
-nl.vaneijndhoven.opencv.stopzonedetection
 org.rcdukes.action
 org.rcdukes.app
 org.rcdukes.camera
@@ -12,12 +7,17 @@ org.rcdukes.detect
 org.rcdukes.detect.edgedectection
 org.rcdukes.detect.lanedetection
 org.rcdukes.detect.linedetection
+org.rcdukes.detect.startlightdetection
+org.rcdukes.detect.stopzonedetection
 org.rcdukes.detectors
 org.rcdukes.drivecontrol
 org.rcdukes.error
 org.rcdukes.geometry
 org.rcdukes.geometry.pointinplane
 org.rcdukes.imageview
+org.rcdukes.objects
+org.rcdukes.objects.lane
+org.rcdukes.objects.stoppingzone
 org.rcdukes.opencv
 org.rcdukes.remotecar
 org.rcdukes.roi

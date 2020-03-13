@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>EngineMap xref</title>
+<link type="text/css" rel="stylesheet" href="../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../apidocs/org/rcdukes/drivecontrol/EngineMap.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> org.rcdukes.drivecontrol;
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <strong class="jxr_keyword">import</strong> org.rcdukes.car.ServoCommand;
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <strong class="jxr_keyword">import</strong> org.rcdukes.car.ServoRange;
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <strong class="jxr_keyword">import</strong> org.rcdukes.car.ServoSide;
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">import</strong> org.rcdukes.error.ErrorHandler;
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> org.rcdukes.common.Config;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> org.rcdukes.common.Environment;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> org.rcdukes.common.ServoPosition;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> * engine parameters which are vehicle dependent</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../org/rcdukes/drivecontrol/EngineMap.html">EngineMap</a> <strong class="jxr_keyword">extends</strong> <a href="../../../org/rcdukes/car/ServoRangeMap.html">ServoRangeMap</a> {
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment">   * configure me from the given ServoCommand</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment">   * @param servoCommand</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>    <strong class="jxr_keyword">public</strong> <a href="../../../org/rcdukes/drivecontrol/EngineMap.html">EngineMap</a>(<a href="../../../org/rcdukes/car/ServoCommand.html">ServoCommand</a> servoCommand) {
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>      <a href="../../../org/rcdukes/common/Environment.html">Environment</a> env = Config.getEnvironment();
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>      <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>        <strong class="jxr_keyword">int</strong> ENGINE_GPIO = env.getInteger(Config.ENGINE_GPIO);
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>        <strong class="jxr_keyword">int</strong> SPEED_STEP_SIZE = env.getInteger(Config.ENGINE_STEP_SIZE);
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>        String ENGINE_ORIENTATION = env.getString(Config.ENGINE_ORIENTATION);
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>        <strong class="jxr_keyword">super</strong>.configure(ENGINE_GPIO, servoCommand,ENGINE_ORIENTATION);
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>        <a href="../../../org/rcdukes/common/ServoPosition.html">ServoPosition</a> minforward = <strong class="jxr_keyword">new</strong> <a href="../../../org/rcdukes/common/ServoPosition.html">ServoPosition</a>(Config.ENGINE_MIN_SPEED_FORWARD,Config.ENGINE_MIN_VELOCITY_FORWARD);
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>        <a href="../../../org/rcdukes/common/ServoPosition.html">ServoPosition</a> maxforward = <strong class="jxr_keyword">new</strong> <a href="../../../org/rcdukes/common/ServoPosition.html">ServoPosition</a>(Config.ENGINE_MAX_SPEED_FORWARD,Config.ENGINE_MAX_VELOCITY_FORWARD);
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>        <a href="../../../org/rcdukes/common/ServoPosition.html">ServoPosition</a> minreverse = <strong class="jxr_keyword">new</strong> <a href="../../../org/rcdukes/common/ServoPosition.html">ServoPosition</a>(Config.ENGINE_MIN_SPEED_REVERSE,Config.ENGINE_MIN_VELOCITY_REVERSE);
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>        <a href="../../../org/rcdukes/common/ServoPosition.html">ServoPosition</a> maxreverse = <strong class="jxr_keyword">new</strong> <a href="../../../org/rcdukes/common/ServoPosition.html">ServoPosition</a>(Config.ENGINE_MAX_SPEED_REVERSE,Config.ENGINE_MAX_VELOCITY_REVERSE);
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>        <a href="../../../org/rcdukes/car/ServoSide.html">ServoSide</a> sideN=<strong class="jxr_keyword">new</strong> <a href="../../../org/rcdukes/car/ServoSide.html">ServoSide</a>(<span class="jxr_string">"reverse"</span>,-1,minreverse,maxreverse);  
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>        <a href="../../../org/rcdukes/car/ServoSide.html">ServoSide</a> sideP=<strong class="jxr_keyword">new</strong> <a href="../../../org/rcdukes/car/ServoSide.html">ServoSide</a>(<span class="jxr_string">"forward"</span>,1,minforward,maxforward);
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>        <a href="../../../org/rcdukes/common/ServoPosition.html">ServoPosition</a> neutral = <strong class="jxr_keyword">new</strong> <a href="../../../org/rcdukes/common/ServoPosition.html">ServoPosition</a>(Config.ENGINE_SPEED_ZERO,Config.ZERO);
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>        setRange(<strong class="jxr_keyword">new</strong> <a href="../../../org/rcdukes/car/ServoRange.html">ServoRange</a>(SPEED_STEP_SIZE, sideN, neutral, sideP));
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>        setName(<span class="jxr_string">"Engine"</span>);
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>        setUnit(<span class="jxr_string">" m/s"</span>);
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>        check();
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>        ErrorHandler.getInstance().handle(e,
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>            <span class="jxr_string">"you might want to check you settings"</span>);
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>      }
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>    }
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2020. All rights reserved.</div>
+</body>
+</html>

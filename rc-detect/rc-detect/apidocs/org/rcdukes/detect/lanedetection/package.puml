@@ -1,0 +1,42 @@
+@startuml
+
+    namespace org.rcdukes.detect.lanedetection {
+
+        class DefaultLaneDetector [[DefaultLaneDetector.html]] {
+            +detect(Collection<Line>, ViewPort): Lane
+        }
+
+        class LaneOrientation [[LaneOrientation.html]] {
+            +LaneOrientation(Lane, ViewPort)
+            +determineLines(): void
+            +getLines(): Line[]
+            +distanceFromLeftBoundary(): double
+            +distanceFromRightBoundary(): double
+            +determineDistanceToMiddle(): double
+            +determineCourseRelativeToHorizon(): Double
+            +determineLaneMiddle(): Optional<Line>
+            +determineBase(): Optional<Line>
+            +getMiddle(): Line
+            +setMiddle(Line): void
+            +getLeft(): Line
+            +setLeft(Line): void
+            +getRight(): Line
+            +setRight(Line): void
+        }
+
+        class ImageLaneDetection [[ImageLaneDetection.html]] {
+            {static} #LOG: Logger
+            +ImageLaneDetection(LaneDetector)
+            +detectLane(Image, ImageCollector): LaneDetectionResult
+        }
+
+        interface org.rcdukes.detectors.LaneDetector {
+            {abstract} +detect(Collection<Line>, ViewPort): Lane
+        }
+        org.rcdukes.detectors.LaneDetector <|.. DefaultLaneDetector
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

@@ -1,0 +1,9 @@
+@startuml
+
+    class TestApp [[TestApp.html]] {
+        +testGeometry(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

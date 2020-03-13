@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="296px" preserveAspectRatio="none" style="width:309px;height:296px;" version="1.1" viewBox="0 0 309 296" width="309px" zoomAndPan="magnify"><defs><filter height="300%" id="fqgnka5ojmst8" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--class ServoRangeMap--><a href="ServoRangeMap.html" target="_top" xlink:actuate="onRequest" xlink:show="new" xlink:title="ServoRangeMap.html" xlink:type="simple"><rect fill="#FEFECE" filter="url(#fqgnka5ojmst8)" height="255.2813" id="ServoRangeMap" style="stroke: #A80036; stroke-width: 1.5;" width="292" x="6" y="8"/><ellipse cx="101.75" cy="24" fill="#A9DCDF" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M101.8633,19.3481 L100.7095,24.4199 L103.0254,24.4199 Z M100.3691,17.1069 L103.3657,17.1069 L106.7109,29.5 L104.2622,29.5 L103.4985,26.437 L100.2197,26.437 L99.4727,29.5 L97.0239,29.5 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="92" x="122.25" y="28.5352">ServoRangeMap</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="7" x2="297" y1="40" y2="40"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="7" x2="297" y1="48" y2="48"/><ellipse cx="17" cy="59.9775" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="127" x="26" y="62.6348">getRange(): ServoRange</text><ellipse cx="17" cy="72.9326" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="149" x="26" y="75.5898">setRange(ServoRange): void</text><ellipse cx="17" cy="85.8877" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="85" x="26" y="88.5449">getUnit(): String</text><ellipse cx="17" cy="98.8428" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="107" x="26" y="101.5">setUnit(String): void</text><ellipse cx="17" cy="111.7979" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="93" x="26" y="114.4551">getName(): String</text><ellipse cx="17" cy="124.7529" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="115" x="26" y="127.4102">setName(String): void</text><ellipse cx="17" cy="137.708" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="174" x="26" y="140.3652">atPercent(double): ServoPosition</text><ellipse cx="17" cy="150.6631" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="163" x="26" y="153.3203">atValue(double): ServoPosition</text><ellipse cx="17" cy="163.6182" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="74" x="26" y="166.2754">step(int): void</text><ellipse cx="17" cy="176.5732" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="224" x="26" y="179.2305">newPosition(ServoPosition): ServoPosition</text><ellipse cx="17" cy="189.5283" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="78" x="26" y="192.1855">setZero(): void</text><ellipse cx="17" cy="202.4834" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="111" x="26" y="205.1406">positionInfo(): String</text><polygon fill="#FFFF44" points="17,210.4385,21,214.4385,17,218.4385,13,214.4385" style="stroke: #B38D22; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="266" x="26" y="218.0957">assertGreater(double, double, String, String): void</text><polygon fill="#FFFF44" points="17,223.3936,21,227.3936,17,231.3936,13,227.3936" style="stroke: #B38D22; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="142" x="26" y="231.0508">checkSide(ServoSide): void</text><polygon fill="#FFFF44" points="17,236.3486,21,240.3486,17,244.3486,13,240.3486" style="stroke: #B38D22; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="68" x="26" y="244.0059">check(): void</text><ellipse cx="17" cy="254.3037" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="150" x="26" y="256.9609">configureOrientation(): void</text></a><text fill="#888888" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="182" x="67" y="282.668">UMLDoclet 1.1.4, PlantUML 1.2019.05</text><!--
+@startuml
+
+    abstract class ServoRangeMap [[ServoRangeMap.html]] {
+        +getRange(): ServoRange
+        +setRange(ServoRange): void
+        +getUnit(): String
+        +setUnit(String): void
+        +getName(): String
+        +setName(String): void
+        +atPercent(double): ServoPosition
+        +atValue(double): ServoPosition
+        +step(int): void
+        +newPosition(ServoPosition): ServoPosition
+        +setZero(): void
+        +positionInfo(): String
+        #assertGreater(double, double, String, String): void
+        #checkSide(ServoSide): void
+        #check(): void
+        +configureOrientation(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml
+
+PlantUML version 1.2019.05(Sat Apr 20 18:45:36 CEST 2019)
+(APACHE source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Java Version: 1.8.0_152-b16
+Operating System: Mac OS X
+OS Version: 10.13.6
+Default Encoding: UTF-8
+Language: de
+Country: DE
+--></g></svg>

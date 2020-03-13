@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DefaultStartLightDetector.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-app</a> &gt; <a href="../index.html" class="el_bundle">rc-detect</a> &gt; <a href="index.source.html" class="el_package">nl.vaneijndhoven.opencv.startlightdetection</a> &gt; <span class="el_source">DefaultStartLightDetector.java</span></div><h1>DefaultStartLightDetector.java</h1><pre class="source lang-java linenums">package nl.vaneijndhoven.opencv.startlightdetection;
+
+import static java.util.Optional.of;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
+import org.rcdukes.detectors.StartLightDetector;
+import org.rcdukes.video.Image;
+import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.ImageCollector.ImageType;
+
+import nl.vaneijndhoven.objects.StartLight;
+
+public class DefaultStartLightDetector implements StartLightDetector {
+
+<span class="nc" id="L25">  private Config config = new Config();</span>
+
+<span class="nc" id="L27">  private StartLight startLight = StartLight.init();</span>
+
+
+  private Mat frame;
+<span class="nc" id="L31">  private Optional&lt;ImageCollector&gt; collector = Optional.empty();</span>
+
+<span class="nc" id="L33">  public DefaultStartLightDetector() {</span>
+<span class="nc" id="L34">  }</span>
+
+  public DefaultStartLightDetector(int hueStart, int hueStop,
+      int saturationStart, int saturationStop, int valueStart, int valueStop) {
+<span class="nc" id="L38">    this();</span>
+<span class="nc" id="L39">    config.setHueStart(hueStart);</span>
+<span class="nc" id="L40">    config.setHueStop(hueStop);</span>
+<span class="nc" id="L41">    config.setSaturationStart(saturationStart);</span>
+<span class="nc" id="L42">    config.setSaturationStop(saturationStop);</span>
+<span class="nc" id="L43">    config.setValueStart(valueStart);</span>
+<span class="nc" id="L44">    config.setValueStop(valueStop);</span>
+<span class="nc" id="L45">  }</span>
+
+  public DefaultStartLightDetector(Config config) {
+<span class="nc" id="L48">    this();</span>
+<span class="nc" id="L49">    this.config = config;</span>
+<span class="nc" id="L50">  }</span>
+
+  public StartLight detect(Image dukesImage) {
+<span class="nc" id="L53">    Mat image=dukesImage.getFrame();</span>
+    // init
+    // Mat blurredImage = new Mat();
+<span class="nc" id="L56">    Mat hsvImage = new Mat();</span>
+<span class="nc" id="L57">    Mat mask = new Mat();</span>
+<span class="nc" id="L58">    Mat morphOutput = new Mat();</span>
+    // 768 * 576
+    // int x, int y, int width, int height
+<span class="nc" id="L61">    Rect rect = new Rect(250, 60, 40, 50);</span>
+<span class="nc" id="L62">    frame = new Mat(image, rect);</span>
+    // frame = new RegionOfInterest(0.33, 0.10, 0.05, 0.05).region(image);
+
+    // convert the frame to HSV
+<span class="nc" id="L66">    Imgproc.cvtColor(frame, hsvImage, Imgproc.COLOR_BGR2HSV);</span>
+
+    // get thresholding values from the UI
+    // remember: H ranges 0-180, S and V range 0-255
+<span class="nc" id="L70">    Scalar minValues = new Scalar(config.getHueStart(),</span>
+<span class="nc" id="L71">        config.getSaturationStart(), config.getValueStart());</span>
+<span class="nc" id="L72">    Scalar maxValues = new Scalar(config.getHueStop(),</span>
+<span class="nc" id="L73">        config.getSaturationStop(), config.getValueStop());</span>
+
+    // show the current selected HSV range
+<span class="nc" id="L76">    String valuesToPrint = &quot;Hue range: &quot; + minValues.val[0] + &quot;-&quot;</span>
+        + maxValues.val[0] + &quot;\tSaturation range: &quot; + minValues.val[1] + &quot;-&quot;
+        + maxValues.val[1] + &quot;\tValue range: &quot; + minValues.val[2] + &quot;-&quot;
+        + maxValues.val[2];
+    // this.onFXThread(this.hsvValuesProp, valuesToPrint);
+
+    // threshold HSV image to select tennis balls
+<span class="nc" id="L83">    Core.inRange(hsvImage, minValues, maxValues, mask);</span>
+    // show the partial output
+<span class="nc" id="L85">    collector.ifPresent(coll -&gt; coll.addImage(mask, ImageType.mask));</span>
+
+    // morphological operators
+    // dilate with large element, erode with small ones
+<span class="nc" id="L89">    Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,</span>
+        new Size(24, 24));
+<span class="nc" id="L91">    Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,</span>
+        new Size(12, 12));
+
+<span class="nc" id="L94">    Imgproc.erode(mask, morphOutput, erodeElement);</span>
+<span class="nc" id="L95">    Imgproc.erode(mask, morphOutput, erodeElement);</span>
+
+<span class="nc" id="L97">    Imgproc.dilate(mask, morphOutput, dilateElement);</span>
+<span class="nc" id="L98">    Imgproc.dilate(mask, morphOutput, dilateElement);</span>
+
+    // show the partial output
+<span class="nc" id="L101">    collector.ifPresent(coll -&gt; coll.addImage(morphOutput, ImageType.morph));</span>
+
+    // find the tennis ball(s) contours and show them
+<span class="nc" id="L104">    return this.detect(morphOutput, frame);</span>
+  }
+
+  /**
+   * Given a binary image containing one or more closed surfaces, use it as a
+   * mask to find and highlight the objects contours
+   *
+   * @param maskedImage
+   *          the binary image to be used as a mask
+   * @param frame
+   *          the original {@link Mat} image to be used for drawing the objects
+   *          contours
+   * @return the {@link Mat} image with the objects contours framed
+   */
+  private StartLight detect(Mat maskedImage, Mat frame) {
+    // init
+<span class="nc" id="L120">    List&lt;MatOfPoint&gt; contours = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L121">    Mat hierarchy = new Mat();</span>
+
+    // find contours
+<span class="nc" id="L124">    Imgproc.findContours(maskedImage, contours, hierarchy, Imgproc.RETR_CCOMP,</span>
+        Imgproc.CHAIN_APPROX_SIMPLE);
+
+<span class="nc" id="L127">    StartLight startLight = this.startLight;</span>
+    // if any contour exist...
+<span class="nc bnc" id="L129" title="All 4 branches missed.">    if (hierarchy.size().height &gt; 0 &amp;&amp; hierarchy.size().width &gt; 0) {</span>
+      // for each contour, display it in blue
+<span class="nc bnc" id="L131" title="All 2 branches missed.">      for (int idx = 0; idx &gt;= 0; idx = (int) hierarchy.get(0, idx)[0]) {</span>
+
+        // Imgproc.drawMarker(frame, , new Scalar(250, 0, 0));
+        // Imgproc.drawContours(frame, contours, idx, new Scalar(0, 0, 255));
+<span class="nc" id="L135">        Imgproc.drawContours(frame, contours, idx, new Scalar(10, 250, 20), 10);</span>
+      }
+
+<span class="nc" id="L138">      startLight = startLight.on();</span>
+    } else {
+<span class="nc" id="L140">      startLight = startLight.off();</span>
+    }
+
+<span class="nc" id="L143">    collector.ifPresent(coll -&gt; coll.addImage(frame,ImageType.startlight));</span>
+<span class="nc" id="L144">    return startLight;</span>
+  }
+
+  public Mat getFrame() {
+<span class="nc" id="L148">    return frame;</span>
+  }
+
+  public DefaultStartLightDetector withImageCollector(
+      ImageCollector collector) {
+<span class="nc" id="L153">    this.collector = of(collector);</span>
+<span class="nc" id="L154">    return this;</span>
+  }
+
+<span class="nc" id="L157">  public static class Config {</span>
+    private double hueStart;
+    private double hueStop;
+    private double saturationStart;
+    private double saturationStop;
+    private double valueStart;
+    private double valueStop;
+
+    public double getHueStart() {
+<span class="nc" id="L166">      return hueStart;</span>
+    }
+
+    public void setHueStart(double hueStart) {
+<span class="nc" id="L170">      this.hueStart = hueStart;</span>
+<span class="nc" id="L171">    }</span>
+
+    public double getHueStop() {
+<span class="nc" id="L174">      return hueStop;</span>
+    }
+
+    public void setHueStop(double hueStop) {
+<span class="nc" id="L178">      this.hueStop = hueStop;</span>
+<span class="nc" id="L179">    }</span>
+
+    public double getSaturationStart() {
+<span class="nc" id="L182">      return saturationStart;</span>
+    }
+
+    public void setSaturationStart(double saturationStart) {
+<span class="nc" id="L186">      this.saturationStart = saturationStart;</span>
+<span class="nc" id="L187">    }</span>
+
+    public double getSaturationStop() {
+<span class="nc" id="L190">      return saturationStop;</span>
+    }
+
+    public void setSaturationStop(double saturationStop) {
+<span class="nc" id="L194">      this.saturationStop = saturationStop;</span>
+<span class="nc" id="L195">    }</span>
+
+    public double getValueStart() {
+<span class="nc" id="L198">      return valueStart;</span>
+    }
+
+    public void setValueStart(double valueStart) {
+<span class="nc" id="L202">      this.valueStart = valueStart;</span>
+<span class="nc" id="L203">    }</span>
+
+    public double getValueStop() {
+<span class="nc" id="L206">      return valueStop;</span>
+    }
+
+    public void setValueStop(double valueStop) {
+<span class="nc" id="L210">      this.valueStop = valueStop;</span>
+<span class="nc" id="L211">    }</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

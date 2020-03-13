@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DukesVerticle.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-app</a> &gt; <a href="../index.html" class="el_bundle">rc-common</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.common</a> &gt; <span class="el_source">DukesVerticle.java</span></div><h1>DukesVerticle.java</h1><pre class="source lang-java linenums">package org.rcdukes.common;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.vertx.core.Handler;
+import io.vertx.core.json.JsonObject;
+import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.rxjava.core.eventbus.Message;
+
+/**
+ * 
+ * @author wf unifies handling of AbstracVerticles in rc-dukes project uses the
+ *         rxjava version of AbstractVerticles
+ */
+public abstract class DukesVerticle extends AbstractVerticle {
+<span class="nc" id="L17">  protected static final Logger LOG = LoggerFactory</span>
+<span class="nc" id="L18">      .getLogger(DukesVerticle.class);</span>
+
+<span class="nc" id="L20">  public enum Status {</span>
+<span class="nc" id="L21">    created, started, stopped</span>
+  }
+
+<span class="nc" id="L24">  private Status status = Status.created;</span>
+
+  public Status getStatus() {
+<span class="nc" id="L27">    return status;</span>
+  }
+
+<span class="nc" id="L30">  public static boolean debug = false;</span>
+  protected Characters character;
+<span class="nc" id="L32">  protected String deploymentID = null;</span>
+  protected EventbusLogger eventbusLogger;
+
+  public EventbusLogger getEventbusLogger() {
+<span class="nc" id="L36">    return eventbusLogger;</span>
+  }
+
+  public void setEventbusLogger(EventbusLogger eventbusLogger) {
+<span class="nc" id="L40">    this.eventbusLogger = eventbusLogger;</span>
+<span class="nc" id="L41">  }</span>
+
+  /**
+   * construct me
+   * 
+   * @param character
+   */
+<span class="nc" id="L48">  public DukesVerticle(Characters character) {</span>
+<span class="nc" id="L49">    this.character = character;</span>
+<span class="nc" id="L50">  }</span>
+
+  public void logStatus(String op, String status) {
+<span class="nc" id="L53">    String msg = String.format(&quot;%s %s: %s&quot;, op, status,</span>
+<span class="nc" id="L54">        character.description());</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">    if (this.eventbusLogger!=null) {</span>
+<span class="nc" id="L56">      this.eventbusLogger.log(msg);</span>
+    }
+<span class="nc" id="L58">    LOG.info(msg);</span>
+<span class="nc" id="L59">  }</span>
+
+  /**
+   * actions to be done before starting the DukesVerticle e.g. logging a message
+   * with the intention to start
+   */
+  public void preStart() {
+<span class="nc" id="L66">    logStatus(&quot;Starting&quot;, &quot;&quot;);</span>
+<span class="nc" id="L67">  }</span>
+
+  public void preStop() {
+<span class="nc" id="L70">    logStatus(&quot;Stopping&quot;, &quot;&quot;);</span>
+<span class="nc" id="L71">  }</span>
+
+  /**
+   * actions to be done after starting the DukesVerticle e.g. logging a message
+   * with the info that the start was successful
+   */
+  public void postStart() {
+<span class="nc" id="L78">    this.status = Status.started;</span>
+<span class="nc" id="L79">    logStatus(&quot;Start&quot;, &quot;successful&quot;);</span>
+<span class="nc" id="L80">  }</span>
+
+  public void postStop() {
+<span class="nc" id="L83">    this.status = Status.stopped;</span>
+<span class="nc" id="L84">    logStatus(&quot;Stop&quot;, &quot;successful&quot;);</span>
+<span class="nc" id="L85">  }</span>
+
+  /**
+   * wait for me to be started
+   * 
+   * @param timeOut
+   *          - in msecs
+   * @param pollTime
+   *          - in msec
+   * @throws Exception
+   * @return the number of milliseconds the wait took
+   */
+  public int waitStatus(Status status, int timeOut, int pollTime)
+      throws Exception {
+<span class="nc" id="L99">    int leftTime = timeOut;</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">    while (!this.status.equals(status)) {</span>
+<span class="nc" id="L101">      Thread.sleep(pollTime);</span>
+<span class="nc" id="L102">      leftTime -= pollTime;</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">      if (leftTime &lt; 0) {</span>
+<span class="nc" id="L104">        String msg = String.format(&quot;wait %s timed out after %d msecs&quot;,</span>
+<span class="nc" id="L105">            status.name(), timeOut);</span>
+<span class="nc" id="L106">        throw new Exception(msg);</span>
+      }
+    }
+<span class="nc bnc" id="L109" title="All 2 branches missed.">    if (debug) {</span>
+<span class="nc" id="L110">      String msg = String.format(&quot;wait %s success after %d msecs&quot;,</span>
+<span class="nc" id="L111">          status.name(), timeOut - leftTime);</span>
+<span class="nc" id="L112">      LOG.info(msg);</span>
+    }
+<span class="nc" id="L114">    return timeOut - leftTime;</span>
+  }
+
+  /**
+   * convert the given list of name Value to a JsonObject
+   * 
+   * @param nameValues
+   *          - needs to be an even number of arguments otherwise an
+   *          IllegalArgumentException runtime exception is thrown
+   * @return - the JsonObject create from the nameValues by putting name,value
+   *         into the object in a pairwise fassion
+   */
+  public JsonObject toJsonObject(String... nameValues) {
+<span class="nc" id="L127">    JsonObject jo = new JsonObject();</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">    if (nameValues.length % 2 != 0) {</span>
+<span class="nc" id="L129">      String msg = String.format(&quot;got %d namevalue but expected even number&quot;,</span>
+<span class="nc" id="L130">          nameValues.length);</span>
+<span class="nc" id="L131">      throw new IllegalArgumentException(msg);</span>
+    }
+<span class="nc bnc" id="L133" title="All 2 branches missed.">    for (int i = 0; i &lt; nameValues.length; i += 2) {</span>
+<span class="nc" id="L134">      String name = nameValues[i];</span>
+<span class="nc" id="L135">      String value = nameValues[i + 1];</span>
+<span class="nc" id="L136">      jo.put(name, value);</span>
+    }
+<span class="nc" id="L138">    return jo;</span>
+  }
+
+  /**
+   * send a message to the given receiver via the event bus
+   * 
+   * @param receiver
+   *          the character to send a message to
+   * @param nameValues
+   *          - the content of the message as name-value pairs
+   */
+  public void send(Characters receiver, String... nameValues) {
+<span class="nc" id="L150">    JsonObject jo = this.toJsonObject(nameValues);</span>
+<span class="nc" id="L151">    this.send(receiver, jo);</span>
+<span class="nc" id="L152">  }</span>
+
+  /**
+   * send a message with the given JsonObject to the given receiver
+   * 
+   * @param receiver
+   * @param jo
+   */
+  public void send(Characters receiver, JsonObject jo) {
+<span class="nc" id="L161">    String address = receiver.getCallsign();</span>
+<span class="nc" id="L162">    send(address, jo);</span>
+<span class="nc" id="L163">  }</span>
+
+  /**
+   * send the given json object to the given address over the vertx event bus
+   * 
+   * @param address
+   *          - the address to send to
+   * @param jo
+   *          - the JsonObject to send
+   */
+  public void send(String address, JsonObject jo) {
+<span class="nc bnc" id="L174" title="All 2 branches missed.">    if (this.eventbusLogger!=null)</span>
+<span class="nc" id="L175">      this.eventbusLogger.logEvent(address,jo);</span>
+<span class="nc" id="L176">    getVertx().eventBus().publish(address, jo);</span>
+<span class="nc" id="L177">  }</span>
+
+  /**
+   * get the address for the given event and my Callsign
+   * @param targetCharacter 
+   * 
+   * @param event
+   *          - the event
+   * @return - the address to be used
+   */
+  public String getEventAddress(Characters targetCharacter, Events event) {
+    // rc-dukes convention - watch webcontrol javascript ...
+<span class="nc" id="L189">    String address = targetCharacter.getCallsign() + &quot;:&quot; + event.name();</span>
+<span class="nc" id="L190">    return address;</span>
+  }
+
+  /**
+   * send the given even with the given Json Object
+   * 
+   * @param character
+   * @param event
+   * @param jo
+   */
+  public void sendEvent(Characters character,Events event, JsonObject jo) {
+<span class="nc" id="L201">    String address = this.getEventAddress(character,event);</span>
+<span class="nc" id="L202">    send(address, jo);</span>
+<span class="nc" id="L203">  }</span>
+
+  /**
+   * enable a consumer to handle the given event
+   * 
+   * @param targetCharacter
+   * @param event
+   * @param handler
+   */
+  public &lt;T&gt; void consumer(Characters targetCharacter,Events event, Handler&lt;Message&lt;T&gt;&gt; handler) {
+<span class="nc" id="L213">    String address = this.getEventAddress(targetCharacter,event);</span>
+<span class="nc" id="L214">    this.consumer(address, handler);</span>
+<span class="nc" id="L215">  }</span>
+  
+  /**
+   * enable a consumer to handle the given event
+   * 
+   * @param event
+   * @param handler
+   */
+  public &lt;T&gt; void consumer(Events event, Handler&lt;Message&lt;T&gt;&gt; handler) {
+<span class="nc" id="L224">    this.consumer(this.character,event, handler);</span>
+<span class="nc" id="L225">  }</span>
+
+  /**
+   * enable a consumer to handle the given address
+   * 
+   * @param address
+   * @param handler
+   */
+  public &lt;T&gt; void consumer(String address, Handler&lt;Message&lt;T&gt;&gt; handler) {
+<span class="nc" id="L234">    vertx.eventBus().consumer(address, handler);</span>
+<span class="nc" id="L235">  }</span>
+
+  /**
+   * share the data for the given jsonobject under the given key - if the json
+   * 
+   * @param key
+   *          - the key for the JsonObject
+   * @param jo
+   *          the json object
+   */
+  public void shareData(String key, JsonObject jo) {
+<span class="nc bnc" id="L246" title="All 2 branches missed.">    if (jo == null)</span>
+<span class="nc" id="L247">      return;</span>
+<span class="nc" id="L248">    String msg = String.format(&quot;sharing %s: %s&quot;, key, jo.encodePrettily());</span>
+<span class="nc" id="L249">    LOG.info(msg);</span>
+<span class="nc" id="L250">    vertx.sharedData().getLocalMap(character.getCallsign()).put(key, jo);</span>
+<span class="nc" id="L251">  }</span>
+
+  /**
+   * get the shared data for the given key
+   * 
+   * @param key
+   * @return the corresponding json object
+   */
+  public JsonObject getSharedData(String key) {
+<span class="nc" id="L260">    JsonObject jo = (JsonObject) vertx.sharedData()</span>
+<span class="nc" id="L261">        .getLocalMap(character.getCallsign()).get(key);</span>
+<span class="nc" id="L262">    return jo;</span>
+  }
+
+  /**
+   * get a pojo from the shared data
+   * 
+   * @param key
+   * @param clazz
+   * @return - the pojo
+   */
+  public &lt;T&gt; T getSharedPojo(String key, Class&lt;T&gt; clazz) {
+<span class="nc" id="L273">    JsonObject jo = getSharedData(key);</span>
+<span class="nc" id="L274">    T result = fromJsonObject(jo, clazz);</span>
+<span class="nc" id="L275">    return result;</span>
+  }
+
+  /**
+   * construct a Pojo from the given JsonObject
+   * 
+   * @param jo
+   *          - the JsonObject
+   * @param clazz
+   *          - the type to use
+   * @return - the mapped instance or a default instance from a no-args
+   *         constructor if jo is null
+   */
+  public &lt;T&gt; T fromJsonObject(JsonObject jo, Class&lt;T&gt; clazz) {
+    T result;
+<span class="nc bnc" id="L290" title="All 2 branches missed.">    if (jo == null) {</span>
+      try {
+<span class="nc" id="L292">        result = clazz.newInstance();</span>
+<span class="nc" id="L293">      } catch (InstantiationException | IllegalAccessException e) {</span>
+<span class="nc" id="L294">        LOG.trace(e.getMessage());</span>
+<span class="nc" id="L295">        result = null;</span>
+<span class="nc" id="L296">      }</span>
+    } else {
+<span class="nc" id="L298">      result = jo.mapTo(clazz);</span>
+    }
+<span class="nc" id="L300">    return result;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

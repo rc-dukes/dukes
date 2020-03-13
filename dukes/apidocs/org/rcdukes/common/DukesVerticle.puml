@@ -1,0 +1,36 @@
+@startuml
+
+    abstract class DukesVerticle [[DukesVerticle.html]] {
+        {static} #LOG: Logger
+        {static} +debug: boolean
+        #character: Characters
+        #deploymentID: String
+        #eventbusLogger: EventbusLogger
+        +DukesVerticle(Characters)
+        +getStatus(): DukesVerticle.Status
+        +getEventbusLogger(): EventbusLogger
+        +setEventbusLogger(EventbusLogger): void
+        +logStatus(String, String): void
+        +preStart(): void
+        +preStop(): void
+        +postStart(): void
+        +postStop(): void
+        +waitStatus(DukesVerticle.Status, int, int): int
+        +toJsonObject(String[]): JsonObject
+        +send(Characters, String[]): void
+        +send(Characters, JsonObject): void
+        +send(String, JsonObject): void
+        +getEventAddress(Characters, Events): String
+        +sendEvent(Characters, Events, JsonObject): void
+        +consumer(Characters, Events, Handler<Message<T>>): void
+        +consumer(Events, Handler<Message<T>>): void
+        +consumer(String, Handler<Message<T>>): void
+        +shareData(String, JsonObject): void
+        +getSharedData(String): JsonObject
+        +getSharedPojo(String, Class<T>): T
+        +fromJsonObject(JsonObject, Class<T>): T
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

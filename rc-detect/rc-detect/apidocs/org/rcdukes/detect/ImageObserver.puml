@@ -1,0 +1,19 @@
+@startuml
+
+    class ImageObserver [[ImageObserver.html]] {
+        +error: Throwable
+        +cols: int
+        +rows: int
+        +completed: boolean
+        +debug: boolean
+        +stackTraceText: String
+        +onComplete(): void
+        +onError(Throwable): void
+        +onNext(Image): void
+        +onSubscribe(Disposable): void
+        +stop(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

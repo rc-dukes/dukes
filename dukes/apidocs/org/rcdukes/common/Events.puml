@@ -1,0 +1,29 @@
+@startuml
+
+    enum Events [[Events.html]] {
+        {static} +CAMERA_CONFIG_UPDATE
+        {static} +CANNY_CONFIG_UPDATE
+        {static} +HOUGH_CONFIG_UPDATE
+        {static} +CAMERA_MATRIX_UPDATE
+        {static} +START_LANE_DETECTION
+        {static} +LANE_DETECTED
+        {static} +START_STARTLIGHT_DETECTION
+        {static} +STARTLIGHT_DETECTED
+        {static} +START_DRAG_NAVIGATION
+        {static} +STOP_NAVIGATION
+        {static} +START_RECORDING
+        {static} +STOP_RECORDING
+        {static} +PHOTO_SHOOT
+        {static} +SIMULATOR_IMAGE
+        {static} +REQUEST_CONFIG
+        {static} +START_CAR
+        {static} +STOP_CAR
+        {static} +ECHO
+        {static} +ECHO_REPLY
+        {static} +CAR_POSITION
+        {static} +VIDEO_STOPPED
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

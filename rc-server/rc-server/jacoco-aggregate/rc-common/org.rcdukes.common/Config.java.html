@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Config.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-server</a> &gt; <a href="../index.html" class="el_bundle">rc-common</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.common</a> &gt; <span class="el_source">Config.java</span></div><h1>Config.java</h1><pre class="source lang-java linenums">package org.rcdukes.common;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
+import io.vertx.core.logging.SLF4JLogDelegateFactory;
+import io.vertx.core.spi.cluster.ClusterManager;
+import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
+
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Configuration for Logging and HazelCastClusterManager Environment
+ *
+ */
+<span class="nc" id="L24">public class Config {</span>
+<span class="nc" id="L25">  private static final Logger LOG = LoggerFactory.getLogger(Config.class);</span>
+  public static final String WEBCONTROL_PORT = &quot;webcontrol.port&quot;;
+  public static final String IMAGEVIEW_PORT = &quot;imageview.port&quot;;
+  public static final String REMOTECAR_HOST = &quot;remotecar.host&quot;;
+  public static final String CAMERA_URL = &quot;camera.url&quot;;
+  // watchdog configuration
+  public static final String WATCHDOG_HEARTBEAT_INTERVAL_MS = &quot;watchdog.heartbeat.interval.ms&quot;;
+  public static final String WATCHDOG_MAX_MISSED_BEATS = &quot;watchdog.max.missed.beats&quot;;
+
+  // wheel configuration
+  public static final String WHEEL_GPIO = &quot;wheel.gpio&quot;;
+  public static final String WHEEL_ORIENTATION=&quot;wheel.orientation&quot;;
+  public static final String WHEEL_CENTER = &quot;wheel.center&quot;;
+  public static final String WHEEL_STEP_SIZE = &quot;wheel.stepsize&quot;;
+  public static final String WHEEL_MAX_LEFT = &quot;wheel.max.left&quot;;
+  public static final String WHEEL_MAX_RIGHT = &quot;wheel.max.right&quot;;
+  public static final String WHEEL_MAX_LEFT_ANGLE = &quot;wheel.max.left.angle&quot;;
+  public static final String WHEEL_MAX_RIGHT_ANGLE = &quot;wheel.max.right.angle&quot;;
+
+  // led configuration
+  public static final String LED_ON = &quot;led.on&quot;;
+  public static final String LED_OFF = &quot;led.off&quot;;
+  public static final String LED_GPIO = &quot;led.gpio&quot;;
+  // engine configuration
+  public static final String ENGINE_GPIO = &quot;engine.gpio&quot;;
+  public static final String ENGINE_ORIENTATION=&quot;engine.orientation&quot;;
+  public static final String ENGINE_SPEED_ZERO = &quot;engine.speed.zero&quot;;
+  public static final String ENGINE_STEP_SIZE = &quot;engine.stepsize&quot;;
+  public static final String ENGINE_MIN_SPEED_REVERSE = &quot;engine.min.speed.reverse&quot;;
+  public static final String ENGINE_MAX_SPEED_REVERSE = &quot;engine.max.speed.reverse&quot;;
+  public static final String ENGINE_MIN_SPEED_FORWARD = &quot;engine.min.speed.forward&quot;;
+  public static final String ENGINE_MAX_SPEED_FORWARD = &quot;engine.max.speed.forward&quot;;
+  public static final String ENGINE_MIN_VELOCITY_FORWARD = &quot;engine.min.velocity.forward&quot;;
+  public static final String ENGINE_MAX_VELOCITY_FORWARD = &quot;engine.max.velocity.forward&quot;;
+  public static final String ENGINE_MIN_VELOCITY_REVERSE = &quot;engine.min.velocity.reverse&quot;;
+  public static final String ENGINE_MAX_VELOCITY_REVERSE = &quot;engine.max.velocity.reverse&quot;;
+  // Commands
+  public static final String POSITION_LEFT = &quot;left&quot;;
+  public static final String POSITION_RIGHT = &quot;right&quot;;
+  public static final String POSITION_CENTER = &quot;center&quot;;
+  public static final String SERVO_COMMAND = &quot;servo.command&quot;;
+  public static final String ZERO = &quot;zero&quot;;
+
+  /**
+   * configure the logging
+   */
+  public static void configureLogging() {
+<span class="nc" id="L72">    System.setProperty(</span>
+        io.vertx.core.logging.LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_NAME,
+<span class="nc" id="L74">        SLF4JLogDelegateFactory.class.getName());</span>
+
+<span class="nc" id="L76">    LoggerContext logConfig = (LoggerContext) LoggerFactory.getILoggerFactory();</span>
+<span class="nc" id="L77">    logConfig.getLogger(&quot;ROOT&quot;).setLevel(Level.TRACE);</span>
+<span class="nc" id="L78">    logConfig.getLogger(&quot;nl.vaneijndhoven.dukes.imageview&quot;).setLevel(Level.INFO);</span>
+<span class="nc" id="L79">    logConfig.getLogger(&quot;io.vertx&quot;).setLevel(Level.INFO);</span>
+<span class="nc" id="L80">    logConfig.getLogger(&quot;com.hazelcast&quot;).setLevel(Level.INFO);</span>
+<span class="nc" id="L81">    logConfig.getLogger(&quot;com.hazelcast.nio.tcp&quot;).setLevel(Level.ERROR);</span>
+<span class="nc" id="L82">    logConfig.getLogger(&quot;io.netty&quot;).setLevel(Level.INFO);</span>
+<span class="nc" id="L83">  }</span>
+
+  /**
+   * create a ClusterManager with a default hazelcast configuration using slf4j
+   * 
+   * @return - the ClusterManager
+   */
+  public static ClusterManager createHazelcastConfig() {
+<span class="nc" id="L91">    com.hazelcast.config.Config hazelcastConfig = new com.hazelcast.config.Config();</span>
+<span class="nc" id="L92">    hazelcastConfig.setProperty(&quot;hazelcast.logging.type&quot;, &quot;slf4j&quot;);</span>
+<span class="nc" id="L93">    ClusterManager mgr = new HazelcastClusterManager(hazelcastConfig);</span>
+<span class="nc" id="L94">    return mgr;</span>
+  }
+
+  /**
+   * get my ip addresses
+   * 
+   * @return - my ip addresses
+   */
+  public static List&lt;String&gt; getMyIpAddresses() {
+    try {
+<span class="nc" id="L104">      return Collections.list(NetworkInterface.getNetworkInterfaces()).stream()</span>
+<span class="nc" id="L105">          .map(iface -&gt; Collections.list(iface.getInetAddresses()))</span>
+<span class="nc" id="L106">          .flatMap(Collection::stream).map(InetAddress::getHostAddress)</span>
+<span class="nc" id="L107">          .collect(Collectors.toList());</span>
+<span class="nc" id="L108">    } catch (SocketException e) {</span>
+<span class="nc" id="L109">      LOG.error(&quot;Error while determining IP addresses: &quot;, e);</span>
+<span class="nc" id="L110">      return null;</span>
+    }
+  }
+
+  /**
+   * get the Environment
+   * 
+   * @return an instance of the Enviroment interface
+   */
+  public static Environment getEnvironment() {
+<span class="nc" id="L120">    return Environment.getInstance();</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

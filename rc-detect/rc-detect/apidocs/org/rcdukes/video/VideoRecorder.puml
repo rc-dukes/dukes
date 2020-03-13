@@ -1,0 +1,19 @@
+@startuml
+
+    class VideoRecorder [[VideoRecorder.html]] {
+        {static} +exts: String[]
+        {static} +FOURCCs: String[]
+        {static} +FOURCC: String
+        +VideoRecorder(String, double)
+        +start(Size, boolean): void
+        +stop(): void
+        +recordMat(Mat): void
+        +getPath(): String
+        +setPath(String): void
+        +getExt(): String
+        +setExt(String): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

@@ -1,0 +1,29 @@
+@startuml
+
+    class ImageUtils [[ImageUtils.html]] {
+        {static} #LOG: Logger
+        {static} +debug: boolean
+        {static} +DATE_FORMAT: String
+        {static} +dateFormat: DateFormat
+        {static} +MEDIA_PATH: String
+        +ImageUtils()
+        +ImageUtils(String, String)
+        {static} +readFromDataUrl(String): BufferedImage
+        {static} +matFromDataUrl(String, String): Mat
+        {static} +mat2Image(Mat, String): Image
+        {static} +imageBytes2Image(byte[]): Image
+        {static} +imageBytes2Mat(byte[]): Mat
+        {static} +fromResource(Class<?>, String): Mat
+        {static} +bufferedImage2ImageBytes(BufferedImage, String): byte[]
+        {static} +mat2ImageBytes(Mat, String): byte[]
+        +writeImage(Mat, String): void
+        {static} +writeImageToFilepath(Mat, String): void
+        +writeImageWithLines(Mat, Collection<Line>, String, Scalar): void
+        +drawLinesToImage(Mat, Collection<Line>, Scalar): void
+        {static} +read(String): Mat
+        {static} +filePath(String, String): String
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

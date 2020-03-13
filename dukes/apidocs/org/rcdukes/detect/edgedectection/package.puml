@@ -1,0 +1,44 @@
+@startuml
+
+    namespace org.rcdukes.detect.edgedectection {
+
+        class WatershedEdgeDetector [[WatershedEdgeDetector.html]] {
+            +WatershedEdgeDetector()
+            +WatershedEdgeDetector(double, double, int, double, double)
+            +detect(Mat): Mat
+        }
+
+        class SobelEdgeDetector [[SobelEdgeDetector.html]] {
+            +SobelEdgeDetector()
+            +SobelEdgeDetector(int, int, int)
+            +detect(Mat): Mat
+        }
+
+        class CannyEdgeDetector [[CannyEdgeDetector.html]] {
+            +CannyEdgeDetector()
+            +CannyEdgeDetector(double, double, int, boolean)
+            +getThreshold1(): double
+            +setThreshold1(double): void
+            +getThreshold2(): double
+            +setThreshold2(double): void
+            +getApertureSize(): int
+            +setApertureSize(int): void
+            +isL2gradient(): boolean
+            +setL2gradient(boolean): void
+            +detect(Mat): Mat
+        }
+
+        interface org.rcdukes.detectors.EdgeDetector {
+            {abstract} +detect(Mat): Mat
+        }
+        org.rcdukes.detectors.EdgeDetector <|.. WatershedEdgeDetector
+
+        org.rcdukes.detectors.EdgeDetector <|.. SobelEdgeDetector
+
+        org.rcdukes.detectors.EdgeDetector <|.. CannyEdgeDetector
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

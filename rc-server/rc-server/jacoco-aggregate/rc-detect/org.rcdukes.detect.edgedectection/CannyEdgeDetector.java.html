@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CannyEdgeDetector.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-server</a> &gt; <a href="../index.html" class="el_bundle">rc-detect</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.detect.edgedectection</a> &gt; <span class="el_source">CannyEdgeDetector.java</span></div><h1>CannyEdgeDetector.java</h1><pre class="source lang-java linenums">package org.rcdukes.detect.edgedectection;
+
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
+import org.rcdukes.detectors.EdgeDetector;
+
+/**
+ * Canny edge detector
+ * @see &lt;a href=&quot;https://docs.opencv.org/trunk/da/d22/tutorial_py_canny.html&quot;&gt;OpenCV Canny Edge Detection &lt;/a&gt;
+ */
+public class CannyEdgeDetector implements EdgeDetector {
+
+<span class="nc" id="L13">  double threshold1 = 60;</span>
+<span class="nc" id="L14">  double threshold2 = 150;</span>
+<span class="nc" id="L15">  int apertureSize = 3;</span>
+<span class="nc" id="L16">  boolean l2gradient = false;</span>
+  
+  public double getThreshold1() {
+<span class="nc" id="L19">    return threshold1;</span>
+  }
+
+  public void setThreshold1(double threshold1) {
+<span class="nc" id="L23">    this.threshold1 = threshold1;</span>
+<span class="nc" id="L24">  }</span>
+
+  public double getThreshold2() {
+<span class="nc" id="L27">    return threshold2;</span>
+  }
+
+  public void setThreshold2(double threshold2) {
+<span class="nc" id="L31">    this.threshold2 = threshold2;</span>
+<span class="nc" id="L32">  }</span>
+
+  public int getApertureSize() {
+<span class="nc" id="L35">    return apertureSize;</span>
+  }
+
+  public void setApertureSize(int apertureSize) {
+<span class="nc" id="L39">    this.apertureSize = apertureSize;</span>
+<span class="nc" id="L40">  }</span>
+
+  public boolean isL2gradient() {
+<span class="nc" id="L43">    return l2gradient;</span>
+  }
+
+  public void setL2gradient(boolean l2gradient) {
+<span class="nc" id="L47">    this.l2gradient = l2gradient;</span>
+<span class="nc" id="L48">  }</span>
+
+<span class="nc" id="L50">  public CannyEdgeDetector() {</span>
+<span class="nc" id="L51">  }</span>
+
+  /**
+   * construct me with the given parameters
+   * @param threshold1
+   * @param threshold2
+   * @param apertureSize
+   * @param l2gradient
+   */
+  public CannyEdgeDetector(double threshold1, double threshold2,
+      int apertureSize, boolean l2gradient) {
+<span class="nc" id="L62">    this();</span>
+<span class="nc" id="L63">    this.threshold1 = threshold1;</span>
+<span class="nc" id="L64">    this.threshold2 = threshold2;</span>
+<span class="nc" id="L65">    this.apertureSize = apertureSize;</span>
+<span class="nc" id="L66">    this.l2gradient = l2gradient;</span>
+<span class="nc" id="L67">  }</span>
+
+  @Override
+  public Mat detect(Mat image) {
+<span class="nc" id="L71">    Mat imgEdges = new Mat();</span>
+<span class="nc" id="L72">    Imgproc.Canny(image, imgEdges, threshold1, threshold2, apertureSize,</span>
+        l2gradient);
+<span class="nc" id="L74">    return imgEdges;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

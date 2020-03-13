@@ -1,0 +1,66 @@
+@startuml
+
+    namespace org.rcdukes.camera {
+
+        class TestCameraMatrix [[TestCameraMatrix.html]] {
+            +testCalculation(): void
+        }
+
+        class MatrixTestbase [[MatrixTestbase.html]] {
+            {static} +debug: boolean
+            {static} +setup(): void
+            +isTravis(): boolean
+        }
+
+        class TestSuite [[TestSuite.html]] {
+        }
+
+        class TestPerspectiveShift [[TestPerspectiveShift.html]] {
+            +testChessboard(): void
+            +testTransform(): void
+            +writeImage(String, Mat): void
+        }
+
+        class ImagePolygon [[ImagePolygon.html]] {
+            +ImagePolygon(Size, double, double, double, double, double, double, double, double)
+            +ImagePolygon(Point[])
+            +ImagePolygon(Size, ROI)
+        }
+
+        class CameraMatrix [[CameraMatrix.html]] {
+            {static} +DEFAULT: CameraMatrix
+            +CameraMatrix(int, int)
+            +getRvecs(): List<Mat>
+            +getTvecs(): List<Mat>
+            +calibrate(Mat[]): void
+            +findOuterChessBoardCornerPoints(Mat): Point[]
+            +addCalibrationImage(Mat): void
+            +apply(Mat): Mat
+            +serialize(): String
+            {static} +deserizalize(String): CameraMatrix
+            +apply(Object): Object
+        }
+
+        class PerspectiveShift [[PerspectiveShift.html]] {
+            +PerspectiveShift(Polygon, Polygon)
+            +apply(Mat): Mat
+            +apply(Object): Object
+        }
+
+        MatrixTestbase <|-- TestCameraMatrix
+
+        MatrixTestbase <|-- TestPerspectiveShift
+
+        class org.rcdukes.geometry.Polygon
+        org.rcdukes.geometry.Polygon <|-- ImagePolygon
+
+        interface java.util.function.UnaryOperator<T>
+        java.util.function.UnaryOperator <|.. CameraMatrix
+
+        java.util.function.UnaryOperator <|.. PerspectiveShift
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

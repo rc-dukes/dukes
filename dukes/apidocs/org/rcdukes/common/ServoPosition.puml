@@ -1,0 +1,21 @@
+@startuml
+
+    class ServoPosition [[ServoPosition.html]] {
+        +unit: String
+        +kind: String
+        +servoConfig: String
+        +valueConfig: String
+        +ServoPosition()
+        +ServoPosition(int, double)
+        +ServoPosition(int, double, String, String)
+        +ServoPosition(String, String)
+        +getValue(): double
+        +setValue(double): void
+        +getServoPos(): int
+        +setServoPos(int): void
+        +init(int, double): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

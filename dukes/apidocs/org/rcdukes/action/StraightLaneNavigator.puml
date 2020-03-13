@@ -1,0 +1,27 @@
+@startuml
+
+    class StraightLaneNavigator [[StraightLaneNavigator.html]] {
+        {static} +COMMAND_LOOP_INTERVAL: int
+        {static} +MAX_DURATION_NO_LINES_DETECTED: int
+        {static} +DEFAULT_TIME_WINDOW: int
+        {static} #LOG: Logger
+        +StraightLaneNavigator()
+        +StraightLaneNavigator(int)
+        +getSender(): DukesVerticle
+        +setSender(DukesVerticle): void
+        +addToGraph(LaneDetectionResult): Vertex
+        +fromJsonObject(JsonObject): LaneDetectionResult
+        +cmdOk(StraightLaneNavigator.AngleRange, int): boolean
+        +setTime(LaneDetectionResult): void
+        +analyzeAngleRanges(int, boolean): void
+        +getNavigationInstruction(LaneDetectionResult): JsonObject
+        +steerCommand(Double): JsonObject
+        +navigateWithInstruction(JsonObject): void
+        +navigateWithMessage(Message<JsonObject>): void
+        +navigateWithLaneDetectionResult(LaneDetectionResult): void
+        +videoStopped(VideoRecorders.VideoInfo): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

@@ -1,0 +1,26 @@
+@startuml
+
+    class Configuration [[Configuration.html]] {
+        {static} +STORE_MODE: String
+        {static} +STORE_EXTENSION: String
+        +Configuration(String, boolean)
+        +Configuration()
+        +getGraphFilePath(): String
+        +setGraphFilePath(String): void
+        +fromIni(): void
+        +addEnv(Environment): void
+        +getGraph(): TinkerGraph
+        +setGraph(TinkerGraph): void
+        +g(): GraphTraversalSource
+        +getGraphFile(): File
+        +read(File): void
+        +write(File): void
+        +asString(): String
+        +getEnvironments(): Map<String, Environment>
+        +getEnvironmentFromVertex(Vertex): Environment
+        +write(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

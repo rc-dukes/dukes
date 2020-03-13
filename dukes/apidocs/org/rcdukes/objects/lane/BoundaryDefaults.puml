@@ -1,0 +1,10 @@
+@startuml
+
+    class BoundaryDefaults [[BoundaryDefaults.html]] {
+        {static} +DEFAULT_LANE_BOUNDARY_ANGLE: double
+        {static} +DEFAULT_LANE_BOUNDARY_TOLERANCE: double
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

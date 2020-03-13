@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ServoBlaster.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-webcontrol</a> &gt; <a href="../index.html" class="el_bundle">rc-drivecontrol</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.car</a> &gt; <span class="el_source">ServoBlaster.java</span></div><h1>ServoBlaster.java</h1><pre class="source lang-java linenums">package org.rcdukes.car;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
+//import nl.revolution.dukes.utils.Environment;
+//import nl.vaneijndhoven.dukes.generallee.EngineMap;
+//import nl.vaneijndhoven.dukes.generallee.SteeringMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.rcdukes.error.ErrorHandler;
+
+/**
+ * sends commands to the servos and LED via servoblaster
+ *
+ */
+public class ServoBlaster implements ServoCommand {
+
+<span class="nc" id="L23">  private Map&lt;Integer, Integer&gt; mapGpio2Id = new HashMap&lt;Integer, Integer&gt;();</span>
+  private static final int SERVOBLASTER_ID_MOTOR = 1; // GPIO-17
+  private static final int SERVOBLASTER_ID_WHEEL = 2; // GPIO-18
+  private static final int SERVOBLASTER_ID_LED = 6; // GPIO-24
+
+  public static final boolean WRITE_DIRECT = true; // write directly to device
+
+<span class="nc" id="L30">  private static final Logger LOG = LoggerFactory.getLogger(ServoBlaster.class);</span>
+
+  /**
+   * construct the servo blaster access
+   */
+<span class="nc" id="L35">  public ServoBlaster() {</span>
+<span class="nc" id="L36">    this.mapGpio2Id.put(17, SERVOBLASTER_ID_MOTOR);</span>
+<span class="nc" id="L37">    this.mapGpio2Id.put(18, SERVOBLASTER_ID_WHEEL);</span>
+<span class="nc" id="L38">    this.mapGpio2Id.put(24, SERVOBLASTER_ID_LED);</span>
+<span class="nc" id="L39">  }</span>
+  
+  @Override
+  public void setServo(int gpioPin, int value) {
+<span class="nc" id="L43">    Integer id=this.mapGpio2Id.get(gpioPin);</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">    if (id==null) {</span>
+<span class="nc" id="L45">      LOG.error(String.format(&quot;GPIO Pin %d has not ServoBlaster mapping&quot;,gpioPin));</span>
+<span class="nc" id="L46">      return;</span>
+    }
+<span class="nc" id="L48">    String servoBlasterCommand = id + &quot;=&quot; + value;</span>
+<span class="nc" id="L49">    String msg=String.format(&quot;Setting servo on GPIO %d with servoBlaster command: %s&quot;,gpioPin,servoBlasterCommand);</span>
+<span class="nc" id="L50">    LOG.trace(msg);</span>
+    // write the command to the device (if permissions are set correctly)
+<span class="nc" id="L52">    File servoBlaster = new File(&quot;/dev/servoblaster&quot;);</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">    if (!servoBlaster.canWrite()) {</span>
+<span class="nc" id="L54">      LOG.info(&quot;/dev/servoblaster can't be written -  not a PI, not installed or permissions missing&quot;);</span>
+<span class="nc" id="L55">      return;</span>
+    }
+    try {
+<span class="nc" id="L58">      FileUtils.writeStringToFile(servoBlaster, servoBlasterCommand + &quot;\n&quot;,</span>
+          &quot;UTF-8&quot;);
+<span class="nc" id="L60">    } catch (IOException e) {</span>
+<span class="nc" id="L61">      ErrorHandler.getInstance().handle(e,</span>
+          &quot;You might want to check the permissions on &quot;
+<span class="nc" id="L63">              + servoBlaster.getAbsolutePath());</span>
+<span class="nc" id="L64">    }</span>
+<span class="nc" id="L65">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

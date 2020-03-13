@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ClusterStarter.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-watchdog</a> &gt; <a href="../index.html" class="el_bundle">rc-common</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.common</a> &gt; <span class="el_source">ClusterStarter.java</span></div><h1>ClusterStarter.java</h1><pre class="source lang-java linenums">package org.rcdukes.common;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import org.rcdukes.error.ErrorHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.vertx.core.AsyncResult;
+import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
+import io.vertx.core.eventbus.EventBusOptions;
+import io.vertx.rxjava.core.AbstractVerticle;
+
+/**
+ * starter for VertxCluster
+ * 
+ * @author wf
+ *
+ */
+<span class="nc" id="L24">public class ClusterStarter {</span>
+<span class="nc" id="L25">  private static final Logger LOG = LoggerFactory.getLogger(ClusterStarter.class);</span>
+  public static final int MAX_START_TIME = 20000;
+  
+  private VertxOptions options;
+<span class="nc" id="L29">  private boolean prepared = false;</span>
+<span class="nc" id="L30">  private boolean debug = false;</span>
+  private Vertx vertx;
+
+  public Vertx getVertx() {
+<span class="nc" id="L34">    return vertx;</span>
+  }
+
+  /**
+   * prepare the starter
+   */
+  public void prepare() {
+<span class="nc bnc" id="L41" title="All 2 branches missed.">    if (!prepared) {</span>
+<span class="nc" id="L42">      Config.configureLogging();</span>
+      try {
+<span class="nc" id="L44">        setHostname(InetAddress.getLocalHost().getCanonicalHostName());</span>
+<span class="nc" id="L45">      } catch (UnknownHostException e) {</span>
+<span class="nc" id="L46">        LOG.error(e.getMessage());</span>
+<span class="nc" id="L47">      }</span>
+<span class="nc" id="L48">      prepared = true;</span>
+    }
+<span class="nc" id="L50">  }</span>
+  
+  private String hostname;
+  
+  /**
+   * configure the cluster
+   * @param clusterHostname
+   * @param publicHost
+   */
+  public void configureCluster(String clusterHostname,String publicHost) {
+<span class="nc bnc" id="L60" title="All 2 branches missed.">    if (clusterHostname == null) {</span>
+<span class="nc" id="L61">      clusterHostname=getHostname();</span>
+    }
+<span class="nc bnc" id="L63" title="All 2 branches missed.">    if (publicHost==null) {</span>
+<span class="nc" id="L64">      publicHost=getHostname();</span>
+    }
+<span class="nc" id="L66">    String msg=String.format(&quot;starting cluster on %s setting host to %s and clusterPublicHost to %s&quot;,getHostname(),clusterHostname,publicHost);</span>
+<span class="nc" id="L67">    LOG.info(msg);</span>
+<span class="nc" id="L68">    EventBusOptions eventBusOptions = getOptions().getEventBusOptions();</span>
+    // https://github.com/eclipse-vertx/vert.x/issues/3229
+    // https://stackoverflow.com/a/49028531/1497139
+    // https://vertx.io/docs/apidocs/io/vertx/core/eventbus/EventBusOptions.html#setClusterPublicHost-java.lang.String-
+<span class="nc" id="L72">    eventBusOptions.setHost(clusterHostname);</span>
+<span class="nc" id="L73">    eventBusOptions.setClusterPublicHost(publicHost);</span>
+<span class="nc" id="L74">  }</span>
+
+  /**
+   * 
+   * @param resultHandler
+   */
+  public void clusteredVertx(Handler&lt;AsyncResult&lt;Vertx&gt;&gt; resultHandler) {
+<span class="nc" id="L81">    prepare();</span>
+<span class="nc" id="L82">    Vertx.clusteredVertx(getOptions(), resultHandler);</span>
+<span class="nc" id="L83">  }</span>
+
+  /**
+   * get the deployment options
+   * 
+   * @param worker
+   *          - true if worker should be set to true
+   * @return the deployment options
+   * @throws Exception
+   */
+  public DeploymentOptions getDeployMentOptions(boolean worker)
+      throws Exception {
+<span class="nc" id="L95">    DeploymentOptions deploymentOptions = new DeploymentOptions();</span>
+<span class="nc" id="L96">    deploymentOptions.setWorker(worker);</span>
+<span class="nc" id="L97">    return deploymentOptions;</span>
+  }
+
+  /**
+   * deploy the given array of verticle instances
+   * 
+   * @param verticles
+   * @throws Exception
+   */
+  public void deployVerticles(AbstractVerticle... verticles) throws Exception {
+<span class="nc" id="L107">    DeploymentOptions deploymentOptions = this.getDeployMentOptions(true);</span>
+    // if there is no clustered vertx yet make sure we create one
+<span class="nc bnc" id="L109" title="All 2 branches missed.">    if (vertx == null) {</span>
+<span class="nc" id="L110">      this.clusteredVertx(resultHandler -&gt; {</span>
+<span class="nc" id="L111">        vertx = resultHandler.result();</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (vertx == null) {</span>
+<span class="nc" id="L113">          ErrorHandler.getInstance().handle(new RuntimeException(</span>
+              &quot;vertx not available resultHandler result is null&quot;));
+        }
+        // and then deploy to it
+<span class="nc" id="L117">        this.deployVerticles(deploymentOptions, verticles);</span>
+<span class="nc" id="L118">      });</span>
+    } else {
+      // there is already a clustered vertx available
+      // let's use it
+<span class="nc" id="L122">      this.deployVerticles(deploymentOptions, verticles);</span>
+    }
+<span class="nc" id="L124">  }</span>
+
+  /**
+   * deploy the given verticles with the given deployment Options
+   * @param deploymentOptions
+   * @param verticles
+   */
+  private void deployVerticles(DeploymentOptions deploymentOptions,
+      AbstractVerticle[] verticles) {
+
+<span class="nc bnc" id="L134" title="All 2 branches missed.">    for (AbstractVerticle verticle : verticles) {</span>
+      try {
+<span class="nc" id="L136">        vertx.deployVerticle(verticle, deploymentOptions);</span>
+<span class="nc" id="L137">      } catch (Throwable th) {</span>
+<span class="nc" id="L138">        ErrorHandler.getInstance().handle(th);</span>
+<span class="nc" id="L139">      }</span>
+    }
+<span class="nc" id="L141">  }</span>
+
+  /**
+   * get the VertexOptions
+   * 
+   * @return new Vertex Options with the HazelcastConfig from Config
+   */
+  public VertxOptions getOptions() {
+<span class="nc bnc" id="L149" title="All 2 branches missed.">    if (options == null) {</span>
+<span class="nc" id="L150">      options = new VertxOptions();</span>
+<span class="nc" id="L151">      options.getEventBusOptions().setClustered(true);</span>
+<span class="nc" id="L152">      options.setClusterManager(Config.createHazelcastConfig());</span>
+      // FIXME check necessity of this workaround
+      // https://stackoverflow.com/a/30056974/1497139
+      // setting check interval to 1 h
+<span class="nc bnc" id="L156" title="All 2 branches missed.">      if (debug) {</span>
+<span class="nc" id="L157">        options.setBlockedThreadCheckInterval(1000 * 60 * 60);</span>
+      } else {
+        // error after 5 secs ...
+<span class="nc" id="L160">        options.setBlockedThreadCheckInterval(1000 * 5);</span>
+      }
+    }
+<span class="nc" id="L163">    return options;</span>
+  }
+
+  /**
+   * undeploy the given DukesVerticle
+   * @param verticle
+   */
+  public void undeployVerticle(DukesVerticle verticle) {
+<span class="nc" id="L171">    verticle.preStop();</span>
+<span class="nc" id="L172">    vertx.undeploy(verticle.deploymentID(),async -&gt;{</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">      if (async.succeeded()) {</span>
+<span class="nc" id="L174">        verticle.postStop();</span>
+      }
+<span class="nc" id="L176">    });</span>
+<span class="nc" id="L177">  }</span>
+
+  /**
+   * @return the hostname
+   */
+  public String getHostname() {
+<span class="nc" id="L183">    return hostname;</span>
+  }
+
+  /**
+   * @param hostname the hostname to set
+   */
+  public void setHostname(String hostname) {
+<span class="nc" id="L190">    this.hostname = hostname;</span>
+<span class="nc" id="L191">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

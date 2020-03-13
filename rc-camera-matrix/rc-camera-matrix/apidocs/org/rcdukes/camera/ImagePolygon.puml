@@ -1,0 +1,11 @@
+@startuml
+
+    class ImagePolygon [[ImagePolygon.html]] {
+        +ImagePolygon(Size, double, double, double, double, double, double, double, double)
+        +ImagePolygon(Point[])
+        +ImagePolygon(Size, ROI)
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

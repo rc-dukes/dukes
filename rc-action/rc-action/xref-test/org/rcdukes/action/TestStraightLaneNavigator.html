@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>TestStraightLaneNavigator xref</title>
+<link type="text/css" rel="stylesheet" href="../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../testapidocs/org/rcdukes/action/TestStraightLaneNavigator.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> org.rcdukes.action;
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.junit.Assert.assertEquals;
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.junit.Assert.assertNull;
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">import</strong> org.junit.BeforeClass;
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> org.junit.Test;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> org.rcdukes.common.Environment;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> org.rcdukes.detect.ImageFetcher;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> org.rcdukes.detect.LaneDetector;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.rcdukes.geometry.LaneDetectionResult;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.rcdukes.opencv.NativeLibrary;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.rcdukes.video.Image;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> io.vertx.core.json.JsonObject;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> * test the straight lane navigator</em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> * @author wf</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../org/rcdukes/action/TestStraightLaneNavigator.html">TestStraightLaneNavigator</a> {
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">boolean</strong> debug=<strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>    @BeforeClass
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> setUp() {
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>      Environment.mock();
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>    }
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment">   * get a LaneDetectionResult for the given Parameters</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment">   * @param frameIndex</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment">   * @param timeStamp</em>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment">   * @param left</em>
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment">   * @param middle</em>
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment">   * @param right</em>
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment">   * @return</em>
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>    <strong class="jxr_keyword">public</strong> LaneDetectionResult getLdr(<strong class="jxr_keyword">int</strong> frameIndex, <strong class="jxr_keyword">int</strong> timeStamp, Double left,
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>        Double middle, Double right) {
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      LaneDetectionResult ldr = <strong class="jxr_keyword">new</strong> LaneDetectionResult();
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      ldr.frameIndex = frameIndex;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>      ldr.milliTimeStamp = timeStamp;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>      ldr.left = left;
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      ldr.middle = middle;
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>      ldr.right = right;
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">return</strong> ldr;
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>    }
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>    @Test
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testStraightLaneNavigator() {
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      LaneDetectionResult ldrs[] = { getLdr(1, 0, -45., 0., 45.),
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          getLdr(2, 100, -46., 1., 46.), getLdr(3, 200, -47., 0., 47.) };
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>      StraightLaneNavigator nav = <strong class="jxr_keyword">new</strong> StraightLaneNavigator();
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">for</strong> (LaneDetectionResult ldr : ldrs)
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>        nav.getNavigationInstruction(ldr);
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      <strong class="jxr_keyword">long</strong> nodeCount = nav.g().V().count().next().longValue();
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>      assertEquals(3, nodeCount);
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>    }
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>    @Test
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testFromJson() {
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>      Navigator navigator = <strong class="jxr_keyword">new</strong> StraightLaneNavigator();
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>      JsonObject ldrJo = <strong class="jxr_keyword">new</strong> JsonObject();
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      LaneDetectionResult ldr = navigator.fromJsonObject(ldrJo);
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>      JsonObject nav = navigator.getNavigationInstruction(ldr);
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      assertNull(nav);
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>    }
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>    @Test
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testFromVideo() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>      NativeLibrary.load();
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>      Navigator nav = <strong class="jxr_keyword">new</strong> StraightLaneNavigator();
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>      String testUrl = <span class="jxr_string">"http://wiki.bitplan.com/videos/full_run.mp4"</span>;
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>      ImageFetcher imageFetcher = <strong class="jxr_keyword">new</strong> ImageFetcher(testUrl);
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>      imageFetcher.open();
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>      <strong class="jxr_keyword">int</strong> frameIndex = 0;
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>      <strong class="jxr_keyword">int</strong> maxFrameIndex = 300;
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>      <strong class="jxr_keyword">while</strong> (frameIndex &lt; maxFrameIndex &amp;&amp; imageFetcher.hasNext()
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>          &amp;&amp; !imageFetcher.isClosed()) {
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>        Image image = imageFetcher.fetch();
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>        frameIndex = image.getFrameIndex();
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>        System.out.println(frameIndex);
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>        <strong class="jxr_keyword">if</strong> (imageFetcher.hasNext()) {
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          LaneDetector laneDetector = LaneDetector.getDefault();
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          LaneDetectionResult ldr = laneDetector.detect(image);
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>          <strong class="jxr_keyword">if</strong> (debug)
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>          System.out.println(ldr.debugInfo());
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>          JsonObject navJo = nav.getNavigationInstruction(ldr);
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>          <strong class="jxr_keyword">if</strong> (navJo != <strong class="jxr_keyword">null</strong>)
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>            System.out.println(navJo.encodePrettily());
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>        }
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>      }
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>      imageFetcher.close();
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>      <strong class="jxr_keyword">long</strong> nodeCount = nav.g().V().count().next().longValue();
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>      assertEquals(maxFrameIndex, nodeCount);
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>    }
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>  }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2020. All rights reserved.</div>
+</body>
+</html>

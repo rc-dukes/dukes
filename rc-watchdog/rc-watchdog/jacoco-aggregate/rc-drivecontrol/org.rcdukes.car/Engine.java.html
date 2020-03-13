@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Engine.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-watchdog</a> &gt; <a href="../index.html" class="el_bundle">rc-drivecontrol</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.car</a> &gt; <span class="el_source">Engine.java</span></div><h1>Engine.java</h1><pre class="source lang-java linenums">package org.rcdukes.car;
+
+import org.rcdukes.common.ServoPosition;
+import org.rcdukes.drivecontrol.Car;
+
+/**
+ * drive control for the engine
+ */
+public class Engine extends Servo {
+
+  private ServoRangeMap engineMap;
+  private Car car;
+
+  /**
+   * configure the engine from the given mapping and car
+   * @param mapping - servo settings to use
+   * @param car - the car
+   */
+  public Engine(Car car,ServoRangeMap engineMap) {
+<span class="nc" id="L20">    super(engineMap);</span>
+<span class="nc" id="L21">    this.engineMap=engineMap;</span>
+<span class="nc" id="L22">    this.car=car;</span>
+<span class="nc" id="L23">  }</span>
+
+  public void neutral() {
+<span class="nc" id="L26">    boolean force = false;</span>
+<span class="nc" id="L27">    neutral(force);</span>
+<span class="nc" id="L28">  }</span>
+
+  /**
+   * force the car to neutral
+   */
+  public void forceInNeutral() {
+<span class="nc" id="L34">    boolean force = true;</span>
+<span class="nc" id="L35">    neutral(force);</span>
+<span class="nc" id="L36">  }</span>
+  
+  /**
+   * set the speed to the given servo Position
+   * @param speed
+   */
+  public void setSpeed(ServoPosition speed) {
+<span class="nc" id="L43">    boolean force = false;</span>
+<span class="nc" id="L44">    setSpeed(speed, force);</span>
+<span class="nc" id="L45">  }</span>
+
+  /**
+   * switch to neutral
+   * @param force
+   */
+  public void neutral(boolean force) {
+<span class="nc" id="L52">    setSpeed(engineMap.getRange().getZeroPosition(), force);</span>
+<span class="nc" id="L53">  }</span>
+
+  /**
+   * 
+   * @param speed
+   * @param force
+   */
+  private void setSpeed(ServoPosition speed, boolean force) {
+<span class="nc bnc" id="L61" title="All 4 branches missed.">    if (!car.powerIsOn() &amp;&amp; !force) {</span>
+<span class="nc" id="L62">      String msg=String.format(&quot;Not setting motor value to %s; power is off and force is false.&quot;,speed);</span>
+<span class="nc" id="L63">      LOG.debug(msg);</span>
+<span class="nc" id="L64">      return;</span>
+    }
+<span class="nc" id="L66">    LOG.debug(&quot;Setting motor to value &quot; + speed);</span>
+<span class="nc" id="L67">    this.engineMap.newPosition(speed);</span>
+<span class="nc" id="L68">    super.setServo(speed.getServoPos());</span>
+<span class="nc" id="L69">  }</span>
+  
+  public ServoRangeMap getEngineMap() {
+<span class="nc" id="L72">    return engineMap;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

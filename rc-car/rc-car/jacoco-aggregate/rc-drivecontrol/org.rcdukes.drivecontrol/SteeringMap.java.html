@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SteeringMap.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-car</a> &gt; <a href="../index.html" class="el_bundle">rc-drivecontrol</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.drivecontrol</a> &gt; <span class="el_source">SteeringMap.java</span></div><h1>SteeringMap.java</h1><pre class="source lang-java linenums">package org.rcdukes.drivecontrol;
+
+import org.rcdukes.car.ServoCommand;
+import org.rcdukes.car.ServoRange;
+import org.rcdukes.car.ServoSide;
+import org.rcdukes.common.Config;
+import org.rcdukes.common.Environment;
+import org.rcdukes.common.ServoPosition;
+import org.rcdukes.error.ErrorHandler;
+
+/**
+ * steering map which is vehicle dependent
+ *
+ */
+public class SteeringMap extends ServoRangeMap {
+ 
+  /**
+   * steering mapping
+   * 
+   * @param servoCommand
+   */
+<span class="nc" id="L22">  public SteeringMap(ServoCommand servoCommand) {</span>
+<span class="nc" id="L23">    Environment env = Config.getEnvironment();</span>
+    try {
+<span class="nc" id="L25">      int WHEEL_STEP_SIZE = env.getInteger(Config.WHEEL_STEP_SIZE);</span>
+<span class="nc" id="L26">      int WHEEL_GPIO = env.getInteger(Config.WHEEL_GPIO);</span>
+<span class="nc" id="L27">      String WHEEL_ORIENTATION = env.getString(Config.WHEEL_ORIENTATION);</span>
+<span class="nc" id="L28">      ServoPosition leftMax = new ServoPosition(Config.WHEEL_MAX_LEFT, Config.WHEEL_MAX_LEFT_ANGLE);</span>
+<span class="nc" id="L29">      ServoPosition leftMin = new ServoPosition(Config.WHEEL_CENTER, Config.ZERO);</span>
+<span class="nc" id="L30">      ServoPosition rightMax = new ServoPosition(Config.WHEEL_MAX_RIGHT, Config.WHEEL_MAX_RIGHT_ANGLE);</span>
+<span class="nc" id="L31">      ServoPosition rightMin = new ServoPosition(Config.WHEEL_CENTER,Config.ZERO);</span>
+<span class="nc" id="L32">      ServoSide sideP=new ServoSide(&quot;right&quot;,1,rightMin,rightMax);</span>
+<span class="nc" id="L33">      ServoSide sideN=new ServoSide(&quot;left&quot;,-1,leftMin,leftMax);</span>
+<span class="nc" id="L34">      ServoPosition center = new ServoPosition(Config.WHEEL_CENTER,Config.ZERO);</span>
+<span class="nc" id="L35">      setRange(new ServoRange(WHEEL_STEP_SIZE, sideN, center,sideP));</span>
+<span class="nc" id="L36">      setUnit(&quot;°&quot;);</span>
+<span class="nc" id="L37">      setName(&quot;Steering&quot;);</span>
+<span class="nc" id="L38">      super.configure(WHEEL_GPIO, servoCommand,</span>
+          WHEEL_ORIENTATION);
+<span class="nc" id="L40">      check();</span>
+<span class="nc" id="L41">    } catch (Exception e) {</span>
+<span class="nc" id="L42">      ErrorHandler.getInstance().handle(e,</span>
+          &quot;you might want to check you settings&quot;);
+<span class="nc" id="L44">    }</span>
+<span class="nc" id="L45">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,16 @@
+@startuml
+
+    enum ImageCollector.ImageType [[ImageCollector.ImageType.html]] {
+        {static} +camera
+        {static} +edges
+        {static} +birdseye
+        {static} +lines
+        {static} +startlight
+        {static} +mask
+        {static} +morph
+        {static} +simulator
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

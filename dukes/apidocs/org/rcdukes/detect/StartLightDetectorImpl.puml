@@ -1,0 +1,14 @@
+@startuml
+
+    class StartLightDetectorImpl [[StartLightDetectorImpl.html]] {
+        +StartLightDetectorImpl()
+        +StartLightDetectorImpl(int, int, int, int, int, int)
+        +StartLightDetectorImpl(StartLightDetectorImpl.Config)
+        +detect(Image): StartLight
+        +getFrame(): Mat
+        +withImageCollector(ImageCollector): StartLightDetectorImpl
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

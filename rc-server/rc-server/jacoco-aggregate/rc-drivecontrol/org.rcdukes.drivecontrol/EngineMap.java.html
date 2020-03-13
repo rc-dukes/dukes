@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>EngineMap.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-server</a> &gt; <a href="../index.html" class="el_bundle">rc-drivecontrol</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.drivecontrol</a> &gt; <span class="el_source">EngineMap.java</span></div><h1>EngineMap.java</h1><pre class="source lang-java linenums">package org.rcdukes.drivecontrol;
+
+import org.rcdukes.car.ServoCommand;
+import org.rcdukes.car.ServoRange;
+import org.rcdukes.car.ServoSide;
+import org.rcdukes.error.ErrorHandler;
+
+import org.rcdukes.common.Config;
+import org.rcdukes.common.Environment;
+import org.rcdukes.common.ServoPosition;
+
+/**
+ * engine parameters which are vehicle dependent
+ *
+ */
+public class EngineMap extends ServoRangeMap {
+
+  /**
+   * configure me from the given ServoCommand
+   * 
+   * @param servoCommand
+   */
+<span class="nc" id="L23">  public EngineMap(ServoCommand servoCommand) {</span>
+<span class="nc" id="L24">    Environment env = Config.getEnvironment();</span>
+    try {
+<span class="nc" id="L26">      int ENGINE_GPIO = env.getInteger(Config.ENGINE_GPIO);</span>
+<span class="nc" id="L27">      int SPEED_STEP_SIZE = env.getInteger(Config.ENGINE_STEP_SIZE);</span>
+<span class="nc" id="L28">      String ENGINE_ORIENTATION = env.getString(Config.ENGINE_ORIENTATION);</span>
+<span class="nc" id="L29">      super.configure(ENGINE_GPIO, servoCommand,ENGINE_ORIENTATION);</span>
+<span class="nc" id="L30">      ServoPosition minforward = new ServoPosition(Config.ENGINE_MIN_SPEED_FORWARD,Config.ENGINE_MIN_VELOCITY_FORWARD);</span>
+<span class="nc" id="L31">      ServoPosition maxforward = new ServoPosition(Config.ENGINE_MAX_SPEED_FORWARD,Config.ENGINE_MAX_VELOCITY_FORWARD);</span>
+<span class="nc" id="L32">      ServoPosition minreverse = new ServoPosition(Config.ENGINE_MIN_SPEED_REVERSE,Config.ENGINE_MIN_VELOCITY_REVERSE);</span>
+<span class="nc" id="L33">      ServoPosition maxreverse = new ServoPosition(Config.ENGINE_MAX_SPEED_REVERSE,Config.ENGINE_MAX_VELOCITY_REVERSE);</span>
+<span class="nc" id="L34">      ServoSide sideN=new ServoSide(&quot;reverse&quot;,-1,minreverse,maxreverse);  </span>
+<span class="nc" id="L35">      ServoSide sideP=new ServoSide(&quot;forward&quot;,1,minforward,maxforward);</span>
+<span class="nc" id="L36">      ServoPosition neutral = new ServoPosition(Config.ENGINE_SPEED_ZERO,Config.ZERO);</span>
+<span class="nc" id="L37">      setRange(new ServoRange(SPEED_STEP_SIZE, sideN, neutral, sideP));</span>
+<span class="nc" id="L38">      setName(&quot;Engine&quot;);</span>
+<span class="nc" id="L39">      setUnit(&quot; m/s&quot;);</span>
+<span class="nc" id="L40">      check();</span>
+<span class="nc" id="L41">    } catch (Exception e) {</span>
+<span class="nc" id="L42">      ErrorHandler.getInstance().handle(e,</span>
+          &quot;you might want to check you settings&quot;);
+<span class="nc" id="L44">    }</span>
+<span class="nc" id="L45">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

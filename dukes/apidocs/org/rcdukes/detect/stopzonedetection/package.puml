@@ -1,0 +1,19 @@
+@startuml
+
+    namespace org.rcdukes.detect.stopzonedetection {
+
+        interface StoppingZoneDetector [[StoppingZoneDetector.html]] {
+            {abstract} +detect(Collection<Line>): StoppingZone
+        }
+
+        class DefaultStoppingZoneDetector [[DefaultStoppingZoneDetector.html]] {
+            +detect(Collection<Line>): StoppingZone
+        }
+
+        StoppingZoneDetector <|.. DefaultStoppingZoneDetector
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

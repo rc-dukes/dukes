@@ -1,0 +1,11 @@
+@startuml
+
+    interface Point2D [[Point2D.html]] {
+        {abstract} +getX(): double
+        {abstract} +getY(): double
+        {abstract} +distance(Point2D): double
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

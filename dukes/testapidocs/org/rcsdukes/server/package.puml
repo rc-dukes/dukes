@@ -1,0 +1,36 @@
+@startuml
+
+    namespace org.rcsdukes.server {
+
+        class TestEventBus [[TestEventBus.html]] {
+            {static} +configureLogging(): void
+            +example0_5(Vertx): void
+            +checkStart(VertxOptions, int): void
+            +createKeyStore(String, String): void
+            +testExample13(): void
+            +testExample14(): void
+        }
+
+        class TestSuite [[TestSuite.html]] {
+            {static} +isTravis(): boolean
+        }
+
+        class TestEventBusBridge [[TestEventBusBridge.html]] {
+            +testEventBusBridge(): void
+        }
+
+        class org.rcsdukes.server.TestEventBusBridge.EchoServer [[TestEventBusBridge.EchoServer.html]] {
+            +EchoServer(Characters)
+            +start(): void
+        }
+
+        abstract class org.rcdukes.common.DukesVerticle
+        org.rcdukes.common.DukesVerticle <|-- org.rcsdukes.server.TestEventBusBridge.EchoServer
+
+        TestEventBusBridge +-- org.rcsdukes.server.TestEventBusBridge.EchoServer
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

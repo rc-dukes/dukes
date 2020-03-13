@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="283px" preserveAspectRatio="none" style="width:215px;height:283px;" version="1.1" viewBox="0 0 215 283" width="215px" zoomAndPan="magnify"><defs><filter height="300%" id="fme7bgkw4tsmx" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--class LabeledValueSlider--><a href="LabeledValueSlider.html" target="_top" xlink:actuate="onRequest" xlink:show="new" xlink:title="LabeledValueSlider.html" xlink:type="simple"><rect fill="#FEFECE" filter="url(#fme7bgkw4tsmx)" height="242.3262" id="LabeledValueSlider" style="stroke: #A80036; stroke-width: 1.5;" width="198" x="6" y="8"/><ellipse cx="46.2" cy="24" fill="#ADD1B2" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M49.1731,29.6431 Q48.5921,29.9419 47.9529,30.0913 Q47.3138,30.2407 46.6082,30.2407 Q44.1014,30.2407 42.7815,28.5889 Q41.4617,26.937 41.4617,23.8159 Q41.4617,20.6865 42.7815,19.0347 Q44.1014,17.3828 46.6082,17.3828 Q47.3138,17.3828 47.9612,17.5322 Q48.6087,17.6816 49.1731,17.9805 L49.1731,20.7031 Q48.5423,20.1221 47.9488,19.8523 Q47.3553,19.5825 46.7244,19.5825 Q45.3797,19.5825 44.6949,20.6492 Q44.0101,21.7158 44.0101,23.8159 Q44.0101,25.9077 44.6949,26.9744 Q45.3797,28.041 46.7244,28.041 Q47.3553,28.041 47.9488,27.7712 Q48.5423,27.5015 49.1731,26.9204 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="110" x="65.8" y="28.5352">LabeledValueSlider</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="7" x2="203" y1="40" y2="40"/><ellipse cx="17" cy="51.9775" fill="none" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="83" x="26" y="54.6348">debug: boolean</text><polygon fill="none" points="17,59.9326,21,63.9326,17,67.9326,13,63.9326" style="stroke: #B38D22; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="67" x="26" y="67.5898">LOG: Logger</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="7" x2="203" y1="73.9102" y2="73.9102"/><ellipse cx="17" cy="85.8877" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="101" x="26" y="88.5449">getFormat(): String</text><ellipse cx="17" cy="98.8428" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="123" x="26" y="101.5">setFormat(String): void</text><ellipse cx="17" cy="111.7979" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="150" x="26" y="114.4551">getBlockIncrement(): double</text><ellipse cx="17" cy="124.7529" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="172" x="26" y="127.4102">setBlockIncrement(double): void</text><ellipse cx="17" cy="137.708" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="90" x="26" y="140.3652">getMax(): double</text><ellipse cx="17" cy="150.6631" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="112" x="26" y="153.3203">setMax(double): void</text><ellipse cx="17" cy="163.6182" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="87" x="26" y="166.2754">getMin(): double</text><ellipse cx="17" cy="176.5732" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="109" x="26" y="179.2305">setMin(double): void</text><ellipse cx="17" cy="189.5283" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="97" x="26" y="192.1855">getValue(): double</text><ellipse cx="17" cy="202.4834" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="119" x="26" y="205.1406">setValue(double): void</text><ellipse cx="17" cy="215.4385" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="87" x="26" y="218.0957">getText(): String</text><ellipse cx="17" cy="228.3936" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="109" x="26" y="231.0508">setText(String): void</text><ellipse cx="17" cy="241.3486" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="134" x="26" y="244.0059">getResource(String): URL</text></a><text fill="#888888" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="182" x="20" y="269.668">UMLDoclet 1.1.4, PlantUML 1.2019.05</text><!--
+@startuml
+
+    class LabeledValueSlider [[LabeledValueSlider.html]] {
+        {static} +debug: boolean
+        {static} #LOG: Logger
+        +getFormat(): String
+        +setFormat(String): void
+        +getBlockIncrement(): double
+        +setBlockIncrement(double): void
+        +getMax(): double
+        +setMax(double): void
+        +getMin(): double
+        +setMin(double): void
+        +getValue(): double
+        +setValue(double): void
+        +getText(): String
+        +setText(String): void
+        +getResource(String): URL
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml
+
+PlantUML version 1.2019.05(Sat Apr 20 18:45:36 CEST 2019)
+(APACHE source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Java Version: 1.8.0_152-b16
+Operating System: Mac OS X
+OS Version: 10.13.6
+Default Encoding: UTF-8
+Language: de
+Country: DE
+--></g></svg>

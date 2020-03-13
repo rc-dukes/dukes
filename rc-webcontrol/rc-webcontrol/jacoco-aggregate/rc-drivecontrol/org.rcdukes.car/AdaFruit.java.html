@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AdaFruit.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-webcontrol</a> &gt; <a href="../index.html" class="el_bundle">rc-drivecontrol</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.car</a> &gt; <span class="el_source">AdaFruit.java</span></div><h1>AdaFruit.java</h1><pre class="source lang-java linenums">package org.rcdukes.car;
+
+import java.math.BigDecimal;
+
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.rcdukes.error.ErrorHandler;
+import com.pi4j.gpio.extension.pca.PCA9685GpioProvider;
+import com.pi4j.gpio.extension.pca.PCA9685Pin;
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioFactory;
+import com.pi4j.io.gpio.GpioPinPwmOutput;
+import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CFactory;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
+
+/**
+ * 
+ * @author wf set servos using &lt;a href=
+ *         &quot;https://github.com/Pi4J/pi4j/blob/master/pi4j-example/src/main/java/PCA9685GpioExample.java&quot;&gt;pi4-j
+ *         PCA9685 GPIO Example&lt;/a&gt;
+ * 
+ */
+public class AdaFruit implements ServoCommand {
+
+	private BigDecimal frequency;
+	private I2CBus bus;
+	private PCA9685GpioProvider provider;
+	private GpioPinPwmOutput[] outputs;
+<span class="nc" id="L34">	private static final Logger LOG = LoggerFactory.getLogger(AdaFruit.class);</span>
+
+	/**
+	 * default constructor
+	 * 
+	 * @throws Exception
+	 */
+	public AdaFruit() throws Exception {
+<span class="nc" id="L42">		this(48.828, 1.0578);</span>
+<span class="nc" id="L43">	}</span>
+
+	/**
+	 * construct me
+	 * 
+	 * @throws Exception
+	 */
+	public AdaFruit(double pFrequency, double pFrequencyCorrectionFactor)
+<span class="nc" id="L51">			throws UnsupportedBusNumberException, Exception {</span>
+		// This would theoretically lead into a resolution of 5 microseconds per step:
+		// 4096 Steps (12 Bit)
+		// T = 4096 * 0.000005s = 0.02048s
+		// f = 1 / T = 48.828125
+<span class="nc" id="L56">		frequency = new BigDecimal(pFrequency);</span>
+		// Correction factor: actualFreq / targetFreq
+		// e.g. measured actual frequency is: 51.69 Hz
+		// Calculate correction factor: 51.65 / 48.828 = 1.0578
+		// --&gt; To measure actual frequency set frequency without correction factor(or
+		// set to 1)
+<span class="nc" id="L62">		BigDecimal frequencyCorrectionFactor = new BigDecimal(pFrequencyCorrectionFactor);</span>
+		// Create custom PCA9685 GPIO provider
+<span class="nc" id="L64">		bus = I2CFactory.getInstance(I2CBus.BUS_1);</span>
+<span class="nc" id="L65">		provider = new PCA9685GpioProvider(bus, 0x40, frequency, frequencyCorrectionFactor);</span>
+		// Define outputs in use for this example
+<span class="nc" id="L67">		outputs = provisionPwmOutputs(provider);</span>
+		// Reset outputs
+<span class="nc" id="L69">		provider.reset();</span>
+<span class="nc" id="L70">	}</span>
+
+	protected GpioPinPwmOutput[] provisionPwmOutputs(final PCA9685GpioProvider gpioProvider) {
+<span class="nc" id="L73">		GpioController gpio = GpioFactory.getInstance();</span>
+<span class="nc" id="L74">		GpioPinPwmOutput myOutputs[] = { gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_00, &quot;Pulse 00&quot;),</span>
+<span class="nc" id="L75">				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_01, &quot;Pulse 01&quot;),</span>
+<span class="nc" id="L76">				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_02, &quot;Pulse 02&quot;),</span>
+<span class="nc" id="L77">				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_03, &quot;Pulse 03&quot;),</span>
+<span class="nc" id="L78">				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_04, &quot;Pulse 04&quot;),</span>
+<span class="nc" id="L79">				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_05, &quot;Pulse 05&quot;),</span>
+<span class="nc" id="L80">				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_06, &quot;Pulse 06&quot;),</span>
+<span class="nc" id="L81">				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_07, &quot;Pulse 07&quot;),</span>
+<span class="nc" id="L82">				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_08, &quot;Pulse 08&quot;),</span>
+<span class="nc" id="L83">				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_09, &quot;Pulse 09&quot;),</span>
+<span class="nc" id="L84">				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_10, &quot;Pulse 10&quot;),</span>
+<span class="nc" id="L85">				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_11, &quot;Pulse 11&quot;),</span>
+<span class="nc" id="L86">				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_12, &quot;Pulse 12&quot;),</span>
+<span class="nc" id="L87">				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_13, &quot;Pulse 13&quot;),</span>
+<span class="nc" id="L88">				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_14, &quot;Pulse 14&quot;),</span>
+<span class="nc" id="L89">				gpio.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_15, &quot;Pulse 15&quot;) };</span>
+<span class="nc" id="L90">		return myOutputs;</span>
+	}
+
+	private static final int SERVO_DURATION_MIN = 400;
+	private static final int SERVO_DURATION_MAX = 2400;
+
+	@Override
+	public void setServo(int ioId, int value) {
+<span class="nc bnc" id="L98" title="All 4 branches missed.">		if ((ioId &lt; 0) || (ioId &gt; 15))</span>
+<span class="nc" id="L99">			throw new IllegalArgumentException(&quot;Invalid ioId &quot; + ioId + &quot; ioId must be 0-15&quot;);</span>
+<span class="nc" id="L100">		GpioPinPwmOutput output = outputs[ioId];</span>
+<span class="nc" id="L101">		int duration = SERVO_DURATION_MIN + value * (SERVO_DURATION_MAX - SERVO_DURATION_MIN) / 256;</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">		if (debug) {</span>
+<span class="nc" id="L103">			String msg = String.format(&quot;setting servo %3d (%s) to %4d&quot;, output.getPin().getAddress(),output.getName(), duration);</span>
+<span class="nc" id="L104">			LOG.info(msg);</span>
+		}
+<span class="nc" id="L106">		output.setPwm(duration);</span>
+<span class="nc" id="L107">	}</span>
+
+	protected CmdLineParser parser;
+<span class="nc" id="L110">	@Option(name = &quot;-d&quot;, aliases = {</span>
+			&quot;--debug&quot; }, usage = &quot;debug\ncreate additional debug output if this switch is used&quot;)
+	protected boolean debug = false;
+
+<span class="nc" id="L114">	@Option(name = &quot;-i&quot;, aliases = { &quot;--ioid&quot; }, usage = &quot;ioid to be used&quot;)</span>
+	protected int ioId = 0;
+
+<span class="nc" id="L117">	@Option(name = &quot;-v&quot;, aliases = { &quot;--value&quot; }, usage = &quot;value to be set&quot;)</span>
+	protected int value = 0;
+
+	/**
+	 * parse the given Arguments
+	 * 
+	 * @param args
+	 * @throws CmdLineException
+	 */
+	public void parseArguments(String[] args) throws CmdLineException {
+<span class="nc" id="L127">		parser = new CmdLineParser(this);</span>
+<span class="nc" id="L128">		parser.parseArgument(args);</span>
+<span class="nc" id="L129">	}</span>
+
+	public void work() {
+<span class="nc" id="L132">		this.setServo(ioId, value);</span>
+		try {
+<span class="nc" id="L134">			Thread.sleep(1000);</span>
+<span class="nc" id="L135">		} catch (Exception ex) {</span>
+<span class="nc" id="L136">		}</span>
+<span class="nc" id="L137">	}</span>
+
+	/**
+	 * command line entry point
+	 * 
+	 * @param args
+	 */
+	public static void main(String args[]) {
+		try {
+<span class="nc" id="L146">			AdaFruit adaFruit = new AdaFruit();</span>
+<span class="nc" id="L147">			adaFruit.parseArguments(args);</span>
+<span class="nc" id="L148">			adaFruit.work();</span>
+<span class="nc" id="L149">		} catch (Exception e) {</span>
+<span class="nc" id="L150">			ErrorHandler.getInstance().handle(e);</span>
+<span class="nc" id="L151">		}</span>
+<span class="nc" id="L152">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

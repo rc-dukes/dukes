@@ -1,0 +1,29 @@
+@startuml
+
+    class NavigationGUI [[NavigationGUI.html]] {
+        #upButton: Button
+        #autoPilotButton: Button
+        #leftButton: Button
+        #rightButton: Button
+        #stopButton: Button
+        #downButton: Button
+        #manualButton: Button
+        #brakeButton: Button
+        #centerButton: Button
+        #powerButton: Button
+        #photoButton: Button
+        #recordButton: Button
+        #startCarButton: Button
+        #requestConfigButton: Button
+        #echoButton: Button
+        #videoRecorders: VideoRecorders
+        +initialize(): void
+        +setControlState(boolean): void
+        +handleNavigationKey(KeyEvent): void
+        +setImageCollector(ImageCollector): void
+        +setVideoRecorders(VideoRecorders): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

@@ -1,0 +1,26 @@
+@startuml
+
+    namespace org.rcdukes.detectors {
+
+        interface StartLightDetector [[StartLightDetector.html]] {
+            {abstract} +detect(Image): StartLight
+            {abstract} +withImageCollector(ImageCollector): StartLightDetector
+        }
+
+        interface LineDetector [[LineDetector.html]] {
+            {abstract} +detect(Mat): Collection<Line>
+        }
+
+        interface LaneDetector [[LaneDetector.html]] {
+            {abstract} +detect(Collection<Line>, ViewPort): Lane
+        }
+
+        interface EdgeDetector [[EdgeDetector.html]] {
+            {abstract} +detect(Mat): Mat
+        }
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

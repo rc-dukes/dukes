@@ -1,0 +1,13 @@
+@startuml
+
+    class WatchDog [[WatchDog.html]] {
+        {static} #HEARTBEAT_INTERVAL_MS: int
+        {static} #MAX_MISSED_BEATS: int
+        #subscription: Subscription
+        +WatchDog(Car)
+        +start(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

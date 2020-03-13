@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ImageDebugger.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-remotecar</a> &gt; <a href="../index.html" class="el_bundle">rc-app</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.app</a> &gt; <span class="el_source">ImageDebugger.java</span></div><h1>ImageDebugger.java</h1><pre class="source lang-java linenums">package org.rcdukes.app;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.tinkerpop.gremlin.structure.Vertex;
+import org.rcdukes.action.Navigator;
+import org.rcdukes.action.StraightLaneNavigator;
+import org.rcdukes.app.GUIDisplayer.PictureStep;
+import org.rcdukes.common.EventbusLogger;
+import org.rcdukes.detect.ImageFetcher;
+import org.rcdukes.video.Image;
+import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.ImageCollector.ImageType;
+import org.rcdukes.video.VideoRecorders.VideoInfo;
+
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+
+/**
+ * debugger for synchronized info between recorded video images
+ * and navigation info from graph database
+ * 
+ * @author wf
+ *
+ */
+public class ImageDebugger {
+  Navigator nav;
+  Map&lt;ImageType, ImageFetcher&gt; imageFetcherMap;
+<span class="nc" id="L32">  boolean active = false;</span>
+  ImageCollector imageCollector;
+<span class="nc" id="L34">  protected static final Logger LOG = LoggerFactory</span>
+<span class="nc" id="L35">      .getLogger(StraightLaneNavigator.class);</span>
+
+  /**
+   * create an image Debugger
+   * 
+   * @param videoFile
+   * @throws Exception
+   */
+<span class="nc" id="L43">  public ImageDebugger(File videoFile) throws Exception {</span>
+<span class="nc" id="L44">    nav = new StraightLaneNavigator();</span>
+<span class="nc" id="L45">    imageFetcherMap = new HashMap&lt;ImageType, ImageFetcher&gt;();</span>
+<span class="nc" id="L46">    File graphFile = VideoInfo.getNavigationFile(videoFile);</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">    if (graphFile.exists()) {</span>
+<span class="nc" id="L48">      nav.loadGraph(graphFile);</span>
+<span class="nc" id="L49">      active = true;</span>
+<span class="nc" id="L50">      this.imageCollector = new ImageCollector();</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">      for (ImageType imageType : ImageType.values()) {</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        switch (imageType) {</span>
+        case simulator:
+        case startlight:
+        case mask:
+        case morph:
+<span class="nc" id="L57">          break;</span>
+        default:
+<span class="nc" id="L59">          String videoFileName = videoFile.getPath().replaceAll(&quot;.*_mp4v_&quot;,</span>
+<span class="nc" id="L60">              &quot;/&quot; + imageType.name() + &quot;_mp4v_&quot;);</span>
+<span class="nc" id="L61">          File file = new File(videoFile.getParent(), videoFileName);</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">          if (file.exists()) {</span>
+<span class="nc" id="L63">            ImageFetcher imageFetcher = new ImageFetcher(file.getPath());</span>
+<span class="nc" id="L64">            imageFetcherMap.put(imageType, imageFetcher);</span>
+<span class="nc" id="L65">          } else {</span>
+<span class="nc" id="L66">            throw new Exception(&quot;missing video file &quot; + file.getPath());</span>
+          }
+        }
+      }
+    }
+<span class="nc" id="L71">  }</span>
+
+  public boolean isActive() {
+<span class="nc" id="L74">    return active;</span>
+  }
+
+  /**
+   * step the given imageFetcher
+   * 
+   * @param imageFetcher
+   * @param step
+   * @return - the image for the ImageFetcher
+   */
+  public Image step(ImageFetcher imageFetcher, PictureStep step) {
+<span class="nc" id="L85">    int index = imageFetcher.getFrameIndex();</span>
+<span class="nc bnc" id="L86" title="All 5 branches missed.">    switch (step) {</span>
+    case FIRST:
+<span class="nc bnc" id="L88" title="All 2 branches missed.">      if (index &gt;= 0)</span>
+<span class="nc" id="L89">        imageFetcher.close();</span>
+<span class="nc" id="L90">      imageFetcher.open();</span>
+<span class="nc" id="L91">      break;</span>
+    case PREV:
+<span class="nc bnc" id="L93" title="All 2 branches missed.">      if (index &gt;= 0)</span>
+<span class="nc" id="L94">        imageFetcher.close();</span>
+<span class="nc" id="L95">      imageFetcher.open();</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">      for (int i = 1; i &lt; index - 1; i++)</span>
+<span class="nc" id="L97">        imageFetcher.fetch();</span>
+<span class="nc" id="L98">      break;</span>
+    case NEXT:
+<span class="nc" id="L100">      break;</span>
+
+    case FORWARD:
+<span class="nc bnc" id="L103" title="All 2 branches missed.">      for (int i = 1; i &lt;= 9; i++)</span>
+<span class="nc" id="L104">        imageFetcher.fetch();</span>
+      break;
+    }
+<span class="nc" id="L107">    return imageFetcher.fetch();</span>
+  }
+
+  public void step(PictureStep pStep) {
+<span class="nc bnc" id="L111" title="All 2 branches missed.">    for (ImageType imageType : ImageType.values()) {</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">      if (imageFetcherMap.containsKey(imageType)) {</span>
+<span class="nc" id="L113">        Image image = step(imageFetcherMap.get(imageType), pStep);</span>
+<span class="nc" id="L114">        this.imageCollector.addImage(image, imageType);</span>
+      }
+    }
+<span class="nc" id="L117">  }</span>
+
+  public long getFrameIndex() {
+<span class="nc" id="L120">    Image cameraImage = this.imageCollector.getImage(ImageType.camera, false);</span>
+<span class="nc" id="L121">    return cameraImage.getFrameIndex();</span>
+  }
+
+  /**
+   * show the debug Info via the eventbus logger
+   * @param eventbusLogger
+   */
+  public void showDebugInfo(EventbusLogger eventbusLogger) {
+<span class="nc" id="L129">    long index = this.getFrameIndex();</span>
+<span class="nc" id="L130">    Vertex infoVertex = nav.g().V().hasLabel(&quot;VideoInfo&quot;).next();</span>
+<span class="nc" id="L131">    VideoInfo info = nav.fromVertex(infoVertex, VideoInfo.class);</span>
+<span class="nc" id="L132">    List&lt;Vertex&gt; navNodes = nav.g().V()</span>
+<span class="nc" id="L133">        .has(&quot;frameIndex&quot;, info.maxFrameIndex + index).toList();</span>
+<span class="nc" id="L134">    LOG.info(String.format(&quot;found %d nav nodes&quot;, navNodes.size()));</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">    if (navNodes.size() &gt; 0) {</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">      for (Vertex navNode : navNodes) {</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">        for (String key : navNode.keys()) {</span>
+<span class="nc" id="L138">          eventbusLogger.log(</span>
+<span class="nc" id="L139">              String.format(&quot;%s=%s\n&quot;, key, navNode.property(key).value()));</span>
+<span class="nc" id="L140">        }</span>
+<span class="nc" id="L141">      }</span>
+    }
+<span class="nc" id="L143">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

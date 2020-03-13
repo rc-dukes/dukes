@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ImageUtils.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-action</a> &gt; <a href="../index.html" class="el_bundle">rc-detect</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.video</a> &gt; <span class="el_source">ImageUtils.java</span></div><h1>ImageUtils.java</h1><pre class="source lang-java linenums">package org.rcdukes.video;
+
+import static org.rcdukes.video.PointMapper.toPoint;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Objects;
+
+import javax.imageio.ImageIO;
+import javax.xml.bind.DatatypeConverter;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
+import org.opencv.core.Scalar;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
+import org.rcdukes.common.Environment;
+import org.rcdukes.error.ErrorHandler;
+import org.rcdukes.geometry.Line;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javafx.scene.image.Image;
+
+/**
+ * Image Utilities
+ * 
+ * @author wf
+ *
+ */
+public class ImageUtils {
+<span class="nc" id="L43">  protected static final Logger LOG = LoggerFactory.getLogger(ImageUtils.class);</span>
+<span class="nc" id="L44">  public static boolean debug = false;</span>
+
+  /**
+   * OpenCV BGR color scheme
+   * 
+   * @author wf
+   */
+<span class="nc" id="L51">  public static class CVColor {</span>
+<span class="nc" id="L52">    public static final Scalar red = new Scalar(0, 0, 255);</span>
+<span class="nc" id="L53">    public static final Scalar lightgreen = new Scalar(10, 250, 20);</span>
+<span class="nc" id="L54">    public static final Scalar green = new Scalar(0, 255, 0);</span>
+<span class="nc" id="L55">    public static final Scalar dodgerblue = new Scalar(255, 128, 0);</span>
+<span class="nc" id="L56">    public static final Scalar cyan = new Scalar(255, 255, 0);</span>
+<span class="nc" id="L57">    public static final Scalar yellow = new Scalar(0, 255, 255);</span>
+<span class="nc" id="L58">    public static final Scalar indigo = new Scalar(130, 0, 75);</span>
+  }
+
+  /**
+   * read a buffered Image from the given data Url
+   * 
+   * @param imgData
+   * @return a buffered Image
+   * @throws IOException
+   */
+  public static BufferedImage readFromDataUrl(String imgData)
+      throws IOException {
+    // https://stackoverflow.com/a/34424596/1497139
+<span class="nc" id="L71">    imgData = imgData.substring(imgData.indexOf(&quot;,&quot;) + 1);</span>
+    // FIXME - read from data url;
+<span class="nc" id="L73">    byte[] imageEncodedBytes = DatatypeConverter.parseBase64Binary(imgData);</span>
+<span class="nc" id="L74">    BufferedImage image = ImageIO</span>
+<span class="nc" id="L75">        .read(new ByteArrayInputStream(imageEncodedBytes));</span>
+<span class="nc" id="L76">    return image;</span>
+  }
+
+  /**
+   * get a Mat from the given DataUrl
+   * 
+   * @param imgData
+   * @param ext
+   *          - the image extension to use
+   * @return a Mat
+   * @throws IOException
+   */
+  public static Mat matFromDataUrl(String imgData, String ext)
+      throws IOException {
+<span class="nc" id="L90">    BufferedImage image = ImageUtils.readFromDataUrl(imgData);</span>
+<span class="nc" id="L91">    byte[] imageBytes = ImageUtils.bufferedImage2ImageBytes(image, ext);</span>
+<span class="nc" id="L92">    Mat imageMat = ImageUtils.imageBytes2Mat(imageBytes);</span>
+<span class="nc" id="L93">    return imageMat;</span>
+  }
+
+  /**
+   * convert an open CV matrix to an Image this function will log messages on
+   * failure an return null in case of such a failure
+   * 
+   * @param frame
+   *          - the open cv matrix
+   * @param ext
+   *          - the format to be used e.g &quot;.png&quot;, &quot;.jpg&quot;
+   * @return the converted image
+   */
+  public static Image mat2Image(Mat frame, String ext) {
+<span class="nc" id="L107">    byte[] imageBytes = ImageUtils.mat2ImageBytes(frame, ext);</span>
+<span class="nc" id="L108">    Image image = ImageUtils.imageBytes2Image(imageBytes);</span>
+<span class="nc" id="L109">    return image;</span>
+  }
+
+  /**
+   * convert imageBytes to an image
+   * 
+   * @param imageBytes
+   * @return image or null if imageBytes were already null
+   */
+  public static Image imageBytes2Image(byte[] imageBytes) {
+<span class="nc" id="L119">    Image image = null;</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">    if (imageBytes != null)</span>
+<span class="nc" id="L121">      image = new Image(new ByteArrayInputStream(imageBytes));</span>
+<span class="nc" id="L122">    return image;</span>
+  }
+
+  /**
+   * convert image bytes to Mat
+   * 
+   * @param bytes
+   * @return - the Mat
+   */
+  public static Mat imageBytes2Mat(byte[] bytes) {
+    // https://stackoverflow.com/a/33930741/1497139
+<span class="nc" id="L133">    Mat mat = null;</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">    if (bytes != null)</span>
+<span class="nc" id="L135">      mat = Imgcodecs.imdecode(new MatOfByte(bytes),</span>
+          Imgcodecs.CV_LOAD_IMAGE_UNCHANGED);
+<span class="nc" id="L137">    return mat;</span>
+  }
+
+  /**
+   * get a Mat from the given imagePath resource
+   * 
+   * @param clazz
+   * @param imagePath
+   * @return the Mat
+   * @throws IOException
+   */
+  public static Mat fromResource(Class&lt;?&gt; clazz, String imagePath)
+      throws IOException {
+<span class="nc" id="L150">    byte[] testImageBytes = IOUtils</span>
+<span class="nc" id="L151">        .toByteArray(clazz.getClassLoader().getResourceAsStream(imagePath));</span>
+<span class="nc" id="L152">    Mat frame = ImageUtils.imageBytes2Mat(testImageBytes);</span>
+<span class="nc" id="L153">    return frame;</span>
+  }
+
+  /**
+   * convert the given buffered Image to a byte array
+   * 
+   * @param image
+   * @return - the byte array
+   */
+  public static byte[] bufferedImage2ImageBytes(BufferedImage image,
+      String ext) {
+<span class="nc" id="L164">    ByteArrayOutputStream baos = new ByteArrayOutputStream();</span>
+<span class="nc" id="L165">    ext = ext.replace(&quot;.&quot;, &quot;&quot;);</span>
+    try {
+<span class="nc" id="L167">      ImageIO.write(image, ext, baos);</span>
+<span class="nc" id="L168">    } catch (IOException e) {</span>
+<span class="nc" id="L169">      ErrorHandler.getInstance().handle(e);</span>
+<span class="nc" id="L170">    }</span>
+<span class="nc" id="L171">    byte[] bytes = baos.toByteArray();</span>
+<span class="nc" id="L172">    return bytes;</span>
+  }
+
+  /**
+   * convert the given Open CV matrix to a byte array this function will log
+   * issues on error and return null in case of such a failure
+   * 
+   * @param frame
+   * @param ext
+   *          -the format to be used e.g. .png, .jpg
+   * @return - the byte array - may be null if there was an error
+   */
+  public static byte[] mat2ImageBytes(Mat frame, String ext) {
+<span class="nc" id="L185">    byte[] bytes = null;</span>
+    try {
+<span class="nc bnc" id="L187" title="All 2 branches missed.">      if (frame == null) {</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        if (debug) {</span>
+<span class="nc" id="L189">          String msg = String.format(&quot;can't encode null frame to %s&quot;, ext);</span>
+<span class="nc" id="L190">          LOG.trace(msg);</span>
+<span class="nc" id="L191">        }</span>
+      } else {
+<span class="nc bnc" id="L193" title="All 2 branches missed.">        if (frame.width() &gt; 0) {</span>
+<span class="nc" id="L194">          MatOfByte buffer = new MatOfByte();</span>
+<span class="nc" id="L195">          Imgcodecs.imencode(ext, frame, buffer);</span>
+<span class="nc" id="L196">          bytes = buffer.toArray();</span>
+<span class="nc" id="L197">        } else {</span>
+<span class="nc" id="L198">          String msg = String.format(&quot;can't encode %d x %d size image to %s&quot;,</span>
+<span class="nc" id="L199">              frame.width(), frame.height(), ext);</span>
+<span class="nc" id="L200">          LOG.trace(msg);</span>
+        }
+      }
+<span class="nc" id="L203">    } catch (org.opencv.core.CvException cve) {</span>
+<span class="nc" id="L204">      String msg = String.format(&quot;image encoding to %s failed: %s&quot;, ext,</span>
+<span class="nc" id="L205">          cve.getMessage());</span>
+<span class="nc" id="L206">      LOG.warn(msg);</span>
+<span class="nc" id="L207">    }</span>
+<span class="nc" id="L208">    return bytes;</span>
+  }
+
+<span class="nc" id="L211">  String path = Environment.dukesHome + &quot;media&quot;;</span>
+<span class="nc" id="L212">  String filePrefix = &quot;dukes.&quot;;</span>
+
+<span class="nc" id="L214">  public ImageUtils() {</span>
+<span class="nc" id="L215">  }</span>
+
+  /**
+   * prepare writing images
+   * 
+   * @param path
+   * @param filePrefix
+   */
+<span class="nc" id="L223">  public ImageUtils(String path, String filePrefix) {</span>
+<span class="nc" id="L224">    this.path = path;</span>
+<span class="nc" id="L225">    this.filePrefix = filePrefix;</span>
+<span class="nc" id="L226">  }</span>
+
+  /**
+   * write an Image
+   * 
+   * @param img
+   * @param name
+   */
+  public void writeImage(Mat img, String name) {
+<span class="nc" id="L235">    String fileName = filePrefix.replace(&quot;.&quot;, &quot;-&quot;) + name;</span>
+<span class="nc" id="L236">    writeImageToFilepath(img, path + &quot;/&quot; + fileName);</span>
+<span class="nc" id="L237">  }</span>
+
+  /**
+   * write the given image to the given filepath
+   * 
+   * @param img
+   * @param filepath
+   */
+  public static void writeImageToFilepath(Mat img, String filepath) {
+<span class="nc" id="L246">    Imgcodecs.imwrite(filepath, img);</span>
+<span class="nc" id="L247">  }</span>
+
+  /**
+   * write an image with the given lines
+   * 
+   * @param img
+   * @param lines
+   * @param name
+   * @param color
+   */
+  public void writeImageWithLines(Mat img, Collection&lt;Line&gt; lines, String name,
+      Scalar color) {
+<span class="nc" id="L259">    Mat output = new Mat();</span>
+<span class="nc" id="L260">    img.copyTo(output);</span>
+<span class="nc" id="L261">    drawLinesToImage(output, lines, color);</span>
+<span class="nc" id="L262">    this.writeImage(output, name);</span>
+<span class="nc" id="L263">    output.release();</span>
+<span class="nc" id="L264">  }</span>
+
+  /**
+   * draw the given lines to the given image with the given color
+   * 
+   * @param image
+   *          - the image to draw to
+   * @param lines
+   *          - the lines to draw
+   * @param color
+   *          - the color to use
+   */
+  public void drawLinesToImage(Mat image, Collection&lt;Line&gt; lines,
+      Scalar color) {
+<span class="nc" id="L278">    lines.stream().filter(Objects::nonNull).forEach(line -&gt; Imgproc.line(image,</span>
+<span class="nc" id="L279">        toPoint(line.getPoint1()), toPoint(line.getPoint2()), color, 4));</span>
+<span class="nc" id="L280">  }</span>
+
+  /**
+   * read an image from the given source
+   * 
+   * @param source
+   * @return the image
+   * @throws Exception
+   */
+  public static Mat read(String source) throws Exception {
+<span class="nc" id="L290">    File tmpFile = null;</span>
+<span class="nc bnc" id="L291" title="All 2 branches missed.">    if (source.startsWith(&quot;http&quot;)) {</span>
+<span class="nc" id="L292">      String suffix = FilenameUtils.getExtension(source);</span>
+<span class="nc" id="L293">      tmpFile = File.createTempFile(&quot;image&quot;, suffix);</span>
+<span class="nc" id="L294">      URL url = new URL(source);</span>
+<span class="nc" id="L295">      FileUtils.copyURLToFile(url, tmpFile);</span>
+<span class="nc" id="L296">      source = tmpFile.getPath();</span>
+    }
+<span class="nc" id="L298">    Mat frame = Imgcodecs.imread(source);</span>
+<span class="nc bnc" id="L299" title="All 2 branches missed.">    if (tmpFile != null)</span>
+<span class="nc" id="L300">      tmpFile.delete();</span>
+<span class="nc" id="L301">    return frame;</span>
+  }
+  
+  public static transient final String DATE_FORMAT=&quot;yyyy-MM-ddHHmmss&quot;;
+<span class="nc" id="L305">  public static transient final DateFormat dateFormat=new SimpleDateFormat(DATE_FORMAT);</span>
+<span class="nc" id="L306">  public static String MEDIA_PATH=&quot;/tmp&quot;;</span>
+
+  /**
+   * get a filePath for the given name and extension by adding a timeStamp
+   * 
+   * @param name
+   * @param ext
+   * @return - the filePath
+   */
+  public static String filePath(String name, String ext) {
+<span class="nc" id="L316">    Date now = new Date();</span>
+<span class="nc" id="L317">    String timestamp = dateFormat.format(now);</span>
+<span class="nc" id="L318">    String filepath = String.format(&quot;%s/%s_%s%s&quot;, MEDIA_PATH, name, timestamp,</span>
+        ext);
+<span class="nc" id="L320">    return filepath;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

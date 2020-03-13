@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Characters.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-drivecontrol</a> &gt; <a href="../index.html" class="el_bundle">rc-common</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.common</a> &gt; <span class="el_source">Characters.java</span></div><h1>Characters.java</h1><pre class="source lang-java linenums">package org.rcdukes.common;
+
+/**
+ * nicknames used for DukesVerticles
+ */
+<span class="nc" id="L6">public enum Characters {</span>
+
+<span class="nc" id="L8">  BO(&quot;car&quot;,&quot;Processing Car control inputs&quot;,&quot;Lost sheep Bo&quot;,&quot;main character, driver, act first think later&quot;,&quot;https://en.wikipedia.org/wiki/Bo_Duke&quot;), </span>
+<span class="nc" id="L9">  BOARS_NEST(&quot;server&quot;,&quot;Runner to start the cluster on the laptop&quot;,&quot;Country music&quot;,&quot;Oldest establishment in Hazzard County&quot;,&quot;https://en.wikipedia.org/wiki/Boar%27s_Nest&quot;),</span>
+<span class="nc" id="L10">  BOSS_HOGG(&quot;webcontrol&quot;,&quot;Application to provide manual inputs&quot;,&quot;Little fat buddy&quot;,&quot;villain, rich, fat, food lover “get them duke boys“&quot;,&quot;https://dukesofhazzard.fandom.com/wiki/Boss_Hogg_(Sorrell_Booke)&quot;), </span>
+<span class="nc" id="L11">  CLETUS(&quot;roi&quot;,&quot;Region of Interest&quot;,&quot;Cletus&quot;,&quot;roscoes sidekick, loves daisy&quot;,&quot;https://dukesofhazzard.fandom.com/wiki/Cletus_Hogg&quot;),</span>
+<span class="nc" id="L12">  COOTER(&quot;camera-matrix&quot;,&quot;CameraMatrix and PerspectiveShift&quot;,&quot;Crazy Cooter&quot;,&quot;Mechanic, supports main characters, ”Breaker one, Breaker one, I might be crazy but I ain't dumb, Craaaazy Cooter comin' atcha, come on.”&quot;,&quot;https://dukesofhazzard.fandom.com/wiki/Cooter_Davenport_(Ben_Jones)&quot;), </span>
+<span class="nc" id="L13">  COY(&quot;test&quot;,&quot;Dummy character to be used in tests&quot;,&quot;Replacement BO&quot;,&quot;Unpopular blond haired cousin of BO&quot;,&quot;https://dukesofhazzard.fandom.com/wiki/Coy_Duke&quot;),</span>
+<span class="nc" id="L14">  DAISY(&quot;detect&quot;,&quot;Detectors - e.g. Lane and StartLight&quot;, &quot;Bo Peep&quot;,&quot;sister of main characters, pretty, gathers intel&quot;,&quot;https://en.wikipedia.org/wiki/Daisy_Duke&quot;), </span>
+<span class="nc" id="L15">  ENOS(&quot;geometry&quot;,&quot;Dipstick&quot;,&quot;Geometry&quot;,&quot;roscoes sidekick, loves daisy, helps the dukes&quot;,&quot;https://dukesofhazzard.fandom.com/wiki/Enos_Strate_(Sonny_Shroyer)&quot;), </span>
+<span class="nc" id="L16">  FLASH(&quot;watchdog&quot;,&quot;Heartbeat controller watchdog&quot;,&quot;Velvet ears&quot;,&quot;Roscoes dog&quot;,&quot;https://dukesofhazzard.fandom.com/wiki/Flash&quot;), </span>
+<span class="nc" id="L17">  GENERAL_LEE(&quot;remotecar&quot;,&quot;The car to be self driven&quot;,&quot;Jump again&quot;,&quot;The 1969 Dodge charger car&quot;,&quot;https://en.wikipedia.org/wiki/General_Lee_(car)&quot;),</span>
+<span class="nc" id="L18">  LUKE(&quot;action&quot;,&quot;Proc Image analysis results into actions&quot;,&quot;Lost sheep Luke&quot;,&quot;main character, sidekick, planner&quot;,&quot;https://en.wikipedia.org/wiki/Luke_Duke&quot;), </span>
+<span class="nc" id="L19">  ROSCO(&quot;imageview&quot;,&quot;lane detection debug image web server&quot;,&quot;Red Dog&quot;,&quot;comical sheriff, chasing, illegal speed traps, “hot pursuit“&quot;,&quot;https://dukesofhazzard.fandom.com/wiki/Rosco_Purvis_Coltrane_(James_Best)&quot;), </span>
+<span class="nc" id="L20">  UNCLE_JESSE(&quot;app&quot;,&quot;JavaFX app to monitor the car&quot;,&quot;Shepherd&quot;,&quot; guardian of main characters, wise man&quot;,&quot;https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Jesse&quot;);</span>
+
+  public String module;
+  public String purpose;
+  private String callsign;
+  private String comment;
+  private String url;
+
+  /**
+   * construct me
+   * @param module
+   * @param purpose
+   * @param callsign
+   * @param comment
+   * @param url
+   */
+<span class="nc" id="L36">  Characters(String module,String purpose,String callsign,String comment, String url) {</span>
+<span class="nc" id="L37">    this.module=module;</span>
+<span class="nc" id="L38">    this.purpose=purpose;</span>
+<span class="nc" id="L39">    this.callsign = callsign;</span>
+<span class="nc" id="L40">    this.comment=comment;</span>
+<span class="nc" id="L41">    this.url=url;</span>
+<span class="nc" id="L42">  }</span>
+
+  public String getCallsign() {
+<span class="nc" id="L45">    return callsign;</span>
+  }
+  public String getModule() {
+<span class="nc" id="L48">    return module;</span>
+  }
+
+  public String getPurpose() {
+<span class="nc" id="L52">    return purpose;</span>
+  }
+
+  public String getComment() {
+<span class="nc" id="L56">    return comment;</span>
+  }
+
+  public String getUrl() {
+<span class="nc" id="L60">    return url;</span>
+  }
+
+  public String description() {
+<span class="nc" id="L64">    String text=String.format(&quot;%s (%s -&gt; %s)&quot;,name(),module,purpose);</span>
+<span class="nc" id="L65">    return text;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,21 @@
+@startuml
+
+    class ServoRange [[ServoRange.html]] {
+        +ServoRange(int, ServoSide, ServoPosition, ServoSide)
+        +getStepSize(): int
+        +setStepSize(int): void
+        +getZeroPosition(): ServoPosition
+        +setZeroPosition(ServoPosition): void
+        +getSideN(): ServoSide
+        +setSideN(ServoSide): void
+        +getSideP(): ServoSide
+        +setSideP(ServoSide): void
+        +getMax(): ServoPosition
+        +getMin(): ServoPosition
+        +setMinMax(): void
+        +clampServoPos(long): int
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

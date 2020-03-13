@@ -1,0 +1,12 @@
+@startuml
+
+    class TestCharacters [[TestCharacters.html]] {
+        +spc(int): String
+        +capitalize(String): String
+        +output(String, Object[]): void
+        +testWikiMarkup(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

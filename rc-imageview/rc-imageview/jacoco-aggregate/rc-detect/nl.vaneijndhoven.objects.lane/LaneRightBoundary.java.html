@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>LaneRightBoundary.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-imageview</a> &gt; <a href="../index.html" class="el_bundle">rc-detect</a> &gt; <a href="index.source.html" class="el_package">nl.vaneijndhoven.objects.lane</a> &gt; <span class="el_source">LaneRightBoundary.java</span></div><h1>LaneRightBoundary.java</h1><pre class="source lang-java linenums">package nl.vaneijndhoven.objects.lane;
+
+import org.rcdukes.detect.linedetection.LineFilter;
+import org.rcdukes.geometry.Line;
+import nl.vaneijndhoven.objects.Boundary;
+
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Optional;
+
+public class LaneRightBoundary extends Boundary {
+
+<span class="nc" id="L13">    public static final double DEFAULT_ANGLE = BoundaryDefaults.DEFAULT_LANE_BOUNDARY_ANGLE;</span>
+<span class="nc" id="L14">    public static final double DEFAULT_TOLERANCE = BoundaryDefaults.DEFAULT_LANE_BOUNDARY_TOLERANCE;</span>
+
+    public LaneRightBoundary() {
+<span class="nc" id="L17">        this(DEFAULT_ANGLE, DEFAULT_TOLERANCE, false);</span>
+<span class="nc" id="L18">    }</span>
+
+    public LaneRightBoundary(double angle, double margin, boolean directional) {
+<span class="nc" id="L21">        super(new LineFilter(angle, margin, directional));</span>
+<span class="nc" id="L22">    }</span>
+
+    public Optional&lt;Line&gt; boundary(Collection&lt;Line&gt; lines) {
+<span class="nc" id="L25">        Comparator&lt;Line&gt; yComparator = (line1, line2) -&gt; Double.compare(line1.bottomMost().getY(), line2.bottomMost().getY());</span>
+<span class="nc" id="L26">        Comparator&lt;Line&gt; xComparator = (line1, line2) -&gt; Double.compare(line1.bottomMost().getX(), line2.bottomMost().getX());</span>
+<span class="nc" id="L27">        Comparator&lt;Line&gt; lineComparator = yComparator.thenComparing(xComparator.reversed());</span>
+<span class="nc" id="L28">        Optional&lt;Line&gt; nearest = candidates(lines).stream().sorted(lineComparator).findFirst();</span>
+<span class="nc" id="L29">        return nearest;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

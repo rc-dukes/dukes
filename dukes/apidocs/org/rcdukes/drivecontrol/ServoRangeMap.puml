@@ -1,0 +1,24 @@
+@startuml
+
+    abstract class ServoRangeMap [[ServoRangeMap.html]] {
+        +getRange(): ServoRange
+        +setRange(ServoRange): void
+        +getUnit(): String
+        +setUnit(String): void
+        +getName(): String
+        +setName(String): void
+        +atPercent(double): ServoPosition
+        +atValue(double): ServoPosition
+        +step(int): void
+        +newPosition(ServoPosition): ServoPosition
+        +setZero(): void
+        +positionInfo(): String
+        #assertGreater(double, double, String, String): void
+        #checkSide(ServoSide): void
+        #check(): void
+        +configureOrientation(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

@@ -1,0 +1,38 @@
+@startuml
+
+    namespace org.rcdukes.detect.linedetection {
+
+        class LineFilter [[LineFilter.html]] {
+            +LineFilter(double, double, boolean)
+            +filter(Collection<Line>): Collection<Line>
+            +debug(Mat): void
+        }
+
+        class HoughLinesLineDetector [[HoughLinesLineDetector.html]] {
+            +HoughLinesLineDetector()
+            +HoughLinesLineDetector(boolean, double, double, int, double, double)
+            +detect(Mat): Collection<Line>
+            +getRho(): double
+            +setRho(double): void
+            +getTheta(): double
+            +setTheta(double): void
+            +getThreshold(): int
+            +setThreshold(int): void
+            +getMinLineLength(): double
+            +setMinLineLength(double): void
+            +getMaxLineGap(): double
+            +setMaxLineGap(double): void
+            +isProbabilistic(): boolean
+            +setProbabilistic(boolean): void
+        }
+
+        interface org.rcdukes.detectors.LineDetector {
+            {abstract} +detect(Mat): Collection<Line>
+        }
+        org.rcdukes.detectors.LineDetector <|.. HoughLinesLineDetector
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

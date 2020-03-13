@@ -1,0 +1,11 @@
+@startuml
+
+    class LineFilter [[LineFilter.html]] {
+        +LineFilter(double, double, boolean)
+        +filter(Collection<Line>): Collection<Line>
+        +debug(Mat): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

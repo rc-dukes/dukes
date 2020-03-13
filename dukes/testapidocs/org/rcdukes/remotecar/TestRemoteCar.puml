@@ -1,0 +1,10 @@
+@startuml
+
+    class TestRemoteCar [[TestRemoteCar.html]] {
+        +testRemoteCar(): void
+        +testRemoteCarCommandLine(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

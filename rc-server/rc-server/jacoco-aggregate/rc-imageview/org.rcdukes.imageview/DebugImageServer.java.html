@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DebugImageServer.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-server</a> &gt; <a href="../index.html" class="el_bundle">rc-imageview</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.imageview</a> &gt; <span class="el_source">DebugImageServer.java</span></div><h1>DebugImageServer.java</h1><pre class="source lang-java linenums">package org.rcdukes.imageview;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.opencv.core.Mat;
+import org.rcdukes.common.Characters;
+import org.rcdukes.common.Config;
+import org.rcdukes.common.DukesVerticle;
+import org.rcdukes.common.Environment;
+import org.rcdukes.common.Events;
+import org.rcdukes.detect.Detector;
+import org.rcdukes.error.ErrorHandler;
+import org.rcdukes.video.Image;
+import org.rcdukes.video.ImageCollector;
+import org.rcdukes.video.ImageCollector.ImageType;
+import org.rcdukes.video.ImageUtils;
+import org.rcdukes.video.VideoRecorders;
+
+import io.vertx.core.Future;
+import io.vertx.rxjava.core.buffer.Buffer;
+import io.vertx.rxjava.core.eventbus.Message;
+import io.vertx.rxjava.core.http.HttpServer;
+import io.vertx.rxjava.core.http.HttpServerRequest;
+import io.vertx.rxjava.core.http.HttpServerResponse;
+
+/**
+ * Imageview verticle (Rosco)
+ *
+ */
+public class DebugImageServer extends DukesVerticle {
+<span class="nc" id="L32">  public static boolean SERVE_TEST_IMAGES=false;</span>
+
+  /**
+   * construct me with my character information
+   */
+  public DebugImageServer() {
+<span class="nc" id="L38">    super(Characters.ROSCO);</span>
+<span class="nc" id="L39">  }</span>
+
+  protected HttpServer server;
+  private VideoRecorders videoRecorders;
+
+  // @TODO Make configurable
+  // the format to be used for image encoding
+  // needs to be jpg to be able to record videos
+<span class="nc" id="L47">  public static enum ImageFormat {</span>
+<span class="nc" id="L48">    png, jpg</span>
+  }
+
+<span class="nc" id="L51">  public static ImageFormat imageFormat = ImageFormat.jpg;</span>
+<span class="nc" id="L52">  public static String exts[] = { &quot;.png&quot;, &quot;.jpg&quot; };</span>
+<span class="nc" id="L53">  public static String contentTypes[] = { &quot;image/png&quot;, &quot;image/jpeg&quot; };</span>
+  // @TODO Make configurable and adapt
+<span class="nc" id="L55">  public static double fps = 10;</span>
+
+  @Override
+  public void start(Future&lt;Void&gt; startFuture) throws Exception {
+<span class="nc" id="L59">    super.preStart();</span>
+    // @TODO - get config information from config Verticle (or shared data ...)
+<span class="nc" id="L61">    File mediaPath=new File(Environment.dukesHome+&quot;media&quot;);</span>
+<span class="nc" id="L62">    mediaPath.mkdirs();</span>
+<span class="nc" id="L63">    ImageUtils.MEDIA_PATH=mediaPath.getPath();</span>
+<span class="nc" id="L64">    int port = Config.getEnvironment().getInteger(Config.IMAGEVIEW_PORT);</span>
+<span class="nc" id="L65">    this.videoRecorders=new VideoRecorders(fps);</span>
+<span class="nc" id="L66">    server = vertx.createHttpServer().requestHandler(this::sendImage);</span>
+    // Now bind the server:
+<span class="nc" id="L68">    server.listen(port, res -&gt; {</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">      if (res.succeeded()) {</span>
+<span class="nc" id="L70">        startFuture.complete();</span>
+<span class="nc" id="L71">        consumer(Events.START_RECORDING, x -&gt; videoRecorders.start());</span>
+<span class="nc" id="L72">        consumer(Events.STOP_RECORDING, x -&gt; videoRecorders.stop());</span>
+<span class="nc" id="L73">        consumer(Events.SIMULATOR_IMAGE, this::receiveSimulatorImage);</span>
+<span class="nc" id="L74">        consumer(Events.PHOTO_SHOOT,x-&gt;shootPhoto());</span>
+<span class="nc" id="L75">        super.postStart();</span>
+<span class="nc" id="L76">        String msg = String.format(</span>
+<span class="nc" id="L77">            &quot;web server on port %d serving debug images in %s format&quot;, port,</span>
+<span class="nc" id="L78">            exts[imageFormat.ordinal()]);</span>
+<span class="nc" id="L79">        LOG.info(msg);</span>
+<span class="nc" id="L80">      } else {</span>
+<span class="nc" id="L81">        startFuture.fail(res.cause());</span>
+      }
+<span class="nc" id="L83">    });</span>
+<span class="nc" id="L84">  }</span>
+  
+  /**
+   * receive an image from the simulator
+   */
+  protected void receiveSimulatorImage(Message&lt;String&gt; message) {
+<span class="nc" id="L90">    String imgData = message.body(); // in DataURL format ...</span>
+    try {
+<span class="nc" id="L92">      Mat imageMat=ImageUtils.matFromDataUrl(imgData, &quot;jpg&quot;);</span>
+<span class="nc" id="L93">      ImageCollector imageCollector = Detector.getImageCollector();</span>
+<span class="nc" id="L94">      imageCollector.addImage(imageMat, ImageType.simulator);</span>
+<span class="nc" id="L95">    } catch (IOException e) {</span>
+<span class="nc" id="L96">      ErrorHandler.getInstance().handle(e);</span>
+<span class="nc" id="L97">    }</span>
+<span class="nc" id="L98">  }</span>
+  
+  /**
+   * // @FIXME - still too hacky - need an Observable here
+   * @param imageType
+   * @return
+   */
+  public Image getNextImage(ImageType imageType) {
+<span class="nc" id="L106">    ImageCollector imageCollector = Detector.getImageCollector();</span>
+<span class="nc" id="L107">    Image image = imageCollector.getImage(imageType, SERVE_TEST_IMAGES);</span>
+<span class="nc" id="L108">    return image;</span>
+  }
+ 
+  /**
+   * create a single shot video
+   */
+  protected void shootPhoto() {
+<span class="nc" id="L115">    ImageCollector imageCollector = Detector.getImageCollector();</span>
+<span class="nc" id="L116">    imageCollector.writeImages();</span>
+<span class="nc" id="L117">  }</span>
+
+  /**
+   * send an image for the given request
+   * 
+   * @param request
+   */
+  public void sendImage(HttpServerRequest request) {
+<span class="nc" id="L125">    String type = request.getParam(&quot;type&quot;);</span>
+<span class="nc" id="L126">    String mode = request.getParam(&quot;mode&quot;);</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">    if (type == null)</span>
+<span class="nc" id="L128">      type = &quot;camera&quot;;</span>
+<span class="nc" id="L129">    ImageType imageType = ImageType.valueOf(type);</span>
+<span class="nc bnc" id="L130" title="All 4 branches missed.">    if (mode != null &amp;&amp; mode.equals(&quot;stream&quot;)) {</span>
+<span class="nc" id="L131">      sendStream(request, imageType);</span>
+    } else {
+<span class="nc" id="L133">      sendSingleImage(request, imageType);</span>
+    }
+<span class="nc" id="L135">  }</span>
+
+  /**
+   * send a single Image
+   * 
+   * @param request
+   * @param imageType
+   */
+  public void sendSingleImage(HttpServerRequest request, ImageType imageType) {
+<span class="nc" id="L144">    Mat mat = null;</span>
+<span class="nc" id="L145">    Image image=this.getNextImage(imageType);</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">    if (image != null) {</span>
+<span class="nc" id="L147">      mat = image.getFrame();</span>
+<span class="nc" id="L148">      this.sendImageBytes(request, image.getImageBytes());</span>
+    }
+    // optionally record
+<span class="nc" id="L151">    videoRecorders.recordFrame(mat,imageType);</span>
+<span class="nc" id="L152">  }</span>
+  
+  /**
+   * send the given bytes as an image
+   * 
+   * @param bytes
+   */
+  public void sendImageBytes(HttpServerRequest request, byte[] bytes) {
+<span class="nc" id="L160">    HttpServerResponse response = request.response();</span>
+<span class="nc" id="L161">    String contentType = contentTypes[imageFormat.ordinal()];</span>
+<span class="nc" id="L162">    response.putHeader(&quot;content-type&quot;, contentType);</span>
+<span class="nc" id="L163">    response.putHeader(&quot;content-length&quot;, &quot;&quot; + bytes.length);</span>
+<span class="nc" id="L164">    Buffer data = Buffer.buffer().appendBytes(bytes);</span>
+<span class="nc" id="L165">    response.write(data);</span>
+<span class="nc" id="L166">    response.close();</span>
+<span class="nc" id="L167">  }</span>
+
+  /**
+   * stream images
+   * 
+   * @param request
+   * @param imageType
+   */
+  private void sendStream(HttpServerRequest request, ImageType imageType) {
+<span class="nc" id="L176">    HttpServerResponse response = request.response();</span>
+<span class="nc" id="L177">    Runnable multipartStreamer = new MultipartStreamer(this, response, imageType);</span>
+<span class="nc" id="L178">    Thread streamThread = new Thread(multipartStreamer);</span>
+<span class="nc" id="L179">    streamThread.start();</span>
+<span class="nc" id="L180">  }</span>
+
+  /**
+   * delegator
+   * @param frame
+   * @param imageType
+   */
+  public void recordFrame(Mat frame, ImageType imageType) {
+<span class="nc" id="L188">    this.videoRecorders.recordFrame(frame,imageType);</span>
+<span class="nc" id="L189">  }</span>
+  
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

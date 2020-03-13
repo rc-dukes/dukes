@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>MJpegDecoder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-server</a> &gt; <a href="../index.html" class="el_bundle">rc-imageview</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.imageview</a> &gt; <span class="el_source">MJpegDecoder.java</span></div><h1>MJpegDecoder.java</h1><pre class="source lang-java linenums">package org.rcdukes.imageview;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import org.asynchttpclient.handler.BodyDeferringAsyncHandler.BodyDeferringInputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.observables.StringObservable;
+import rx.schedulers.Schedulers;
+
+/**
+ * reactive MJPegDecoder
+ * 
+ * @author wf
+ *
+ */
+public class MJpegDecoder extends Subscriber&lt;byte[]&gt; {
+<span class="nc" id="L24">  protected static final Logger LOG = LoggerFactory</span>
+<span class="nc" id="L25">      .getLogger(MJpegDecoder.class);</span>
+
+<span class="nc" id="L27">  int prev = 0;</span>
+<span class="nc" id="L28">  int cur = 0;</span>
+  private ByteArrayOutputStream jpgOut;
+  private byte[] curFrame;
+<span class="nc" id="L31">  public static boolean debug = false;</span>
+<span class="nc" id="L32">  private int bufferIndex = 0;</span>
+<span class="nc" id="L33">  private int frameIndex = 0;</span>
+  FileOutputStream fos;
+
+  private int bufferSize;
+
+  private Observable&lt;byte[]&gt; mjpegSubscription;
+
+  private MJpegHandler mjpegHandler;
+
+  /**
+   * open the decoder for the given stream
+   * 
+   * @param mJpegHandler
+   * @param bufferSize
+   */
+<span class="nc" id="L48">  public MJpegDecoder(MJpegHandler mJpegHandler) {</span>
+<span class="nc" id="L49">    this.mjpegHandler = mJpegHandler;</span>
+<span class="nc" id="L50">    this.curFrame = new byte[0];</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">    if (debug) {</span>
+      try {
+<span class="nc" id="L53">        fos = new FileOutputStream(&quot;/tmp/decoder.mjpg&quot;);</span>
+<span class="nc" id="L54">      } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L55">        handle(e);</span>
+<span class="nc" id="L56">      }</span>
+    }
+<span class="nc" id="L58">  }</span>
+
+  @Override
+  public void onCompleted() {
+    try {
+<span class="nc" id="L63">      this.mjpegHandler.close();</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">      if (fos != null) {</span>
+<span class="nc" id="L65">        fos.close();</span>
+      }
+<span class="nc" id="L67">      fos = null;</span>
+<span class="nc" id="L68">    } catch (IOException e) {</span>
+<span class="nc" id="L69">      onError(e);</span>
+<span class="nc" id="L70">    }</span>
+<span class="nc" id="L71">  }</span>
+
+  @Override
+  public void onError(Throwable e) {
+<span class="nc" id="L75">    handle(e);</span>
+<span class="nc" id="L76">  }</span>
+
+  @Override
+  public void onNext(byte[] buffer) {
+<span class="nc bnc" id="L80" title="All 2 branches missed.">    if (debug) {</span>
+<span class="nc" id="L81">      String msg = String.format(&quot;buffer %6d available %9d kB read&quot;,</span>
+<span class="nc" id="L82">          ++bufferIndex, bufferIndex * bufferSize / 1024);</span>
+<span class="nc" id="L83">      LOG.info(msg);</span>
+      try {
+<span class="nc" id="L85">        fos.write(curFrame);</span>
+<span class="nc" id="L86">        fos.flush();</span>
+<span class="nc" id="L87">      } catch (IOException e) {</span>
+<span class="nc" id="L88">        handle(e);</span>
+<span class="nc" id="L89">      }</span>
+
+    }
+    // loop over all bytes in the buffer
+<span class="nc bnc" id="L93" title="All 2 branches missed.">    for (int cur : buffer) {</span>
+      // Content-Type: multipart/x-mixed-replace; boundary=
+      // will have -- we could detect it here
+<span class="nc bnc" id="L96" title="All 2 branches missed.">      if (debug) {</span>
+<span class="nc bnc" id="L97" title="All 4 branches missed.">        if (prev == 0x2D &amp;&amp; cur == 0x2D) {</span>
+<span class="nc" id="L98">          LOG.info(&quot;boundary detected&quot;);</span>
+        }
+      }
+      // check for JPEG start bytes
+<span class="nc bnc" id="L102" title="All 4 branches missed.">      if (prev == 0xFFFFFFFF &amp;&amp; cur == 0xFFFFFFD8) {</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (debug) {</span>
+<span class="nc" id="L104">          String msg = String.format(&quot;frame %6d started&quot;, frameIndex + 1);</span>
+<span class="nc" id="L105">          LOG.info(msg);</span>
+        }
+<span class="nc" id="L107">        jpgOut = new ByteArrayOutputStream(bufferSize);</span>
+        // first byte needs to be written to output
+<span class="nc" id="L109">        jpgOut.write((byte) prev);</span>
+      }
+      // if within the frame write all bytes
+<span class="nc bnc" id="L112" title="All 2 branches missed.">      if (jpgOut != null) {</span>
+<span class="nc" id="L113">        jpgOut.write((byte) cur);</span>
+        // check for JPEG end bytes
+        // if found the frame is finished
+<span class="nc bnc" id="L116" title="All 4 branches missed.">        if (prev == 0xFFFFFFFF &amp;&amp; cur == 0xFFFFFFD9) {</span>
+          // create the byte array of the current jpeg frame
+<span class="nc" id="L118">          curFrame = jpgOut.toByteArray();</span>
+          try {
+<span class="nc" id="L120">            jpgOut.close();</span>
+<span class="nc" id="L121">            jpgOut = null;</span>
+<span class="nc" id="L122">          } catch (IOException e) {</span>
+<span class="nc" id="L123">            onError(e);</span>
+<span class="nc" id="L124">          }</span>
+
+<span class="nc bnc" id="L126" title="All 2 branches missed.">          if (debug) {</span>
+<span class="nc" id="L127">            String msg = String.format(&quot;frame %6d available&quot;, ++frameIndex);</span>
+<span class="nc" id="L128">            LOG.info(msg);</span>
+          }
+
+          // emit the current frame
+        }
+      }
+<span class="nc" id="L134">      prev = cur;</span>
+    }
+<span class="nc" id="L136">  }</span>
+
+  private void handle(Throwable th) {
+<span class="nc" id="L139">    LOG.error(th.getMessage());</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">    if (debug)</span>
+<span class="nc" id="L141">      th.printStackTrace();</span>
+<span class="nc" id="L142">  }</span>
+
+  /**
+   * open me with the given bufferSize
+   * 
+   * @param bufferSize
+   *          e.g. 64 KByte Buffer - 10.5 msecs/100 FPS at 1920x1080
+   *          1000/(1920*1080*3/1024/64)
+   */
+  public void open(int bufferSize) {
+<span class="nc" id="L152">    this.bufferSize = bufferSize;</span>
+<span class="nc" id="L153">    BodyDeferringInputStream inputStream = this.mjpegHandler.getInputStream();</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">    if (inputStream != null) {</span>
+<span class="nc" id="L155">      mjpegSubscription = StringObservable.from(inputStream, bufferSize)</span>
+<span class="nc" id="L156">          .subscribeOn(Schedulers.io()).observeOn(Schedulers.newThread());</span>
+<span class="nc" id="L157">      mjpegSubscription.subscribe(this);</span>
+    }
+<span class="nc" id="L159">  }</span>
+
+  /**
+   * close me
+   */
+  public void close() {
+<span class="nc" id="L165">    this.unsubscribe();</span>
+<span class="nc" id="L166">    this.onCompleted();</span>
+<span class="nc" id="L167">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

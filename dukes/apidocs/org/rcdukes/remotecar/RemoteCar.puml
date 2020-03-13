@@ -1,0 +1,14 @@
+@startuml
+
+    class RemoteCar [[RemoteCar.html]] {
+        #parser: CmdLineParser
+        #debug: boolean
+        +start(): void
+        +parseArguments(String[]): void
+        +mainInstance(String[]): void
+        {static} +main(String[]): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

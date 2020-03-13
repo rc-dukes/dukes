@@ -1,0 +1,15 @@
+@startuml
+
+    class VideoRecorders [[VideoRecorders.html]] {
+        +VideoRecorders(double)
+        +isStarted(): boolean
+        +toggle(): VideoRecorders.VideoInfo
+        +start(): VideoRecorders.VideoInfo
+        +recordFrame(Mat, ImageCollector.ImageType): void
+        +recordFrame(ImageCollector, boolean): void
+        +stop(): VideoRecorders.VideoInfo
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

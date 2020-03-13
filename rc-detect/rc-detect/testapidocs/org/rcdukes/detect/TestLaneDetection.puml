@@ -1,0 +1,17 @@
+@startuml
+
+    class TestLaneDetection [[TestLaneDetection.html]] {
+        +detect(Image, String, double, double): LaneDetectionResult
+        +testLaneDetection(): void
+        +testLaneDetectionWithImageFetcher(): void
+        +getLaneDetectionTestImage(): Image
+        +testLaneOrientation(): void
+        +testOptional(): void
+        +testJackson(): void
+        +testDetermineCurrentAngle(): void
+        +testDebugInfo(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

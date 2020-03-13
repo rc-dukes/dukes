@@ -1,0 +1,21 @@
+@startuml
+
+    class ImageCollector [[ImageCollector.html]] {
+        {static} #LOG: Logger
+        {static} +testImagePaths: String[]
+        +ImageCollector()
+        +ImageCollector(String, boolean)
+        +getTestImage(ImageCollector.ImageType): Image
+        +createImage(Mat, ImageCollector.ImageType): Image
+        +addImage(Mat, ImageCollector.ImageType): Image
+        +addImage(Image, ImageCollector.ImageType): Image
+        #getImages(): Map<ImageCollector.ImageType, Image>
+        +getImage(ImageCollector.ImageType, boolean): Image
+        +createObservable(ImageCollector.ImageType): Observable<Image>
+        +writeImages(): void
+        +addImageInfo(String): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

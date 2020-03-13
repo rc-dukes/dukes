@@ -1,0 +1,181 @@
+@startuml
+
+    namespace org.rcdukes.detect {
+
+        class TestLaneDetection [[TestLaneDetection.html]] {
+            +detect(Image, String, double, double): LaneDetectionResult
+            +testLaneDetection(): void
+            +testLaneDetectionWithImageFetcher(): void
+            +getLaneDetectionTestImage(): Image
+            +testLaneOrientation(): void
+            +testOptional(): void
+            +testJackson(): void
+            +testDetermineCurrentAngle(): void
+            +testDebugInfo(): void
+        }
+
+        class BaseDetectTest [[BaseDetectTest.html]] {
+            {static} +setup(): void
+            +getTestImage(): Mat
+        }
+
+        class TestHoughLinesDetector [[TestHoughLinesDetector.html]] {
+            +getCanny(Mat, double, double, int): Mat
+            +getTestImage2(): Mat
+            +testProbabilisticHoughLinesDetector(): void
+            +testHoughLinesDetector(): void
+        }
+
+        class TestSuite [[TestSuite.html]] {
+            {static} +isTravis(): boolean
+        }
+
+        class TestImageCollector [[TestImageCollector.html]] {
+            {static} +setup(): void
+            +testImageCollector(): void
+            +testImageCollectorObservable(): void
+        }
+
+        class TestCannyConfig [[TestCannyConfig.html]] {
+            +testCannyConfig(): void
+        }
+
+        class TestImageFetcher [[TestImageFetcher.html]] {
+            {static} +testSource: String
+            {static} +getTestImageFetcher(): ImageFetcher
+            +testImageFetcher(): void
+            +testImageFetcherObservable(): void
+            +testImageFetcherObservableSample(): void
+            +testStaticImage(): void
+        }
+
+        class CameraConfig [[CameraConfig.html]] {
+            +getAngleOffset(): double
+            +setAngleOffset(double): void
+            +getInterval(): long
+            +getRoiy(): double
+            +setRoiy(double): void
+            +getRoih(): double
+            +setRoih(double): void
+            +getSource(): String
+            +setSource(String): void
+            +getFps(): double
+            +setFps(double): void
+            +isShowStoppingZone(): boolean
+            +setShowStoppingZone(boolean): void
+        }
+
+        class ImageFetcher [[ImageFetcher.html]] {
+            {static} #LOG: Logger
+            {static} +DEFAULT_FPS: double
+            +debug: boolean
+            #frameIndex: int
+            #failureCount: int
+            #maxFailureCount: int
+            #fps: double
+            +ImageFetcher(String)
+            +getFps(): double
+            +setFps(double): void
+            +getFrameIndex(): int
+            +isStaticImage(): boolean
+            +setStaticImage(boolean): void
+            +open(): boolean
+            +close(): void
+            +waitForNextFrame(): long
+            +fetch(): Image
+            +createNextImage(Mat, long): Image
+            +toObservable(): Observable<Image>
+            +hasNext(): boolean
+            +isClosed(): boolean
+        }
+
+        class StartLightDetectorImpl [[StartLightDetectorImpl.html]] {
+            +StartLightDetectorImpl()
+            +StartLightDetectorImpl(int, int, int, int, int, int)
+            +StartLightDetectorImpl(StartLightDetectorImpl.Config)
+            +detect(Image): StartLight
+            +getFrame(): Mat
+            +withImageCollector(ImageCollector): StartLightDetectorImpl
+        }
+
+        class org.rcdukes.detect.StartLightDetectorImpl.Config [[StartLightDetectorImpl.Config.html]] {
+            +getHueStart(): double
+            +setHueStart(double): void
+            +getHueStop(): double
+            +setHueStop(double): void
+            +getSaturationStart(): double
+            +setSaturationStart(double): void
+            +getSaturationStop(): double
+            +setSaturationStop(double): void
+            +getValueStart(): double
+            +setValueStart(double): void
+            +getValueStop(): double
+            +setValueStop(double): void
+        }
+
+        class ImageObserver [[ImageObserver.html]] {
+            +error: Throwable
+            +cols: int
+            +rows: int
+            +completed: boolean
+            +debug: boolean
+            +stackTraceText: String
+            +onComplete(): void
+            +onError(Throwable): void
+            +onNext(Image): void
+            +onSubscribe(Disposable): void
+            +stop(): void
+            +onNext(Object): void
+        }
+
+        class Detector [[Detector.html]] {
+            {static} +getImageCollector(): ImageCollector
+            +start(): void
+        }
+
+        class LaneDetector [[LaneDetector.html]] {
+            +LaneDetector(EdgeDetector, LineDetector, CameraConfig, CameraMatrix, ImageCollector)
+            {static} +getDefault(): LaneDetector
+            +detect(Image): LaneDetectionResult
+            +getMatrix(): CameraMatrix
+            +setMatrix(CameraMatrix): void
+            +getEdgeDetector(): EdgeDetector
+            +setEdgeDetector(EdgeDetector): void
+            +getLineDetector(): LineDetector
+            +setLineDetector(LineDetector): void
+            +getCollector(): ImageCollector
+            +setCollector(ImageCollector): void
+        }
+
+        BaseDetectTest <|-- TestLaneDetection
+
+        BaseDetectTest <|-- TestHoughLinesDetector
+
+        BaseDetectTest <|-- TestImageFetcher
+
+        interface org.rcdukes.detectors.StartLightDetector {
+            {abstract} +detect(Image): StartLight
+            {abstract} +withImageCollector(ImageCollector): StartLightDetector
+        }
+        org.rcdukes.detectors.StartLightDetector <|.. StartLightDetectorImpl
+
+        StartLightDetectorImpl +-- org.rcdukes.detect.StartLightDetectorImpl.Config
+
+        interface io.reactivex.Observer<T> {
+            {abstract} +onSubscribe(Disposable): void
+            {abstract} +onNext(T): void
+            {abstract} +onError(Throwable): void
+            {abstract} +onComplete(): void
+        }
+        io.reactivex.Observer <|.. ImageObserver
+
+        abstract class org.rcdukes.common.DukesVerticle
+        org.rcdukes.common.DukesVerticle <|-- Detector
+
+        LaneDetector --> CameraConfig: cameraConfig
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

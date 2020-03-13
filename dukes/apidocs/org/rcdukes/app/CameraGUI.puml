@@ -1,0 +1,15 @@
+@startuml
+
+    class CameraGUI [[CameraGUI.html]] {
+        +roiy: LabeledValueSlider
+        +roih: LabeledValueSlider
+        +angleOffset: LabeledValueSlider
+        +imageWidth: int
+        +showStoppingZone: CheckBox
+        +initialize(): void
+        +applySliderValues(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

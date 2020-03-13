@@ -1,0 +1,16 @@
+@startuml
+
+    class MJpegDecoder [[MJpegDecoder.html]] {
+        {static} #LOG: Logger
+        {static} +debug: boolean
+        +MJpegDecoder(MJpegHandler)
+        +onCompleted(): void
+        +onError(Throwable): void
+        +onNext(byte[]): void
+        +open(int): void
+        +close(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

@@ -1,0 +1,19 @@
+@startuml
+
+    class VideoRecorders.VideoInfo [[VideoRecorders.VideoInfo.html]] {
+        +fps: double
+        +frameIndex: int
+        +minFrameIndex: Integer
+        +maxFrameIndex: Integer
+        +path: String
+        +VideoInfo()
+        +VideoInfo(double)
+        +VideoInfo(VideoRecorders.VideoInfo)
+        +setFrameIndex(Integer): void
+        +setPath(String): void
+        {static} +getNavigationFile(File): File
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

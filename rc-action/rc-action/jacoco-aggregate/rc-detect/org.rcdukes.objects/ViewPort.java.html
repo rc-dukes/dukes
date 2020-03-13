@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ViewPort.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-action</a> &gt; <a href="../index.html" class="el_bundle">rc-detect</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.objects</a> &gt; <span class="el_source">ViewPort.java</span></div><h1>ViewPort.java</h1><pre class="source lang-java linenums">package org.rcdukes.objects;
+
+import org.rcdukes.geometry.Point2D;
+
+/**
+ * a viewport
+ *
+ */
+public class ViewPort {
+
+    private Point2D origin;
+    private double width;
+    private double height;
+
+
+    /**
+     * construct me
+     * @param origin
+     * @param width
+     * @param height
+     */
+<span class="nc" id="L22">    public ViewPort(Point2D origin, double width, double height) {</span>
+<span class="nc" id="L23">        this.origin = origin;</span>
+<span class="nc" id="L24">        this.width = width;</span>
+<span class="nc" id="L25">        this.height = height;</span>
+<span class="nc" id="L26">    }</span>
+
+    public Point2D getOrigin() {
+<span class="nc" id="L29">        return origin;</span>
+    }
+
+    public double getWidth() {
+<span class="nc" id="L33">        return width;</span>
+    }
+
+    public double getHeight() {
+<span class="nc" id="L37">        return height;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

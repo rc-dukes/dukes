@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>Config xref</title>
+<link type="text/css" rel="stylesheet" href="../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../apidocs/org/rcdukes/common/Config.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> org.rcdukes.common;
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <strong class="jxr_keyword">import</strong> ch.qos.logback.classic.Level;
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <strong class="jxr_keyword">import</strong> ch.qos.logback.classic.LoggerContext;
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <strong class="jxr_keyword">import</strong> io.vertx.core.logging.SLF4JLogDelegateFactory;
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">import</strong> io.vertx.core.spi.cluster.ClusterManager;
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> java.net.InetAddress;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> java.net.NetworkInterface;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.net.SocketException;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> java.util.Collection;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> java.util.Collections;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> java.util.stream.Collectors;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> * Configuration for Logging and HazelCastClusterManager Environment</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../org/rcdukes/common/Config.html">Config</a> {
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger LOG = LoggerFactory.getLogger(Config.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String WEBCONTROL_PORT = <span class="jxr_string">"webcontrol.port"</span>;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String IMAGEVIEW_PORT = <span class="jxr_string">"imageview.port"</span>;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String REMOTECAR_HOST = <span class="jxr_string">"remotecar.host"</span>;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String CAMERA_URL = <span class="jxr_string">"camera.url"</span>;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>    <em class="jxr_comment">// watchdog configuration</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String WATCHDOG_HEARTBEAT_INTERVAL_MS = <span class="jxr_string">"watchdog.heartbeat.interval.ms"</span>;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String WATCHDOG_MAX_MISSED_BEATS = <span class="jxr_string">"watchdog.max.missed.beats"</span>;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>    <em class="jxr_comment">// wheel configuration</em>
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String WHEEL_GPIO = <span class="jxr_string">"wheel.gpio"</span>;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String WHEEL_ORIENTATION=<span class="jxr_string">"wheel.orientation"</span>;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String WHEEL_CENTER = <span class="jxr_string">"wheel.center"</span>;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String WHEEL_STEP_SIZE = <span class="jxr_string">"wheel.stepsize"</span>;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String WHEEL_MAX_LEFT = <span class="jxr_string">"wheel.max.left"</span>;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String WHEEL_MAX_RIGHT = <span class="jxr_string">"wheel.max.right"</span>;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String WHEEL_MAX_LEFT_ANGLE = <span class="jxr_string">"wheel.max.left.angle"</span>;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String WHEEL_MAX_RIGHT_ANGLE = <span class="jxr_string">"wheel.max.right.angle"</span>;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>    <em class="jxr_comment">// led configuration</em>
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String LED_ON = <span class="jxr_string">"led.on"</span>;
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String LED_OFF = <span class="jxr_string">"led.off"</span>;
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String LED_GPIO = <span class="jxr_string">"led.gpio"</span>;
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>    <em class="jxr_comment">// engine configuration</em>
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String ENGINE_GPIO = <span class="jxr_string">"engine.gpio"</span>;
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String ENGINE_ORIENTATION=<span class="jxr_string">"engine.orientation"</span>;
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String ENGINE_SPEED_ZERO = <span class="jxr_string">"engine.speed.zero"</span>;
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String ENGINE_STEP_SIZE = <span class="jxr_string">"engine.stepsize"</span>;
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String ENGINE_MIN_SPEED_REVERSE = <span class="jxr_string">"engine.min.speed.reverse"</span>;
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String ENGINE_MAX_SPEED_REVERSE = <span class="jxr_string">"engine.max.speed.reverse"</span>;
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String ENGINE_MIN_SPEED_FORWARD = <span class="jxr_string">"engine.min.speed.forward"</span>;
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String ENGINE_MAX_SPEED_FORWARD = <span class="jxr_string">"engine.max.speed.forward"</span>;
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String ENGINE_MIN_VELOCITY_FORWARD = <span class="jxr_string">"engine.min.velocity.forward"</span>;
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String ENGINE_MAX_VELOCITY_FORWARD = <span class="jxr_string">"engine.max.velocity.forward"</span>;
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String ENGINE_MIN_VELOCITY_REVERSE = <span class="jxr_string">"engine.min.velocity.reverse"</span>;
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String ENGINE_MAX_VELOCITY_REVERSE = <span class="jxr_string">"engine.max.velocity.reverse"</span>;
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>    <em class="jxr_comment">// Commands</em>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String POSITION_LEFT = <span class="jxr_string">"left"</span>;
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String POSITION_RIGHT = <span class="jxr_string">"right"</span>;
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String POSITION_CENTER = <span class="jxr_string">"center"</span>;
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String SERVO_COMMAND = <span class="jxr_string">"servo.command"</span>;
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String ZERO = <span class="jxr_string">"zero"</span>;
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>  
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  <em class="jxr_javadoccomment">   * configure the logging</em>
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> configureLogging() {
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>      System.setProperty(
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          io.vertx.core.logging.LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_NAME,
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>          SLF4JLogDelegateFactory.<strong class="jxr_keyword">class</strong>.getName());
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>      LoggerContext logConfig = (LoggerContext) LoggerFactory.getILoggerFactory();
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>      logConfig.getLogger(<span class="jxr_string">"ROOT"</span>).setLevel(Level.TRACE);
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>      logConfig.getLogger(<span class="jxr_string">"nl.vaneijndhoven.dukes.imageview"</span>).setLevel(Level.INFO);
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>      logConfig.getLogger(<span class="jxr_string">"io.vertx"</span>).setLevel(Level.INFO);
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>      logConfig.getLogger(<span class="jxr_string">"com.hazelcast"</span>).setLevel(Level.INFO);
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>      logConfig.getLogger(<span class="jxr_string">"com.hazelcast.nio.tcp"</span>).setLevel(Level.ERROR);
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>      logConfig.getLogger(<span class="jxr_string">"io.netty"</span>).setLevel(Level.INFO);
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>    }
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>  
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>  <em class="jxr_javadoccomment">   * create a ClusterManager with a default hazelcast configuration using slf4j</em>
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>  <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>  <em class="jxr_javadoccomment">   * @return - the ClusterManager</em>
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> ClusterManager createHazelcastConfig() {
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      com.hazelcast.config.Config hazelcastConfig = <strong class="jxr_keyword">new</strong> com.hazelcast.config.Config();
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>      hazelcastConfig.setProperty(<span class="jxr_string">"hazelcast.logging.type"</span>, <span class="jxr_string">"slf4j"</span>);
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>      ClusterManager mgr = <strong class="jxr_keyword">new</strong> HazelcastClusterManager(hazelcastConfig);
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>      <strong class="jxr_keyword">return</strong> mgr;
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>    }
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>  <em class="jxr_javadoccomment">   * get my ip addresses</em>
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>  <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L100" href="#L100">100</a> <em class="jxr_javadoccomment">   * @return - my ip addresses</em>
+<a class="jxr_linenumber" name="L101" href="#L101">101</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> List&lt;String&gt; getMyIpAddresses() {
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>       <strong class="jxr_keyword">return</strong> Collections.list(NetworkInterface.getNetworkInterfaces()).stream()
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>           .map(iface -&gt; Collections.list(iface.getInetAddresses()))
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>           .flatMap(Collection::stream).map(InetAddress::getHostAddress)
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>           .collect(Collectors.toList());
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>     } <strong class="jxr_keyword">catch</strong> (SocketException e) {
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>       LOG.error(<span class="jxr_string">"Error while determining IP addresses: "</span>, e);
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>     }
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>   }
+<a class="jxr_linenumber" name="L113" href="#L113">113</a> 
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L115" href="#L115">115</a> <em class="jxr_javadoccomment">   * get the Environment</em>
+<a class="jxr_linenumber" name="L116" href="#L116">116</a> <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L117" href="#L117">117</a> <em class="jxr_javadoccomment">   * @return an instance of the Enviroment interface</em>
+<a class="jxr_linenumber" name="L118" href="#L118">118</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a href="../../../org/rcdukes/common/Environment.html">Environment</a> getEnvironment() {
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">return</strong> Environment.getInstance();
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>   }
+<a class="jxr_linenumber" name="L122" href="#L122">122</a> 
+<a class="jxr_linenumber" name="L123" href="#L123">123</a> }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2020. All rights reserved.</div>
+</body>
+</html>

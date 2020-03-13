@@ -1,0 +1,13 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+rc-camera-matrix/rc-geometry,org.rcdukes.geometry,Lane,15,0,0,0,6,0,3,0,3,0
+rc-camera-matrix/rc-geometry,org.rcdukes.geometry,Line,781,0,28,0,99,0,44,0,30,0
+rc-camera-matrix/rc-geometry,org.rcdukes.geometry,Line.Vector,83,0,0,0,10,0,7,0,7,0
+rc-camera-matrix/rc-geometry,org.rcdukes.geometry,LaneDetectionResult,53,0,4,0,7,0,6,0,4,0
+rc-camera-matrix/rc-geometry,org.rcdukes.geometry,Polygon,274,0,16,0,46,0,19,0,11,0
+rc-camera-matrix/rc-geometry,org.rcdukes.geometry,Point,272,0,14,0,46,0,22,0,15,0
+rc-camera-matrix/rc-geometry,org.rcdukes.geometry.pointinplane,CrossingNumber,110,0,14,0,10,0,10,0,3,0
+rc-camera-matrix/rc-geometry,org.rcdukes.geometry.pointinplane,WindingNumbers,149,0,22,0,23,0,19,0,8,0
+rc-camera-matrix/rc-roi,org.rcdukes.roi,ROI,103,0,0,0,18,0,4,0,4,0
+rc-camera-matrix/rc-roi,org.rcdukes.opencv,NativeLibrary,134,0,8,0,32,0,14,0,9,0
+rc-camera-matrix/rc-roi,org.rcdukes.opencv,OsCheck.OSType,44,0,0,0,2,0,1,0,1,0
+rc-camera-matrix/rc-roi,org.rcdukes.opencv,OsCheck,40,0,10,0,11,0,7,0,2,0

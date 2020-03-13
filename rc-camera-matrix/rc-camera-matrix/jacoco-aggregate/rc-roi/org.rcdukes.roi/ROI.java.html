@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ROI.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-camera-matrix</a> &gt; <a href="../index.html" class="el_bundle">rc-roi</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.roi</a> &gt; <span class="el_source">ROI.java</span></div><h1>ROI.java</h1><pre class="source lang-java linenums">package org.rcdukes.roi;
+
+import java.util.Locale;
+
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Size;
+
+/**
+ * a region of interest relative to the screen
+ *
+ */
+public class ROI {
+  double rx, ry, rw, rh;
+  String name;
+
+  /**
+   * construct me with the given relative
+   * 
+   * @param rx
+   *          - relative x 0-1
+   * @param ry
+   *          - relative y 0-1
+   * @param rw
+   *          - relative width 0-1
+   * @param rh
+   *          - relative height 0-1
+   */
+<span class="nc" id="L30">  public ROI(String name,double rx, double ry, double rw, double rh) {</span>
+<span class="nc" id="L31">    this.name=name;</span>
+<span class="nc" id="L32">    this.rx = rx;</span>
+<span class="nc" id="L33">    this.ry = ry;</span>
+<span class="nc" id="L34">    this.rw = rw;</span>
+<span class="nc" id="L35">    this.rh = rh;</span>
+<span class="nc" id="L36">  }</span>
+
+  /**
+   * create a rectangle based on the given OpenCV Size
+   * 
+   * @param base
+   *          - the base size to use
+   * @return - the rectangle
+   */
+  public Rect roiRect(Size base) {
+<span class="nc" id="L46">    double roiX = base.width * rx;</span>
+<span class="nc" id="L47">    double roiY = base.height * ry;</span>
+<span class="nc" id="L48">    double roiWidth = base.width * rw;</span>
+<span class="nc" id="L49">    double roiHeight = base.height * rh;</span>
+
+<span class="nc" id="L51">    Point origin = new Point(roiX, roiY);</span>
+<span class="nc" id="L52">    Size roiSize = new Size(roiWidth, roiHeight);</span>
+
+<span class="nc" id="L54">    return new Rect(origin, roiSize);</span>
+  }
+
+  /**
+   * construct the region of interest image from the given base image
+   * 
+   * @param image
+   * @return the region of interest image
+   */
+  public Mat region(Mat image) {
+    // Use 2-arg constructor to create region image backed by original image
+    // data
+<span class="nc" id="L66">    Rect roiRect = roiRect(image.size());</span>
+<span class="nc" id="L67">    return new Mat(image,roiRect);</span>
+  }
+  
+  public String toString() {
+<span class="nc" id="L71">    String text=String.format(Locale.ENGLISH,&quot;pos (%.1f x %.1f) - size (%.1f x %.1f)&quot;,rx,ry,rw,rh);</span>
+<span class="nc" id="L72">    return text;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

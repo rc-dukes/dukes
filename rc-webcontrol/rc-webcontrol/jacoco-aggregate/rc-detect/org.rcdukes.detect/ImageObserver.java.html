@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ImageObserver.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-webcontrol</a> &gt; <a href="../index.html" class="el_bundle">rc-detect</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.detect</a> &gt; <span class="el_source">ImageObserver.java</span></div><h1>ImageObserver.java</h1><pre class="source lang-java linenums">package org.rcdukes.detect;
+
+import org.opencv.core.Mat;
+import org.rcdukes.common.ErrorHandler;
+import org.rcdukes.video.Image;
+
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+
+/**
+ * a subscriber for OpenCV  images
+ * @author wf
+ *
+ */
+<span class="nc" id="L15">public class ImageObserver implements Observer&lt;Image&gt;  {</span>
+
+  public Throwable error;
+<span class="nc" id="L18">  public int cols = 0;</span>
+<span class="nc" id="L19">  public int rows=0;</span>
+<span class="nc" id="L20">  public boolean completed = false;</span>
+<span class="nc" id="L21">  public boolean debug = false;</span>
+  public String stackTraceText;
+  private Disposable disposable; 
+
+  @Override
+  public void onComplete() {
+<span class="nc" id="L27">    completed = true;</span>
+<span class="nc" id="L28">  }</span>
+
+  @Override
+  public void onError(Throwable th) {
+<span class="nc" id="L32">    stackTraceText=ErrorHandler.getStackTraceText(th);</span>
+<span class="nc" id="L33">    error = th;</span>
+<span class="nc" id="L34">  }</span>
+
+  @Override
+  public void onNext(Image image) {
+<span class="nc" id="L38">    Mat mat=image.getFrame();</span>
+<span class="nc" id="L39">    cols = mat.cols();</span>
+<span class="nc" id="L40">    rows = mat.rows();</span>
+<span class="nc bnc" id="L41" title="All 4 branches missed.">    if (cols==0 || rows==0)</span>
+<span class="nc" id="L42">      System.err.println(&quot;invalid frame &quot;+image.getFrameIndex());</span>
+<span class="nc bnc" id="L43" title="All 4 branches missed.">    if (debug &amp;&amp; image.getFrameIndex()%25==0) {</span>
+<span class="nc" id="L44">      String msg = String.format(&quot;%6d:%4dx%d&quot;, image.getFrameIndex(), cols, rows);</span>
+<span class="nc" id="L45">      System.out.println(msg);</span>
+    }
+<span class="nc" id="L47">  }</span>
+
+  @Override
+  public void onSubscribe(Disposable d) {
+<span class="nc" id="L51">    this.disposable=d;</span>
+<span class="nc" id="L52">  }</span>
+  
+  public void stop() {
+<span class="nc bnc" id="L55" title="All 2 branches missed.">    if (disposable!=null)</span>
+<span class="nc" id="L56">      this.disposable.dispose();</span>
+<span class="nc" id="L57">  }</span>
+
+};
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

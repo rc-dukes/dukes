@@ -1,0 +1,272 @@
+@startuml
+
+    namespace org.rcdukes.common {
+
+        class ClusterStarter [[ClusterStarter.html]] {
+            {static} +MAX_START_TIME: int
+            +getVertx(): Vertx
+            +prepare(): void
+            +configureCluster(String, String): void
+            +clusteredVertx(Handler<AsyncResult<Vertx>>): void
+            +getDeployMentOptions(boolean): DeploymentOptions
+            +deployVerticles(AbstractVerticle[]): void
+            +getOptions(): VertxOptions
+            +undeployVerticle(DukesVerticle): void
+            +getHostname(): String
+            +setHostname(String): void
+        }
+
+        class WebStarter [[WebStarter.html]] {
+            {static} #LOG: Logger
+            +WebStarter(Vertx, int)
+            +getRouter(): Router
+            +setRouter(Router): void
+            +mountEventBus(String, String): void
+            +startHttpServer(): void
+        }
+
+        enum Events [[Events.html]] {
+            {static} +CAMERA_CONFIG_UPDATE
+            {static} +CANNY_CONFIG_UPDATE
+            {static} +HOUGH_CONFIG_UPDATE
+            {static} +CAMERA_MATRIX_UPDATE
+            {static} +START_LANE_DETECTION
+            {static} +LANE_DETECTED
+            {static} +START_STARTLIGHT_DETECTION
+            {static} +STARTLIGHT_DETECTED
+            {static} +START_DRAG_NAVIGATION
+            {static} +STOP_NAVIGATION
+            {static} +START_RECORDING
+            {static} +STOP_RECORDING
+            {static} +PHOTO_SHOOT
+            {static} +SIMULATOR_IMAGE
+            {static} +REQUEST_CONFIG
+            {static} +START_CAR
+            {static} +STOP_CAR
+            {static} +ECHO
+            {static} +ECHO_REPLY
+            {static} +CAR_POSITION
+            {static} +VIDEO_STOPPED
+        }
+
+        interface POJO [[POJO.html]] {
+            +asJson(): String
+            +asJsonObject(): JsonObject
+        }
+
+        class ServoCalibration [[ServoCalibration.html]] {
+            {static} +fromJo(JsonObject): ServoCalibration
+            +getVehicle(): String
+            +setVehicle(String): void
+            +getType(): String
+            +setType(String): void
+            +getUnit(): String
+            +setUnit(String): void
+            +getValueMap(): Map<Integer, Double>
+            +setValueMap(Map<Integer, Double>): void
+        }
+
+        class Config [[Config.html]] {
+            {static} +WEBCONTROL_PORT: String
+            {static} +IMAGEVIEW_PORT: String
+            {static} +REMOTECAR_HOST: String
+            {static} +CAMERA_URL: String
+            {static} +WATCHDOG_HEARTBEAT_INTERVAL_MS: String
+            {static} +WATCHDOG_MAX_MISSED_BEATS: String
+            {static} +WHEEL_GPIO: String
+            {static} +WHEEL_ORIENTATION: String
+            {static} +WHEEL_CENTER: String
+            {static} +WHEEL_STEP_SIZE: String
+            {static} +WHEEL_MAX_LEFT: String
+            {static} +WHEEL_MAX_RIGHT: String
+            {static} +WHEEL_MAX_LEFT_ANGLE: String
+            {static} +WHEEL_MAX_RIGHT_ANGLE: String
+            {static} +LED_ON: String
+            {static} +LED_OFF: String
+            {static} +LED_GPIO: String
+            {static} +ENGINE_GPIO: String
+            {static} +ENGINE_ORIENTATION: String
+            {static} +ENGINE_SPEED_ZERO: String
+            {static} +ENGINE_STEP_SIZE: String
+            {static} +ENGINE_MIN_SPEED_REVERSE: String
+            {static} +ENGINE_MAX_SPEED_REVERSE: String
+            {static} +ENGINE_MIN_SPEED_FORWARD: String
+            {static} +ENGINE_MAX_SPEED_FORWARD: String
+            {static} +ENGINE_MIN_VELOCITY_FORWARD: String
+            {static} +ENGINE_MAX_VELOCITY_FORWARD: String
+            {static} +ENGINE_MIN_VELOCITY_REVERSE: String
+            {static} +ENGINE_MAX_VELOCITY_REVERSE: String
+            {static} +POSITION_LEFT: String
+            {static} +POSITION_RIGHT: String
+            {static} +POSITION_CENTER: String
+            {static} +SERVO_COMMAND: String
+            {static} +ZERO: String
+            {static} +configureLogging(): void
+            {static} +createHazelcastConfig(): ClusterManager
+            {static} +getMyIpAddresses(): List<String>
+            {static} +getEnvironment(): Environment
+        }
+
+        enum Characters [[Characters.html]] {
+            {static} +BO
+            {static} +BOARS_NEST
+            {static} +BOSS_HOGG
+            {static} +CLETUS
+            {static} +COOTER
+            {static} +COY
+            {static} +DAISY
+            {static} +ENOS
+            {static} +FLASH
+            {static} +GENERAL_LEE
+            {static} +LUKE
+            {static} +ROSCO
+            {static} +UNCLE_JESSE
+            +module: String
+            +purpose: String
+            +getCallsign(): String
+            +getModule(): String
+            +getPurpose(): String
+            +getComment(): String
+            +getUrl(): String
+            +description(): String
+        }
+
+        class ErrorHandler [[ErrorHandler.html]] {
+            {static} +getStackTraceText(Throwable): String
+        }
+
+        abstract class DukesVerticle [[DukesVerticle.html]] {
+            {static} #LOG: Logger
+            {static} +debug: boolean
+            #deploymentID: String
+            +DukesVerticle(Characters)
+            +logStatus(String, String): void
+            +preStart(): void
+            +preStop(): void
+            +postStart(): void
+            +postStop(): void
+            +waitStatus(DukesVerticle.Status, int, int): int
+            +toJsonObject(String[]): JsonObject
+            +send(Characters, String[]): void
+            +send(Characters, JsonObject): void
+            +send(String, JsonObject): void
+            +getEventAddress(Characters, Events): String
+            +sendEvent(Characters, Events, JsonObject): void
+            +consumer(Characters, Events, Handler<Message<T>>): void
+            +consumer(Events, Handler<Message<T>>): void
+            +consumer(String, Handler<Message<T>>): void
+            +shareData(String, JsonObject): void
+            +getSharedData(String): JsonObject
+            +getSharedPojo(String, Class<T>): T
+            +fromJsonObject(JsonObject, Class<T>): T
+        }
+
+        enum org.rcdukes.common.DukesVerticle.Status [[DukesVerticle.Status.html]] {
+            {static} +created
+            {static} +started
+            {static} +stopped
+        }
+
+        class ServoPosition [[ServoPosition.html]] {
+            +unit: String
+            +kind: String
+            +servoConfig: String
+            +valueConfig: String
+            +ServoPosition()
+            +ServoPosition(int, double)
+            +ServoPosition(int, double, String, String)
+            +ServoPosition(String, String)
+            +getValue(): double
+            +setValue(double): void
+            +getServoPos(): int
+            +setServoPos(int): void
+            +init(int, double): void
+        }
+
+        class Configuration [[Configuration.html]] {
+            {static} +STORE_MODE: String
+            {static} +STORE_EXTENSION: String
+            +Configuration(String, boolean)
+            +Configuration()
+            +getGraphFilePath(): String
+            +setGraphFilePath(String): void
+            +fromIni(): void
+            +addEnv(Environment): void
+            +getGraph(): TinkerGraph
+            +setGraph(TinkerGraph): void
+            +g(): GraphTraversalSource
+            +getGraphFile(): File
+            +read(File): void
+            +write(File): void
+            +asString(): String
+            +getEnvironments(): Map<String, Environment>
+            +getEnvironmentFromVertex(Vertex): Environment
+            +write(): void
+        }
+
+        interface GraphDatabase [[GraphDatabase.html]] {
+            {abstract} +g(): GraphTraversalSource
+            {abstract} +writeGraph(String): void
+            {abstract} +loadGraph(File): void
+            {abstract} +fromVertex(Vertex, Class<T>): T
+            {abstract} +addVertex(Object): void
+        }
+
+        class Environment [[Environment.html]] {
+            {static} +dukesHome: String
+            +propFilePath: String
+            +Environment(String)
+            {static} +readFirstLine(File): String
+            {static} +osRelease(): String
+            +isPi(): boolean
+            {static} +getInstance(): Environment
+            +runningOnRaspberryPi(): boolean
+            +getProperties(): Properties
+            +asJsonObject(): JsonObject
+            {static} +from(JsonObject): void
+            +getMyIpAddresses(): List<String>
+            +getString(String): String
+            +getInteger(String): int
+            +getDouble(String): double
+            {static} +reset(): void
+            {static} +from(String): void
+            {static} +mock(): void
+        }
+
+        interface EventbusLogger [[EventbusLogger.html]] {
+            {abstract} +logEvent(String, JsonObject): void
+            {abstract} +log(String): void
+        }
+
+        class TinkerPopDatabase [[TinkerPopDatabase.html]] {
+            {static} #LOG: Logger
+            #graph: TinkerGraph
+            #debug: boolean
+            +g(): GraphTraversalSource
+            +setProp(Vertex, String, Object): void
+            +writeGraph(String): void
+            +loadGraph(File): void
+            +addVertex(Object): void
+            +fromVertex(Vertex, Class<TYPE>): TYPE
+        }
+
+        POJO <|.. ServoCalibration
+
+        class io.vertx.rxjava.core.AbstractVerticle
+        io.vertx.rxjava.core.AbstractVerticle <|-- DukesVerticle
+
+        DukesVerticle +-- org.rcdukes.common.DukesVerticle.Status
+
+        GraphDatabase <|.. TinkerPopDatabase
+
+        DukesVerticle --> Characters: character
+
+        DukesVerticle --> EventbusLogger: eventbusLogger
+
+        DukesVerticle --> org.rcdukes.common.DukesVerticle.Status: status
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

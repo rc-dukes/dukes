@@ -1,0 +1,13 @@
+@startuml
+
+    interface ServoRangeMap [[ServoRangeMap.html]] {
+        {abstract} +getRange(): ServoRange
+        {abstract} +atPercent(double): ServoPosition
+        {abstract} +atValue(double): ServoPosition
+        {abstract} +step(int): void
+        {abstract} +setZero(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

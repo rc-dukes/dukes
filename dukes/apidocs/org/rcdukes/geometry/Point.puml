@@ -1,0 +1,24 @@
+@startuml
+
+    class Point [[Point.html]] {
+        {static} +X: int
+        {static} +Y: int
+        {static} +Z: int
+        +Point()
+        +Point(int, int)
+        +Point(long, long)
+        +Point(Double[])
+        +distance(Double[]): double
+        +distance(Point2D): double
+        +valueStr(Double): String
+        +getX(): double
+        +setX(double): void
+        +getY(): double
+        +setY(double): void
+        +setZ(Double): void
+        +compareTo(Point): int
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

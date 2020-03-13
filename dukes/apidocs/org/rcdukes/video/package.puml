@@ -1,0 +1,151 @@
+@startuml
+
+    namespace org.rcdukes.video {
+
+        class ImageCollector [[ImageCollector.html]] {
+            {static} #LOG: Logger
+            {static} +testImagePaths: String[]
+            +ImageCollector()
+            +ImageCollector(String, boolean)
+            +getTestImage(ImageCollector.ImageType): Image
+            +createImage(Mat, ImageCollector.ImageType): Image
+            +addImage(Mat, ImageCollector.ImageType): Image
+            +addImage(Image, ImageCollector.ImageType): Image
+            #getImages(): Map<ImageCollector.ImageType, Image>
+            +getImage(ImageCollector.ImageType, boolean): Image
+            +createObservable(ImageCollector.ImageType): Observable<Image>
+            +writeImages(): void
+            +addImageInfo(String): void
+        }
+
+        enum org.rcdukes.video.ImageCollector.ImageType [[ImageCollector.ImageType.html]] {
+            {static} +camera
+            {static} +edges
+            {static} +birdseye
+            {static} +lines
+            {static} +startlight
+            {static} +mask
+            {static} +morph
+            {static} +simulator
+        }
+
+        class VideoRecorder [[VideoRecorder.html]] {
+            {static} +exts: String[]
+            {static} +FOURCCs: String[]
+            {static} +FOURCC: String
+            +VideoRecorder(String, double)
+            +start(Size, boolean): void
+            +stop(): void
+            +recordMat(Mat): void
+            +getPath(): String
+            +setPath(String): void
+            +getExt(): String
+            +setExt(String): void
+        }
+
+        class PointMapper [[PointMapper.html]] {
+            {static} +toPoint(Point2D): Point
+        }
+
+        class Image [[Image.html]] {
+            {static} +DATE_FORMAT: String
+            {static} +dateFormat: DateFormat
+            {static} +debug: boolean
+            {static} +ext: String
+            +Image(Mat, String, int, long)
+            +getFrameIndex(): int
+            +setFrameIndex(int): void
+            +getFrame(): Mat
+            +setFrame(Mat): void
+            +refresh(): void
+            +getName(): String
+            +setName(String): void
+            +getImageBytes(): byte[]
+            +setImageBytes(byte[]): void
+            +getMilliTimeStamp(): long
+            +setMilliTimeStamp(long): void
+            +addImageInfo(Mat, String): void
+            +addImageInfo(String): void
+            +addImageInfo(): void
+            +debugInfo(): String
+        }
+
+        class ImageUtils [[ImageUtils.html]] {
+            {static} #LOG: Logger
+            {static} +debug: boolean
+            {static} +DATE_FORMAT: String
+            {static} +dateFormat: DateFormat
+            {static} +MEDIA_PATH: String
+            +ImageUtils()
+            +ImageUtils(String, String)
+            {static} +readFromDataUrl(String): BufferedImage
+            {static} +matFromDataUrl(String, String): Mat
+            {static} +mat2Image(Mat, String): Image
+            {static} +imageBytes2Image(byte[]): Image
+            {static} +imageBytes2Mat(byte[]): Mat
+            {static} +fromResource(Class<?>, String): Mat
+            {static} +bufferedImage2ImageBytes(BufferedImage, String): byte[]
+            {static} +mat2ImageBytes(Mat, String): byte[]
+            +writeImage(Mat, String): void
+            {static} +writeImageToFilepath(Mat, String): void
+            +writeImageWithLines(Mat, Collection<Line>, String, Scalar): void
+            +drawLinesToImage(Mat, Collection<Line>, Scalar): void
+            {static} +read(String): Mat
+            {static} +filePath(String, String): String
+        }
+
+        class org.rcdukes.video.ImageUtils.CVColor [[ImageUtils.CVColor.html]] {
+            {static} +red: Scalar
+            {static} +lightgreen: Scalar
+            {static} +green: Scalar
+            {static} +dodgerblue: Scalar
+            {static} +cyan: Scalar
+            {static} +yellow: Scalar
+            {static} +indigo: Scalar
+        }
+
+        interface ImageSource [[ImageSource.html]] {
+            {abstract} +getImageObservable(): Observable<Image>
+        }
+
+        class VideoRecorders [[VideoRecorders.html]] {
+            +VideoRecorders(double)
+            +isStarted(): boolean
+            +toggle(): VideoRecorders.VideoInfo
+            +start(): VideoRecorders.VideoInfo
+            +recordFrame(Mat, ImageCollector.ImageType): void
+            +recordFrame(ImageCollector, boolean): void
+            +stop(): VideoRecorders.VideoInfo
+        }
+
+        class org.rcdukes.video.VideoRecorders.VideoInfo [[VideoRecorders.VideoInfo.html]] {
+            +fps: double
+            +frameIndex: int
+            +minFrameIndex: Integer
+            +maxFrameIndex: Integer
+            +path: String
+            +VideoInfo()
+            +VideoInfo(double)
+            +VideoInfo(VideoRecorders.VideoInfo)
+            +setFrameIndex(Integer): void
+            +setPath(String): void
+            {static} +getNavigationFile(File): File
+        }
+
+        class DenoiseByBlur [[DenoiseByBlur.html]] {
+            +DenoiseByBlur()
+            +DenoiseByBlur(int, int)
+            +denoise(Mat): Mat
+        }
+
+        ImageCollector +-- org.rcdukes.video.ImageCollector.ImageType
+
+        ImageUtils +-- org.rcdukes.video.ImageUtils.CVColor
+
+        VideoRecorders +-- org.rcdukes.video.VideoRecorders.VideoInfo
+
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

@@ -1,0 +1,15 @@
+@startuml
+
+    interface ServoMap [[ServoMap.html]] {
+        {abstract} +gpioPin(): int
+        {abstract} +servoCommand(): ServoCommand
+        {abstract} +turnedOrientation(): boolean
+        {abstract} +getCurrentPosition(): ServoPosition
+        {abstract} +newPosition(ServoPosition): ServoPosition
+        {abstract} +configure(int, ServoCommand, String): void
+        {abstract} +configureOrientation(): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

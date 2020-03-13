@@ -1,0 +1,29 @@
+@startuml
+
+    enum Characters [[Characters.html]] {
+        {static} +BO
+        {static} +BOARS_NEST
+        {static} +BOSS_HOGG
+        {static} +CLETUS
+        {static} +COOTER
+        {static} +COY
+        {static} +DAISY
+        {static} +ENOS
+        {static} +FLASH
+        {static} +GENERAL_LEE
+        {static} +LUKE
+        {static} +ROSCO
+        {static} +UNCLE_JESSE
+        +module: String
+        +purpose: String
+        +getCallsign(): String
+        +getModule(): String
+        +getPurpose(): String
+        +getComment(): String
+        +getUrl(): String
+        +description(): String
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

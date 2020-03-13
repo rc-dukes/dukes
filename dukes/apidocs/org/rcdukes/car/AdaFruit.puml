@@ -1,0 +1,19 @@
+@startuml
+
+    class AdaFruit [[AdaFruit.html]] {
+        #parser: CmdLineParser
+        #debug: boolean
+        #ioId: int
+        #value: int
+        +AdaFruit()
+        +AdaFruit(double, double)
+        #provisionPwmOutputs(PCA9685GpioProvider): GpioPinPwmOutput[]
+        +setServo(int, int): void
+        +parseArguments(String[]): void
+        +work(): void
+        {static} +main(String[]): void
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

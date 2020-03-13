@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Line.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-detect</a> &gt; <a href="../index.html" class="el_bundle">rc-geometry</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.geometry</a> &gt; <span class="el_source">Line.java</span></div><h1>Line.java</h1><pre class="source lang-java linenums">package org.rcdukes.geometry;
+
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
+
+import static java.lang.Math.*;
+import static java.util.Optional.of;
+
+import java.util.Arrays;
+
+/**
+ * Connection between two {@link Point2D}
+ */
+public class Line {
+
+  private Point point1;
+  private Point point2;
+
+  /**
+   * default constructor
+   */
+<span class="nc" id="L24">  public Line() {</span>
+    
+<span class="nc" id="L26">  }</span>
+  /**
+   * construct me from a hough lines detect result
+   * @param probabilistic
+   * @param h 
+   * @param w 
+   * @param coordinates - the 4 coordinates to construct me from
+   * @return the Line
+   */
+  public static Line fromHough(boolean probabilistic,int w, int h, double ...coordinates) {
+<span class="nc bnc" id="L36" title="All 2 branches missed.">    if (probabilistic) {</span>
+<span class="nc" id="L37">      return new Line(coordinates);</span>
+    } else {
+<span class="nc" id="L39">      double rho=coordinates[0];</span>
+<span class="nc" id="L40">      double theta= coordinates[1];</span>
+<span class="nc" id="L41">      double a = Math.cos(theta), b = Math.sin(theta);</span>
+<span class="nc" id="L42">      double x0 = a*rho, y0 = b*rho;</span>
+<span class="nc" id="L43">      Point pt1 = new Point(Math.round(x0 + w*(-b)), Math.round(y0 + h*(a)));</span>
+<span class="nc" id="L44">      Point pt2 = new Point(Math.round(x0 - w*(-b)), Math.round(y0 - h*(a)));</span>
+<span class="nc" id="L45">      return new Line(pt1,pt2);</span>
+    }
+  }
+
+  /**
+   * construct me from the given coordinates
+   * @param coordinates - the 4 points
+   */
+  public Line(double... coordinates) {
+<span class="nc" id="L54">    this(new Point(coordinates[0], coordinates[1]),</span>
+<span class="nc" id="L55">        new Point(coordinates[2], coordinates[3]));</span>
+<span class="nc" id="L56">  }</span>
+
+  /**
+   * construct me from two points
+   * 
+   * @param point1
+   *          - first point
+   * @param point2
+   *          - second point
+   */
+<span class="nc" id="L66">  public Line(Point point1, Point point2) {</span>
+<span class="nc" id="L67">    init(point1,point2);</span>
+<span class="nc" id="L68">  }</span>
+  
+  /**
+   * convenience constructor
+   * @param point1
+   * @param point2
+   */
+<span class="nc" id="L75">  public Line(Point2D point1,Point2D point2) {</span>
+<span class="nc" id="L76">    init (new Point(point1.getX(),point1.getY()),</span>
+<span class="nc" id="L77">        new Point(point2.getX(),point2.getY()));</span>
+<span class="nc" id="L78">  }</span>
+  
+  /**
+   * initialize me
+   * @param point1
+   * @param point2
+   */
+  public void init(Point point1, Point point2) {
+<span class="nc" id="L86">    Objects.requireNonNull(point1, &quot;point1 can not be null.&quot;);</span>
+<span class="nc" id="L87">    Objects.requireNonNull(point2, &quot;point2 can not be null.&quot;);</span>
+<span class="nc" id="L88">    this.point1 = point1;</span>
+<span class="nc" id="L89">    this.point2 = point2;</span>
+<span class="nc" id="L90">  }</span>
+  
+  /**
+   * calculate the length of the line
+   * 
+   * @return the length
+   */
+  public double length() {
+<span class="nc" id="L98">    return point1.distance(point2);</span>
+  }
+
+  /**
+   * calculate the angle of the line
+   * 
+   * @return - the angle in radians
+   */
+  public double angleRad() {
+<span class="nc" id="L107">    return atan2(point2.getY() - point1.getY(), point2.getX() - point1.getX());</span>
+  }
+
+  /**
+   * calulate the angle of the line
+   * 
+   * @return the angle in degrees
+   */
+  public double angleDeg() {
+<span class="nc" id="L116">    return toDegrees(angleRad());</span>
+  }
+  
+  /**
+   * get the angle of the line turned by 90 degrees as needed for navigation
+   * @return the angle +90
+   */
+  public double angleDeg90() {
+<span class="nc" id="L124">    return this.angleDeg()+90;</span>
+  }
+
+  /**
+   * getter for first point
+   * 
+   * @return the first point
+   */
+  public Point2D getPoint1() {
+<span class="nc" id="L133">    return point1;</span>
+  }
+
+  /**
+   * getter for second point
+   * 
+   * @return the second point
+   */
+  public Point2D getPoint2() {
+<span class="nc" id="L142">    return point2;</span>
+  }
+
+  /**
+   * calculate the average lines for the given lines
+   * 
+   * @param lines
+   * @return - the average line
+   */
+  public static Line average(Line... lines) {
+<span class="nc" id="L152">    return average(Arrays.asList(lines));</span>
+  }
+
+  /**
+   * calculate the average line for a collection of given lines
+   * 
+   * @param lines
+   *          - the lines to calculate the average for
+   * @return the average line
+   */
+  public static Line average(Collection&lt;Line&gt; lines) {
+    // double sumAngleRad = 0;
+<span class="nc" id="L164">    double sumx = 0;</span>
+<span class="nc" id="L165">    double sumy = 0;</span>
+<span class="nc" id="L166">    double sumxlen = 0;</span>
+<span class="nc" id="L167">    double sumylen = 0;</span>
+
+<span class="nc bnc" id="L169" title="All 2 branches missed.">    for (Line line : lines) {</span>
+      // sumAngleRad += line.angleRad();
+<span class="nc" id="L171">      sumx += line.point1.getX() + line.point2.getX();</span>
+<span class="nc" id="L172">      sumy += line.point1.getY() + line.point2.getY();</span>
+<span class="nc" id="L173">      sumxlen += line.point2.getX() - line.point1.getX();</span>
+<span class="nc" id="L174">      sumylen += line.point2.getY() - line.point1.getY();</span>
+<span class="nc" id="L175">    }</span>
+
+    // double avgAngleRad = sumAngleRad / lines.size();
+<span class="nc" id="L178">    double avgx = sumx / (lines.size() * 2);</span>
+<span class="nc" id="L179">    double avgy = sumy / (lines.size() * 2);</span>
+<span class="nc" id="L180">    double avgxlen = sumxlen / lines.size();</span>
+<span class="nc" id="L181">    double avgylen = sumylen / lines.size();</span>
+
+<span class="nc" id="L183">    Point origin = new Point(avgx - 0.5 * avgxlen, avgy - 0.5 * avgylen);</span>
+<span class="nc" id="L184">    Point2D endV = new Vector(avgxlen, avgylen).calculate(origin, 1);</span>
+
+<span class="nc" id="L186">    Line avgLine = new Line(origin, new Point(endV.getX(),endV.getY()));</span>
+
+    // System.out.println(&quot;avg rad: &quot; + avgAngleRad + &quot; line rad: &quot; +
+    // avgLine.angleRad());
+
+<span class="nc" id="L191">    return avgLine;</span>
+  }
+
+  /**
+   * Tests if a point is Left|On|Right of this line it it were infinite. (See:
+   * Algorithm 1 &quot;Area of Triangles and Polygons&quot;)
+   * 
+   * @param point
+   *          The point to determine the position relative to this line.
+   * @return &gt;0 for P2 left of this line =0 for P2 on this line &lt;0 for P2 right
+   *         of this line
+   */
+  private int howLeft(Point2D point) {
+<span class="nc" id="L204">    Point2D start = point1;</span>
+<span class="nc" id="L205">    Point2D end = point2;</span>
+<span class="nc" id="L206">    return (int) ((end.getX() - start.getX()) * (point.getY() - start.getY())</span>
+<span class="nc" id="L207">        - (point.getX() - start.getX()) * (end.getY() - start.getY()));</span>
+  }
+
+  /**
+   * check if the given point is left of me
+   * 
+   * @param point
+   *          - the point to check
+   * @return - true if left of me
+   */
+  public boolean isLeftOfLine(Point2D point) {
+<span class="nc bnc" id="L218" title="All 2 branches missed.">    return howLeft(point) &gt; 0;</span>
+  }
+
+  /**
+   * check if the given point is right of me
+   * 
+   * @param point
+   *          - the point to check
+   * @return - true if the point is right of me
+   */
+  public boolean isRightOfLine(Point2D point) {
+<span class="nc bnc" id="L229" title="All 2 branches missed.">    return howLeft(point) &lt; 0;</span>
+  }
+
+  /**
+   * check whether the given point exists on the line
+   * 
+   * @param point
+   *          - the point to check
+   * @return - true if the point is on the line
+   */
+  public boolean existsOnLine(Point2D point) {
+<span class="nc bnc" id="L240" title="All 2 branches missed.">    if (point.getY() &gt; max(point1.getY(), point2.getY())) {</span>
+      // Point above line
+<span class="nc" id="L242">      return false;</span>
+    }
+
+<span class="nc bnc" id="L245" title="All 2 branches missed.">    if (point.getY() &lt; min(point1.getY(), point2.getY())) {</span>
+      // Point below line
+<span class="nc" id="L247">      return false;</span>
+    }
+
+<span class="nc bnc" id="L250" title="All 2 branches missed.">    return howLeft(point) == 0;</span>
+  }
+
+  public Point2D bottomMost() {
+<span class="nc bnc" id="L254" title="All 2 branches missed.">    return point1.getY() &gt; point2.getY() ? point1 : point2;</span>
+  }
+
+  public Point2D leftMost() {
+<span class="nc bnc" id="L258" title="All 2 branches missed.">    return point1.getX() &lt; point2.getX() ? point1 : point2;</span>
+  }
+
+  public Point2D rightMost() {
+<span class="nc bnc" id="L262" title="All 2 branches missed.">    return point1.getX() &gt; point2.getX() ? point1 : point2;</span>
+  }
+
+  public Point2D topMost() {
+<span class="nc bnc" id="L266" title="All 2 branches missed.">    return point1.getY() &lt; point2.getY() ? point1 : point2;</span>
+  }
+
+  // 0 ---&gt; 10
+  // width 10
+  // 0 + 5 = 5
+
+  // 0 &lt;--- 10
+  // width -10
+
+  /**
+   * get the interpolated point at the given fraction
+   * 
+   * @param fraction
+   *          the fractional part
+   * @return a point with the given fractionaldistance from topLeft
+   */
+  public Point2D pointAt(double fraction) {
+<span class="nc" id="L284">    double x = leftMost().getX() + width() * fraction;</span>
+<span class="nc" id="L285">    double y = topMost().getY() + height() * fraction;</span>
+
+<span class="nc" id="L287">    return new Point(x, y);</span>
+  }
+
+  /**
+   * Distance between @code{point1.x} and @code{point2.x}.
+   * 
+   * @return the width
+   */
+  public double width() {
+<span class="nc" id="L296">    return abs(point1.getX() - point2.getX());</span>
+  }
+
+  /**
+   * Distance between @code{point1.y} and @code{point2.y}.
+   * 
+   * @return the height
+   */
+  public double height() {
+<span class="nc" id="L305">    return abs(point1.getY() - point2.getY());</span>
+  }
+
+  /**
+   * private boolean isBelow(Point2D point, Point2D nextVertexPoint) { return
+   * nextVertexPoint.getY() &gt; point.getY(); }
+   * 
+   * private boolean isAboveOrEqual(Point2D point, Point2D reference) { return
+   * reference.getY() &lt;= point.getY(); }
+   */
+
+  @Override
+  /**
+   * get a string representation of me
+   * 
+   * @return a concatenation of my two points and the 90 degree rotated angle
+   */
+  public String toString() {
+<span class="nc" id="L323">    String text=String.format(&quot;%s - %s: %s&quot;, point1,point2,Line.lineAngleString(this));</span>
+<span class="nc" id="L324">    return text;</span>
+  }
+  
+  /**
+   * get a string for the given angle
+   * @param angle (potentially null)
+   * @return - the angle String
+   */
+  public static String angleString(Double angle) {
+<span class="nc bnc" id="L333" title="All 2 branches missed.">    String text=angle!=null?String.format(&quot;%6.1f°&quot;, angle):&quot;?&quot;;</span>
+<span class="nc" id="L334">    return text;</span>
+  }
+  
+  /**
+   * get a string for the given line's angle
+   * @param line (potentially null)
+   * @return - the angle String
+   */
+  public static String lineAngleString(Line line) {
+<span class="nc bnc" id="L343" title="All 2 branches missed.">    String text=angleString(line==null?null:line.angleDeg90());</span>
+<span class="nc" id="L344">    return text;</span>
+  }
+
+  /**
+   * calculate intersection to the given other line
+   * 
+   * @param other
+   *          - the other line to intersect with
+   * @return the intersection point
+   */
+  public Optional&lt;Point2D&gt; intersect(Line other) {
+<span class="nc" id="L355">    double x1 = point1.getX();</span>
+<span class="nc" id="L356">    double x2 = point2.getX();</span>
+<span class="nc" id="L357">    double x3 = other.point1.getX();</span>
+<span class="nc" id="L358">    double x4 = other.point2.getX();</span>
+
+<span class="nc" id="L360">    double y1 = point1.getY();</span>
+<span class="nc" id="L361">    double y2 = point2.getY();</span>
+<span class="nc" id="L362">    double y3 = other.point1.getY();</span>
+<span class="nc" id="L363">    double y4 = other.point2.getY();</span>
+
+<span class="nc" id="L365">    double determinant = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);</span>
+
+<span class="nc bnc" id="L367" title="All 2 branches missed.">    if (determinant == 0) {</span>
+      // edge case: lines are parallel, there is no intersection
+<span class="nc" id="L369">      return Optional.empty();</span>
+    }
+
+<span class="nc" id="L372">    double x = ((x1 * y2 - y1 * x2) * (x3 - x4)</span>
+        - (x1 - x2) * (x3 * y4 - y3 * x4)) / determinant;
+<span class="nc" id="L374">    double y = ((x1 * y2 - y1 * x2) * (y3 - y4)</span>
+        - (y1 - y2) * (x3 * y4 - y3 * x4)) / determinant;
+
+<span class="nc" id="L377">    return of(new Point(x, y));</span>
+  }
+
+  /**
+   * calculate the distance to the given point
+   * 
+   * @param point
+   *          - the point to calculate the distance to
+   * @return the distance
+   */
+  public double distance(Point2D point) {
+<span class="nc" id="L388">    double x0 = point.getX();</span>
+<span class="nc" id="L389">    double y0 = point.getY();</span>
+<span class="nc" id="L390">    double x1 = point1.getX();</span>
+<span class="nc" id="L391">    double y1 = point1.getY();</span>
+<span class="nc" id="L392">    double x2 = point2.getX();</span>
+<span class="nc" id="L393">    double y2 = point2.getY();</span>
+
+<span class="nc" id="L395">    double determinant = sqrt(pow(y2 - y1, 2) + pow(x2 - x1, 2));</span>
+
+<span class="nc" id="L397">    return abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1)</span>
+        / determinant;
+  }
+
+  /**
+   * implementation of a x/y orientation
+   */
+  public static class Vector {
+
+    private double x;
+    private double y;
+
+    /**
+     * create a vector from the given values
+     * 
+     * @param x
+     *          - x component of vector
+     * @param y
+     *          - y component of vector
+     */
+<span class="nc" id="L417">    public Vector(double x, double y) {</span>
+<span class="nc" id="L418">      this.x = x;</span>
+<span class="nc" id="L419">      this.y = y;</span>
+<span class="nc" id="L420">    }</span>
+
+    public Point2D calculate(Point2D origin, double delta) {
+<span class="nc" id="L423">      return new Point(origin.getX() + delta * x, origin.getY() + delta * y);</span>
+    }
+
+    public double calculateX(double deltaY) {
+<span class="nc" id="L427">      return (deltaY / y) * x;</span>
+    }
+
+    public double calculateY(double deltaX) {
+<span class="nc" id="L431">      return (deltaX / x) * y;</span>
+    }
+
+    public static Vector forY(double y) {
+<span class="nc" id="L435">      return new Vector(0, y);</span>
+    }
+
+    public static Vector forX(double x) {
+<span class="nc" id="L439">      return new Vector(x, 0);</span>
+    }
+
+    /**
+     * convert me to a String
+     */
+    public String toString() {
+<span class="nc" id="L446">      return String.format(Locale.ENGLISH, &quot;{%f,%f}&quot;, x, y);</span>
+    }
+    
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

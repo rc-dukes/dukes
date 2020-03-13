@@ -1,0 +1,28 @@
+@startuml
+
+    class Image [[Image.html]] {
+        {static} +DATE_FORMAT: String
+        {static} +dateFormat: DateFormat
+        {static} +debug: boolean
+        {static} +ext: String
+        +Image(Mat, String, int, long)
+        +getFrameIndex(): int
+        +setFrameIndex(int): void
+        +getFrame(): Mat
+        +setFrame(Mat): void
+        +refresh(): void
+        +getName(): String
+        +setName(String): void
+        +getImageBytes(): byte[]
+        +setImageBytes(byte[]): void
+        +getMilliTimeStamp(): long
+        +setMilliTimeStamp(long): void
+        +addImageInfo(Mat, String): void
+        +addImageInfo(String): void
+        +addImageInfo(): void
+        +debugInfo(): String
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

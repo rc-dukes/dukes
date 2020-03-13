@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>PerspectiveShift.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">rc-watchdog</a> &gt; <a href="../index.html" class="el_bundle">rc-camera-matrix</a> &gt; <a href="index.source.html" class="el_package">org.rcdukes.camera</a> &gt; <span class="el_source">PerspectiveShift.java</span></div><h1>PerspectiveShift.java</h1><pre class="source lang-java linenums">package org.rcdukes.camera;
+
+import java.util.List;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Point;
+import org.opencv.imgproc.Imgproc;
+import org.rcdukes.geometry.Polygon;
+
+/**
+ * perspective shift
+ */
+public class PerspectiveShift implements UnaryOperator&lt;Mat&gt; {
+
+    final Polygon imagePolygon;
+    final Polygon worldPolygon;
+    List&lt;Point&gt; imagePoints;
+    List&lt;Point&gt; worldPoints;
+    Mat perspectiveTransform;
+
+    /**
+     * construct me from the given image and worl polygon
+     * @param imagePolygon - image
+     * @param worldPolygon - world
+     */
+<span class="nc" id="L29">    public PerspectiveShift(Polygon imagePolygon, Polygon worldPolygon) {</span>
+<span class="nc" id="L30">        this.imagePolygon = imagePolygon;</span>
+<span class="nc" id="L31">        this.worldPolygon = worldPolygon;</span>
+<span class="nc" id="L32">        buildPerspectiveTransform();</span>
+<span class="nc" id="L33">    }</span>
+
+    /**
+     * create the perspective transform
+     */
+    private void buildPerspectiveTransform() {
+
+<span class="nc" id="L40">        imagePoints = this.imagePolygon.getPointsCounterClockwise().stream().map(point -&gt; new Point(point.getX(), point.getY())).collect(Collectors.toList());</span>
+<span class="nc" id="L41">        worldPoints = this.worldPolygon.getPointsCounterClockwise().stream().map(point -&gt; new Point(point.getX(), point.getY())).collect(Collectors.toList());</span>
+
+<span class="nc" id="L43">        MatOfPoint2f imagePointsMat = new MatOfPoint2f();</span>
+<span class="nc" id="L44">        MatOfPoint2f worldPointsMat = new MatOfPoint2f();</span>
+
+<span class="nc" id="L46">        imagePointsMat.fromList(imagePoints);</span>
+<span class="nc" id="L47">        worldPointsMat.fromList(worldPoints);</span>
+
+<span class="nc" id="L49">        this.perspectiveTransform =  Imgproc.getPerspectiveTransform(worldPointsMat, imagePointsMat);</span>
+<span class="nc" id="L50">    }</span>
+
+    @Override
+    public Mat apply(Mat srcImage) {
+<span class="nc" id="L54">        Mat destImage = new Mat();</span>
+<span class="nc" id="L55">        Imgproc.warpPerspective(srcImage, destImage, perspectiveTransform, srcImage.size());</span>
+<span class="nc" id="L56">        return destImage;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

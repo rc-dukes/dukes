@@ -1,0 +1,10 @@
+@startuml
+
+    interface LedMap [[LedMap.html]] {
+        {abstract} +ledOff(): int
+        {abstract} +ledOn(): int
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml

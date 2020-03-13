@@ -1,0 +1,17 @@
+@startuml
+
+    class TinkerPopDatabase [[TinkerPopDatabase.html]] {
+        {static} #LOG: Logger
+        #graph: TinkerGraph
+        #debug: boolean
+        +g(): GraphTraversalSource
+        +setProp(Vertex, String, Object): void
+        +writeGraph(String): void
+        +loadGraph(File): void
+        +addVertex(Object): void
+        +fromVertex(Vertex, Class<TYPE>): TYPE
+    }
+
+
+    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
+@enduml
