@@ -35,19 +35,29 @@ public class TestGraphDatabase {
   public void testTinkerPopDatabase() throws IOException {
     TinkerPopDatabase tpd = new TinkerPopDatabase();
     tpd.addVertex(new Person("marko",29));
-    assertEquals(1,tpd.g().V().count().next().longValue());
+    long milliTimeStamp=System.currentTimeMillis();
+    tpd.addVertex(new ServoPosition(154,0.5,"m/s","motor"));
+    assertEquals(2,tpd.g().V().count().next().longValue());
     File gFile = File.createTempFile("gremlin", ".json");
     tpd.writeGraph(gFile.getPath());
     TinkerPopDatabase tpd2=new TinkerPopDatabase();
     tpd2.debug=true;
     tpd2.loadGraph(gFile);
-    assertEquals(1,tpd2.g().V().count().next().longValue());
+    assertEquals(2,tpd2.g().V().count().next().longValue());
     Vertex markoVertex=tpd2.g().V().has("name","marko").next();
     assertNotNull(markoVertex);
     Person marko=tpd2.fromVertex(markoVertex, Person.class);
     assertNotNull(marko);
     assertEquals("marko",marko.name);
     assertEquals(29,marko.age);
+    Vertex servoPosVertex=tpd2.g().V().hasLabel("ServoPosition").next();
+    assertNotNull(servoPosVertex);
+    ServoPosition pos2=tpd2.fromVertex(servoPosVertex, ServoPosition.class);
+    assertEquals(154,pos2.getServoPos());
+    assertEquals(0.5,pos2.getValue(),0.001);
+    assertEquals("m/s",pos2.unit);
+    assertEquals("motor",pos2.kind);
+    assertEquals(milliTimeStamp,pos2.milliTimeStamp);
     gFile.delete();
   }
 

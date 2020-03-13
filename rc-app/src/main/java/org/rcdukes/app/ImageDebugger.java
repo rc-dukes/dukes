@@ -120,18 +120,27 @@ public class ImageDebugger {
     Image cameraImage = this.imageCollector.getImage(ImageType.camera, false);
     return cameraImage.getFrameIndex();
   }
+  
+  /**
+   * get the navigation nodes for the given frameIndex
+   * @param frameIndex
+   * @return - the navigation nodes
+   */
+  public List<Vertex> getNavNodes(long frameIndex) {
+    List<Vertex> navNodes = nav.g().V()
+        .has("frameIndex", frameIndex).toList();
+    LOG.info(String.format("found %d nav nodes for frameIndex %d", navNodes.size(),frameIndex));
+    return navNodes;
+  }
 
   /**
    * show the debug Info via the eventbus logger
    * @param eventbusLogger
    */
   public void showDebugInfo(EventbusLogger eventbusLogger) {
-    long index = this.getFrameIndex();
-    Vertex infoVertex = nav.g().V().hasLabel("VideoInfo").next();
-    VideoInfo info = nav.fromVertex(infoVertex, VideoInfo.class);
-    List<Vertex> navNodes = nav.g().V()
-        .has("frameIndex", info.maxFrameIndex + index).toList();
-    LOG.info(String.format("found %d nav nodes", navNodes.size()));
+    //Vertex infoVertex = nav.g().V().hasLabel("VideoInfo").next();
+    //VideoInfo info = nav.fromVertex(infoVertex, VideoInfo.class);
+    List<Vertex> navNodes = this.getNavNodes(this.getFrameIndex());
     if (navNodes.size() > 0) {
       for (Vertex navNode : navNodes) {
         for (String key : navNode.keys()) {

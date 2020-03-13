@@ -6,7 +6,7 @@
 targetUser=pi
 targetHost=10.9.8.7
 target=$targetUser@$targetHost
-version=0.0.2
+version=0.0.3
 
 #ansi colors
 #http://www.csc.uvic.ca/~sae/seng265/fall04/tips/s265s047-tips/bash-using-colors.html

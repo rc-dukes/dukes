@@ -9,6 +9,8 @@ public class ServoPosition {
 
   double value;
   int servoPos;
+  long milliTimeStamp;
+  
   // optional extra info
   public String unit="";
   public String kind="";
@@ -28,6 +30,12 @@ public class ServoPosition {
     this.servoPos = servoPos;
   }
   
+  public long getMilliTimeStamp() {
+    return milliTimeStamp;
+  }
+  public void setMilliTimeStamp(long milliTimeStamp) {
+    this.milliTimeStamp = milliTimeStamp;
+  }
   /**
    * default constructor to allow for JsonObject mapping
    */
@@ -77,6 +85,7 @@ public class ServoPosition {
   public void init (int servoPos, double value) {
     this.servoPos=servoPos;
     this.value=value;
+    this.milliTimeStamp=System.currentTimeMillis();
   }
 
   /**

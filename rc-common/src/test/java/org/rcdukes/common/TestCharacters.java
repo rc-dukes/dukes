@@ -5,7 +5,6 @@ import java.util.Comparator;
 
 import org.apache.commons.lang3.text.WordUtils;
 import org.junit.Test;
-import org.rcdukes.common.Characters;
 
 /**
  * test Characters

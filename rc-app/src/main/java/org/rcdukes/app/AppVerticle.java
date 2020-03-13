@@ -95,7 +95,7 @@ public class AppVerticle extends DukesVerticle {
   }
 
   /**
-   * receive an car position
+   * receive a car position
    * 
    * @param message
    */
@@ -105,7 +105,9 @@ public class AppVerticle extends DukesVerticle {
     ServoPosition carPos = carPosJo.mapTo(ServoPosition.class);
     if (positionDisplay != null)
       this.positionDisplay.showPosition(carPos);
-    // TODO - use the received car position in the navigation
+    if (this.getNavigator()!=null) {
+      this.getNavigator().addVertex(carPos);
+    }
   }
 
   /***
