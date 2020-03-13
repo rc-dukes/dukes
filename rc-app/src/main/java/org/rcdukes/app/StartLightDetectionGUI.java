@@ -11,18 +11,17 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
+import org.rcdukes.common.Config;
+import org.rcdukes.detect.startlightdetection.DefaultStartLightDetector;
 import org.rcdukes.detectors.StartLightDetector;
+import org.rcdukes.objects.StartLight;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageCollector.ImageType;
 
 import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
 import javafx.fxml.FXML;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
-import org.rcdukes.common.Config;
-import nl.vaneijndhoven.objects.StartLight;
-import nl.vaneijndhoven.opencv.startlightdetection.DefaultStartLightDetector;
 
 /**
  * StartLight DetectionController
