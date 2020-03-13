@@ -2,17 +2,16 @@
 
     namespace nl.vaneijndhoven.objects {
 
-        class ViewPort [[ViewPort.html]] {
-            +ViewPort(Point2D, double, double)
-            +getOrigin(): Point2D
-            +getWidth(): double
-            +getHeight(): double
-        }
-
         class StoppingZone [[StoppingZone.html]] {
             +StoppingZone(Optional<Line>, Optional<Line>)
             +getEntrance(): Optional<Line>
             +getExit(): Optional<Line>
+        }
+
+        class Boundary [[Boundary.html]] {
+            +Boundary(LineFilter)
+            +boundary(Collection<Line>): Optional<Line>
+            +candidates(Collection<Line>): Collection<Line>
         }
 
         enum StartLight [[StartLight.html]] {
@@ -26,16 +25,11 @@
             +started(): boolean
         }
 
-        class Lane [[Lane.html]] {
-            +Lane(Optional<Line>, Optional<Line>)
-            +getLeftBoundary(): Optional<Line>
-            +getRightBoundary(): Optional<Line>
-        }
-
-        class Boundary [[Boundary.html]] {
-            +Boundary(LineFilter)
-            +boundary(Collection<Line>): Optional<Line>
-            +candidates(Collection<Line>): Collection<Line>
+        class ViewPort [[ViewPort.html]] {
+            +ViewPort(Point2D, double, double)
+            +getOrigin(): Point2D
+            +getWidth(): double
+            +getHeight(): double
         }
 
     }

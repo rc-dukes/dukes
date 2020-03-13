@@ -1,9 +1,0 @@
-@startuml
-
-    interface EdgeDetector [[EdgeDetector.html]] {
-        {abstract} +detect(Mat): Mat
-    }
-
-
-    center footer UMLDoclet 1.1.4, PlantUML 1.2019.05
-@enduml

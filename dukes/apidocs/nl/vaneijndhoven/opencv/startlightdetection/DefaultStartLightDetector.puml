@@ -4,8 +4,7 @@
         +DefaultStartLightDetector()
         +DefaultStartLightDetector(int, int, int, int, int, int)
         +DefaultStartLightDetector(DefaultStartLightDetector.Config)
-        +detect(Mat): StartLight
-        +withDebug(DebugTools): DefaultStartLightDetector
+        +detect(Image): StartLight
         +getFrame(): Mat
         +withImageCollector(ImageCollector): DefaultStartLightDetector
     }

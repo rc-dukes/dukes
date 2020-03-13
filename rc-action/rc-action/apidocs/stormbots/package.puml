@@ -2,6 +2,10 @@
 
     namespace stormbots {
 
+        class Main [[Main.html]] {
+            {static} +main(String[]): void
+        }
+
         class MiniPID [[MiniPID.html]] {
             +MiniPID(double, double, double)
             +MiniPID(double, double, double, double)
@@ -23,10 +27,6 @@
             +setOutputRampRate(double): void
             +setSetpointRange(double): void
             +setOutputFilter(double): void
-        }
-
-        class Main [[Main.html]] {
-            {static} +main(String[]): void
         }
 
     }

@@ -2,6 +2,11 @@
 
     namespace nl.vaneijndhoven.objects.lane {
 
+        class BoundaryDefaults [[BoundaryDefaults.html]] {
+            {static} +DEFAULT_LANE_BOUNDARY_ANGLE: double
+            {static} +DEFAULT_LANE_BOUNDARY_TOLERANCE: double
+        }
+
         class LaneRightBoundary [[LaneRightBoundary.html]] {
             {static} +DEFAULT_ANGLE: double
             {static} +DEFAULT_TOLERANCE: double

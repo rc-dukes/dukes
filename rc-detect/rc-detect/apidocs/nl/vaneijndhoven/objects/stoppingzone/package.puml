@@ -10,6 +10,12 @@
             +boundary(Collection<Line>): Optional<Line>
         }
 
+        class StoppingZoneOrientation [[StoppingZoneOrientation.html]] {
+            +StoppingZoneOrientation(StoppingZone, Lane, ViewPort)
+            +determineDistanceToStoppingZone(): double
+            +determineDistanceToStoppingZoneEnd(): double
+        }
+
         class ZoneEndBoundary [[ZoneEndBoundary.html]] {
             {static} +DEFAULT_ANGLE: double
             {static} +DEFAULT_TOLERANCE: double

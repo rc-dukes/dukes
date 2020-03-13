@@ -9,12 +9,6 @@
             +getHeight(): double
         }
 
-        class StoppingZone [[StoppingZone.html]] {
-            +StoppingZone(Optional<Line>, Optional<Line>)
-            +getEntrance(): Optional<Line>
-            +getExit(): Optional<Line>
-        }
-
         enum StartLight [[StartLight.html]] {
             {static} +OFF
             {static} +LIT
@@ -26,10 +20,10 @@
             +started(): boolean
         }
 
-        class Lane [[Lane.html]] {
-            +Lane(Optional<Line>, Optional<Line>)
-            +getLeftBoundary(): Optional<Line>
-            +getRightBoundary(): Optional<Line>
+        class StoppingZone [[StoppingZone.html]] {
+            +StoppingZone(Optional<Line>, Optional<Line>)
+            +getEntrance(): Optional<Line>
+            +getExit(): Optional<Line>
         }
 
         class Boundary [[Boundary.html]] {

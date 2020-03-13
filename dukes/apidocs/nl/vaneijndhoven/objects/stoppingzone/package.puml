@@ -2,6 +2,19 @@
 
     namespace nl.vaneijndhoven.objects.stoppingzone {
 
+        class ZoneEndBoundary [[ZoneEndBoundary.html]] {
+            {static} +DEFAULT_ANGLE: double
+            {static} +DEFAULT_TOLERANCE: double
+            +ZoneEndBoundary()
+            +ZoneEndBoundary(double, double, boolean)
+        }
+
+        class StoppingZoneOrientation [[StoppingZoneOrientation.html]] {
+            +StoppingZoneOrientation(StoppingZone, Lane, ViewPort)
+            +determineDistanceToStoppingZone(): double
+            +determineDistanceToStoppingZoneEnd(): double
+        }
+
         class ZoneStartBoundary [[ZoneStartBoundary.html]] {
             {static} +DEFAULT_ANGLE: double
             {static} +DEFAULT_TOLERANCE: double
@@ -10,17 +23,10 @@
             +boundary(Collection<Line>): Optional<Line>
         }
 
-        class ZoneEndBoundary [[ZoneEndBoundary.html]] {
-            {static} +DEFAULT_ANGLE: double
-            {static} +DEFAULT_TOLERANCE: double
-            +ZoneEndBoundary()
-            +ZoneEndBoundary(double, double, boolean)
-        }
-
         class nl.vaneijndhoven.objects.Boundary
-        nl.vaneijndhoven.objects.Boundary <|-- ZoneStartBoundary
-
         nl.vaneijndhoven.objects.Boundary <|-- ZoneEndBoundary
+
+        nl.vaneijndhoven.objects.Boundary <|-- ZoneStartBoundary
 
     }
 

@@ -2,17 +2,11 @@
 
     namespace nl.vaneijndhoven.opencv.startlightdetection {
 
-        interface StartLightDetector [[StartLightDetector.html]] {
-            {abstract} +detect(Mat): StartLight
-            {abstract} +withImageCollector(ImageCollector): StartLightDetector
-        }
-
         class DefaultStartLightDetector [[DefaultStartLightDetector.html]] {
             +DefaultStartLightDetector()
             +DefaultStartLightDetector(int, int, int, int, int, int)
             +DefaultStartLightDetector(DefaultStartLightDetector.Config)
-            +detect(Mat): StartLight
-            +withDebug(DebugTools): DefaultStartLightDetector
+            +detect(Image): StartLight
             +getFrame(): Mat
             +withImageCollector(ImageCollector): DefaultStartLightDetector
         }
@@ -32,7 +26,11 @@
             +setValueStop(double): void
         }
 
-        StartLightDetector <|.. DefaultStartLightDetector
+        interface org.rcdukes.detectors.StartLightDetector {
+            {abstract} +detect(Image): StartLight
+            {abstract} +withImageCollector(ImageCollector): StartLightDetector
+        }
+        org.rcdukes.detectors.StartLightDetector <|.. DefaultStartLightDetector
 
         DefaultStartLightDetector +-- nl.vaneijndhoven.opencv.startlightdetection.DefaultStartLightDetector.Config
 
