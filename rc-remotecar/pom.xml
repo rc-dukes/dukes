@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>nl.vaneijndhoven</groupId>
+        <groupId>org.rcdukes</groupId>
         <artifactId>dukes</artifactId>
         <version>0.0.3</version>
     </parent>
 
-    <groupId>nl.vaneijndhoven.dukes</groupId>
+    <groupId>org.rcdukes.dukes</groupId>
     <artifactId>rc-remotecar</artifactId>
     <description>Runner to start the cluster on the car</description>
     <properties>
@@ -19,12 +19,12 @@
 	  </properties>
     <dependencies>
         <dependency>
-            <groupId>nl.vaneijndhoven.dukes</groupId>
+            <groupId>org.rcdukes.dukes</groupId>
             <artifactId>rc-camera-matrix</artifactId>
             <version>0.0.3</version>
         </dependency>
         <dependency>
-            <groupId>nl.vaneijndhoven.dukes</groupId>
+            <groupId>org.rcdukes.dukes</groupId>
             <artifactId>rc-drivecontrol</artifactId>
             <version>0.0.3</version>
         </dependency>
@@ -33,7 +33,7 @@
             <artifactId>vertx-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>nl.vaneijndhoven.dukes</groupId>
+            <groupId>org.rcdukes.dukes</groupId>
             <artifactId>rc-common</artifactId>
             <version>0.0.3</version>
         </dependency>
@@ -46,27 +46,27 @@
             <artifactId>vertx-hazelcast</artifactId>
         </dependency>
         <dependency>
-            <groupId>nl.vaneijndhoven.dukes</groupId>
+            <groupId>org.rcdukes.dukes</groupId>
             <artifactId>rc-watchdog</artifactId>
             <version>0.0.3</version>
         </dependency>
         <dependency>
-            <groupId>nl.vaneijndhoven.dukes</groupId>
+            <groupId>org.rcdukes.dukes</groupId>
             <artifactId>rc-car</artifactId>
             <version>0.0.3</version>
         </dependency>
         <dependency>
-            <groupId>nl.vaneijndhoven.dukes</groupId>
+            <groupId>org.rcdukes.dukes</groupId>
             <artifactId>rc-detect</artifactId>
             <version>0.0.3</version>
         </dependency>
         <dependency>
-            <groupId>nl.vaneijndhoven.dukes</groupId>
+            <groupId>org.rcdukes.dukes</groupId>
             <artifactId>rc-action</artifactId>
             <version>0.0.3</version>
         </dependency>
         <dependency>
-            <groupId>nl.vaneijndhoven.dukes</groupId>
+            <groupId>org.rcdukes.dukes</groupId>
             <artifactId>rc-app</artifactId>
             <version>0.0.3</version>
         </dependency>

@@ -5,12 +5,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>nl.vaneijndhoven</groupId>
+		<groupId>org.rcdukes</groupId>
 		<artifactId>dukes</artifactId>
 		<version>0.0.3</version>
 	</parent>
 
-	<groupId>nl.vaneijndhoven.dukes</groupId>
+	<groupId>org.rcdukes.dukes</groupId>
 	<artifactId>rc-car</artifactId>
 
 	<description>
@@ -27,22 +27,22 @@
 			<artifactId>vertx-rx-java</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<groupId>org.rcdukes.dukes</groupId>
 			<artifactId>rc-camera-matrix</artifactId>
 			<version>0.0.3</version>
 		</dependency>
 		<dependency>
-			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<groupId>org.rcdukes.dukes</groupId>
 			<artifactId>rc-common</artifactId>
 			<version>0.0.3</version>
 		</dependency>
 		<dependency>
-			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<groupId>org.rcdukes.dukes</groupId>
 			<artifactId>rc-drivecontrol</artifactId>
 			<version>0.0.3</version>
 		</dependency>
 		<dependency>
-			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<groupId>org.rcdukes.dukes</groupId>
 			<artifactId>rc-drivecontrol</artifactId>
 			<type>test-jar</type>
 			<version>0.0.3</version>

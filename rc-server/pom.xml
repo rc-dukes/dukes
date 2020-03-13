@@ -5,12 +5,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>nl.vaneijndhoven</groupId>
+		<groupId>org.rcdukes</groupId>
 		<artifactId>dukes</artifactId>
 		<version>0.0.3</version>
 	</parent>
 
-	<groupId>nl.vaneijndhoven.dukes</groupId>
+	<groupId>org.rcdukes.dukes</groupId>
 	<artifactId>rc-server</artifactId>
 	<description>
     Runner to start the cluster on the laptop
@@ -22,12 +22,12 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<groupId>org.rcdukes.dukes</groupId>
 			<artifactId>rc-webcontrol</artifactId>
 			<version>0.0.3</version>
 		</dependency>
 		<dependency>
-			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<groupId>org.rcdukes.dukes</groupId>
 			<artifactId>rc-drivecontrol</artifactId>
 			<version>0.0.3</version>
 		</dependency>
@@ -46,7 +46,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<groupId>org.rcdukes.dukes</groupId>
 			<artifactId>rc-common</artifactId>
 			<version>0.0.3</version>
 		</dependency>
@@ -59,32 +59,32 @@
 			<artifactId>vertx-hazelcast</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<groupId>org.rcdukes.dukes</groupId>
 			<artifactId>rc-watchdog</artifactId>
 			<version>0.0.3</version>
 		</dependency>
 		<dependency>
-			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<groupId>org.rcdukes.dukes</groupId>
 			<artifactId>rc-car</artifactId>
 			<version>0.0.3</version>
 		</dependency>
 		<dependency>
-			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<groupId>org.rcdukes.dukes</groupId>
 			<artifactId>rc-detect</artifactId>
 			<version>0.0.3</version>
 		</dependency>
 		<dependency>
-			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<groupId>org.rcdukes.dukes</groupId>
 			<artifactId>rc-imageview</artifactId>
 			<version>0.0.3</version>
 		</dependency>
 		<dependency>
-			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<groupId>org.rcdukes.dukes</groupId>
 			<artifactId>rc-action</artifactId>
 			<version>0.0.3</version>
 		</dependency>
 		<dependency>
-			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<groupId>org.rcdukes.dukes</groupId>
 			<artifactId>rc-app</artifactId>
 			<version>0.0.3</version>
 		</dependency>

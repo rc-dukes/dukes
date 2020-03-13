@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>nl.vaneijndhoven</groupId>
+        <groupId>org.rcdukes</groupId>
         <artifactId>dukes</artifactId>
         <version>0.0.3</version>
     </parent>
 
-    <groupId>nl.vaneijndhoven.dukes</groupId>
+    <groupId>org.rcdukes.dukes</groupId>
     <artifactId>rc-camera-matrix</artifactId>
     <description>
         Responsible for interfacing with controllers
@@ -22,12 +22,12 @@
             <artifactId>vertx-rx-java</artifactId>
         </dependency>
         <dependency>
-            <groupId>nl.vaneijndhoven.dukes</groupId>
+            <groupId>org.rcdukes.dukes</groupId>
             <artifactId>rc-geometry</artifactId>
             <version>0.0.3</version>
         </dependency>
         <dependency>
-            <groupId>nl.vaneijndhoven.dukes</groupId>
+            <groupId>org.rcdukes.dukes</groupId>
             <artifactId>rc-roi</artifactId>
             <version>0.0.3</version>
         </dependency>

@@ -4,12 +4,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>nl.vaneijndhoven</groupId>
+		<groupId>org.rcdukes</groupId>
 		<artifactId>dukes</artifactId>
 		<version>0.0.3</version>
 	</parent>
 
-	<groupId>nl.vaneijndhoven.dukes</groupId>
+	<groupId>org.rcdukes.dukes</groupId>
 	<artifactId>rc-imageview</artifactId>
 	<description>Lane detection debug image web server</description>
 	<dependencies>
@@ -23,7 +23,7 @@
 			<artifactId>rxjava-string</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<groupId>org.rcdukes.dukes</groupId>
 			<artifactId>rc-common</artifactId>
 			<version>0.0.3</version>
 		</dependency>
@@ -36,7 +36,7 @@
 			<artifactId>opencv-jar</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>nl.vaneijndhoven.dukes</groupId>
+			<groupId>org.rcdukes.dukes</groupId>
 			<artifactId>rc-detect</artifactId>
 			<version>0.0.3</version>
 		</dependency>
