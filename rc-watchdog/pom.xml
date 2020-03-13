@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>nl.vaneijndhoven</groupId>
 		<artifactId>dukes</artifactId>
-		<version>0.0.2</version>
+		<version>0.0.3</version>
 	</parent>
 
 	<groupId>nl.vaneijndhoven.dukes</groupId>
@@ -33,22 +33,22 @@
 		<dependency>
 			<groupId>nl.vaneijndhoven.dukes</groupId>
 			<artifactId>rc-common</artifactId>
-			<version>0.0.2</version>
+			<version>0.0.3</version>
 		</dependency>
 		<dependency>
 			<groupId>nl.vaneijndhoven.dukes</groupId>
 			<artifactId>rc-camera-matrix</artifactId>
-			<version>0.0.2</version>
+			<version>0.0.3</version>
 		</dependency>
 		<dependency>
 			<groupId>nl.vaneijndhoven.dukes</groupId>
 			<artifactId>rc-drivecontrol</artifactId>
-			<version>0.0.2</version>
+			<version>0.0.3</version>
 		</dependency>
 		<dependency>
 			<groupId>nl.vaneijndhoven.dukes</groupId>
 			<artifactId>rc-drivecontrol</artifactId>
-			<version>0.0.2</version>
+			<version>0.0.3</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>

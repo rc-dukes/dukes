@@ -4,7 +4,7 @@
 
 	<groupId>nl.vaneijndhoven</groupId>
 	<artifactId>dukes</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3</version>
 	<packaging>pom</packaging>
 	<name>rc-dukes parent pom</name>
 	<description>definition of common generic maven aspects of the modules of the dukes projects</description>
