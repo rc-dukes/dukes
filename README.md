@@ -27,12 +27,7 @@ The self driving car consists of modules with the following responsibilities:
 
 | module        | nickname      | type     | runs on | responsibility                            |  
 |---------------|---------------|----------|---------|-------------------------------------------|  
-| [server](https://rc-dukes.github.io/dukes/dukes/apidocs/org/rcdukes/server/package-summary.html)        
-| [Boars Nest](https://www.thedukesofhazzard.nl/georgia-filming-locations/oxford-area/the-boars-nest/)    
-| Runner   
-| laptop  
-| Runner to start the cluster on the laptop
-|
+| [server](https://rc-dukes.github.io/dukes/dukes/apidocs/org/rcdukes/server/package-summary.html)| [Boars Nest](https://www.thedukesofhazzard.nl/georgia-filming-locations/oxford-area/the-boars-nest/)    | Runner   | laptop  | Runner to start the cluster on the laptop |
 | [car](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/car/package-summary.html)           | [Bo](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Bo)            | Verticle | car     | Processing Car control inputs
 | [webcontrol](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/webcontrol/package-summary.html)    | [Boss Hogg](https://en.wikipedia.org/wiki/Boss_Hogg)     | Web      | laptop  | Application to provide manual inputs
 | [roi](https://rc-dukes.github.io/dukes/dukes/apidocs/nl/vaneijndhoven/dukes/roi/package-summary.html)           | [Cletus](https://en.wikipedia.org/wiki/The_Dukes_of_Hazzard#Cletus)        | Library  |         | Region of Interest
