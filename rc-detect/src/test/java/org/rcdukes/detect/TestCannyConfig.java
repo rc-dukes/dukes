@@ -3,9 +3,9 @@ package org.rcdukes.detect;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.rcdukes.detect.edgedectection.CannyEdgeDetector;
 
 import io.vertx.core.json.JsonObject;
-import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 
 public class TestCannyConfig {
 

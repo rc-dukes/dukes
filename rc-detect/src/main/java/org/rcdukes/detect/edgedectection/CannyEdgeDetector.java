@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.opencv.edgedectection;
+package org.rcdukes.detect.edgedectection;
 
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
@@ -6,7 +6,7 @@ import org.rcdukes.detectors.EdgeDetector;
 
 /**
  * Canny edge detector
- *
+ * @see <a href="https://docs.opencv.org/trunk/da/d22/tutorial_py_canny.html">OpenCV Canny Edge Detection </a>
  */
 public class CannyEdgeDetector implements EdgeDetector {
 
@@ -50,6 +50,13 @@ public class CannyEdgeDetector implements EdgeDetector {
   public CannyEdgeDetector() {
   }
 
+  /**
+   * construct me with the given parameters
+   * @param threshold1
+   * @param threshold2
+   * @param apertureSize
+   * @param l2gradient
+   */
   public CannyEdgeDetector(double threshold1, double threshold2,
       int apertureSize, boolean l2gradient) {
     this();

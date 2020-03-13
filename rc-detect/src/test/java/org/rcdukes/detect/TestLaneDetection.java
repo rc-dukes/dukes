@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 import org.opencv.core.Mat;
+import org.rcdukes.detect.edgedectection.CannyEdgeDetector;
 import org.rcdukes.detect.lanedetection.LaneOrientation;
 import org.rcdukes.geometry.Lane;
 import org.rcdukes.geometry.LaneDetectionResult;
@@ -21,7 +22,6 @@ import org.rcdukes.video.ImageUtils;
 
 import io.vertx.core.json.JsonObject;
 import nl.vaneijndhoven.objects.ViewPort;
-import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 
 /**
  * test the lane detection

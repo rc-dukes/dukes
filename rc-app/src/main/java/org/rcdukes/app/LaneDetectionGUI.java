@@ -18,7 +18,7 @@ import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
-import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
+import org.rcdukes.detect.edgedectection.CannyEdgeDetector;
 
 /**
  * Graphical user interface for lane detection

@@ -20,7 +20,8 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
 /**
- * debugger form images
+ * debugger for synchronized info between recorded video images
+ * and navigation info from graph database
  * 
  * @author wf
  *
@@ -120,6 +121,10 @@ public class ImageDebugger {
     return cameraImage.getFrameIndex();
   }
 
+  /**
+   * show the debug Info via the eventbus logger
+   * @param eventbusLogger
+   */
   public void showDebugInfo(EventbusLogger eventbusLogger) {
     long index = this.getFrameIndex();
     Vertex infoVertex = nav.g().V().hasLabel("VideoInfo").next();

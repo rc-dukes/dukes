@@ -1,6 +1,7 @@
 package org.rcdukes.detect;
 
 import org.rcdukes.camera.CameraMatrix;
+import org.rcdukes.detect.edgedectection.CannyEdgeDetector;
 import org.rcdukes.detect.lanedetection.ImageLaneDetection;
 import org.rcdukes.detect.linedetection.HoughLinesLineDetector;
 import org.rcdukes.detectors.EdgeDetector;
@@ -8,8 +9,6 @@ import org.rcdukes.detectors.LineDetector;
 import org.rcdukes.geometry.LaneDetectionResult;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
-
-import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 
 /**
  * detector for lanes

@@ -1,4 +1,4 @@
-package nl.vaneijndhoven.opencv.edgedectection;
+package org.rcdukes.detect.edgedectection;
 
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;

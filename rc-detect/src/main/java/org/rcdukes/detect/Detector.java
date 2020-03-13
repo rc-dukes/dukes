@@ -6,6 +6,7 @@ import org.rcdukes.camera.CameraMatrix;
 import org.rcdukes.common.Characters;
 import org.rcdukes.common.DukesVerticle;
 import org.rcdukes.common.Events;
+import org.rcdukes.detect.edgedectection.CannyEdgeDetector;
 import org.rcdukes.detect.linedetection.HoughLinesLineDetector;
 import org.rcdukes.detectors.EdgeDetector;
 import org.rcdukes.detectors.LineDetector;
@@ -21,7 +22,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.eventbus.Message;
-import nl.vaneijndhoven.opencv.edgedectection.CannyEdgeDetector;
 
 /**
  * Detector aka Daisy
