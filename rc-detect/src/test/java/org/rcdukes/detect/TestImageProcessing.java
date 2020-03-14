@@ -1,9 +1,8 @@
 package org.rcdukes.detect;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -16,7 +15,13 @@ import org.rcdukes.video.ImageUtils;
  * test the image Processing functions
  */
 public class TestImageProcessing extends BaseDetectTest {
-  boolean show = true;
+  public static boolean show = false;
+  
+  @BeforeClass
+  public static void setUp() {
+    // travis is headless - switch off show in any case
+    if (TestSuite.isTravis()) show=false;
+  }
 
   @Test
   public void testDenoiseByBlur() throws Exception {
