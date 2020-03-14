@@ -57,7 +57,7 @@ public class TestGraphDatabase {
     assertEquals(0.5,pos2.getValue(),0.001);
     assertEquals("m/s",pos2.unit);
     assertEquals("motor",pos2.kind);
-    assertEquals(milliTimeStamp,pos2.milliTimeStamp);
+    assertEquals(milliTimeStamp*1.0,pos2.milliTimeStamp*1.0,2);
     gFile.delete();
   }
 
