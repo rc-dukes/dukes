@@ -3,6 +3,7 @@ package org.rcdukes.detect.edgedectection;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 import org.rcdukes.detectors.EdgeDetector;
+import org.rcdukes.video.ColorFilter;
 
 /**
  * Canny edge detector
@@ -14,6 +15,7 @@ public class CannyEdgeDetector implements EdgeDetector {
   double threshold2 = 150;
   int apertureSize = 3;
   boolean l2gradient = false;
+  ColorFilter colorFilter;
   
   public double getThreshold1() {
     return threshold1;
@@ -46,7 +48,19 @@ public class CannyEdgeDetector implements EdgeDetector {
   public void setL2gradient(boolean l2gradient) {
     this.l2gradient = l2gradient;
   }
+  
 
+  public ColorFilter getColorFilter() {
+    return colorFilter;
+  }
+
+  public void setColorFilter(ColorFilter colorFilter) {
+    this.colorFilter = colorFilter;
+  }
+
+  /**
+   * default constructor
+   */
   public CannyEdgeDetector() {
   }
 
@@ -69,6 +83,9 @@ public class CannyEdgeDetector implements EdgeDetector {
   @Override
   public Mat detect(Mat image) {
     Mat imgEdges = new Mat();
+    if (this.colorFilter!=null) {
+      image=this.colorFilter.filter(image);
+    }
     Imgproc.Canny(image, imgEdges, threshold1, threshold2, apertureSize,
         l2gradient);
     return imgEdges;

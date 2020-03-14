@@ -153,6 +153,10 @@ public class DefaultStartLightDetector implements StartLightDetector {
     return this;
   }
 
+  /**
+   * @deprecated use {@link org.rcdukes.video.ColorFilter instead}
+   *
+   */
   public static class Config {
     private double hueStart;
     private double hueStop;

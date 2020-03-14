@@ -9,6 +9,7 @@ import org.rcdukes.detect.ImageObserver;
 import org.rcdukes.detect.LaneDetector;
 import org.rcdukes.detect.linedetection.HoughLinesLineDetector;
 import org.rcdukes.geometry.LaneDetectionResult;
+import org.rcdukes.video.ColorFilter;
 import org.rcdukes.video.Image;
 import org.rcdukes.video.ImageCollector;
 import org.rcdukes.video.ImageSource;
@@ -18,6 +19,9 @@ import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.paint.Color;
+
 import org.rcdukes.detect.edgedectection.CannyEdgeDetector;
 
 /**
@@ -29,7 +33,11 @@ import org.rcdukes.detect.edgedectection.CannyEdgeDetector;
 public class LaneDetectionGUI extends BaseGUI {
   @FXML
   private CheckBox probabilistic;
-
+  @FXML
+  private ColorPicker minColor;
+  @FXML
+  private ColorPicker maxColor;
+  
   @FXML
   private LabeledValueSlider cannyThreshold1;
   @FXML
@@ -161,6 +169,14 @@ public class LaneDetectionGUI extends BaseGUI {
   private void applySliderValuesToConfig() {
     edgeDetector.setThreshold1(cannyThreshold1.getValue());
     edgeDetector.setThreshold2(cannyThreshold2.getValue());
+    Color min = minColor.getValue();
+    Color max = maxColor.getValue();
+    if (edgeDetector.getColorFilter()==null) {
+      edgeDetector.setColorFilter(new ColorFilter());
+    }
+    ColorFilter colorFilter = edgeDetector.getColorFilter();
+    colorFilter.setMinColorRGB(min.getRed(),min.getGreen(),min.getBlue());
+    colorFilter.setMaxColorRGB(max.getRed(),max.getGreen(),max.getBlue());
     lineDetector.setProbabilistic(probabilistic.isSelected());
     lineDetector.setRho(lineDetectRho.getValue());
     lineDetector.setTheta(lineDetectTheta.getValue());

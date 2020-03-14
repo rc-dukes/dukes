@@ -2,6 +2,7 @@ package org.rcdukes.video;
 
 import static org.rcdukes.video.PointMapper.toPoint;
 
+import java.awt.Desktop;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -319,5 +320,25 @@ public class ImageUtils {
         ext);
     return filepath;
   }
+  
+  /**
+   * show the given frame with the default operating system program by creating
+   * a temporary jpg file of it
+   * @param frame
+   * @return 
+   * @throws IOException
+   */
+  public static File show(Mat frame) throws IOException {
+    File imageFile = File.createTempFile("show", ".jpg");
+    ImageUtils.writeImageToFilepath(frame, imageFile.getPath());
+    ImageUtils.show(imageFile);
+    return imageFile;
+  }
 
+  /**
+   * show the given file with the operating systems default program
+   */
+  public static void show(File file) throws IOException {
+    Desktop.getDesktop().open(file);
+  }
 }

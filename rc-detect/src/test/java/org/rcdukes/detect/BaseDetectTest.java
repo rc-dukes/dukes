@@ -19,6 +19,11 @@ public class BaseDetectTest {
     NativeLibrary.load();
   }
 
+  /**
+   * get a test image
+   * @return the test image
+   * @throws Exception
+   */
   public Mat getTestImage() throws Exception {
     String imagePath="images/road.jpg";
     Mat frame = ImageUtils.fromResource(this.getClass(), imagePath);

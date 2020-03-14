@@ -8,37 +8,37 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.paint.Color?>
 <?import org.rcdukes.app.LabeledValueSlider?>
 
-<VBox alignment="CENTER_LEFT" spacing="10"
-	xmlns:fx="http://javafx.com/fxml/1"
-	xmlns="http://javafx.com/javafx/11.0.1"
-	fx:controller="org.rcdukes.app.LaneDetectionGUI">
+<VBox alignment="CENTER_LEFT" spacing="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="org.rcdukes.app.LaneDetectionGUI">
 
 	<padding>
-		<Insets left="10" right="10" />
+		<Insets left="10" right="10"/>
 	</padding>
-	<CheckBox fx:id="probabilistic" mnemonicParsing="false"
-		text="probabilistic" />
-	<Label text="Canny config" style='-fx-font-weight: bold' />
-	<LabeledValueSlider fx:id='cannyThreshold1'
-		text="Threshold 1" blockIncrement="1" max="2000" min="0" value="20"
-		format="\%.0f" />
-	<LabeledValueSlider fx:id="cannyThreshold2"
-		text="Threshold 2" blockIncrement="1" max="2000" min="0" value="50"
-		format="\%.0f" />
-	<Label text="Hough config" style='-fx-font-weight: bold' />
-	<LabeledValueSlider fx:id="lineDetectRho" text="Rho"
-		blockIncrement="0.01" max="20" min="0" value="0.5" />
-	<LabeledValueSlider fx:id="lineDetectTheta"
-		text="Theta" blockIncrement="0.01" max="5" min="-5" value="0.5" />
-	<LabeledValueSlider fx:id="lineDetectThreshold"
-		text="Threshold" blockIncrement="1" max="200" min="0" value="20"
-		format="\%.0f" />
-	<LabeledValueSlider fx:id="lineDetectMinLineLength"
-		text="MinLineLength" blockIncrement="1" max="200" min="0" value="50"
-		format="\%.0f" />
-	<LabeledValueSlider fx:id="lineDetectMaxLineGap"
-		text="MaxLineGap" blockIncrement="1" max="500" min="0" value="50"
-		format="\%.0f" />
+	<Label text="Color filter config" style='-fx-font-weight: bold'/>
+	<HBox>
+		<ColorPicker fx:id='minColor'>
+			<value>
+				<Color blue="0.59" green="0.51" red="0.34"/>
+			</value>
+		</ColorPicker>
+		<ColorPicker fx:id='maxColor'>
+			<value>
+				<Color blue="0.63" green="0.53" red="0.39"/>
+			</value>
+		</ColorPicker>
+	</HBox>
+	<Label text="Canny config" style='-fx-font-weight: bold'/>
+	<LabeledValueSlider fx:id='cannyThreshold1' text="Threshold 1" blockIncrement="1" max="2000" min="0" value="20" format="\%.0f"/>
+	<LabeledValueSlider fx:id="cannyThreshold2" text="Threshold 2" blockIncrement="1" max="2000" min="0" value="50" format="\%.0f"/>
+	<Label text="Hough config" style='-fx-font-weight: bold'/>
+	<CheckBox fx:id="probabilistic" mnemonicParsing="false" text="probabilistic"/>
+	<LabeledValueSlider fx:id="lineDetectRho" text="Rho" blockIncrement="0.01" max="20" min="0" value="0.5"/>
+	<LabeledValueSlider fx:id="lineDetectTheta" text="Theta" blockIncrement="0.01" max="5" min="-5" value="0.5"/>
+	<LabeledValueSlider fx:id="lineDetectThreshold" text="Threshold" blockIncrement="1" max="200" min="0" value="20" format="\%.0f"/>
+	<LabeledValueSlider fx:id="lineDetectMinLineLength" text="MinLineLength" blockIncrement="1" max="200" min="0" value="50" format="\%.0f"/>
+	<LabeledValueSlider fx:id="lineDetectMaxLineGap" text="MaxLineGap" blockIncrement="1" max="500" min="0" value="50" format="\%.0f"/>
 </VBox>
