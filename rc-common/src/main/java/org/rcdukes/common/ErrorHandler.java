@@ -3,6 +3,11 @@ package org.rcdukes.common;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+/**
+ * error handling utility
+ * @author wf
+ *
+ */
 public class ErrorHandler {
   /**
    * get the stack trace for the given exception
