@@ -68,6 +68,7 @@ getValue() {
 #
 runInTerminal() {
   local l_cmd="$1"
+  local l_lib="$2"
   # check operationg system
   os=$(uname -a)
 
@@ -75,7 +76,10 @@ runInTerminal() {
       # MacOs see https://stackoverflow.com/a/7820639/1497139
     Darwin*)
       local l_script="/tmp/cmd$$"
-      echo "$l_cmd" > $l_script
+      color_msg $blue "setting java.library.path to $lib"
+      # https://stackoverflow.com/questions/9551588/can-i-find-out-what-variable-java-library-path-maps-to-on-the-current-platform
+      echo "export DYLD_LIBRARY_PATH=$l_lib" > $l_script
+      echo "$l_cmd" >> $l_script
       chmod +x $l_script
       open -b com.apple.terminal $l_script
       #rm $l_script ;;
@@ -101,7 +105,8 @@ runServer() {
     cd $pwd
   fi
   jar=$(realpath $jar)
-  runInTerminal "java -jar $jar"&
+  lib=$(realpath $mydir/../lib)
+  runInTerminal "java -jar $jar" $lib&
 }
 
 #
