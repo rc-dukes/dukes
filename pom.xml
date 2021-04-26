@@ -104,7 +104,7 @@
 		<opencv.version>3.4.3</opencv.version>
 		<opencv.lib>343</opencv.lib>
 		<junit.version>4.12</junit.version>
-		<commons-io.version>2.6</commons-io.version>
+		<commons-io.version>2.7</commons-io.version>
 		<!-- Gremlin/Tinkerpop -->
 		<tinkerpop.version>3.4.4</tinkerpop.version>
 		<!-- args4j command line parser -->
